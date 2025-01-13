@@ -1,0 +1,190 @@
+import { useEffect, useState } from "react";
+import { userStore } from "../../../store/userStore";
+import LoadingOverlay from "../../../components/LoadingOverlay";
+import { fCurrency } from "../../../utils/formatNumber";
+import { format } from "date-fns";
+import {
+  HiOutlineCalendar,
+  HiOutlineCash,
+  HiOutlineLocationMarker,
+  HiOutlineTicket,
+} from "react-icons/hi";
+
+export default function UserDashboard() {
+  const { statistics, isLoading, getUserStatistics } = userStore();
+  const [timeframe, setTimeframe] = useState("30");
+
+  useEffect(() => {
+    getUserStatistics(timeframe);
+  }, [timeframe]);
+
+  if (isLoading) return <LoadingOverlay />;
+
+  return (
+    <div className="p-6 space-y-6">
+      {/* Header */}
+      <div className="flex justify-between items-center">
+        <h1 className="text-2xl font-semibold text-gray-800">Dashboard</h1>
+        <select
+          value={timeframe}
+          onChange={(e) => setTimeframe(e.target.value)}
+          className="px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+        >
+          <option value="7">Last 7 days</option>
+          <option value="30">Last 30 days</option>
+          <option value="90">Last 90 days</option>
+          <option value="365">Last year</option>
+        </select>
+      </div>
+
+      {/* Statistics Cards */}
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+        <StatCard
+          title="Total Bookings"
+          value={statistics?.total_bookings || 0}
+          icon={<HiOutlineTicket className="w-6 h-6" />}
+          color="blue"
+        />
+        <StatCard
+          title="Total Spent"
+          value={fCurrency(statistics?.total_spent || 0)}
+          icon={<HiOutlineCash className="w-6 h-6" />}
+          color="green"
+        />
+        <StatCard
+          title="Average Booking"
+          value={fCurrency(statistics?.average_booking_value || 0)}
+          icon={<HiOutlineCalendar className="w-6 h-6" />}
+          color="purple"
+        />
+        <StatCard
+          title="Favorite Cities"
+          value={statistics?.favorite_cities?.[0]?.city || "N/A"}
+          icon={<HiOutlineLocationMarker className="w-6 h-6" />}
+          color="orange"
+        />
+      </div>
+
+      {/* Booking Status Breakdown */}
+      <div className="bg-white rounded-xl shadow p-6">
+        <h2 className="text-lg font-semibold mb-4">Booking Status Breakdown</h2>
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+          {Object.entries(statistics?.booking_status_breakdown || {}).map(
+            ([status, count]) => (
+              <div
+                key={status}
+                className="p-4 rounded-lg bg-gray-50 text-center"
+              >
+                <p className="text-2xl font-bold text-gray-800">{count}</p>
+                <p className="text-sm text-gray-600 capitalize">{status}</p>
+              </div>
+            )
+          )}
+        </div>
+      </div>
+
+      {/* Recent and Upcoming Bookings */}
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        {/* Recent Bookings */}
+        <div className="bg-white rounded-xl shadow p-6">
+          <h2 className="text-lg font-semibold mb-4">Recent Bookings</h2>
+          <div className="space-y-4">
+            {statistics?.recent_bookings?.map((booking) => (
+              <BookingCard key={booking._id} booking={booking} />
+            ))}
+          </div>
+        </div>
+
+        {/* Upcoming Bookings */}
+        <div className="bg-white rounded-xl shadow p-6">
+          <h2 className="text-lg font-semibold mb-4">Upcoming Bookings</h2>
+          <div className="space-y-4">
+            {statistics?.upcoming_bookings?.map((booking) => (
+              <BookingCard key={booking._id} booking={booking} />
+            ))}
+          </div>
+        </div>
+      </div>
+
+      {/* Favorite Cities */}
+      <div className="bg-white rounded-xl shadow p-6">
+        <h2 className="text-lg font-semibold mb-4">Favorite Cities</h2>
+        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4">
+          {statistics?.favorite_cities?.map(({ city, count }) => (
+            <div key={city} className="p-4 rounded-lg bg-gray-50 text-center">
+              <p className="text-lg font-semibold text-gray-800">{city}</p>
+              <p className="text-sm text-gray-600">
+                {count} booking{count !== 1 ? "s" : ""}
+              </p>
+            </div>
+          ))}
+        </div>
+      </div>
+    </div>
+  );
+}
+
+function StatCard({ title, value, icon, color }) {
+  const colorClasses = {
+    blue: "bg-blue-50 text-blue-600",
+    green: "bg-green-50 text-green-600",
+    purple: "bg-purple-50 text-purple-600",
+    orange: "bg-orange-50 text-orange-600",
+  };
+
+  return (
+    <div className="bg-white rounded-xl shadow p-6">
+      <div className="flex items-center gap-4">
+        <div className={`p-3 rounded-full ${colorClasses[color]}`}>{icon}</div>
+        <div>
+          <p className="text-sm text-gray-600">{title}</p>
+          <p className="text-2xl font-bold text-gray-800">{value}</p>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+function BookingCard({ booking }) {
+  return (
+    <div className="flex items-center gap-4 p-4 rounded-lg bg-gray-50">
+      <div className="w-20 h-20 rounded-lg overflow-hidden flex-shrink-0">
+        <img
+          src={
+            booking.property_id?.property_images[0]?.url ||
+            "/images/living-room.jpg"
+          }
+          alt={booking.property_id?.property_name}
+          className="w-full h-full object-cover"
+        />
+      </div>
+      <div className="flex-grow">
+        <h3 className="font-semibold text-gray-800">
+          {booking.property_id?.property_name}
+        </h3>
+        <p className="text-sm text-gray-600">
+          {format(new Date(booking.check_in_date), "MMM d, yyyy")} -{" "}
+          {format(new Date(booking.check_out_date), "MMM d, yyyy")}
+        </p>
+        <div className="flex items-center justify-between mt-2">
+          <span
+            className={`px-2 py-1 rounded-full text-xs ${
+              booking.booking_status === "confirmed"
+                ? "bg-green-100 text-green-800"
+                : booking.booking_status === "pending"
+                ? "bg-yellow-100 text-yellow-800"
+                : booking.booking_status === "cancelled"
+                ? "bg-red-100 text-red-800"
+                : "bg-blue-100 text-blue-800"
+            }`}
+          >
+            {booking.booking_status}
+          </span>
+          <span className="font-semibold text-gray-800">
+            {fCurrency(booking.total_price)}
+          </span>
+        </div>
+      </div>
+    </div>
+  );
+}
