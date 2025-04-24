@@ -62,9 +62,36 @@ export default function Apartments() {
       render: (location) => `${location.city}, ${location.state}`,
     },
     {
-      header: "Price (Per Day)",
+      header: "Pricing",
       key: "pricing",
-      render: (pricing) => `₦${pricing.per_day.base_price.toLocaleString()}`,
+      render: (pricing) => (
+        <div className="space-y-1">
+          {pricing.per_day.is_active && (
+            <div className="text-sm">
+              <span className="font-medium">Daily:</span> ₦
+              {pricing.per_day.base_price.toLocaleString()}
+            </div>
+          )}
+          {pricing.per_week.is_active && (
+            <div className="text-sm">
+              <span className="font-medium">Weekly:</span> ₦
+              {pricing.per_week.base_price.toLocaleString()}
+            </div>
+          )}
+          {pricing.per_month.is_active && (
+            <div className="text-sm">
+              <span className="font-medium">Monthly:</span> ₦
+              {pricing.per_month.base_price.toLocaleString()}
+            </div>
+          )}
+          {pricing.rent_per_year.is_active && (
+            <div className="text-sm">
+              <span className="font-medium">Annual:</span> ₦
+              {pricing.rent_per_year.annual_rent.toLocaleString()}
+            </div>
+          )}
+        </div>
+      ),
     },
     {
       header: "Rooms",
@@ -192,7 +219,7 @@ export default function Apartments() {
       <div className="flex justify-between items-center mb-6">
         <h2 className="text-2xl font-semibold text-gray-800">Apartments</h2>
         <button
-          onClick={() => navigate("/dashboard/add-apartment")}
+          onClick={() => navigate("/owner/add-apartment")}
           className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700"
         >
           Add New Apartment

@@ -3,6 +3,7 @@ import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import { bookingService } from "../services/api";
 import toast from "react-hot-toast";
+import { IoAdd, IoTrash } from "react-icons/io5";
 
 // Custom CSS for the calendar
 const calendarStyles = `
@@ -68,10 +69,13 @@ const calendarStyles = `
   }
 `;
 
-export default function AvailabilityCalendar({ propertyId }) {
+export default function AvailabilityCalendar({ propertyId, isOwner = false }) {
   const [startDate, setStartDate] = useState(null);
   const [endDate, setEndDate] = useState(null);
   const [availabilityData, setAvailabilityData] = useState(null);
+  const [isAddingBlock, setIsAddingBlock] = useState(false);
+  const [blockReason, setBlockReason] = useState("");
+  const [blockDates, setBlockDates] = useState({ start: null, end: null });
 
   useEffect(() => {
     // Inject custom styles
@@ -102,31 +106,72 @@ export default function AvailabilityCalendar({ propertyId }) {
     }
   }, [propertyId]);
 
+  const handleAddBlock = async () => {
+    if (!blockDates.start || !blockDates.end || !blockReason) {
+      toast.error("Please select dates and provide a reason");
+      return;
+    }
+
+    try {
+      const updatedUnavailableDates = [
+        ...(availabilityData?.unavailable_dates || []),
+        {
+          start_date: blockDates.start,
+          end_date: blockDates.end,
+          reason: blockReason,
+        },
+      ];
+
+      await bookingService.updatePropertyUnavailableDates(propertyId, {
+        unavailable_dates: updatedUnavailableDates,
+      });
+
+      // Refresh availability data
+      const response = await bookingService.getPropertyAvailability(propertyId);
+      setAvailabilityData(response.data.data);
+
+      // Reset form
+      setIsAddingBlock(false);
+      setBlockDates({ start: null, end: null });
+      setBlockReason("");
+      toast.success("Dates blocked successfully");
+    } catch (error) {
+      console.error("Error blocking dates:", error);
+      toast.error("Error blocking dates");
+    }
+  };
+
+  const handleRemoveBlock = async (indexToRemove) => {
+    try {
+      const updatedUnavailableDates = availabilityData.unavailable_dates.filter(
+        (_, index) => index !== indexToRemove
+      );
+
+      await bookingService.updatePropertyUnavailableDates(propertyId, {
+        unavailable_dates: updatedUnavailableDates,
+      });
+
+      // Refresh availability data
+      const response = await bookingService.getPropertyAvailability(propertyId);
+      setAvailabilityData(response.data.data);
+      toast.success("Block removed successfully");
+    } catch (error) {
+      console.error("Error removing block:", error);
+      toast.error("Error removing block");
+    }
+  };
+
   // Function to check if a date is unavailable
   const isDateUnavailable = (date) => {
     if (!availabilityData) return false;
 
     const currentDate = new Date(date);
 
-    // If there are no available_dates specified, consider all dates as available
-    // unless they are in unavailable_dates
-    const isAvailable =
-      availabilityData.available_dates.length === 0
-        ? true
-        : availabilityData.available_dates.some(
-            ({ start_date, end_date }) =>
-              currentDate >= new Date(start_date) &&
-              currentDate <= new Date(end_date)
-          );
-
     // Check if the date is within any unavailable date ranges (bookings)
-    const isUnavailable = availabilityData.unavailable_dates.some(
+    return availabilityData.unavailable_dates.some(
       ({ start_date, end_date }) =>
         currentDate >= new Date(start_date) && currentDate <= new Date(end_date)
     );
-
-    // Date is unavailable if it's either not in available dates or is in unavailable dates
-    return !isAvailable || isUnavailable;
   };
 
   // Custom header for the calendar
@@ -188,46 +233,153 @@ export default function AvailabilityCalendar({ propertyId }) {
     <div className="p-4">
       <div className="mb-6">
         <h3 className="text-lg font-medium text-gray-900 mb-2">
-          Select dates to check availability
+          {isOwner
+            ? "Manage Property Availability"
+            : "Select dates to check availability"}
         </h3>
         <p className="text-sm text-gray-500">
-          Dates marked in red are unavailable. Select a range to see
-          availability.
+          Dates marked with a line through are unavailable for booking.
         </p>
       </div>
-      <DatePicker
-        selected={startDate}
-        onChange={(dates) => {
-          const [start, end] = dates;
-          setStartDate(start);
-          setEndDate(end);
-        }}
-        startDate={startDate}
-        endDate={endDate}
-        selectsRange
-        inline
-        minDate={new Date()}
-        filterDate={(date) => !isDateUnavailable(date)}
-        renderCustomHeader={renderCustomHeader}
-        showPopperArrow={false}
-        monthsShown={1}
-        fixedHeight
-        className="w-full"
-        calendarClassName="!border-0 !shadow-lg !rounded-xl"
-        dayClassName={(date) =>
-          date.getDate() === new Date().getDate() &&
-          date.getMonth() === new Date().getMonth()
-            ? "!text-blue-600 font-semibold"
-            : undefined
-        }
-      />
-      {startDate && endDate && (
-        <div className="mt-6 p-4 bg-blue-50 rounded-lg">
-          <p className="text-sm text-blue-800">
-            Selected dates: {startDate.toLocaleDateString()} -{" "}
-            {endDate.toLocaleDateString()}
-          </p>
+
+      {isOwner && (
+        <div className="mb-6">
+          {!isAddingBlock ? (
+            <button
+              onClick={() => setIsAddingBlock(true)}
+              className="flex items-center gap-2 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
+            >
+              <IoAdd className="w-5 h-5" />
+              <span>Block Dates</span>
+            </button>
+          ) : (
+            <div className="space-y-4 ">
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  Select Dates to Block
+                </label>
+                <DatePicker
+                  selected={blockDates.start}
+                  onChange={(dates) => {
+                    const [start, end] = dates;
+                    setBlockDates({ start, end });
+                  }}
+                  startDate={blockDates.start}
+                  endDate={blockDates.end}
+                  selectsRange
+                  inline
+                  minDate={new Date()}
+                  filterDate={(date) => !isDateUnavailable(date)}
+                  className="w-full"
+                  renderCustomHeader={renderCustomHeader}
+                  calendarClassName="!border-0 !shadow-lg !rounded-xl"
+                />
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  Reason
+                </label>
+                <input
+                  type="text"
+                  value={blockReason}
+                  onChange={(e) => setBlockReason(e.target.value)}
+                  placeholder="e.g., Maintenance, Personal use"
+                  className="w-full px-3 py-2 border rounded-lg focus:ring-blue-500 focus:border-blue-500"
+                />
+              </div>
+              <div className="flex gap-2">
+                <button
+                  onClick={handleAddBlock}
+                  className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
+                >
+                  Confirm Block
+                </button>
+                <button
+                  onClick={() => {
+                    setIsAddingBlock(false);
+                    setBlockDates({ start: null, end: null });
+                    setBlockReason("");
+                  }}
+                  className="px-4 py-2 bg-gray-200 text-gray-700 rounded-lg hover:bg-gray-300 transition-colors"
+                >
+                  Cancel
+                </button>
+              </div>
+            </div>
+          )}
+
+          {/* List of blocked dates */}
+          {availabilityData?.unavailable_dates?.length > 0 && (
+            <div className="mt-6">
+              <h4 className="text-md font-medium text-gray-900 mb-2">
+                Blocked Dates
+              </h4>
+              <div className="space-y-2">
+                {availabilityData.unavailable_dates.map((block, index) => (
+                  <div
+                    key={index}
+                    className="flex items-center justify-between bg-white p-3 rounded-lg border"
+                  >
+                    <div>
+                      <p className="text-sm font-medium">
+                        {new Date(block.start_date).toLocaleDateString()} -{" "}
+                        {new Date(block.end_date).toLocaleDateString()}
+                      </p>
+                      <p className="text-sm text-gray-500">{block.reason}</p>
+                    </div>
+                    {block.reason !== "Booking" && (
+                      <button
+                        onClick={() => handleRemoveBlock(index)}
+                        className="p-1.5 text-red-600 hover:bg-red-50 rounded-full transition-colors"
+                      >
+                        <IoTrash className="w-5 h-5" />
+                      </button>
+                    )}
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
         </div>
+      )}
+
+      {!isOwner && (
+        <>
+          <DatePicker
+            selected={startDate}
+            onChange={(dates) => {
+              const [start, end] = dates;
+              setStartDate(start);
+              setEndDate(end);
+            }}
+            startDate={startDate}
+            endDate={endDate}
+            selectsRange
+            inline
+            minDate={new Date()}
+            filterDate={(date) => !isDateUnavailable(date)}
+            renderCustomHeader={renderCustomHeader}
+            showPopperArrow={false}
+            monthsShown={1}
+            fixedHeight
+            className="w-full"
+            calendarClassName="!border-0 !shadow-lg !rounded-xl"
+            dayClassName={(date) =>
+              date.getDate() === new Date().getDate() &&
+              date.getMonth() === new Date().getMonth()
+                ? "!text-blue-600 font-semibold"
+                : undefined
+            }
+          />
+          {startDate && endDate && (
+            <div className="mt-6 p-4 bg-blue-50 rounded-lg">
+              <p className="text-sm text-blue-800">
+                Selected dates: {startDate.toLocaleDateString()} -{" "}
+                {endDate.toLocaleDateString()}
+              </p>
+            </div>
+          )}
+        </>
       )}
     </div>
   );

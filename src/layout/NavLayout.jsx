@@ -1,18 +1,27 @@
 import { Link, useLocation, Outlet, useNavigate } from "react-router-dom";
 import { useAuth } from "../hooks/useAuth";
 import { useState } from "react";
-import { HiMenu, HiX } from "react-icons/hi";
+import { HiMenu, HiX, HiChevronDown } from "react-icons/hi";
 
 export default function NavLayout({ children }) {
   const { isAuthenticated, user } = useAuth();
   const location = useLocation();
   const navigate = useNavigate();
   const [isOpen, setIsOpen] = useState(false);
+  const [isBookDropdownOpen, setIsBookDropdownOpen] = useState(false);
 
   const navigation = [
     { name: "Home", href: "/" },
     { name: "About", href: "/about" },
-    { name: "Book Now", href: "/book-now" },
+    {
+      name: "Let Now",
+      href: "#",
+      isDropdown: true,
+      dropdownItems: [
+        { name: "Shortlet", href: "/book-now?category=shortlet" },
+        { name: "Apartment", href: "/book-now?category=rent" },
+      ],
+    },
     { name: "FAQ", href: "/faq" },
     { name: "Blog", href: "/blog" },
     { name: "Contact", href: "/contact" },
@@ -32,7 +41,7 @@ export default function NavLayout({ children }) {
     <div className="min-h-screen flex flex-col">
       <nav className="bg-white shadow-sm">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex justify-between h-16">
+          <div className="flex justify-between h-16 items-center">
             <div className="flex">
               {/* Logo */}
               <div className="flex-shrink-0 flex items-center">
@@ -46,20 +55,63 @@ export default function NavLayout({ children }) {
               </div>
 
               {/* Desktop Navigation Links */}
-              <div className="hidden sm:ml-6 sm:flex sm:space-x-8">
-                {navigation.map((item) => (
-                  <Link
-                    key={item.name}
-                    to={item.href}
-                    className={`${
-                      location.pathname === item.href
-                        ? "border-blue-500 text-gray-900"
-                        : "border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-700"
-                    } inline-flex items-center px-1 pt-1 border-b-2 text-sm font-medium`}
-                  >
-                    {item.name}
-                  </Link>
-                ))}
+              <div className="hidden sm:ml-6 sm:flex sm:space-x-8 items-center">
+                {navigation.map((item) =>
+                  item.isDropdown ? (
+                    <div key={item.name} className="relative">
+                      <button
+                        onClick={() =>
+                          setIsBookDropdownOpen(!isBookDropdownOpen)
+                        }
+                        className={`${
+                          location.pathname.startsWith("/book-now")
+                            ? "border-blue-500 text-gray-900"
+                            : "border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-700"
+                        } inline-flex items-center px-1 pt-1 border-b-2 text-sm font-medium`}
+                      >
+                        {item.name}
+                        <HiChevronDown
+                          className={`ml-1 h-4 w-4 transition-transform ${
+                            isBookDropdownOpen ? "rotate-180" : ""
+                          }`}
+                        />
+                      </button>
+                      {isBookDropdownOpen && (
+                        <div className="absolute z-10 mt-2 w-48 rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5">
+                          <div
+                            className="py-1"
+                            role="menu"
+                            aria-orientation="vertical"
+                          >
+                            {item.dropdownItems.map((dropdownItem) => (
+                              <Link
+                                key={dropdownItem.name}
+                                to={dropdownItem.href}
+                                className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+                                role="menuitem"
+                                onClick={() => setIsBookDropdownOpen(false)}
+                              >
+                                {dropdownItem.name}
+                              </Link>
+                            ))}
+                          </div>
+                        </div>
+                      )}
+                    </div>
+                  ) : (
+                    <Link
+                      key={item.name}
+                      to={item.href}
+                      className={`${
+                        location.pathname === item.href
+                          ? "border-blue-500 text-gray-900"
+                          : "border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-700"
+                      } inline-flex items-center px-1 pt-1 border-b-2 text-sm font-medium`}
+                    >
+                      {item.name}
+                    </Link>
+                  )
+                )}
               </div>
             </div>
 
@@ -115,20 +167,57 @@ export default function NavLayout({ children }) {
         {/* Mobile menu */}
         <div className={`${isOpen ? "block" : "hidden"} sm:hidden`}>
           <div className="pt-2 pb-3 space-y-1">
-            {navigation.map((item) => (
-              <Link
-                key={item.name}
-                to={item.href}
-                onClick={() => setIsOpen(false)}
-                className={`${
-                  location.pathname === item.href
-                    ? "bg-blue-50 border-blue-500 text-blue-700"
-                    : "border-transparent text-gray-600 hover:bg-gray-50 hover:border-gray-300 hover:text-gray-800"
-                } block pl-3 pr-4 py-2 border-l-4 text-base font-medium`}
-              >
-                {item.name}
-              </Link>
-            ))}
+            {navigation.map((item) =>
+              item.isDropdown ? (
+                <div key={item.name}>
+                  <button
+                    onClick={() => setIsBookDropdownOpen(!isBookDropdownOpen)}
+                    className={`${
+                      location.pathname.startsWith("/book-now")
+                        ? "bg-blue-50 border-blue-500 text-blue-700"
+                        : "border-transparent text-gray-600 hover:bg-gray-50 hover:border-gray-300 hover:text-gray-800"
+                    } w-full flex items-center justify-between pl-3 pr-4 py-2 border-l-4 text-base font-medium`}
+                  >
+                    {item.name}
+                    <HiChevronDown
+                      className={`h-5 w-5 transition-transform ${
+                        isBookDropdownOpen ? "rotate-180" : ""
+                      }`}
+                    />
+                  </button>
+                  {isBookDropdownOpen && (
+                    <div className="bg-gray-50">
+                      {item.dropdownItems.map((dropdownItem) => (
+                        <Link
+                          key={dropdownItem.name}
+                          to={dropdownItem.href}
+                          onClick={() => {
+                            setIsBookDropdownOpen(false);
+                            setIsOpen(false);
+                          }}
+                          className="block pl-8 pr-4 py-2 text-base font-medium text-gray-600 hover:bg-gray-100"
+                        >
+                          {dropdownItem.name}
+                        </Link>
+                      ))}
+                    </div>
+                  )}
+                </div>
+              ) : (
+                <Link
+                  key={item.name}
+                  to={item.href}
+                  onClick={() => setIsOpen(false)}
+                  className={`${
+                    location.pathname === item.href
+                      ? "bg-blue-50 border-blue-500 text-blue-700"
+                      : "border-transparent text-gray-600 hover:bg-gray-50 hover:border-gray-300 hover:text-gray-800"
+                  } block pl-3 pr-4 py-2 border-l-4 text-base font-medium`}
+                >
+                  {item.name}
+                </Link>
+              )
+            )}
             {/* Mobile auth buttons */}
             {isAuthenticated ? (
               <div className="mt-4 pt-4 border-t border-gray-200">

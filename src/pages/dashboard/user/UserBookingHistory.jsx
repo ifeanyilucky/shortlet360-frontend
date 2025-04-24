@@ -1,6 +1,6 @@
 import DataTable from "../../../components/DataTable";
 import { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
 import { bookingStore } from "@store/bookingStore";
 import { FaEye, FaFilter } from "react-icons/fa";
 import { IoMdClose } from "react-icons/io";
@@ -11,10 +11,19 @@ import { format } from "date-fns";
 import { fCurrency } from "@utils/formatNumber";
 import RightSidebarModal from "../../../components/RightSidebarModal";
 import BookingDetails from "../../../components/BookingDetails";
+import { FiEye } from "react-icons/fi";
+import { MdOutlineCancel } from "react-icons/md";
 
 export default function UserBookingHistory() {
-  const { bookings, booking, pagination, getBookings, getBooking, isLoading } =
-    bookingStore();
+  const {
+    bookings,
+    booking,
+    pagination,
+    getBookings,
+    getBooking,
+    isLoading,
+    cancelBooking,
+  } = bookingStore();
   const [currentPage, setCurrentPage] = useState(1);
   const [searchTerm, setSearchTerm] = useState("");
   const [isViewModalOpen, setIsViewModalOpen] = useState(false);
@@ -27,6 +36,8 @@ export default function UserBookingHistory() {
     payment_status: "",
   });
   const navigate = useNavigate();
+  const [showCancelModal, setShowCancelModal] = useState(false);
+  const [selectedBooking, setSelectedBooking] = useState(null);
 
   const handleSearch = (e) => {
     e.preventDefault();
@@ -83,6 +94,19 @@ export default function UserBookingHistory() {
       page: 1,
       guest: user?._id,
     });
+  };
+
+  const handleCancelClick = (booking) => {
+    setSelectedBooking(booking);
+    setShowCancelModal(true);
+  };
+
+  const handleConfirmCancel = async () => {
+    if (selectedBooking) {
+      await cancelBooking(selectedBooking._id);
+      setShowCancelModal(false);
+      setSelectedBooking(null);
+    }
   };
 
   useEffect(() => {
@@ -198,6 +222,15 @@ export default function UserBookingHistory() {
           >
             View
           </button>
+          {row.booking_status === "confirmed" && (
+            <button
+              onClick={() => handleCancelClick(row)}
+              className="p-2 text-red-600 hover:bg-red-50 rounded-full"
+              title="Cancel Booking"
+            >
+              Cancel
+            </button>
+          )}
         </div>
       ),
     },
@@ -338,6 +371,44 @@ export default function UserBookingHistory() {
       >
         <BookingDetails booking={booking} />
       </RightSidebarModal>
+
+      {/* Cancel Confirmation Modal */}
+      {showCancelModal && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
+          <div className="bg-white rounded-lg p-6 max-w-md w-full">
+            <h2 className="text-xl font-bold mb-4">Cancel Booking</h2>
+            <p className="text-gray-600 mb-6">
+              Are you sure you want to cancel your booking for{" "}
+              <span className="font-semibold">
+                {selectedBooking?.property_id.property_name}
+              </span>
+              ? This action cannot be undone.
+            </p>
+            <h3 className="text-lg font-semibold mb-2">Cancellation Policy:</h3>
+            <p className="text-gray-600 mb-4">
+              {" "}
+              You can cancel your booking up to 24 hours before the check-in
+              date for a full refund. Cancellations made less than 24 hours
+              before check-in will incur a charge of one night's stay. Please
+              note that any service fees are non-refundable.
+            </p>
+            <div className="flex justify-end space-x-4">
+              <button
+                onClick={() => setShowCancelModal(false)}
+                className="px-4 py-2 text-gray-600 hover:bg-gray-100 rounded-lg"
+              >
+                No, Keep Booking
+              </button>
+              <button
+                onClick={handleConfirmCancel}
+                className="px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700"
+              >
+                Yes, Cancel Booking
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

@@ -51,21 +51,18 @@ export const propertyService = {
       // Convert params object to URL query string
       const queryParams = new URLSearchParams();
 
-      // Handle filter object and other params separately
-      const { filter, page, limit } = params;
-
-      // Add pagination params
-      if (page) queryParams.append("page", page);
-      if (limit) queryParams.append("limit", limit);
-
-      // Add filter params
-      if (filter) {
-        Object.entries(filter).forEach(([key, value]) => {
-          if (value !== undefined && value !== null && value !== "") {
-            queryParams.append(key, value);
-          }
-        });
-      }
+      // Handle all params including filter params
+      Object.entries(params).forEach(([key, value]) => {
+        // Skip null, undefined, empty strings, and "All Types"
+        if (
+          value !== undefined &&
+          value !== null &&
+          value !== "" &&
+          value !== "All Types"
+        ) {
+          queryParams.append(key, value);
+        }
+      });
 
       const response = await api.get(`/property?${queryParams.toString()}`);
       return response.data;
@@ -76,6 +73,10 @@ export const propertyService = {
   },
   getProperty: async (id) => {
     const response = await api.get(`/property/${id}`);
+    return response.data;
+  },
+  updateProperty: async (id, data) => {
+    const response = await api.put(`/property/${id}`, data);
     return response.data;
   },
   checkAvailability: async (id) => {
@@ -130,6 +131,9 @@ export const bookingService = {
     return api.get(
       `/booking/user/statistics${timeframe ? `?timeframe=${timeframe}` : ""}`
     );
+  },
+  updatePropertyUnavailableDates: async (propertyId, data) => {
+    return await api.put(`/property/${propertyId}/unavailable-dates`, data);
   },
 };
 

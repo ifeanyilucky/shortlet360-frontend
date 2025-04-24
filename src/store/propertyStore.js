@@ -28,10 +28,8 @@ export const propertyStore = create((set) => ({
     set({ isLoading: true });
     const response = await propertyService.addProperty(data);
     set((state) => ({
-      properties: {
-        ...state.properties,
-        data: [...state.properties, response.data],
-      },
+      properties: [...state.properties, response.data],
+
       isLoading: false,
     }));
     return response;
@@ -45,6 +43,36 @@ export const propertyStore = create((set) => ({
       property: response.data,
       isLoading: false,
     }));
+  },
+
+  getPropertyById: async (id) => {
+    try {
+      set({ isLoading: true });
+      const response = await propertyService.getProperty(id);
+      return response.data;
+    } catch (error) {
+      throw error;
+    } finally {
+      set({ isLoading: false });
+    }
+  },
+
+  updateProperty: async (id, data) => {
+    try {
+      set({ isLoading: true });
+      const response = await propertyService.updateProperty(id, data);
+      set((state) => ({
+        properties: state.properties.map((property) =>
+          property._id === id ? response.data : property
+        ),
+        property: response.data,
+      }));
+      return response.data;
+    } catch (error) {
+      throw error;
+    } finally {
+      set({ isLoading: false });
+    }
   },
 
   getBooking: async (id) => {

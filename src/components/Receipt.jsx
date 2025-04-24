@@ -30,7 +30,7 @@ export default function Receipt() {
   }
 
   const formatDate = (dateString) => {
-    return format(new Date(dateString), "dd MMM yy");
+    return format(new Date(dateString), "dd MMM yyyy");
   };
 
   const formatCurrency = (amount) => {

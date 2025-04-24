@@ -54,19 +54,19 @@ export default function ApartmentOwnerDashboard() {
   }
   console.log("ownerStatistics", ownerStatistics);
   return (
-    <div className="p-6">
+    <div className="p-4 md:p-6">
       {/* Header Section */}
-      <div className="flex justify-between items-center mb-8">
+      <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-6 md:mb-8 space-y-4 md:space-y-0">
         <div>
-          <h1 className="text-3xl font-bold">
+          <h1 className="text-2xl md:text-3xl font-bold">
             {greeting},{" "}
             <span className="capitalize">{user?.first_name || "there"}!</span>
           </h1>
           <p className="text-gray-600">Here's an overview of your properties</p>
         </div>
-        <div className="flex gap-4">
+        <div className="w-full md:w-auto">
           <select
-            className="px-4 py-2 border rounded-lg"
+            className="w-full md:w-auto px-4 py-2 border rounded-lg"
             value={timeframe}
             onChange={(e) => setTimeframe(e.target.value)}
           >
@@ -78,13 +78,13 @@ export default function ApartmentOwnerDashboard() {
       </div>
 
       {/* Main Stats Grid */}
-      <div className="grid grid-cols-4 gap-6 mb-8">
-        <div className="bg-white p-6 rounded-lg shadow-sm">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6 mb-6 md:mb-8">
+        <div className="bg-white p-4 md:p-6 rounded-lg shadow-sm">
           <div className="flex justify-between items-center mb-4">
             <span className="text-gray-600">Total Properties</span>
             <FaHome className="text-blue-500 text-xl" />
           </div>
-          <p className="text-3xl font-bold">
+          <p className="text-2xl md:text-3xl font-bold">
             {ownerStatistics?.total_properties || 0}
           </p>
           <p className="text-sm text-gray-500 mt-2">
@@ -92,12 +92,12 @@ export default function ApartmentOwnerDashboard() {
           </p>
         </div>
 
-        <div className="bg-white p-6 rounded-lg shadow-sm">
+        <div className="bg-white p-4 md:p-6 rounded-lg shadow-sm">
           <div className="flex justify-between items-center mb-4">
             <span className="text-gray-600">Total Bookings</span>
             <BsCalendarCheck className="text-green-600 text-xl" />
           </div>
-          <p className="text-3xl font-bold">
+          <p className="text-2xl md:text-3xl font-bold">
             {ownerStatistics?.total_bookings || 0}
           </p>
           <p className="text-sm text-gray-500 mt-2">
@@ -106,12 +106,12 @@ export default function ApartmentOwnerDashboard() {
           </p>
         </div>
 
-        <div className="bg-white p-6 rounded-lg shadow-sm">
+        <div className="bg-white p-4 md:p-6 rounded-lg shadow-sm">
           <div className="flex justify-between items-center mb-4">
             <span className="text-gray-600">Total Revenue</span>
             <BsCashStack className="text-green-600 text-xl" />
           </div>
-          <p className="text-3xl font-bold">
+          <p className="text-2xl md:text-3xl font-bold">
             {fCurrency(ownerStatistics?.total_revenue || 0)}
           </p>
           <p className="text-sm text-gray-500 mt-2">
@@ -120,68 +120,68 @@ export default function ApartmentOwnerDashboard() {
           </p>
         </div>
 
-        <div className="bg-white p-6 rounded-lg shadow-sm">
+        <div className="bg-white p-4 md:p-6 rounded-lg shadow-sm">
           <div className="flex justify-between items-center mb-4">
             <span className="text-gray-600">Occupancy Rate</span>
             <FaHouseUser className="text-purple-500 text-xl" />
           </div>
-          <p className="text-3xl font-bold">
+          <p className="text-2xl md:text-3xl font-bold">
             {ownerStatistics?.occupancy_rate?.toFixed(1) || 0}%
           </p>
         </div>
       </div>
 
       {/* Booking Status Breakdown */}
-      <div className="grid grid-cols-4 gap-6 mb-8">
-        <div className="bg-white p-6 rounded-lg shadow-sm">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6 mb-6 md:mb-8">
+        <div className="bg-white p-4 md:p-6 rounded-lg shadow-sm">
           <div className="flex justify-between items-center mb-4">
             <span className="text-gray-600">Pending</span>
             <MdPendingActions className="text-yellow-500 text-xl" />
           </div>
-          <p className="text-3xl font-bold">
+          <p className="text-2xl md:text-3xl font-bold">
             {ownerStatistics?.booking_status_breakdown?.pending || 0}
           </p>
         </div>
 
-        <div className="bg-white p-6 rounded-lg shadow-sm">
+        <div className="bg-white p-4 md:p-6 rounded-lg shadow-sm">
           <div className="flex justify-between items-center mb-4">
             <span className="text-gray-600">Confirmed</span>
             <BsCalendarCheck className="text-green-500 text-xl" />
           </div>
-          <p className="text-3xl font-bold">
+          <p className="text-2xl md:text-3xl font-bold">
             {ownerStatistics?.booking_status_breakdown?.confirmed || 0}
           </p>
         </div>
 
-        <div className="bg-white p-6 rounded-lg shadow-sm">
+        <div className="bg-white p-4 md:p-6 rounded-lg shadow-sm">
           <div className="flex justify-between items-center mb-4">
             <span className="text-gray-600">Completed</span>
             <FaKey className="text-blue-500 text-xl" />
           </div>
-          <p className="text-3xl font-bold">
+          <p className="text-2xl md:text-3xl font-bold">
             {ownerStatistics?.booking_status_breakdown?.completed || 0}
           </p>
         </div>
 
-        <div className="bg-white p-6 rounded-lg shadow-sm">
+        <div className="bg-white p-4 md:p-6 rounded-lg shadow-sm">
           <div className="flex justify-between items-center mb-4">
             <span className="text-gray-600">Cancelled</span>
             <MdCancel className="text-red-500 text-xl" />
           </div>
-          <p className="text-3xl font-bold">
+          <p className="text-2xl md:text-3xl font-bold">
             {ownerStatistics?.booking_status_breakdown?.cancelled || 0}
           </p>
         </div>
       </div>
 
       {/* Property Performance and Recent Activity */}
-      <div className="grid grid-cols-3 gap-6">
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 md:gap-6">
         {/* Property Performance */}
-        <div className="col-span-2">
+        <div className="lg:col-span-2">
           <h2 className="text-xl font-bold mb-4">Property Performance</h2>
-          <div className="bg-white rounded-lg shadow-sm">
+          <div className="bg-white rounded-lg shadow-sm overflow-x-auto">
             <div className="p-4">
-              <table className="w-full">
+              <table className="w-full min-w-[600px]">
                 <thead>
                   <tr className="text-left text-gray-600">
                     <th className="pb-4">Property</th>
@@ -194,7 +194,9 @@ export default function ApartmentOwnerDashboard() {
                 <tbody>
                   {ownerStatistics?.property_performance?.map((property) => (
                     <tr key={property.property_id} className="border-t">
-                      <td className="py-4">{property?.property_name}</td>
+                      <td className="py-4 max-w-[200px] truncate">
+                        {property?.property_name}
+                      </td>
                       <td className="py-4">{property?.total_bookings}</td>
                       <td className="py-4">{fCurrency(property?.revenue)}</td>
                       <td className="py-4">
@@ -229,7 +231,7 @@ export default function ApartmentOwnerDashboard() {
                     key={index}
                     className="border-b last:border-b-0 pb-4 last:pb-0"
                   >
-                    <div className="flex justify-between items-start">
+                    <div className="flex flex-col sm:flex-row justify-between items-start space-y-2 sm:space-y-0">
                       <div>
                         <p className="font-semibold">
                           {activity?.property_id?.property_name}

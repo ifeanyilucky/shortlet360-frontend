@@ -12,6 +12,7 @@ import OwnerDashboard from "../pages/dashboard/apartment-owner/dashboard";
 import OwnerLayout from "../layout/OwnerLayout";
 // Apartment Owner
 import AddApartment from "../pages/dashboard/apartment-owner/add-apartment";
+import EditApartment from "../pages/dashboard/apartment-owner/edit-apartment";
 import Availability from "../pages/dashboard/apartment-owner/availability";
 import Apartments from "../pages/dashboard/apartment-owner/apartments";
 import Bookings from "../pages/dashboard/apartment-owner/bookings";
@@ -20,6 +21,7 @@ import PropertyDetail from "../pages/PropertyDetail";
 import UserLayout from "../layout/UserLayout";
 import Receipt from "../components/Receipt";
 import UserBookingHistory from "../pages/dashboard/user/UserBookingHistory";
+import Favorite from "../pages/dashboard/user/favorite";
 export default function Router() {
   const routes = useRoutes([
     {
@@ -56,6 +58,7 @@ export default function Router() {
             { path: "dashboard", element: <UserDashboard /> },
             { path: "apartments", element: <Apartments /> },
             { path: "bookings", element: <UserBookingHistory /> },
+            { path: "favorites", element: <Favorite /> },
             { path: "settings", element: <Settings /> },
           ],
         },
@@ -71,6 +74,7 @@ export default function Router() {
             { path: "dashboard", element: <OwnerDashboard /> },
             { path: "apartments", element: <Apartments /> },
             { path: "add-apartment", element: <AddApartment /> },
+            { path: "edit-apartment/:id", element: <EditApartment /> },
             { path: "availability", element: <Availability /> },
             { path: "bookings", element: <Bookings /> },
             { path: "settings", element: <Settings /> },

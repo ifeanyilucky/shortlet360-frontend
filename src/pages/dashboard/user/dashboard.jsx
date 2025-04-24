@@ -9,11 +9,11 @@ import {
   HiOutlineLocationMarker,
   HiOutlineTicket,
 } from "react-icons/hi";
-
+import { useNavigate } from "react-router-dom";
 export default function UserDashboard() {
   const { statistics, isLoading, getUserStatistics } = userStore();
   const [timeframe, setTimeframe] = useState("30");
-
+  const navigate = useNavigate();
   useEffect(() => {
     getUserStatistics(timeframe);
   }, [timeframe]);
@@ -21,14 +21,14 @@ export default function UserDashboard() {
   if (isLoading) return <LoadingOverlay />;
 
   return (
-    <div className="p-6 space-y-6">
+    <div className="p-4 md:p-6 space-y-4 md:space-y-6">
       {/* Header */}
-      <div className="flex justify-between items-center">
+      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center space-y-4 sm:space-y-0">
         <h1 className="text-2xl font-semibold text-gray-800">Dashboard</h1>
         <select
           value={timeframe}
           onChange={(e) => setTimeframe(e.target.value)}
-          className="px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+          className="w-full sm:w-auto px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
         >
           <option value="7">Last 7 days</option>
           <option value="30">Last 30 days</option>
@@ -38,7 +38,7 @@ export default function UserDashboard() {
       </div>
 
       {/* Statistics Cards */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6">
         <StatCard
           title="Total Bookings"
           value={statistics?.total_bookings || 0}
@@ -66,17 +66,21 @@ export default function UserDashboard() {
       </div>
 
       {/* Booking Status Breakdown */}
-      <div className="bg-white rounded-xl shadow p-6">
+      <div className="bg-white rounded-xl shadow p-4 md:p-6">
         <h2 className="text-lg font-semibold mb-4">Booking Status Breakdown</h2>
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-3 md:gap-4">
           {Object.entries(statistics?.booking_status_breakdown || {}).map(
             ([status, count]) => (
               <div
                 key={status}
-                className="p-4 rounded-lg bg-gray-50 text-center"
+                className="p-3 md:p-4 rounded-lg bg-gray-50 text-center"
               >
-                <p className="text-2xl font-bold text-gray-800">{count}</p>
-                <p className="text-sm text-gray-600 capitalize">{status}</p>
+                <p className="text-xl md:text-2xl font-bold text-gray-800">
+                  {count}
+                </p>
+                <p className="text-xs md:text-sm text-gray-600 capitalize">
+                  {status}
+                </p>
               </div>
             )
           )}
@@ -84,40 +88,73 @@ export default function UserDashboard() {
       </div>
 
       {/* Recent and Upcoming Bookings */}
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 md:gap-6">
         {/* Recent Bookings */}
-        <div className="bg-white rounded-xl shadow p-6">
+        <div className="bg-white rounded-xl shadow p-4 md:p-6">
           <h2 className="text-lg font-semibold mb-4">Recent Bookings</h2>
           <div className="space-y-4">
-            {statistics?.recent_bookings?.map((booking) => (
-              <BookingCard key={booking._id} booking={booking} />
-            ))}
+            {statistics?.recent_bookings?.length === 0 ? (
+              <p className="text-gray-500 text-center py-4">
+                No recent bookings
+              </p>
+            ) : (
+              statistics?.recent_bookings
+                ?.slice(0, 3)
+                .map((booking) => (
+                  <BookingCard key={booking._id} booking={booking} />
+                ))
+            )}
+            <div className="flex justify-end">
+              <button
+                className="text-blue-500 hover:underline"
+                onClick={() => navigate("/user/bookings")}
+              >
+                View all <span className="text-blue-500">→</span>
+              </button>
+            </div>
           </div>
         </div>
 
         {/* Upcoming Bookings */}
-        <div className="bg-white rounded-xl shadow p-6">
+        <div className="bg-white rounded-xl shadow p-4 md:p-6">
           <h2 className="text-lg font-semibold mb-4">Upcoming Bookings</h2>
           <div className="space-y-4">
-            {statistics?.upcoming_bookings?.map((booking) => (
-              <BookingCard key={booking._id} booking={booking} />
-            ))}
+            {statistics?.upcoming_bookings?.length === 0 ? (
+              <p className="text-gray-500 text-center py-4">
+                No upcoming bookings
+              </p>
+            ) : (
+              statistics?.upcoming_bookings?.map((booking) => (
+                <BookingCard key={booking._id} booking={booking} />
+              ))
+            )}
           </div>
         </div>
       </div>
 
       {/* Favorite Cities */}
-      <div className="bg-white rounded-xl shadow p-6">
+      <div className="bg-white rounded-xl shadow p-4 md:p-6">
         <h2 className="text-lg font-semibold mb-4">Favorite Cities</h2>
-        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4">
-          {statistics?.favorite_cities?.map(({ city, count }) => (
-            <div key={city} className="p-4 rounded-lg bg-gray-50 text-center">
-              <p className="text-lg font-semibold text-gray-800">{city}</p>
-              <p className="text-sm text-gray-600">
-                {count} booking{count !== 1 ? "s" : ""}
-              </p>
-            </div>
-          ))}
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-3 md:gap-4">
+          {statistics?.favorite_cities?.length === 0 ? (
+            <p className="text-gray-500 text-center py-4 col-span-full">
+              No favorite cities yet
+            </p>
+          ) : (
+            statistics?.favorite_cities?.map(({ city, count }) => (
+              <div
+                key={city}
+                className="p-3 md:p-4 rounded-lg bg-gray-50 text-center"
+              >
+                <p className="text-base md:text-lg font-semibold text-gray-800 truncate">
+                  {city}
+                </p>
+                <p className="text-xs md:text-sm text-gray-600">
+                  {count} booking{count !== 1 ? "s" : ""}
+                </p>
+              </div>
+            ))
+          )}
         </div>
       </div>
     </div>
@@ -133,12 +170,14 @@ function StatCard({ title, value, icon, color }) {
   };
 
   return (
-    <div className="bg-white rounded-xl shadow p-6">
-      <div className="flex items-center gap-4">
-        <div className={`p-3 rounded-full ${colorClasses[color]}`}>{icon}</div>
+    <div className="bg-white rounded-xl shadow p-4 md:p-6">
+      <div className="flex items-center gap-3 md:gap-4">
+        <div className={`p-2 md:p-3 rounded-full ${colorClasses[color]}`}>
+          {icon}
+        </div>
         <div>
-          <p className="text-sm text-gray-600">{title}</p>
-          <p className="text-2xl font-bold text-gray-800">{value}</p>
+          <p className="text-xs md:text-sm text-gray-600">{title}</p>
+          <p className="text-xl md:text-2xl font-bold text-gray-800">{value}</p>
         </div>
       </div>
     </div>
@@ -147,8 +186,8 @@ function StatCard({ title, value, icon, color }) {
 
 function BookingCard({ booking }) {
   return (
-    <div className="flex items-center gap-4 p-4 rounded-lg bg-gray-50">
-      <div className="w-20 h-20 rounded-lg overflow-hidden flex-shrink-0">
+    <div className="flex flex-col sm:flex-row items-start sm:items-center gap-4 p-4 rounded-lg bg-gray-50">
+      <div className="w-full sm:w-20 h-32 sm:h-20 rounded-lg overflow-hidden flex-shrink-0">
         <img
           src={
             booking.property_id?.property_images[0]?.url ||
@@ -158,17 +197,17 @@ function BookingCard({ booking }) {
           className="w-full h-full object-cover"
         />
       </div>
-      <div className="flex-grow">
-        <h3 className="font-semibold text-gray-800">
+      <div className="flex-grow w-full sm:w-auto">
+        <h3 className="font-semibold text-gray-800 truncate">
           {booking.property_id?.property_name}
         </h3>
         <p className="text-sm text-gray-600">
           {format(new Date(booking.check_in_date), "MMM d, yyyy")} -{" "}
           {format(new Date(booking.check_out_date), "MMM d, yyyy")}
         </p>
-        <div className="flex items-center justify-between mt-2">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between mt-2 gap-2">
           <span
-            className={`px-2 py-1 rounded-full text-xs ${
+            className={`px-2 py-1 rounded-full text-xs w-fit ${
               booking.booking_status === "confirmed"
                 ? "bg-green-100 text-green-800"
                 : booking.booking_status === "pending"

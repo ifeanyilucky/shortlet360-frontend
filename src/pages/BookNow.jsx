@@ -1,9 +1,18 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { propertyStore } from "../store/propertyStore";
-import { IoLocationOutline } from "react-icons/io5";
+import { favoriteStore } from "../store/favoriteStore";
+import { IoLocationOutline, IoSearchOutline } from "react-icons/io5";
 import { BiBed, BiBath } from "react-icons/bi";
 import { HiOutlineUsers } from "react-icons/hi2";
-import { FiChevronDown, FiFilter } from "react-icons/fi";
+import {
+  FiChevronDown,
+  FiFilter,
+  FiHome,
+  FiPlus,
+  FiMinus,
+} from "react-icons/fi";
+import { MdApartment } from "react-icons/md";
+import { AiOutlineHeart, AiFillHeart } from "react-icons/ai";
 import { fCurrency } from "@utils/formatNumber";
 import { Link, useSearchParams } from "react-router-dom";
 import Pagination from "../components/Pagination";
@@ -33,11 +42,15 @@ export default function BookNow() {
     maxGuests: "",
     amenities: [],
     page: 1,
+    category: searchParams.get("category") || "rent", // Default to rent
   });
-  const [showTotalPrice, setShowTotalPrice] = useState(false);
+
+  const [showMoreFilters, setShowMoreFilters] = useState(false);
   const { properties, pagination, getProperties, isLoading } = propertyStore();
+  const { favorites, addToFavorites, removeFromFavorites, getFavorites } =
+    favoriteStore();
   const { user } = useAuth();
-  console.log("user", user);
+  // console.log("user", user);
 
   useEffect(() => {
     // Get search parameters from URL and update filters
@@ -45,6 +58,18 @@ export default function BookNow() {
     const minPrice = searchParams.get("minPrice") || "";
     const maxPrice = searchParams.get("maxPrice") || "";
     const bedrooms = searchParams.get("bedrooms") || "";
+    const category = searchParams.get("category") || "rent"; // Default to rent if not specified
+
+    // If no category is specified in the URL, update the URL to include the default category
+    if (!searchParams.get("category")) {
+      const newSearchParams = new URLSearchParams(searchParams);
+      newSearchParams.set("category", "rent");
+      window.history.replaceState(
+        {},
+        "",
+        `${window.location.pathname}?${newSearchParams.toString()}`
+      );
+    }
 
     setFilters((prev) => ({
       ...prev,
@@ -52,6 +77,7 @@ export default function BookNow() {
       minPrice,
       maxPrice,
       bedrooms,
+      category,
     }));
 
     // Trigger search with URL parameters
@@ -60,21 +86,23 @@ export default function BookNow() {
       minPrice,
       maxPrice,
       bedrooms,
+      category, // This will always have a value (either from URL or default "rent")
     };
 
-    // Remove empty values
+    // Remove empty values except category
     Object.keys(cleanFilters).forEach(
-      (key) => !cleanFilters[key] && delete cleanFilters[key]
+      (key) =>
+        key !== "category" && !cleanFilters[key] && delete cleanFilters[key]
     );
 
     getProperties(cleanFilters);
-  }, [searchParams]); // Re-run when URL parameters change
+  }, [searchParams, getProperties]); // Run on mount and when searchParams changes
 
   useEffect(() => {
-    handleSearch();
-  }, [filters.page]); // Fetch new data when page changes
+    getFavorites();
+  }, [getFavorites]);
 
-  const handleSearch = () => {
+  const handleSearch = useCallback(() => {
     console.log("filters", filters);
     // Remove empty values from filters
     const cleanFilters = Object.entries(filters).reduce((acc, [key, value]) => {
@@ -89,8 +117,10 @@ export default function BookNow() {
       return acc;
     }, {});
 
-    getProperties(cleanFilters);
-  };
+    getProperties({
+      ...cleanFilters,
+    });
+  }, [filters, getProperties]);
 
   const handleFilter = (key, value) => {
     setFilters((prev) => ({
@@ -104,67 +134,240 @@ export default function BookNow() {
     e.preventDefault();
     handleSearch();
   };
+  useEffect(() => {
+    handleSearch();
+  }, [filters.page, handleSearch]); // Fetch new data when page changes
 
-  console.log("properties", properties);
+  // Function to switch between rent and shortlet categories
+  const switchCategory = useCallback(
+    (category) => {
+      // Update filters
+      setFilters((prev) => ({
+        ...prev,
+        category,
+        page: 1, // Reset to first page when switching categories
+      }));
+
+      // Update URL to reflect the category change
+      const newSearchParams = new URLSearchParams(searchParams);
+      newSearchParams.set("category", category);
+      window.history.pushState(
+        {},
+        "",
+        `${window.location.pathname}?${newSearchParams.toString()}`
+      );
+
+      // Trigger search with the new category
+      handleSearch();
+    },
+    [searchParams, handleSearch]
+  );
+
+  const handleFavoriteClick = async (e, propertyId) => {
+    e.preventDefault(); // Prevent navigation
+    if (favorites.some((fav) => fav._id === propertyId)) {
+      await removeFromFavorites(propertyId);
+    } else {
+      await addToFavorites(propertyId);
+    }
+  };
+
+  const getActivePricing = (property) => {
+    const { per_day, per_week, per_month, rent_per_year } =
+      property?.pricing || {};
+
+    // For rent properties
+    if (rent_per_year?.is_active) {
+      return {
+        price: rent_per_year.annual_rent,
+        period: "year",
+        fees: {
+          agency_fee: rent_per_year.is_agency_fee_active
+            ? rent_per_year.agency_fee
+            : 0,
+          commission_fee: rent_per_year.is_commission_fee_active
+            ? rent_per_year.commission_fee
+            : 0,
+          caution_fee: rent_per_year.is_caution_fee_active
+            ? rent_per_year.caution_fee
+            : 0,
+          legal_fee: rent_per_year.is_legal_fee_active
+            ? rent_per_year.legal_fee
+            : 0,
+        },
+      };
+    }
+
+    // For shortlet properties - return all available pricing options
+    const pricingOptions = {};
+
+    if (per_day?.is_active) {
+      pricingOptions.day = {
+        base_price: per_day.base_price,
+        cleaning_fee: per_day.cleaning_fee,
+        security_deposit: per_day.security_deposit,
+        total:
+          per_day.base_price + per_day.cleaning_fee + per_day.security_deposit,
+      };
+    }
+
+    if (per_week?.is_active) {
+      pricingOptions.week = {
+        base_price: per_week.base_price,
+        cleaning_fee: per_week.cleaning_fee,
+        security_deposit: per_week.security_deposit,
+        total:
+          per_week.base_price +
+          per_week.cleaning_fee +
+          per_week.security_deposit,
+      };
+    }
+
+    if (per_month?.is_active) {
+      pricingOptions.month = {
+        base_price: per_month.base_price,
+        cleaning_fee: per_month.cleaning_fee,
+        security_deposit: per_month.security_deposit,
+        total:
+          per_month.base_price +
+          per_month.cleaning_fee +
+          per_month.security_deposit,
+      };
+    }
+
+    // If it's a shortlet with pricing options
+    if (Object.keys(pricingOptions).length > 0) {
+      return {
+        type: "shortlet",
+        options: pricingOptions,
+      };
+    }
+
+    // Fallback to old behavior for backward compatibility
+    if (per_month?.is_active) {
+      return {
+        price: per_month.base_price,
+        period: "month",
+      };
+    }
+    if (per_week?.is_active) {
+      return {
+        price: per_week.base_price,
+        period: "week",
+      };
+    }
+    if (per_day?.is_active) {
+      return {
+        price: per_day.base_price,
+        period: "day",
+      };
+    }
+
+    return null;
+  };
+
+  // console.log("properties", properties);
   return (
     <div className="min-h-screen bg-gray-50 px-4 py-8">
       <div className="max-w-7xl mx-auto">
-        <div className="flex items-center justify-between mb-8">
-          <h1 className="text-3xl font-bold">Find Shortlets in Nigeria</h1>
+        <div className="flex flex-col md:flex-row items-start md:items-center justify-between mb-8 gap-4">
+          <h1 className="text-3xl font-bold">Find Properties in Nigeria</h1>
+
+          {/* Category Tabs */}
+          <div className="flex bg-white rounded-lg shadow-sm overflow-hidden">
+            <button
+              onClick={() => switchCategory("rent")}
+              className={`flex items-center gap-2 px-6 py-3 text-sm font-medium ${
+                filters.category === "rent"
+                  ? "bg-blue-600 text-white"
+                  : "bg-white text-gray-700 hover:bg-gray-100"
+              }`}
+            >
+              <FiHome className="w-4 h-4" />
+              <span>Rent</span>
+            </button>
+            <button
+              onClick={() => switchCategory("shortlet")}
+              className={`flex items-center gap-2 px-6 py-3 text-sm font-medium ${
+                filters.category === "shortlet"
+                  ? "bg-blue-600 text-white"
+                  : "bg-white text-gray-700 hover:bg-gray-100"
+              }`}
+            >
+              <MdApartment className="w-4 h-4" />
+              <span>Shortlet</span>
+            </button>
+          </div>
         </div>
 
         {/* Filters */}
         <form
           onSubmit={handleFilterSubmit}
-          className="bg-white rounded-2xl shadow-sm p-4 mb-8"
+          className="bg-white rounded-2xl shadow-sm p-6 mb-8"
         >
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
+          {/* Main Filters - Always Visible */}
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6">
+            {/* Search Field */}
+            <div className="relative">
+              <label className="block text-sm font-medium text-gray-700 mb-2">
                 Search
               </label>
-              <input
-                type="text"
-                placeholder="Search properties..."
-                className="w-full px-4 py-2 text-sm text-gray-900 border border-gray-300 rounded-lg bg-white focus:ring-2 focus:ring-blue-500 focus:border-blue-500 focus:outline-none"
-                value={filters.search}
-                onChange={(e) => handleFilter("search", e.target.value)}
-              />
+              <div className="relative">
+                <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                  <IoSearchOutline className="h-5 w-5 text-gray-400" />
+                </div>
+                <input
+                  type="text"
+                  placeholder="Location, property name..."
+                  className="w-full pl-10 pr-4 py-3 text-sm text-gray-900 border border-gray-300 rounded-lg bg-white focus:ring-2 focus:ring-blue-500 focus:border-blue-500 focus:outline-none"
+                  value={filters.search}
+                  onChange={(e) => handleFilter("search", e.target.value)}
+                />
+              </div>
             </div>
 
-            <div className="flex-1">
-              <label className="block text-sm font-medium text-gray-700 mb-1">
-                Type of Property
+            {/* Bedrooms Field */}
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-2">
+                Bedrooms
               </label>
-              <select
-                className="w-full px-4 py-2 text-sm text-gray-900 border border-gray-300 rounded-lg bg-white focus:ring-2 focus:ring-blue-500 focus:border-blue-500 focus:outline-none"
-                value={filters.propertyType}
-                onChange={(e) => handleFilter("propertyType", e.target.value)}
-              >
-                {PROPERTY_TYPES.map((type) => (
-                  <option key={type} value={type}>
-                    {type.charAt(0).toUpperCase() + type.slice(1)}
-                  </option>
-                ))}
-              </select>
+              <div className="relative">
+                <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                  <BiBed className="h-5 w-5 text-gray-400" />
+                </div>
+                <input
+                  type="number"
+                  placeholder="Number of bedrooms"
+                  className="w-full pl-10 pr-4 py-3 text-sm text-gray-900 border border-gray-300 rounded-lg bg-white focus:ring-2 focus:ring-blue-500 focus:border-blue-500 focus:outline-none"
+                  value={filters.bedrooms}
+                  onChange={(e) =>
+                    setFilters((prev) => ({
+                      ...prev,
+                      bedrooms: e.target.value,
+                    }))
+                  }
+                />
+              </div>
             </div>
 
-            <div className="flex-1">
-              <label className="block text-sm font-medium text-gray-700 mb-1">
-                Rate per night
+            {/* Price Range Field */}
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-2">
+                Price Range
               </label>
               <div className="flex items-center gap-2">
                 <input
                   type="number"
-                  placeholder="From"
-                  className="w-full px-4 py-2 text-sm text-gray-900 border border-gray-300 rounded-lg bg-white focus:ring-2 focus:ring-blue-500 focus:border-blue-500 focus:outline-none"
+                  placeholder="Min"
+                  className="w-full px-4 py-3 text-sm text-gray-900 border border-gray-300 rounded-lg bg-white focus:ring-2 focus:ring-blue-500 focus:border-blue-500 focus:outline-none"
                   value={filters.minPrice}
                   onChange={(e) => handleFilter("minPrice", e.target.value)}
                 />
+                <span className="text-gray-500">-</span>
                 <input
                   type="number"
-                  placeholder="To"
-                  className="w-full px-4 py-2 text-sm text-gray-900 border border-gray-300 rounded-lg bg-white focus:ring-2 focus:ring-blue-500 focus:border-blue-500 focus:outline-none"
+                  placeholder="Max"
+                  className="w-full px-4 py-3 text-sm text-gray-900 border border-gray-300 rounded-lg bg-white focus:ring-2 focus:ring-blue-500 focus:border-blue-500 focus:outline-none"
                   value={filters.maxPrice}
                   onChange={(e) =>
                     setFilters((prev) => ({
@@ -175,134 +378,189 @@ export default function BookNow() {
                 />
               </div>
             </div>
+          </div>
 
-            <div className="flex-1">
-              <label className="block text-sm font-medium text-gray-700 mb-1">
-                Location
-              </label>
-              <input
-                type="text"
-                placeholder="Enter location"
-                className="w-full px-4 py-2 text-sm text-gray-900 border border-gray-300 rounded-lg bg-white focus:ring-2 focus:ring-blue-500 focus:border-blue-500 focus:outline-none"
-                value={filters.city}
-                onChange={(e) =>
-                  setFilters((prev) => ({ ...prev, city: e.target.value }))
-                }
-              />
+          {/* Show More Filters Toggle */}
+          <div className="flex justify-center mb-6">
+            <button
+              type="button"
+              onClick={() => setShowMoreFilters(!showMoreFilters)}
+              className="flex items-center gap-2 text-blue-600 hover:text-blue-800 font-medium text-sm"
+            >
+              {showMoreFilters ? (
+                <>
+                  <FiMinus className="w-4 h-4" />
+                  <span>Show Less Filters</span>
+                </>
+              ) : (
+                <>
+                  <FiPlus className="w-4 h-4" />
+                  <span>Show More Filters</span>
+                </>
+              )}
+            </button>
+          </div>
+
+          {/* Additional Filters - Toggleable */}
+          {showMoreFilters && (
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6 border-t pt-6">
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">
+                  Type of Property
+                </label>
+                <select
+                  className="w-full px-4 py-3 text-sm text-gray-900 border border-gray-300 rounded-lg bg-white focus:ring-2 focus:ring-blue-500 focus:border-blue-500 focus:outline-none"
+                  value={filters.propertyType}
+                  onChange={(e) => handleFilter("propertyType", e.target.value)}
+                >
+                  {PROPERTY_TYPES.map((type) => (
+                    <option key={type} value={type}>
+                      {type.charAt(0).toUpperCase() + type.slice(1)}
+                    </option>
+                  ))}
+                </select>
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">
+                  Location
+                </label>
+                <input
+                  type="text"
+                  placeholder="Enter city"
+                  className="w-full px-4 py-3 text-sm text-gray-900 border border-gray-300 rounded-lg bg-white focus:ring-2 focus:ring-blue-500 focus:border-blue-500 focus:outline-none"
+                  value={filters.city}
+                  onChange={(e) =>
+                    setFilters((prev) => ({ ...prev, city: e.target.value }))
+                  }
+                />
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">
+                  State
+                </label>
+                <input
+                  type="text"
+                  placeholder="Enter state"
+                  className="w-full px-4 py-3 text-sm text-gray-900 border border-gray-300 rounded-lg bg-white focus:ring-2 focus:ring-blue-500 focus:border-blue-500 focus:outline-none"
+                  value={filters.state}
+                  onChange={(e) =>
+                    setFilters((prev) => ({ ...prev, state: e.target.value }))
+                  }
+                />
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">
+                  Bathrooms
+                </label>
+                <input
+                  type="number"
+                  placeholder="Enter bathrooms"
+                  className="w-full px-4 py-3 text-sm text-gray-900 border border-gray-300 rounded-lg bg-white focus:ring-2 focus:ring-blue-500 focus:border-blue-500 focus:outline-none"
+                  value={filters.bathrooms}
+                  onChange={(e) =>
+                    setFilters((prev) => ({
+                      ...prev,
+                      bathrooms: e.target.value,
+                    }))
+                  }
+                />
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">
+                  Max Guests
+                </label>
+                <input
+                  type="number"
+                  placeholder="Enter max guests"
+                  className="w-full px-4 py-3 text-sm text-gray-900 border border-gray-300 rounded-lg bg-white focus:ring-2 focus:ring-blue-500 focus:border-blue-500 focus:outline-none"
+                  value={filters.maxGuests}
+                  onChange={(e) =>
+                    setFilters((prev) => ({
+                      ...prev,
+                      maxGuests: e.target.value,
+                    }))
+                  }
+                />
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">
+                  Amenities
+                </label>
+                <select
+                  className="w-full px-4 py-3 text-sm text-gray-900 border border-gray-300 rounded-lg bg-white focus:ring-2 focus:ring-blue-500 focus:border-blue-500 focus:outline-none"
+                  value={filters.amenities}
+                  onChange={(e) =>
+                    setFilters((prev) => ({
+                      ...prev,
+                      amenities: e.target.value.split(","),
+                    }))
+                  }
+                >
+                  <option value="">Select amenities</option>
+                  <option value="Wifi">Wifi</option>
+                  <option value="Air Conditioning">Air Conditioning</option>
+                  <option value="Kitchen">Kitchen</option>
+                  <option value="Parking">Parking</option>
+                </select>
+              </div>
             </div>
+          )}
 
-            <div className="flex-1">
-              <label className="block text-sm font-medium text-gray-700 mb-1">
-                State
-              </label>
-              <input
-                type="text"
-                placeholder="Enter state"
-                className="w-full px-4 py-2 text-sm text-gray-900 border border-gray-300 rounded-lg bg-white focus:ring-2 focus:ring-blue-500 focus:border-blue-500 focus:outline-none"
-                value={filters.state}
-                onChange={(e) =>
-                  setFilters((prev) => ({ ...prev, state: e.target.value }))
-                }
-              />
-            </div>
+          {/* Action Buttons */}
+          <div className="flex flex-wrap justify-end gap-4">
+            <button
+              type="button"
+              onClick={() => {
+                // Clear all filters except category
+                const currentCategory = filters.category;
+                setFilters({
+                  search: "",
+                  propertyType: "All Types",
+                  minPrice: "",
+                  maxPrice: "",
+                  city: "",
+                  state: "",
+                  bedrooms: "",
+                  bathrooms: "",
+                  maxGuests: "",
+                  amenities: [],
+                  page: 1,
+                  category: currentCategory, // Preserve current category
+                });
 
-            <div className="flex-1">
-              <label className="block text-sm font-medium text-gray-700 mb-1">
-                Bedrooms
-              </label>
-              <input
-                type="number"
-                placeholder="Enter bedrooms"
-                className="w-full px-4 py-2 text-sm text-gray-900 border border-gray-300 rounded-lg bg-white focus:ring-2 focus:ring-blue-500 focus:border-blue-500 focus:outline-none"
-                value={filters.bedrooms}
-                onChange={(e) =>
-                  setFilters((prev) => ({ ...prev, bedrooms: e.target.value }))
-                }
-              />
-            </div>
+                // Update URL to only keep the category parameter
+                const newSearchParams = new URLSearchParams();
+                newSearchParams.set("category", currentCategory);
+                window.history.replaceState(
+                  {},
+                  document.title,
+                  `${window.location.pathname}?${newSearchParams.toString()}`
+                );
 
-            <div className="flex-1">
-              <label className="block text-sm font-medium text-gray-700 mb-1">
-                Bathrooms
-              </label>
-              <input
-                type="number"
-                placeholder="Enter bathrooms"
-                className="w-full px-4 py-2 text-sm text-gray-900 border border-gray-300 rounded-lg bg-white focus:ring-2 focus:ring-blue-500 focus:border-blue-500 focus:outline-none"
-                value={filters.bathrooms}
-                onChange={(e) =>
-                  setFilters((prev) => ({ ...prev, bathrooms: e.target.value }))
-                }
-              />
-            </div>
-
-            <div className="flex-1">
-              <label className="block text-sm font-medium text-gray-700 mb-1">
-                Max Guests
-              </label>
-              <input
-                type="number"
-                placeholder="Enter max guests"
-                className="w-full px-4 py-2 text-sm text-gray-900 border border-gray-300 rounded-lg bg-white focus:ring-2 focus:ring-blue-500 focus:border-blue-500 focus:outline-none"
-                value={filters.maxGuests}
-                onChange={(e) =>
-                  setFilters((prev) => ({ ...prev, maxGuests: e.target.value }))
-                }
-              />
-            </div>
-
-            <div className="flex-1">
-              <label className="block text-sm font-medium text-gray-700 mb-1">
-                Amenities
-              </label>
-              <select
-                className="w-full px-4 py-2 text-sm text-gray-900 border border-gray-300 rounded-lg bg-white focus:ring-2 focus:ring-blue-500 focus:border-blue-500 focus:outline-none"
-                value={filters.amenities}
-                onChange={(e) =>
-                  setFilters((prev) => ({
-                    ...prev,
-                    amenities: e.target.value.split(","),
-                  }))
-                }
-              >
-                <option value="">Select amenities</option>
-                <option value="Wifi">Wifi</option>
-                <option value="Air Conditioning">Air Conditioning</option>
-                <option value="Kitchen">Kitchen</option>
-                <option value="Parking">Parking</option>
-              </select>
-            </div>
-
-            <div className="col-span-2 md:col-span-4 flex justify-end gap-4">
-              <button
-                type="button"
-                onClick={() => {
-                  setFilters({
-                    search: "",
-                    propertyType: "All Types",
-                    minPrice: "",
-                    maxPrice: "",
-                    city: "",
-                    state: "",
-                    bedrooms: "",
-                    bathrooms: "",
-                    maxGuests: "",
-                    amenities: [],
-                    page: 1,
-                  });
-                  handleSearch();
-                }}
-                className="px-4 py-2 text-gray-600 hover:bg-gray-100 rounded-lg"
-              >
-                Clear Filters
+                // Trigger search with only category filter
+                handleSearch();
+              }}
+              className="px-6 py-3 text-sm text-gray-600 hover:bg-gray-100 rounded-lg font-medium"
+            >
+              Clear Filters
+            </button>
+            <button
+              type="submit"
+              className="px-8 py-3 text-sm bg-blue-600 text-white rounded-lg hover:bg-blue-700 font-medium flex items-center gap-2"
+            >
+              <FiFilter className="w-4 h-4" />
+              <span>Apply Filters</span>
+            </button>
+            <Link to="/user/favorites">
+              <button className="px-6 py-3 text-sm bg-blue-600 text-white rounded-lg hover:bg-blue-700 font-medium">
+                View Favorites
               </button>
-              <button
-                type="submit"
-                className="px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700"
-              >
-                Apply Filters
-              </button>
-            </div>
+            </Link>
           </div>
         </form>
 
@@ -322,83 +580,204 @@ export default function BookNow() {
                 <Link
                   key={property._id}
                   to={`/property/${property._id}`}
-                  className="bg-white rounded-3xl overflow-hidden shadow-sm hover:shadow-md transition-shadow"
+                  className="bg-white rounded-3xl overflow-hidden shadow-sm hover:shadow-lg transition-all duration-300 group"
                 >
-                  <div className="h-64 overflow-hidden">
+                  <div className="relative h-64 overflow-hidden">
+                    {/* Property Category Badge */}
+                    <div
+                      className={`absolute top-4 left-4 z-10 px-3 py-1 rounded-full text-xs font-medium ${
+                        property.property_category === "shortlet"
+                          ? "bg-blue-500 text-white"
+                          : "bg-green-500 text-white"
+                      }`}
+                    >
+                      {property.property_category === "shortlet"
+                        ? "Shortlet"
+                        : "Rent"}
+                    </div>
+
+                    {/* Property Type Badge */}
+                    <div className="absolute top-4 right-4 z-10 px-3 py-1 rounded-full bg-gray-800 bg-opacity-70 text-white text-xs font-medium">
+                      {property.property_type.charAt(0).toUpperCase() +
+                        property.property_type.slice(1)}
+                    </div>
+
                     <img
                       src={
                         property.property_images?.[0]?.url ||
                         "/images/living-room.jpg"
                       }
                       alt={property.property_name}
-                      className="w-full h-full object-cover hover:scale-110 transition-transform duration-300"
+                      className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
                     />
                   </div>
+
                   <div className="p-6">
-                    <div className="flex items-center justify-between mb-4">
-                      <h3 className="font-semibold text-xl">
+                    <div className="flex items-center justify-between mb-3">
+                      <h3 className="font-semibold text-xl text-gray-800 line-clamp-1">
                         {property.property_name}
                       </h3>
                       <div className="flex items-center gap-1 bg-gray-100 px-2 py-1 rounded-full">
                         <span className="text-sm font-semibold">4.5</span>
-                        <span className="text-xs text-gray-500">★</span>
+                        <span className="text-xs text-yellow-500">★</span>
                       </div>
                     </div>
 
-                    <div className="flex items-center text-gray-600 mb-4">
-                      <IoLocationOutline className="w-4 h-4 mr-1" />
-                      <span className="text-sm">{`${property.location.city}, ${property.location.state}`}</span>
+                    <div className="flex items-center text-gray-600 mb-3">
+                      <IoLocationOutline className="w-4 h-4 mr-1 flex-shrink-0" />
+                      <span className="text-sm line-clamp-1">{`${property.location.city}, ${property.location.state}`}</span>
                     </div>
 
-                    <div className="flex items-center gap-4 text-gray-600 mb-6">
+                    <div className="flex items-center gap-4 text-gray-600 mb-4">
                       <div className="flex items-center">
                         <BiBed className="w-5 h-5 mr-1" />
                         <span className="text-sm">
-                          {property.bedroom_count} bed(s)
+                          {property.bedroom_count}
                         </span>
                       </div>
                       <div className="flex items-center">
                         <BiBath className="w-5 h-5 mr-1" />
                         <span className="text-sm">
-                          {property.bathroom_count} bath(s)
+                          {property.bathroom_count}
                         </span>
                       </div>
                       <div className="flex items-center">
                         <HiOutlineUsers className="w-5 h-5 mr-1" />
-                        <span className="text-sm">
-                          {property.max_guests} guests
-                        </span>
+                        <span className="text-sm">{property.max_guests}</span>
                       </div>
                     </div>
 
-                    <div className="flex items-center justify-between">
-                      <div>
-                        <p className="font-semibold text-xl">
-                          {fCurrency(property.pricing.per_day.base_price)}
-                        </p>
-                        <p className="text-gray-600 text-sm">
-                          {" "}
-                          {property.pricing.per_day.is_active
-                            ? "Per Day"
-                            : null}{" "}
-                        </p>
-                      </div>
-                      {showTotalPrice && (
-                        <div className="text-xs text-gray-500">
-                          Total:{" "}
-                          {fCurrency(
-                            property.pricing.per_day.base_price +
-                              property.pricing.per_day.cleaning_fee +
-                              property.pricing.per_day.security_deposit
+                    {/* Divider */}
+                    <div className="border-t border-gray-100 my-3"></div>
+
+                    {/* Pricing Section */}
+                    <div>
+                      {(() => {
+                        const pricing = getActivePricing(property);
+                        if (!pricing) return null;
+
+                        // For Rent Properties
+                        if (pricing.period === "year") {
+                          return (
+                            <div className="mb-4">
+                              <div className="flex items-baseline">
+                                <span className="text-lg font-bold text-gray-900">
+                                  {fCurrency(pricing.price)}
+                                </span>
+                                <span className="text-sm text-gray-500 ml-1">
+                                  /year
+                                </span>
+                              </div>
+                              <div className="text-xs text-gray-500 mt-1">
+                                + Agency & Legal fees
+                              </div>
+                            </div>
+                          );
+                        }
+
+                        // For Shortlet Properties
+                        if (pricing.type === "shortlet") {
+                          return (
+                            <div className="space-y-2">
+                              {pricing.options.day && (
+                                <div className="flex justify-between items-center">
+                                  <div className="flex items-baseline">
+                                    <span className="font-bold text-gray-900">
+                                      {fCurrency(
+                                        pricing.options.day.base_price
+                                      )}
+                                    </span>
+                                    <span className="text-xs text-gray-500 ml-1">
+                                      /day
+                                    </span>
+                                  </div>
+                                  <div className="text-xs text-gray-500">
+                                    Total:{" "}
+                                    {fCurrency(pricing.options.day.total)}
+                                  </div>
+                                </div>
+                              )}
+
+                              {pricing.options.week && (
+                                <div className="flex justify-between items-center">
+                                  <div className="flex items-baseline">
+                                    <span className="font-bold text-gray-900">
+                                      {fCurrency(
+                                        pricing.options.week.base_price
+                                      )}
+                                    </span>
+                                    <span className="text-xs text-gray-500 ml-1">
+                                      /week
+                                    </span>
+                                  </div>
+                                  <div className="text-xs text-gray-500">
+                                    Total:{" "}
+                                    {fCurrency(pricing.options.week.total)}
+                                  </div>
+                                </div>
+                              )}
+
+                              {pricing.options.month && (
+                                <div className="flex justify-between items-center">
+                                  <div className="flex items-baseline">
+                                    <span className="font-bold text-gray-900">
+                                      {fCurrency(
+                                        pricing.options.month.base_price
+                                      )}
+                                    </span>
+                                    <span className="text-xs text-gray-500 ml-1">
+                                      /month
+                                    </span>
+                                  </div>
+                                  <div className="text-xs text-gray-500">
+                                    Total:{" "}
+                                    {fCurrency(pricing.options.month.total)}
+                                  </div>
+                                </div>
+                              )}
+
+                              <div className="text-xs text-gray-500 mt-1">
+                                *Includes cleaning fee & security deposit
+                              </div>
+                            </div>
+                          );
+                        }
+
+                        // Fallback for other pricing structures
+                        return (
+                          <div className="flex items-baseline">
+                            <span className="text-lg font-bold text-gray-900">
+                              {fCurrency(pricing.price)}
+                            </span>
+                            <span className="text-sm text-gray-500 ml-1">
+                              /{pricing.period}
+                            </span>
+                          </div>
+                        );
+                      })()}
+                    </div>
+
+                    {/* Action Buttons */}
+                    <div className="flex items-center justify-between mt-4">
+                      {user && (
+                        <button
+                          onClick={(e) => handleFavoriteClick(e, property._id)}
+                          className="p-2 rounded-full hover:bg-gray-100 transition-colors"
+                        >
+                          {favorites.some((fav) => fav._id === property._id) ? (
+                            <AiFillHeart className="w-6 h-6 text-red-500" />
+                          ) : (
+                            <AiOutlineHeart className="w-6 h-6 text-gray-500" />
                           )}
-                        </div>
-                      )}
-                      {user?._id === property.owner._id ? (
-                        <button className="bg-blue-600 text-white px-6 py-2 rounded-lg text-sm hover:bg-blue-700">
-                          Edit
                         </button>
+                      )}
+
+                      {user?._id === property.owner._id ? (
+                        <span className="text-xs text-gray-500 italic">
+                          Your property
+                        </span>
                       ) : (
-                        <button className="bg-blue-600 text-white px-6 py-2 rounded-lg text-sm hover:bg-blue-700">
+                        <button className="bg-blue-600 text-white px-6 py-2 rounded-lg text-sm font-medium hover:bg-blue-700 transition-colors ml-auto">
                           Book Now
                         </button>
                       )}

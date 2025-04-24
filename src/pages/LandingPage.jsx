@@ -1,13 +1,17 @@
-import { FiChevronDown } from "react-icons/fi";
+import { FiChevronDown, FiStar } from "react-icons/fi";
 import { MdApartment } from "react-icons/md";
-import { BsCreditCard2Front } from "react-icons/bs";
+import {
+  BsCreditCard2Front,
+  BsCalendarCheck,
+  BsShieldCheck,
+  BsArrowRight,
+} from "react-icons/bs";
 import { HiUsers } from "react-icons/hi";
-import { RiSecurePaymentLine } from "react-icons/ri";
-import { IoLocationOutline } from "react-icons/io5";
+import { RiSecurePaymentLine, RiMoneyDollarCircleLine } from "react-icons/ri";
+import { IoLocationOutline, IoHomeOutline } from "react-icons/io5";
 import { BiBed, BiBath } from "react-icons/bi";
 import { HiOutlineUsers } from "react-icons/hi2";
-import { useState } from "react";
-import { useEffect } from "react";
+import { useState, useEffect } from "react";
 import { propertyStore } from "../store/propertyStore";
 import { Link, useNavigate } from "react-router-dom";
 import { fCurrency } from "@utils/formatNumber";
@@ -19,12 +23,13 @@ export default function LandingPage() {
     location: "",
     priceRange: { from: "", to: "" },
     bedrooms: "1",
+    category: "rent", // Default to rent
   });
   const { properties, getProperties, isLoading } = propertyStore();
 
   useEffect(() => {
     getProperties();
-  }, []);
+  }, [getProperties]);
 
   const handlePriceSubmit = () => {
     setShowPriceDropdown(false);
@@ -46,30 +51,33 @@ export default function LandingPage() {
     if (searchParams.bedrooms) {
       queryParams.append("bedrooms", searchParams.bedrooms);
     }
+    if (searchParams.category) {
+      queryParams.append("category", searchParams.category);
+    }
 
     navigate(`/book-now?${queryParams.toString()}`);
   };
 
   return (
     <div>
-      <section className="min-h-screen bg-white text-gray-800 h-full mt-0">
+      <section className="min-h-screen bg-primary-500 text-white h-full mt-0">
         <div className="max-w-6xl mx-auto px-4 text-center pt-20 pb-10">
           <h1 className="text-3xl md:text-5xl font-bold mb-4">
-            The better way to find{" "}
-            <span className="text-teal-500">Shortlets</span>
+            Quality Apartments{" "}
+            <span className="text-primary-200">For Everyone</span>
           </h1>
 
-          <p className="text-gray-600 max-w-3xl mx-auto mb-12 text-sm md:text-base px-4">
-            Shortlet360 is your premier platform for finding and booking
-            short-term accommodations across Nigeria. Whether you're traveling
-            for business, vacation, or need a temporary stay, find the perfect
-            furnished apartment with flexible booking options.
+          <p className="text-primary-100 max-w-3xl mx-auto mb-12 text-sm md:text-base px-4">
+            Shortlet360 is your premier platform for finding and renting quality
+            apartments across Nigeria. Whether you're looking for a long-term
+            home or a short-term stay, find the perfect furnished apartment with
+            flexible payment options and hassle-free management.
           </p>
 
           {/* Search Section */}
           <form
             onSubmit={handleSearch}
-            className="bg-white p-4 rounded-3xl md:rounded-full flex flex-col md:flex-row items-stretch md:items-center justify-between gap-4 max-w-4xl mx-auto px-6 shadow-lg"
+            className="bg-white p-4 rounded-3xl md:rounded-full flex flex-col md:flex-row items-stretch md:items-center justify-between gap-4 max-w-4xl mx-auto px-6 shadow-lg border-2 border-primary-100"
           >
             <div className="flex-1 text-left">
               <p className="text-xs text-gray-500 mb-1">LOCATION</p>
@@ -188,9 +196,26 @@ export default function LandingPage() {
               </select>
             </div>
 
+            <div className="flex-1 text-left md:border-x border-gray-200 md:px-4">
+              <p className="text-xs text-gray-500 mb-1">TYPE</p>
+              <select
+                className="w-full bg-transparent outline-none text-xs text-gray-700"
+                value={searchParams.category}
+                onChange={(e) =>
+                  setSearchParams((prev) => ({
+                    ...prev,
+                    category: e.target.value,
+                  }))
+                }
+              >
+                <option value="rent">Rent</option>
+                <option value="shortlet">Shortlet</option>
+              </select>
+            </div>
+
             <button
               type="submit"
-              className="w-full md:w-auto bg-blue-600 px-6 py-3 rounded-full whitespace-nowrap text-xs text-white hover:bg-blue-700"
+              className="w-full md:w-auto bg-primary-500 px-6 py-3 rounded-full whitespace-nowrap text-xs text-white hover:bg-primary-600"
             >
               Search now
             </button>
@@ -206,9 +231,78 @@ export default function LandingPage() {
         </div>
       </section>
 
+      {/* Book in 4 minutes section */}
+      <section className="py-16 bg-white">
+        <div className="max-w-6xl mx-auto px-4">
+          <div className="text-center mb-12">
+            <h2 className="text-3xl md:text-4xl font-bold mb-4">
+              Rent your apartment in{" "}
+              <span className="text-primary-500">4 minutes</span>
+            </h2>
+            <p className="text-gray-600 max-w-3xl mx-auto">
+              Our streamlined rental process makes finding and securing your
+              perfect apartment quick and hassle-free, whether for long-term
+              living or short-term stays.
+            </p>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
+            <div className="bg-gray-50 p-6 rounded-xl text-center">
+              <div className="w-12 h-12 bg-primary-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                <IoHomeOutline className="w-6 h-6 text-primary-500" />
+              </div>
+              <h3 className="font-semibold mb-2">Search</h3>
+              <p className="text-gray-600 text-sm">
+                Find your ideal accommodation by location, price, and amenities
+              </p>
+            </div>
+
+            <div className="bg-gray-50 p-6 rounded-xl text-center">
+              <div className="w-12 h-12 bg-primary-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                <BsCalendarCheck className="w-6 h-6 text-primary-500" />
+              </div>
+              <h3 className="font-semibold mb-2">Select Dates</h3>
+              <p className="text-gray-600 text-sm">
+                Choose your check-in and check-out dates from available options
+              </p>
+            </div>
+
+            <div className="bg-gray-50 p-6 rounded-xl text-center">
+              <div className="w-12 h-12 bg-primary-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                <RiSecurePaymentLine className="w-6 h-6 text-primary-500" />
+              </div>
+              <h3 className="font-semibold mb-2">Secure Payment</h3>
+              <p className="text-gray-600 text-sm">
+                Pay securely online with multiple payment options
+              </p>
+            </div>
+
+            <div className="bg-gray-50 p-6 rounded-xl text-center">
+              <div className="w-12 h-12 bg-primary-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                <FiStar className="w-6 h-6 text-primary-500" />
+              </div>
+              <h3 className="font-semibold mb-2">Enjoy Your Stay</h3>
+              <p className="text-gray-600 text-sm">
+                Receive booking confirmation and check-in details instantly
+              </p>
+            </div>
+          </div>
+
+          <div className="text-center mt-10">
+            <Link
+              to="/book-now"
+              className="bg-primary-500 text-white px-8 py-3 rounded-full inline-flex items-center gap-2 hover:bg-primary-600 transition-colors"
+            >
+              <span>Book Now</span>
+              <BsArrowRight />
+            </Link>
+          </div>
+        </div>
+      </section>
+
       <section className="px-4 md:px-10 mx-auto">
         <div className="py-12 md:py-20">
-          <p className="text-teal-500 font-medium mb-4">WHY SHORTLET360</p>
+          <p className="text-primary-500 font-medium mb-4">WHY SHORTLET360</p>
 
           <div className="flex flex-col md:flex-row gap-8 md:gap-20 mb-12">
             <div className="flex-1">
@@ -217,22 +311,23 @@ export default function LandingPage() {
                 <br />
                 Trusted by thousands of
                 <br />
-                travelers.
+                residents.
               </h2>
             </div>
             <div className="flex-1">
               <p className="text-gray-600 text-sm md:text-base">
-                We offer you access to premium short-term accommodations, with
-                all the comforts of home. Filter by price, location, apartment
-                type and length of stay to find your perfect temporary home.
+                We offer you access to premium apartments for both long-term
+                rentals and short-term stays, with all the comforts of home.
+                Filter by price, location, apartment type and rental duration to
+                find your perfect home.
               </p>
             </div>
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
             <div className="space-y-4">
-              <div className="w-12 h-12 bg-red-100 rounded-2xl flex items-center justify-center">
-                <MdApartment className="w-6 h-6 text-red-500" />
+              <div className="w-12 h-12 bg-primary-100 rounded-2xl flex items-center justify-center">
+                <MdApartment className="w-6 h-6 text-primary-500" />
               </div>
               <h3 className="font-semibold text-lg">
                 Fully furnished apartments
@@ -244,19 +339,22 @@ export default function LandingPage() {
             </div>
 
             <div className="space-y-4">
-              <div className="w-12 h-12 bg-blue-100 rounded-2xl flex items-center justify-center">
-                <BsCreditCard2Front className="w-6 h-6 text-blue-500" />
+              <div className="w-12 h-12 bg-primary-100 rounded-2xl flex items-center justify-center">
+                <BsCreditCard2Front className="w-6 h-6 text-primary-500" />
               </div>
-              <h3 className="font-semibold text-lg">Flexible booking</h3>
+              <h3 className="font-semibold text-lg">
+                Flexible payment options
+              </h3>
               <p className="text-gray-600 text-sm">
-                Book your stay with flexible check-in and check-out dates. Pay
-                securely online with multiple payment options.
+                Choose from multiple payment plans including monthly options
+                with convenient interest rates. Pay securely online with various
+                payment methods.
               </p>
             </div>
 
             <div className="space-y-4">
-              <div className="w-12 h-12 bg-purple-100 rounded-2xl flex items-center justify-center">
-                <HiUsers className="w-6 h-6 text-purple-500" />
+              <div className="w-12 h-12 bg-primary-100 rounded-2xl flex items-center justify-center">
+                <HiUsers className="w-6 h-6 text-primary-500" />
               </div>
               <h3 className="font-semibold text-lg">Group booking available</h3>
               <p className="text-gray-600 text-sm">
@@ -266,8 +364,8 @@ export default function LandingPage() {
             </div>
 
             <div className="space-y-4">
-              <div className="w-12 h-12 bg-orange-100 rounded-2xl flex items-center justify-center">
-                <RiSecurePaymentLine className="w-6 h-6 text-orange-500" />
+              <div className="w-12 h-12 bg-primary-100 rounded-2xl flex items-center justify-center">
+                <RiSecurePaymentLine className="w-6 h-6 text-primary-500" />
               </div>
               <h3 className="font-semibold text-lg">No hidden charges</h3>
               <p className="text-gray-600 text-sm">
@@ -281,16 +379,16 @@ export default function LandingPage() {
 
       <section className="px-4 md:px-10 mx-auto">
         <div className="py-12 md:py-20">
-          <p className="text-teal-500 font-medium mb-4">LISTINGS</p>
+          <p className="text-primary-500 font-medium mb-4">LISTINGS</p>
 
           <div className="flex flex-col md:flex-row gap-8 md:gap-20 mb-12">
             <div className="flex-1">
               <h2 className="text-3xl md:text-4xl font-bold">
                 Explore amazing spaces
                 <br />
-                on Shortlet360 and pay
+                on Shortlet360 with flexible
                 <br />
-                daily.
+                payment options.
               </h2>
             </div>
             <div className="flex-1">
@@ -318,7 +416,7 @@ export default function LandingPage() {
               properties?.slice(0, 3).map((property) => (
                 <div
                   key={property._id}
-                  className="bg-white rounded-3xl overflow-hidden shadow-md"
+                  className="bg-white rounded-3xl overflow-hidden shadow-md hover:shadow-lg transition-shadow"
                 >
                   <div className="h-48 md:h-64 overflow-hidden">
                     <img
@@ -392,9 +490,399 @@ export default function LandingPage() {
           </div>
 
           <div className="text-center mt-10">
-            <button className="w-full md:w-auto bg-blue-600 text-white px-8 py-3 rounded-full text-sm hover:bg-blue-700">
+            <Link
+              to="/book-now"
+              className="w-full md:w-auto bg-primary-500 text-white px-8 py-3 rounded-full text-sm hover:bg-primary-600"
+            >
               View Listings
-            </button>
+            </Link>
+          </div>
+        </div>
+      </section>
+
+      {/* Gateway to affordable living section */}
+      <section className="py-16 bg-gray-50">
+        <div className="max-w-6xl mx-auto px-4">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-12 items-center">
+            <div>
+              <p className="text-primary-500 font-medium mb-4">YOUR GATEWAY</p>
+              <h2 className="text-3xl md:text-4xl font-bold mb-6">
+                To more <span className="text-yellow-500">affordable</span>{" "}
+                living
+              </h2>
+              <p className="text-gray-600 mb-8">
+                Experience premium living without the premium price tag. Our
+                apartments offer all the comforts of home at prices that make
+                sense for your budget and lifestyle, with flexible monthly
+                payment options designed for your convenience.
+              </p>
+              <div className="space-y-4">
+                <div className="flex items-start gap-3">
+                  <div className="w-10 h-10 bg-primary-100 rounded-full flex items-center justify-center mt-1">
+                    <RiMoneyDollarCircleLine className="w-5 h-5 text-primary-500" />
+                  </div>
+                  <div>
+                    <h3 className="font-semibold mb-1">Competitive Pricing</h3>
+                    <p className="text-gray-600 text-sm">
+                      Our rates are transparent and competitive, with no hidden
+                      fees or surprise charges.
+                    </p>
+                  </div>
+                </div>
+                <div className="flex items-start gap-3">
+                  <div className="w-10 h-10 bg-primary-100 rounded-full flex items-center justify-center mt-1">
+                    <BsShieldCheck className="w-5 h-5 text-primary-500" />
+                  </div>
+                  <div>
+                    <h3 className="font-semibold mb-1">Secure Transactions</h3>
+                    <p className="text-gray-600 text-sm">
+                      Book with confidence knowing your payment and personal
+                      information are protected.
+                    </p>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div className="rounded-2xl overflow-hidden shadow-lg">
+              <img
+                src="/images/living-room.jpg"
+                alt="Affordable Living"
+                className="w-full h-full object-cover"
+              />
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Property Management section */}
+      <section className="py-16 bg-white">
+        <div className="max-w-6xl mx-auto px-4">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 items-center">
+            <div className="grid grid-cols-2 gap-4">
+              <div className="col-span-2 md:col-span-1 row-span-1">
+                <img
+                  src="https://images.pexels.com/photos/2343467/pexels-photo-2343467.jpeg"
+                  alt="Kitchen"
+                  className="w-full h-full object-cover rounded-lg shadow-md"
+                />
+              </div>
+              <div className="col-span-2 md:col-span-1 row-span-1">
+                <img
+                  src="https://images.pexels.com/photos/1571458/pexels-photo-1571458.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2"
+                  alt="Living Room"
+                  className="w-full h-full object-cover rounded-lg shadow-md"
+                />
+              </div>
+              <div className="col-span-1 row-span-1">
+                <img
+                  src="https://images.pexels.com/photos/7327213/pexels-photo-7327213.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2"
+                  alt="Happy Guests"
+                  className="w-full h-full object-cover rounded-lg shadow-md"
+                />
+              </div>
+              <div className="col-span-1 row-span-1">
+                <img
+                  src="https://images.pexels.com/photos/1571458/pexels-photo-1571458.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2"
+                  alt="Bedroom"
+                  className="w-full h-full object-cover rounded-lg shadow-md"
+                />
+              </div>
+            </div>
+
+            <div className="lg:pl-12">
+              <p className="text-gray-500 uppercase font-medium mb-2">
+                PROPERTY MANAGEMENT
+              </p>
+              <h2 className="text-3xl md:text-5xl font-bold text-primary-600 mb-6">
+                Get the most reliable property management service in Lagos
+              </h2>
+
+              <div className="space-y-4 mt-8">
+                <div className="flex items-center gap-2">
+                  <div className="w-2 h-2 bg-primary-500 rounded-full"></div>
+                  <p className="text-gray-700">
+                    Listing creation and management
+                  </p>
+                </div>
+                <div className="flex items-center gap-2">
+                  <div className="w-2 h-2 bg-primary-500 rounded-full"></div>
+                  <p className="text-gray-700">
+                    Booking sourcing and management
+                  </p>
+                </div>
+                <div className="flex items-center gap-2">
+                  <div className="w-2 h-2 bg-primary-500 rounded-full"></div>
+                  <p className="text-gray-700">Guest check-in and check-out</p>
+                </div>
+                <div className="flex items-center gap-2">
+                  <div className="w-2 h-2 bg-primary-500 rounded-full"></div>
+                  <p className="text-gray-700">
+                    Laundry, cleaning & toiletries management
+                  </p>
+                </div>
+              </div>
+
+              <div className="mt-8">
+                <Link
+                  to="/property-management"
+                  className="bg-primary-500 text-white px-8 py-3 rounded-full inline-flex items-center gap-2 hover:bg-primary-600 transition-colors"
+                >
+                  <span>Sign Up Now</span>
+                </Link>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Rent now, pay later section */}
+      <section className="py-16 bg-primary-500 text-white">
+        <div className="max-w-6xl mx-auto px-4 text-center">
+          <h2 className="text-3xl md:text-4xl font-bold mb-6">
+            Rent that apartment now and pay later
+          </h2>
+          <p className="max-w-3xl mx-auto mb-10 text-primary-100">
+            Enjoy the flexibility of renting your perfect apartment today with
+            our two convenient monthly payment options: Option 1 with 2% monthly
+            interest on rent (upfront fees) or Option 2 with 3% monthly interest
+            (all costs divided into monthly payments).
+          </p>
+          <Link
+            to="/book-now"
+            className="bg-white text-primary-500 px-8 py-3 rounded-full inline-flex items-center gap-2 hover:bg-primary-50 transition-colors font-medium"
+          >
+            <span>Explore Payment Options</span>
+            <BsArrowRight />
+          </Link>
+        </div>
+      </section>
+
+      {/* Testimonials section */}
+      <section className="py-16 bg-white">
+        <div className="max-w-6xl mx-auto px-4">
+          <div className="text-center mb-12">
+            <p className="text-primary-500 font-medium mb-2">TESTIMONIALS</p>
+            <h2 className="text-3xl md:text-4xl font-bold mb-4">
+              People love us & you will love us too
+            </h2>
+            <p className="text-gray-600 max-w-3xl mx-auto">
+              Don&apos;t just take our word for it. Here&apos;s what our
+              customers have to say about their Shortlet360 experience.
+            </p>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+            <div className="bg-white p-6 rounded-xl shadow-lg hover:shadow-xl transition-shadow border border-gray-100">
+              <div className="flex items-center gap-4 mb-6">
+                <div className="w-16 h-16 bg-primary-100 rounded-full flex items-center justify-center">
+                  <span className="text-primary-500 font-semibold text-xl">
+                    JD
+                  </span>
+                </div>
+                <div>
+                  <h3 className="font-semibold text-lg">John Doe</h3>
+                  <p className="text-gray-500 text-sm">Lagos, Nigeria</p>
+                </div>
+              </div>
+              <div className="flex text-yellow-400 mb-4">
+                <FiStar className="fill-current" />
+                <FiStar className="fill-current" />
+                <FiStar className="fill-current" />
+                <FiStar className="fill-current" />
+                <FiStar className="fill-current" />
+              </div>
+              <p className="text-gray-600 italic">
+                &quot;The apartment was exactly as described. Clean,
+                comfortable, and in a great location. The booking process was
+                smooth and the customer service was excellent.&quot;
+              </p>
+            </div>
+
+            <div className="bg-white p-6 rounded-xl shadow-lg hover:shadow-xl transition-shadow border border-gray-100">
+              <div className="flex items-center gap-4 mb-6">
+                <div className="w-16 h-16 bg-primary-100 rounded-full flex items-center justify-center">
+                  <span className="text-primary-500 font-semibold text-xl">
+                    SA
+                  </span>
+                </div>
+                <div>
+                  <h3 className="font-semibold text-lg">Sarah Adams</h3>
+                  <p className="text-gray-500 text-sm">Abuja, Nigeria</p>
+                </div>
+              </div>
+              <div className="flex text-yellow-400 mb-4">
+                <FiStar className="fill-current" />
+                <FiStar className="fill-current" />
+                <FiStar className="fill-current" />
+                <FiStar className="fill-current" />
+                <FiStar className="fill-current" />
+              </div>
+              <p className="text-gray-600 italic">
+                &quot;I&apos;ve used Shortlet360 multiple times for business
+                trips, and they never disappoint. The apartments are always
+                well-maintained and the staff is responsive and helpful.&quot;
+              </p>
+            </div>
+
+            <div className="bg-white p-6 rounded-xl shadow-lg hover:shadow-xl transition-shadow border border-gray-100">
+              <div className="flex items-center gap-4 mb-6">
+                <div className="w-16 h-16 bg-primary-100 rounded-full flex items-center justify-center">
+                  <span className="text-primary-500 font-semibold text-xl">
+                    MJ
+                  </span>
+                </div>
+                <div>
+                  <h3 className="font-semibold text-lg">Michael Johnson</h3>
+                  <p className="text-gray-500 text-sm">
+                    Port Harcourt, Nigeria
+                  </p>
+                </div>
+              </div>
+              <div className="flex text-yellow-400 mb-4">
+                <FiStar className="fill-current" />
+                <FiStar className="fill-current" />
+                <FiStar className="fill-current" />
+                <FiStar className="fill-current" />
+                <FiStar className="fill-current" />
+              </div>
+              <p className="text-gray-600 italic">
+                &quot;The flexible monthly payment options made renting my
+                apartment so much easier. I love having a place I can call home
+                without the financial strain of a large upfront payment.&quot;
+              </p>
+            </div>
+          </div>
+
+          <div className="text-center mt-10">
+            <Link
+              to="/testimonials"
+              className="text-primary-500 font-medium inline-flex items-center gap-2 hover:text-primary-600 transition-colors"
+            >
+              <span>View More Testimonials</span>
+              <BsArrowRight />
+            </Link>
+          </div>
+        </div>
+      </section>
+
+      {/* Blog section */}
+      <section className="py-16 bg-gray-50">
+        <div className="max-w-6xl mx-auto px-4">
+          <div className="text-center mb-12">
+            <p className="text-primary-500 font-medium mb-2">OUR BLOG</p>
+            <h2 className="text-3xl md:text-4xl font-bold mb-4">
+              99 Ways to the Luxury and Comfort You Deserve Everyday
+            </h2>
+            <p className="text-gray-600 max-w-3xl mx-auto">
+              Explore our latest articles for tips on finding the perfect
+              apartment, making the most of your rental experience, and
+              discovering hidden gems in Nigeria.
+            </p>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+            <div className="bg-white rounded-xl overflow-hidden shadow-md">
+              <div className="h-40 overflow-hidden">
+                <img
+                  src="/images/living-room.jpg"
+                  alt="Blog Post"
+                  className="w-full h-full object-cover"
+                />
+              </div>
+              <div className="p-4">
+                <p className="text-gray-500 text-xs mb-2">June 12, 2023</p>
+                <h3 className="font-semibold mb-2 line-clamp-2">
+                  Top 10 Apartments in Lagos for Your Next Home
+                </h3>
+                <Link
+                  to="/blog"
+                  className="text-primary-500 text-sm font-medium inline-flex items-center gap-1 hover:gap-2 transition-all"
+                >
+                  <span>Read More</span>
+                  <BsArrowRight />
+                </Link>
+              </div>
+            </div>
+
+            <div className="bg-white rounded-xl overflow-hidden shadow-md">
+              <div className="h-40 overflow-hidden">
+                <img
+                  src="/images/living-room.jpg"
+                  alt="Blog Post"
+                  className="w-full h-full object-cover"
+                />
+              </div>
+              <div className="p-4">
+                <p className="text-gray-500 text-xs mb-2">May 28, 2023</p>
+                <h3 className="font-semibold mb-2 line-clamp-2">
+                  5 Things to Look for When Renting Your Next Apartment
+                </h3>
+                <Link
+                  to="/blog"
+                  className="text-primary-500 text-sm font-medium inline-flex items-center gap-1 hover:gap-2 transition-all"
+                >
+                  <span>Read More</span>
+                  <BsArrowRight />
+                </Link>
+              </div>
+            </div>
+
+            <div className="bg-white rounded-xl overflow-hidden shadow-md">
+              <div className="h-40 overflow-hidden">
+                <img
+                  src="/images/living-room.jpg"
+                  alt="Blog Post"
+                  className="w-full h-full object-cover"
+                />
+              </div>
+              <div className="p-4">
+                <p className="text-gray-500 text-xs mb-2">April 15, 2023</p>
+                <h3 className="font-semibold mb-2 line-clamp-2">
+                  How to Choose the Best Monthly Payment Option for Your
+                  Apartment
+                </h3>
+                <Link
+                  to="/blog"
+                  className="text-primary-500 text-sm font-medium inline-flex items-center gap-1 hover:gap-2 transition-all"
+                >
+                  <span>Read More</span>
+                  <BsArrowRight />
+                </Link>
+              </div>
+            </div>
+
+            <div className="bg-white rounded-xl overflow-hidden shadow-md">
+              <div className="h-40 overflow-hidden">
+                <img
+                  src="/images/living-room.jpg"
+                  alt="Blog Post"
+                  className="w-full h-full object-cover"
+                />
+              </div>
+              <div className="p-4">
+                <p className="text-gray-500 text-xs mb-2">March 3, 2023</p>
+                <h3 className="font-semibold mb-2 line-clamp-2">
+                  The Ultimate Guide to Finding Your Perfect Apartment Rental
+                </h3>
+                <Link
+                  to="/blog"
+                  className="text-primary-500 text-sm font-medium inline-flex items-center gap-1 hover:gap-2 transition-all"
+                >
+                  <span>Read More</span>
+                  <BsArrowRight />
+                </Link>
+              </div>
+            </div>
+          </div>
+
+          <div className="text-center mt-10">
+            <Link
+              to="/blog"
+              className="bg-primary-500 text-white px-8 py-3 rounded-full inline-flex items-center gap-2 hover:bg-primary-600 transition-colors"
+            >
+              <span>View All Articles</span>
+              <BsArrowRight />
+            </Link>
           </div>
         </div>
       </section>
