@@ -14,6 +14,8 @@ import {
   BsFacebook,
   BsLinkedin,
   BsInfoCircle,
+  BsChevronLeft,
+  BsChevronRight,
 } from "react-icons/bs";
 import { fCurrency } from "@utils/formatNumber";
 import { useAuth } from "../hooks/useAuth";
@@ -29,8 +31,9 @@ import { bookingService } from "../services/api";
 import toast from "react-hot-toast";
 import { useFlutterwave, closePaymentModal } from "flutterwave-react-v3";
 
-// Custom CSS for the calendar
-const calendarStyles = `
+// Custom CSS for the calendar and gallery
+const customStyles = `
+  /* Calendar Styles */
   .react-datepicker {
     font-family: inherit;
     border: none;
@@ -132,6 +135,40 @@ const calendarStyles = `
   .react-datepicker__day--outside-month {
     color: #9ca3af;
   }
+
+  /* Gallery Swiper Styles */
+  .gallery-swiper .swiper-pagination {
+    bottom: 20px !important;
+  }
+
+  .gallery-swiper .swiper-pagination-bullet {
+    width: 10px;
+    height: 10px;
+    background: rgba(255, 255, 255, 0.5);
+    opacity: 1;
+  }
+
+  .gallery-swiper .swiper-pagination-bullet-active {
+    background: white;
+  }
+
+  /* Hide default navigation arrows since we're using custom ones */
+  .gallery-swiper .swiper-button-next,
+  .gallery-swiper .swiper-button-prev {
+    display: none;
+  }
+
+  /* Responsive adjustments for smaller screens */
+  @media (max-width: 640px) {
+    .swiper-button-prev, .swiper-button-next {
+      padding: 8px !important;
+    }
+
+    .swiper-button-prev svg, .swiper-button-next svg {
+      width: 16px !important;
+      height: 16px !important;
+    }
+  }
 `;
 
 export default function PropertyDetail() {
@@ -157,7 +194,7 @@ export default function PropertyDetail() {
   useEffect(() => {
     // Inject custom styles
     const styleSheet = document.createElement("style");
-    styleSheet.textContent = calendarStyles;
+    styleSheet.textContent = customStyles;
     document.head.appendChild(styleSheet);
 
     return () => {
@@ -913,35 +950,56 @@ export default function PropertyDetail() {
 
         {/* Full Screen Modal */}
         {isFullScreen && (
-          <div className="fixed inset-0 bg-black z-50 flex items-center justify-center">
+          <div className="fixed inset-0 bg-black/95 z-50 overflow-hidden">
             <button
               onClick={closeFullScreen}
-              className="absolute top-4 right-4 text-white z-50 p-2 hover:bg-white/10 rounded-full transition-colors"
+              className="absolute top-4 right-4 text-white z-[60] p-2 hover:bg-white/10 rounded-full transition-colors"
             >
               <BsX className="w-8 h-8" />
             </button>
-            <Swiper
-              modules={[Navigation, Pagination]}
-              spaceBetween={0}
-              slidesPerView={1}
-              navigation
-              pagination={{ clickable: true }}
-              className="w-full h-full"
-              initialSlide={fullScreenIndex}
-            >
-              {property?.property_images.map((image, index) => (
-                <SwiperSlide
-                  key={image._id}
-                  className="flex items-center justify-center"
+            <div className="w-full h-full flex items-center justify-center">
+              <div className="w-full h-full max-w-[1200px] mx-auto px-4 relative">
+                {/* Custom navigation buttons */}
+                <button className="swiper-button-prev absolute left-2 sm:left-6 top-1/2 -translate-y-1/2 z-[55] bg-white/10 hover:bg-white/20 transition-colors p-2 sm:p-3 rounded-full">
+                  <BsChevronLeft className="w-5 h-5 sm:w-6 sm:h-6 text-white" />
+                </button>
+                <button className="swiper-button-next absolute right-2 sm:right-6 top-1/2 -translate-y-1/2 z-[55] bg-white/10 hover:bg-white/20 transition-colors p-2 sm:p-3 rounded-full">
+                  <BsChevronRight className="w-5 h-5 sm:w-6 sm:h-6 text-white" />
+                </button>
+
+                <Swiper
+                  modules={[Navigation, Pagination]}
+                  spaceBetween={0}
+                  slidesPerView={1}
+                  navigation={{
+                    nextEl: ".swiper-button-next",
+                    prevEl: ".swiper-button-prev",
+                  }}
+                  pagination={{
+                    clickable: true,
+                    dynamicBullets: true,
+                  }}
+                  className="w-full h-full gallery-swiper"
+                  initialSlide={fullScreenIndex}
                 >
-                  <img
-                    src={image.url}
-                    alt={`Gallery ${index + 1}`}
-                    className="max-h-[90vh] max-w-[90vw] object-contain"
-                  />
-                </SwiperSlide>
-              ))}
-            </Swiper>
+                  {property?.property_images.map((image, index) => (
+                    <SwiperSlide
+                      key={image._id}
+                      className="flex items-center justify-center h-full"
+                    >
+                      <div className="flex items-center justify-center w-full h-full px-2 sm:px-4">
+                        <img
+                          src={image.url}
+                          alt={`Gallery ${index + 1}`}
+                          className="max-h-[85vh] max-w-full w-auto h-auto object-contain mx-auto shadow-xl"
+                          loading="lazy"
+                        />
+                      </div>
+                    </SwiperSlide>
+                  ))}
+                </Swiper>
+              </div>
+            </div>
           </div>
         )}
 
@@ -1785,7 +1843,26 @@ export default function PropertyDetail() {
                           </div>
 
                           <div className="flex justify-between text-sm">
-                            <span>Monthly Rent (2% interest)</span>
+                            <span>Monthly Rent (without interest)</span>
+                            <span>
+                              {fCurrency(
+                                property?.pricing?.rent_per_year?.annual_rent /
+                                  12
+                              )}
+                            </span>
+                          </div>
+                          <div className="flex justify-between text-sm">
+                            <span>2% interest amount</span>
+                            <span>
+                              {fCurrency(
+                                (property?.pricing?.rent_per_year?.annual_rent /
+                                  12) *
+                                  0.02
+                              )}
+                            </span>
+                          </div>
+                          <div className="flex justify-between text-sm font-medium">
+                            <span>Total Monthly Rent (with 2% interest)</span>
                             <span>
                               {fCurrency(calculateMonthlyRentOption1())}
                             </span>
@@ -1857,13 +1934,75 @@ export default function PropertyDetail() {
                           </div>
 
                           <div className="flex justify-between text-sm">
-                            <span>Monthly Payment (3% interest)</span>
+                            <span>Monthly Payment (without interest)</span>
+                            <span>
+                              {fCurrency(
+                                (property?.pricing?.rent_per_year?.annual_rent +
+                                  (property?.pricing?.rent_per_year
+                                    ?.is_agency_fee_active
+                                    ? property?.pricing?.rent_per_year
+                                        ?.agency_fee
+                                    : 0) +
+                                  (property?.pricing?.rent_per_year
+                                    ?.is_commission_fee_active
+                                    ? property?.pricing?.rent_per_year
+                                        ?.commission_fee
+                                    : 0) +
+                                  (property?.pricing?.rent_per_year
+                                    ?.is_caution_fee_active
+                                    ? property?.pricing?.rent_per_year
+                                        ?.caution_fee
+                                    : 0) +
+                                  (property?.pricing?.rent_per_year
+                                    ?.is_legal_fee_active
+                                    ? property?.pricing?.rent_per_year
+                                        ?.legal_fee
+                                    : 0)) /
+                                  12
+                              )}
+                            </span>
+                          </div>
+                          <div className="flex justify-between text-sm">
+                            <span>3% interest amount</span>
+                            <span>
+                              {fCurrency(
+                                ((property?.pricing?.rent_per_year
+                                  ?.annual_rent +
+                                  (property?.pricing?.rent_per_year
+                                    ?.is_agency_fee_active
+                                    ? property?.pricing?.rent_per_year
+                                        ?.agency_fee
+                                    : 0) +
+                                  (property?.pricing?.rent_per_year
+                                    ?.is_commission_fee_active
+                                    ? property?.pricing?.rent_per_year
+                                        ?.commission_fee
+                                    : 0) +
+                                  (property?.pricing?.rent_per_year
+                                    ?.is_caution_fee_active
+                                    ? property?.pricing?.rent_per_year
+                                        ?.caution_fee
+                                    : 0) +
+                                  (property?.pricing?.rent_per_year
+                                    ?.is_legal_fee_active
+                                    ? property?.pricing?.rent_per_year
+                                        ?.legal_fee
+                                    : 0)) /
+                                  12) *
+                                  0.03
+                              )}
+                            </span>
+                          </div>
+                          <div className="flex justify-between text-sm font-medium">
+                            <span>
+                              Total Monthly Payment (with 3% interest)
+                            </span>
                             <span>
                               {fCurrency(calculateMonthlyRentOption2())}
                             </span>
                           </div>
 
-                          <div className="flex justify-between text-sm text-gray-500">
+                          <div className="flex justify-between text-sm text-gray-500 mt-1">
                             <span>Includes rent and all fees</span>
                             <span></span>
                           </div>

@@ -56,9 +56,26 @@ export default function ImageUpload() {
   };
 
   const getImagePreview = (image) => {
-    if (typeof image === "string") return image;
+    // If it's a File object (new upload)
     if (image instanceof File) return URL.createObjectURL(image);
-    return "";
+
+    // If it's an existing image with preview property
+    if (image.preview) {
+      // If preview is an object with url property (from backend)
+      if (typeof image.preview === "object" && image.preview.url) {
+        return image.preview.url;
+      }
+      // If preview is a string (direct URL)
+      if (typeof image.preview === "string") {
+        return image.preview;
+      }
+    }
+
+    // If it's a direct string URL
+    if (typeof image === "string") return image;
+
+    // Fallback
+    return "https://via.placeholder.com/400x400?text=Image+Not+Found";
   };
 
   return (

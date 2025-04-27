@@ -1,5 +1,5 @@
 export const config = {
-  api: "http://localhost:3001/api/v1",
-  base_url: "http://localhost:5173",
+  api: import.meta.env.VITE_API_URL,
+  base_url: import.meta.env.VITE_BASE_URL,
   app_name: "Aplet360",
 };

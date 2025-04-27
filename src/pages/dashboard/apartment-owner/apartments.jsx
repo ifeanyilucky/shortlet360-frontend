@@ -1,5 +1,5 @@
 import DataTable from "../../../components/DataTable";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useCallback } from "react";
 import { useNavigate } from "react-router-dom";
 import { propertyStore } from "@store/propertyStore";
 import { FaEdit, FaTrash, FaFilter } from "react-icons/fa";
@@ -25,6 +25,7 @@ export default function Apartments() {
     is_active: "",
     minPrice: "",
     maxPrice: "",
+    short_id: "",
   });
 
   const { user } = useAuth();
@@ -36,7 +37,7 @@ export default function Apartments() {
   };
 
   const handleEdit = (id) => {
-    navigate(`/dashboard/edit-apartment/${id}`);
+    navigate(`/owner/edit-apartment/${id}`);
   };
 
   const handleDelete = async (id) => {
@@ -55,6 +56,12 @@ export default function Apartments() {
     {
       header: "Name",
       key: "property_name",
+    },
+    {
+      header: "Type",
+      key: "property_category",
+      render: (property_category) =>
+        property_category === "shortlet" ? "Shortlet" : "Rent",
     },
     {
       header: "Location",
@@ -193,25 +200,32 @@ export default function Apartments() {
       is_active: "",
       minPrice: "",
       maxPrice: "",
+      short_id: "",
     });
     getData({ owner: user._id }, 1);
   };
 
-  const getData = async (filter = {}, page = 1) => {
-    const params = {
-      filter: {
-        ...filter,
+  const getData = useCallback(
+    async (filter = {}, page = 1) => {
+      if (!user?._id) return;
+
+      // Instead of nesting filter inside an object, spread it directly
+      const params = {
+        ...filter, // Spread filter params directly
         owner: user._id,
-      },
-      page,
-      limit: 10,
-    };
-    await getProperties(params);
-  };
+        page,
+        limit: 10,
+      };
+      await getProperties(params);
+    },
+    [user, getProperties]
+  );
 
   useEffect(() => {
-    getData({ owner: user._id }, currentPage);
-  }, []);
+    if (user?._id) {
+      getData({ owner: user._id }, currentPage);
+    }
+  }, [user, currentPage, getData]);
 
   return (
     <div className="p-6">
@@ -322,6 +336,19 @@ export default function Apartments() {
                   onChange={handleFilterChange}
                   className="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
                   placeholder="Maximum price"
+                />
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  Property ID
+                </label>
+                <input
+                  type="text"
+                  name="short_id"
+                  value={filters.short_id}
+                  onChange={handleFilterChange}
+                  className="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  placeholder="AP-123456"
                 />
               </div>
             </div>

@@ -100,10 +100,34 @@ export default function ReviewStep({ formData = {} }) {
   // Helper function to get image URL
   const getImageUrl = (image) => {
     if (!image) return "https://via.placeholder.com/400x400?text=No+Image";
-    if (typeof image === "string") return image;
+
+    // If it's a File object (new upload)
     if (image instanceof File) return URL.createObjectURL(image);
     if (image instanceof Blob) return URL.createObjectURL(image);
+
+    // If it's an existing image with preview property
+    if (image.preview) {
+      // If preview is an object with url property (from backend)
+      if (typeof image.preview === "object" && image.preview.url) {
+        return image.preview.url;
+      }
+      // If preview is a string (direct URL)
+      if (typeof image.preview === "string") {
+        return image.preview;
+      }
+    }
+
+    // If image itself is an object with url property
+    if (typeof image === "object" && image.url) {
+      return image.url;
+    }
+
+    // If it's a direct string URL
+    if (typeof image === "string") return image;
+
+    // If it's a data URL
     if (typeof image === "string" && image.startsWith("data:")) return image;
+
     return "https://via.placeholder.com/400x400?text=Invalid+Image";
   };
 

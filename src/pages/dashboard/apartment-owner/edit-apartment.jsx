@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import { FiChevronRight, FiChevronLeft } from "react-icons/fi";
+import { useForm, FormProvider } from "react-hook-form";
 import BasicInfo from "./steps/BasicInfo";
 import AmenitiesRules from "./steps/AmenitiesRules";
 import PricingAvailability from "./steps/PricingAvailability";
@@ -14,70 +15,85 @@ import { uploadService } from "@services/api";
 export default function EditApartment() {
   const { id } = useParams();
   const [current, setCurrent] = useState(0);
-  const [formData, setFormData] = useState({
-    property_name: "",
-    property_description: "",
-    property_type: "",
-    bedroom_count: 1,
-    bathroom_count: 1,
-    max_guests: 1,
-    location: {
-      street_address: "",
-      city: "",
-      state: "",
-      country: "",
-      coordinates: { latitude: null, longitude: null },
-    },
-    amenities: [],
-    house_rules: [],
-    pricing: {
-      per_day: {
-        base_price: 0,
-        cleaning_fee: 0,
-        security_deposit: 0,
-        is_active: false,
-      },
-      per_week: {
-        base_price: 0,
-        cleaning_fee: 0,
-        security_deposit: 0,
-        is_active: false,
-      },
-      per_month: {
-        base_price: 0,
-        cleaning_fee: 0,
-        security_deposit: 0,
-        is_active: false,
-      },
-    },
-    available_dates: [],
-    property_images: [],
-  });
   const [submitLoading, setSubmitLoading] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
+
+  const methods = useForm({
+    defaultValues: {
+      property_name: "",
+      property_description: "",
+      property_type: "",
+      property_category: "shortlet",
+      bedroom_count: 1,
+      bathroom_count: 1,
+      max_guests: 1,
+      location: {
+        street_address: "",
+        city: "",
+        state: "",
+        country: "",
+        coordinates: { latitude: null, longitude: null },
+      },
+      amenities: [],
+      house_rules: [],
+      pricing: {
+        per_day: {
+          base_price: 0,
+          cleaning_fee: 0,
+          security_deposit: 0,
+          is_active: false,
+        },
+        per_week: {
+          base_price: 0,
+          cleaning_fee: 0,
+          security_deposit: 0,
+          is_active: false,
+        },
+        per_month: {
+          base_price: 0,
+          cleaning_fee: 0,
+          security_deposit: 0,
+          is_active: false,
+        },
+        rent_per_year: {
+          annual_rent: 0,
+          agency_fee: 0,
+          commission_fee: 0,
+          caution_fee: 0,
+          legal_fee: 0,
+          is_agency_fee_active: true,
+          is_commission_fee_active: true,
+          is_caution_fee_active: true,
+          is_legal_fee_active: true,
+          is_active: false,
+        },
+      },
+      unavailable_dates: [],
+      property_images: [],
+    },
+    mode: "onChange",
+  });
 
   const steps = [
     {
       title: "Basic Info",
-      content: <BasicInfo formData={formData} setFormData={setFormData} />,
+      content: <BasicInfo />,
     },
     {
       title: "Amenities & Rules",
-      content: <AmenitiesRules formData={formData} setFormData={setFormData} />,
+      content: <AmenitiesRules />,
     },
     {
       title: "Pricing",
-      content: (
-        <PricingAvailability formData={formData} setFormData={setFormData} />
-      ),
+      content: <PricingAvailability />,
     },
     {
       title: "Images",
-      content: <ImageUpload formData={formData} setFormData={setFormData} />,
+      content: <ImageUpload />,
     },
     {
       title: "Review",
-      content: <ReviewStep formData={formData} />,
+      content: <ReviewStep formData={methods.getValues()} />,
     },
   ];
 
@@ -92,10 +108,16 @@ export default function EditApartment() {
       try {
         const property = await getPropertyById(id);
         if (property) {
-          setFormData({
+          // Reset form with property data
+          methods.reset({
             ...property,
-            property_images: property.property_images.map((url) => ({
-              preview: url,
+            property_images: property.property_images.map((image) => ({
+              preview: {
+                url: image.url || "",
+                public_id: image.public_id || "",
+                asset_id: image.asset_id || "",
+                _id: image._id || undefined,
+              },
               isExisting: true,
             })),
           });
@@ -109,21 +131,37 @@ export default function EditApartment() {
     };
 
     fetchProperty();
-  }, [id]);
+  }, [id, methods, navigate, getPropertyById]);
 
-  const handleSubmit = async () => {
+  const handleSubmit = async (data) => {
     setSubmitLoading(true);
     try {
       toast.loading("Updating property...");
 
       // Handle image uploads
-      let finalImageUrls = formData.property_images
+      // Keep existing images as they are (with their original structure)
+      let finalImages = data.property_images
         .filter((img) => img.isExisting)
-        .map((img) => img.preview);
+        .map((img) => {
+          // If it's already in the correct format with url, public_id, etc.
+          if (typeof img.preview === "object" && img.preview.url) {
+            return {
+              url: img.preview.url,
+              public_id: img.preview.public_id || "",
+              asset_id: img.preview.asset_id || "",
+              _id: img.preview._id || undefined,
+            };
+          }
+          // If it's just a URL string, create the proper structure
+          return {
+            url: typeof img.preview === "string" ? img.preview : "",
+            public_id: "",
+            asset_id: "",
+          };
+        });
 
-      const newImages = formData.property_images.filter(
-        (img) => !img.isExisting
-      );
+      // Handle new images
+      const newImages = data.property_images.filter((img) => !img.isExisting);
       if (newImages.length > 0) {
         const imageFormData = new FormData();
         newImages.forEach((image) => {
@@ -131,13 +169,19 @@ export default function EditApartment() {
         });
 
         const response = await uploadService.uploadImages(imageFormData);
-        finalImageUrls = [...finalImageUrls, ...response.urls];
+        // Add new images with proper structure
+        const newImageObjects = response.urls.map((url) => ({
+          url,
+          public_id: "",
+          asset_id: "",
+        }));
+        finalImages = [...finalImages, ...newImageObjects];
       }
 
-      // Create the final form data with all image URLs
+      // Create the final form data with properly structured property_images
       const finalFormData = {
-        ...formData,
-        property_images: finalImageUrls,
+        ...data,
+        property_images: finalImages,
       };
 
       // Submit to API
@@ -168,22 +212,26 @@ export default function EditApartment() {
 
   return (
     <div className="max-w-5xl p-5">
-      <div className="bg-white rounded-lg">
-        {/* Steps indicator */}
-        <div className="relative flex justify-between mb-12">
-          {/* Progress Line */}
-          <div className="absolute top-1/2 left-0 w-full h-[2px] bg-gray-200 -translate-y-1/2">
-            <div
-              className="h-full bg-primary-500 transition-all duration-300"
-              style={{ width: `${(current / (steps.length - 1)) * 100}%` }}
-            />
-          </div>
-
-          {/* Steps */}
-          {steps.map((step, index) => (
-            <div key={index} className="relative flex flex-col items-center">
+      <FormProvider {...methods}>
+        <form
+          onSubmit={methods.handleSubmit(handleSubmit)}
+          className="bg-white rounded-lg"
+        >
+          {/* Steps indicator */}
+          <div className="relative flex justify-between mb-12">
+            {/* Progress Line */}
+            <div className="absolute top-1/2 left-0 w-full h-[2px] bg-gray-200 -translate-y-1/2">
               <div
-                className={`w-10 h-10 rounded-full flex items-center justify-center z-10 
+                className="h-full bg-primary-500 transition-all duration-300"
+                style={{ width: `${(current / (steps.length - 1)) * 100}%` }}
+              />
+            </div>
+
+            {/* Steps */}
+            {steps.map((step, index) => (
+              <div key={index} className="relative flex flex-col items-center">
+                <div
+                  className={`w-10 h-10 rounded-full flex items-center justify-center z-10
                                     ${
                                       index < current
                                         ? "bg-primary-500 text-white border-2 border-primary-500"
@@ -191,73 +239,76 @@ export default function EditApartment() {
                                         ? "bg-white text-primary-500 border-2 border-primary-500"
                                         : "bg-white text-gray-500 border-2 border-gray-200"
                                     }`}
-              >
-                {index < current ? (
-                  <svg
-                    className="w-6 h-6"
-                    fill="none"
-                    stroke="currentColor"
-                    viewBox="0 0 24 24"
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth={2}
-                      d="M5 13l4 4L19 7"
-                    />
-                  </svg>
-                ) : (
-                  <span>{index + 1}</span>
-                )}
-              </div>
-              <span
-                className={`absolute -bottom-6 text-sm whitespace-nowrap
+                >
+                  {index < current ? (
+                    <svg
+                      className="w-6 h-6"
+                      fill="none"
+                      stroke="currentColor"
+                      viewBox="0 0 24 24"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth={2}
+                        d="M5 13l4 4L19 7"
+                      />
+                    </svg>
+                  ) : (
+                    <span>{index + 1}</span>
+                  )}
+                </div>
+                <span
+                  className={`absolute -bottom-6 text-sm whitespace-nowrap
                                 ${
                                   index <= current
                                     ? "text-primary-500 font-medium"
                                     : "text-gray-500"
                                 }`}
+                >
+                  {step.title}
+                </span>
+              </div>
+            ))}
+          </div>
+
+          {/* Content */}
+          <div className="min-h-[400px] p-4">{steps[current].content}</div>
+
+          {/* Navigation */}
+          <div className="flex justify-between mt-8">
+            {current > 0 && (
+              <button
+                type="button"
+                onClick={prev}
+                className="flex items-center px-4 py-2 bg-gray-100 text-gray-700 rounded-md hover:bg-gray-200"
               >
-                {step.title}
-              </span>
-            </div>
-          ))}
-        </div>
-
-        {/* Content */}
-        <div className="min-h-[400px] p-4">{steps[current].content}</div>
-
-        {/* Navigation */}
-        <div className="flex justify-between mt-8">
-          {current > 0 && (
-            <button
-              onClick={prev}
-              className="flex items-center px-4 py-2 bg-gray-100 text-gray-700 rounded-md hover:bg-gray-200"
-            >
-              <FiChevronLeft className="mr-2" />
-              Previous
-            </button>
-          )}
-          {current < steps.length - 1 ? (
-            <button
-              onClick={next}
-              className="flex items-center px-4 py-2 bg-primary-500 text-white rounded-md hover:bg-primary-600 ml-auto"
-            >
-              Next
-              <FiChevronRight className="ml-2" />
-            </button>
-          ) : (
-            <InteractiveButton
-              onClick={handleSubmit}
-              disabled={submitLoading}
-              isLoading={submitLoading}
-              className="flex items-center px-4 py-2 text-white rounded-md ml-auto disabled:opacity-50 disabled:cursor-not-allowed"
-            >
-              {submitLoading ? "Updating..." : "Update Property"}
-            </InteractiveButton>
-          )}
-        </div>
-      </div>
+                <FiChevronLeft className="mr-2" />
+                Previous
+              </button>
+            )}
+            {current < steps.length - 1 ? (
+              <button
+                type="button"
+                onClick={next}
+                className="flex items-center px-4 py-2 bg-primary-500 text-white rounded-md hover:bg-primary-600 ml-auto"
+              >
+                Next
+                <FiChevronRight className="ml-2" />
+              </button>
+            ) : (
+              <InteractiveButton
+                type="submit"
+                disabled={submitLoading}
+                isLoading={submitLoading}
+                className="flex items-center px-4 py-2 text-white rounded-md ml-auto disabled:opacity-50 disabled:cursor-not-allowed"
+              >
+                {submitLoading ? "Updating..." : "Update Property"}
+              </InteractiveButton>
+            )}
+          </div>
+        </form>
+      </FormProvider>
     </div>
   );
 }
