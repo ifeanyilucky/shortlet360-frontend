@@ -1095,10 +1095,10 @@ export default function PropertyDetail() {
                         <h3 className="text-lg font-semibold text-gray-800">
                           Pricing Options
                         </h3>
-                        <div className="flex items-center gap-1 bg-gray-100 px-2 py-1 rounded-full">
+                        {/* <div className="flex items-center gap-1 bg-gray-100 px-2 py-1 rounded-full">
                           <span className="text-sm font-semibold">4.5</span>
                           <span className="text-xs text-yellow-500">★</span>
-                        </div>
+                        </div> */}
                       </div>
 
                       {getActivePricing().type === "shortlet" ? (

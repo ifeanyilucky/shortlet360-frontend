@@ -16,7 +16,7 @@ export const favoriteStore = create((set) => ({
       set({
         error: error.response?.data?.message || "Failed to fetch favorites",
       });
-      toast.error(error.response?.data?.message || "Failed to fetch favorites");
+      // toast.error(error.response?.data?.message || "Failed to fetch favorites");
     } finally {
       set({ isLoading: false });
     }

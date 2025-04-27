@@ -617,10 +617,10 @@ export default function BookNow() {
                       <h3 className="font-semibold text-xl text-gray-800 line-clamp-1">
                         {property.property_name}
                       </h3>
-                      <div className="flex items-center gap-1 bg-gray-100 px-2 py-1 rounded-full">
+                      {/* <div className="flex items-center gap-1 bg-gray-100 px-2 py-1 rounded-full">
                         <span className="text-sm font-semibold">4.5</span>
                         <span className="text-xs text-yellow-500">★</span>
-                      </div>
+                      </div> */}
                     </div>
 
                     <div className="flex items-center text-gray-600 mb-3">
