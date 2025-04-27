@@ -11,7 +11,7 @@ export default function About() {
       <section className="bg-primary-500 text-white py-20">
         <div className="container mx-auto px-4 text-center">
           <h1 className="text-4xl md:text-5xl font-bold mb-6">
-            About Shortlet360
+            About Aplet360
           </h1>
           <p className="text-xl text-primary-100 max-w-3xl mx-auto">
             Your trusted partner for quality apartment rentals and short-term
@@ -34,7 +34,7 @@ export default function About() {
             <div className="md:w-1/2">
               <h2 className="text-3xl font-bold mb-6">Our Story</h2>
               <p className="text-gray-600 mb-6">
-                Founded in 2020, Shortlet360 was created to address the growing
+                Founded in 2020, Aplet360 was created to address the growing
                 need for quality apartment rentals in Nigeria. We started as a
                 small platform connecting property owners with those seeking
                 short-term stays, and have since evolved into a comprehensive
@@ -64,8 +64,8 @@ export default function About() {
               Our Mission, Vision & Values
             </h2>
             <p className="text-gray-600 max-w-3xl mx-auto">
-              At Shortlet360, we're driven by a clear purpose and guided by
-              strong values.
+              At Aplet360, we're driven by a clear purpose and guided by strong
+              values.
             </p>
           </div>
 
@@ -129,7 +129,7 @@ export default function About() {
           <div className="text-center mb-16">
             <h2 className="text-3xl font-bold mb-4">What We Offer</h2>
             <p className="text-gray-600 max-w-3xl mx-auto">
-              Shortlet360 provides comprehensive solutions for both apartment
+              Aplet360 provides comprehensive solutions for both apartment
               rentals and short-term stays.
             </p>
           </div>
@@ -212,7 +212,7 @@ export default function About() {
           <div className="text-center mb-16">
             <h2 className="text-3xl font-bold mb-4">Our Leadership Team</h2>
             <p className="text-gray-600 max-w-3xl mx-auto">
-              Meet the dedicated professionals behind Shortlet360.
+              Meet the dedicated professionals behind Aplet360.
             </p>
           </div>
 

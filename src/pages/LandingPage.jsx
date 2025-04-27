@@ -68,7 +68,7 @@ export default function LandingPage() {
           </h1>
 
           <p className="text-primary-100 max-w-3xl mx-auto mb-12 text-sm md:text-base px-4">
-            Shortlet360 is your premier platform for finding and renting quality
+            Aplet360 is your premier platform for finding and renting quality
             apartments across Nigeria. Whether you're looking for a long-term
             home or a short-term stay, find the perfect furnished apartment with
             flexible payment options and hassle-free management.
@@ -302,7 +302,7 @@ export default function LandingPage() {
 
       <section className="px-4 md:px-10 mx-auto">
         <div className="py-12 md:py-20">
-          <p className="text-primary-500 font-medium mb-4">WHY SHORTLET360</p>
+          <p className="text-primary-500 font-medium mb-4">WHY aplet360</p>
 
           <div className="flex flex-col md:flex-row gap-8 md:gap-20 mb-12">
             <div className="flex-1">
@@ -386,14 +386,14 @@ export default function LandingPage() {
               <h2 className="text-3xl md:text-4xl font-bold">
                 Explore amazing spaces
                 <br />
-                on Shortlet360 with flexible
+                on Aplet360 with flexible
                 <br />
                 payment options.
               </h2>
             </div>
             <div className="flex-1">
               <p className="text-gray-600 text-sm md:text-base">
-                Shortlet360-managed apartments are move-in ready and all bills
+                Aplet360-managed apartments are move-in ready and all bills
                 inclusive. Living essentials including cooking gas supply, 24/7
                 power supply, treated water, waste management and facility
                 maintenance including plumbing and AC service.
@@ -667,7 +667,7 @@ export default function LandingPage() {
             </h2>
             <p className="text-gray-600 max-w-3xl mx-auto">
               Don&apos;t just take our word for it. Here&apos;s what our
-              customers have to say about their Shortlet360 experience.
+              customers have to say about their Aplet360 experience.
             </p>
           </div>
 
@@ -718,8 +718,8 @@ export default function LandingPage() {
                 <FiStar className="fill-current" />
               </div>
               <p className="text-gray-600 italic">
-                &quot;I&apos;ve used Shortlet360 multiple times for business
-                trips, and they never disappoint. The apartments are always
+                &quot;I&apos;ve used Aplet360 multiple times for business trips,
+                and they never disappoint. The apartments are always
                 well-maintained and the staff is responsive and helpful.&quot;
               </p>
             </div>

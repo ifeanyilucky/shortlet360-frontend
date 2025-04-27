@@ -186,10 +186,10 @@ export default function Receipt() {
               </div>
               <div>
                 <h4 className="text-sm sm:text-base text-primary-500 font-medium mb-2 sm:mb-3">
-                  Shortlet360 Support
+                  Aplet360 Support
                 </h4>
                 <p className="text-xs sm:text-sm text-gray-600 mb-1">
-                  Email: support@shortlet360.com
+                  Email: support@aplet360.com
                 </p>
                 <p className="text-xs sm:text-sm text-gray-600 mb-1">
                   Phone: +234 (901) 111-1111
@@ -204,16 +204,16 @@ export default function Receipt() {
           {/* Footer */}
           <div className="mt-6 sm:mt-8 text-center border-t pt-4 sm:pt-6">
             <p className="text-xs sm:text-sm text-gray-600 mb-1">
-              Shortlet360 - Your Trusted Short-let Accommodation Platform
+              Aplet360 - Your Trusted Short-let Accommodation Platform
             </p>
             <p className="text-xs sm:text-sm text-gray-600 mb-1">
               Lagos, Nigeria
             </p>
             <p className="text-xs sm:text-sm text-gray-600 mb-1">
-              Website: www.shortlet360.com
+              Website: www.aplet360.com
             </p>
             <p className="text-xs sm:text-sm text-gray-600">
-              © {new Date().getFullYear()} Shortlet360. All rights reserved.
+              © {new Date().getFullYear()} Aplet360. All rights reserved.
             </p>
           </div>
 

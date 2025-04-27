@@ -46,11 +46,7 @@ export default function NavLayout({ children }) {
               {/* Logo */}
               <div className="flex-shrink-0 flex items-center">
                 <Link to="/" className="text-xl font-bold text-blue-600">
-                  <img
-                    src="/logo.png"
-                    alt="Shortlet360"
-                    className="w-16 h-auto"
-                  />
+                  <img src="/logo.png" alt="Aplet360" className="w-16 h-auto" />
                 </Link>
               </div>
 
@@ -300,7 +296,7 @@ export default function NavLayout({ children }) {
           </div>
           <div className="mt-8 border-t border-gray-200 pt-8">
             <p className="text-base text-gray-400 text-center">
-              © {new Date().getFullYear()} Shortlet360. All rights reserved.
+              © {new Date().getFullYear()} Aplet360. All rights reserved.
             </p>
           </div>
         </div>

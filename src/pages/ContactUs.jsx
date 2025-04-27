@@ -219,13 +219,13 @@ export default function ContactUs() {
                       Email Addresses
                     </h3>
                     <p className="text-gray-600 mb-1">
-                      General Inquiries: info@shortlet360.com
+                      General Inquiries: info@aplet360.com
                     </p>
                     <p className="text-gray-600 mb-1">
-                      Support: support@shortlet360.com
+                      Support: support@aplet360.com
                     </p>
                     <p className="text-gray-600">
-                      Property Listings: listings@shortlet360.com
+                      Property Listings: listings@aplet360.com
                     </p>
                   </div>
                 </div>

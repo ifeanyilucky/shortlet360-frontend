@@ -34,14 +34,14 @@ export default function FAQ() {
   const faqsByCategory = {
     general: [
       {
-        question: "What is Shortlet360?",
+        question: "What is Aplet360?",
         answer:
-          "Shortlet360 is a premier platform for finding and renting quality apartments across Nigeria. We offer both long-term apartment rentals and short-term accommodations with flexible payment options and hassle-free management.",
+          "Aplet360 is a premier platform for finding and renting quality apartments across Nigeria. We offer both long-term apartment rentals and short-term accommodations with flexible payment options and hassle-free management.",
       },
       {
-        question: "How does Shortlet360 work?",
+        question: "How does Aplet360 work?",
         answer:
-          "Shortlet360 connects property owners with individuals looking for quality accommodations. You can browse our listings, filter by your preferences, select a property, choose your preferred payment option, and complete the booking process. Our team will guide you through the rest of the process.",
+          "Aplet360 connects property owners with individuals looking for quality accommodations. You can browse our listings, filter by your preferences, select a property, choose your preferred payment option, and complete the booking process. Our team will guide you through the rest of the process.",
       },
       {
         question: "What areas do you cover?",
@@ -51,7 +51,7 @@ export default function FAQ() {
       {
         question: "How do I contact customer support?",
         answer:
-          "You can reach our customer support team through multiple channels: email at support@shortlet360.com, phone at +234 123 456 7890, or through the contact form on our Contact Us page. Our support team is available Monday to Friday from 8:00 AM to 6:00 PM, and Saturday from 9:00 AM to 3:00 PM.",
+          "You can reach our customer support team through multiple channels: email at support@aplet360.com, phone at +234 123 456 7890, or through the contact form on our Contact Us page. Our support team is available Monday to Friday from 8:00 AM to 6:00 PM, and Saturday from 9:00 AM to 3:00 PM.",
       },
     ],
     apartments: [
@@ -149,7 +149,7 @@ export default function FAQ() {
     ],
     security: [
       {
-        question: "Is it safe to book through Shortlet360?",
+        question: "Is it safe to book through Aplet360?",
         answer:
           "Yes, we implement strict security measures and verify all properties and users on our platform to ensure a safe booking experience. Our secure payment system protects your financial information, and we have a verification process for all property listings.",
       },
