@@ -236,13 +236,13 @@ export default function LandingPage() {
         <div className="max-w-6xl mx-auto px-4">
           <div className="text-center mb-12">
             <h2 className="text-3xl md:text-4xl font-bold mb-4">
-              Rent your apartment in{" "}
-              <span className="text-primary-500">4 minutes</span>
+              Find your perfect space in{" "}
+              <span className="text-primary-500">4 simple steps</span>
             </h2>
             <p className="text-gray-600 max-w-3xl mx-auto">
-              Our streamlined rental process makes finding and securing your
-              perfect apartment quick and hassle-free, whether for long-term
-              living or short-term stays.
+              Our streamlined process makes finding and securing your ideal
+              apartment quick and hassle-free, whether for long-term rentals or
+              short-term stays.
             </p>
           </div>
 
@@ -253,7 +253,8 @@ export default function LandingPage() {
               </div>
               <h3 className="font-semibold mb-2">Search</h3>
               <p className="text-gray-600 text-sm">
-                Find your ideal accommodation by location, price, and amenities
+                Find your ideal space by location, price, and amenities for rent
+                or shortlet
               </p>
             </div>
 
@@ -261,9 +262,10 @@ export default function LandingPage() {
               <div className="w-12 h-12 bg-primary-100 rounded-full flex items-center justify-center mx-auto mb-4">
                 <BsCalendarCheck className="w-6 h-6 text-primary-500" />
               </div>
-              <h3 className="font-semibold mb-2">Select Dates</h3>
+              <h3 className="font-semibold mb-2">Select</h3>
               <p className="text-gray-600 text-sm">
-                Choose your check-in and check-out dates from available options
+                Choose your preferred property and rental duration that fits
+                your needs
               </p>
             </div>
 
@@ -271,19 +273,21 @@ export default function LandingPage() {
               <div className="w-12 h-12 bg-primary-100 rounded-full flex items-center justify-center mx-auto mb-4">
                 <RiSecurePaymentLine className="w-6 h-6 text-primary-500" />
               </div>
-              <h3 className="font-semibold mb-2">Secure Payment</h3>
+              <h3 className="font-semibold mb-2">Pay</h3>
               <p className="text-gray-600 text-sm">
-                Pay securely online with multiple payment options
+                Choose from flexible payment options for both rentals and
+                shortlets
               </p>
             </div>
 
             <div className="bg-gray-50 p-6 rounded-xl text-center">
               <div className="w-12 h-12 bg-primary-100 rounded-full flex items-center justify-center mx-auto mb-4">
-                <FiStar className="w-6 h-6 text-primary-500" />
+                <MdApartment className="w-6 h-6 text-primary-500" />
               </div>
-              <h3 className="font-semibold mb-2">Enjoy Your Stay</h3>
+              <h3 className="font-semibold mb-2">Move In</h3>
               <p className="text-gray-600 text-sm">
-                Receive booking confirmation and check-in details instantly
+                Get your keys and enjoy your new space with all amenities ready
+                for you
               </p>
             </div>
           </div>
@@ -302,76 +306,153 @@ export default function LandingPage() {
 
       <section className="px-4 md:px-10 mx-auto">
         <div className="py-12 md:py-20">
-          <p className="text-primary-500 font-medium mb-4">WHY aplet360</p>
+          <p className="text-primary-500 font-medium mb-4">WHY APLET360</p>
 
           <div className="flex flex-col md:flex-row gap-8 md:gap-20 mb-12">
             <div className="flex-1">
               <h2 className="text-3xl md:text-4xl font-bold">
-                Quality apartments.
+                Benefits for everyone
                 <br />
-                Trusted by thousands of
+                in the property
                 <br />
-                residents.
+                ecosystem.
               </h2>
             </div>
             <div className="flex-1">
               <p className="text-gray-600 text-sm md:text-base">
-                We offer you access to premium apartments for both long-term
-                rentals and short-term stays, with all the comforts of home.
-                Filter by price, location, apartment type and rental duration to
-                find your perfect home.
+                Aplet360 creates value for tenants seeking quality homes,
+                landlords looking to maximize returns, and property managers
+                wanting to streamline operations. Our platform connects all
+                parties with transparent processes and flexible options.
               </p>
             </div>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
-            <div className="space-y-4">
-              <div className="w-12 h-12 bg-primary-100 rounded-2xl flex items-center justify-center">
-                <MdApartment className="w-6 h-6 text-primary-500" />
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+            {/* Tenants Benefits */}
+            <div className="bg-white p-6 rounded-xl shadow-sm border border-gray-100 hover:shadow-md transition-shadow">
+              <div className="w-12 h-12 bg-primary-100 rounded-2xl flex items-center justify-center mb-4">
+                <HiOutlineUsers className="w-6 h-6 text-primary-500" />
               </div>
-              <h3 className="font-semibold text-lg">
-                Fully furnished apartments
+              <h3 className="font-semibold text-lg mb-4">For Tenants</h3>
+
+              <div className="space-y-3">
+                <div className="flex items-start gap-3">
+                  <div className="w-5 h-5 bg-primary-50 rounded-full flex items-center justify-center mt-0.5">
+                    <MdApartment className="w-3 h-3 text-primary-500" />
+                  </div>
+                  <p className="text-gray-700 text-sm">
+                    <span className="font-medium">
+                      Quality Furnished Spaces
+                    </span>{" "}
+                    - Move-in ready apartments with all essentials included
+                  </p>
+                </div>
+
+                <div className="flex items-start gap-3">
+                  <div className="w-5 h-5 bg-primary-50 rounded-full flex items-center justify-center mt-0.5">
+                    <BsCreditCard2Front className="w-3 h-3 text-primary-500" />
+                  </div>
+                  <p className="text-gray-700 text-sm">
+                    <span className="font-medium">Flexible Payments</span> -
+                    Multiple payment options with convenient monthly plans
+                  </p>
+                </div>
+
+                <div className="flex items-start gap-3">
+                  <div className="w-5 h-5 bg-primary-50 rounded-full flex items-center justify-center mt-0.5">
+                    <RiSecurePaymentLine className="w-3 h-3 text-primary-500" />
+                  </div>
+                  <p className="text-gray-700 text-sm">
+                    <span className="font-medium">Transparent Pricing</span> -
+                    No hidden fees with all utilities included
+                  </p>
+                </div>
+              </div>
+            </div>
+
+            {/* Landlords/Agents Benefits */}
+            <div className="bg-white p-6 rounded-xl shadow-sm border border-gray-100 hover:shadow-md transition-shadow">
+              <div className="w-12 h-12 bg-primary-100 rounded-2xl flex items-center justify-center mb-4">
+                <IoHomeOutline className="w-6 h-6 text-primary-500" />
+              </div>
+              <h3 className="font-semibold text-lg mb-4">
+                For Landlords & Agents
               </h3>
-              <p className="text-gray-600 text-sm">
-                Find fully furnished apartments ready for immediate occupancy,
-                perfect for short stays from a few days to several weeks.
-              </p>
+
+              <div className="space-y-3">
+                <div className="flex items-start gap-3">
+                  <div className="w-5 h-5 bg-primary-50 rounded-full flex items-center justify-center mt-0.5">
+                    <RiMoneyDollarCircleLine className="w-3 h-3 text-primary-500" />
+                  </div>
+                  <p className="text-gray-700 text-sm">
+                    <span className="font-medium">Maximize Returns</span> -
+                    Higher occupancy rates and optimized pricing
+                  </p>
+                </div>
+
+                <div className="flex items-start gap-3">
+                  <div className="w-5 h-5 bg-primary-50 rounded-full flex items-center justify-center mt-0.5">
+                    <BsShieldCheck className="w-3 h-3 text-primary-500" />
+                  </div>
+                  <p className="text-gray-700 text-sm">
+                    <span className="font-medium">Verified Tenants</span> -
+                    Quality tenants with thorough screening process
+                  </p>
+                </div>
+
+                <div className="flex items-start gap-3">
+                  <div className="w-5 h-5 bg-primary-50 rounded-full flex items-center justify-center mt-0.5">
+                    <BsCalendarCheck className="w-3 h-3 text-primary-500" />
+                  </div>
+                  <p className="text-gray-700 text-sm">
+                    <span className="font-medium">Flexible Listings</span> -
+                    List for long-term rentals or short-term stays
+                  </p>
+                </div>
+              </div>
             </div>
 
-            <div className="space-y-4">
-              <div className="w-12 h-12 bg-primary-100 rounded-2xl flex items-center justify-center">
-                <BsCreditCard2Front className="w-6 h-6 text-primary-500" />
+            {/* Property Managers Benefits */}
+            <div className="bg-white p-6 rounded-xl shadow-sm border border-gray-100 hover:shadow-md transition-shadow">
+              <div className="w-12 h-12 bg-primary-100 rounded-2xl flex items-center justify-center mb-4">
+                <BsArrowRight className="w-6 h-6 text-primary-500" />
               </div>
-              <h3 className="font-semibold text-lg">
-                Flexible payment options
+              <h3 className="font-semibold text-lg mb-4">
+                For Property Managers
               </h3>
-              <p className="text-gray-600 text-sm">
-                Choose from multiple payment plans including monthly options
-                with convenient interest rates. Pay securely online with various
-                payment methods.
-              </p>
-            </div>
 
-            <div className="space-y-4">
-              <div className="w-12 h-12 bg-primary-100 rounded-2xl flex items-center justify-center">
-                <HiUsers className="w-6 h-6 text-primary-500" />
-              </div>
-              <h3 className="font-semibold text-lg">Group booking available</h3>
-              <p className="text-gray-600 text-sm">
-                Perfect for family vacations or business teams. Book multiple
-                units in the same location for group stays.
-              </p>
-            </div>
+              <div className="space-y-3">
+                <div className="flex items-start gap-3">
+                  <div className="w-5 h-5 bg-primary-50 rounded-full flex items-center justify-center mt-0.5">
+                    <FiStar className="w-3 h-3 text-primary-500" />
+                  </div>
+                  <p className="text-gray-700 text-sm">
+                    <span className="font-medium">Streamlined Operations</span>{" "}
+                    - Efficient booking and management tools
+                  </p>
+                </div>
 
-            <div className="space-y-4">
-              <div className="w-12 h-12 bg-primary-100 rounded-2xl flex items-center justify-center">
-                <RiSecurePaymentLine className="w-6 h-6 text-primary-500" />
+                <div className="flex items-start gap-3">
+                  <div className="w-5 h-5 bg-primary-50 rounded-full flex items-center justify-center mt-0.5">
+                    <HiUsers className="w-3 h-3 text-primary-500" />
+                  </div>
+                  <p className="text-gray-700 text-sm">
+                    <span className="font-medium">Guest Management</span> -
+                    Simplified check-in/out and communication
+                  </p>
+                </div>
+
+                <div className="flex items-start gap-3">
+                  <div className="w-5 h-5 bg-primary-50 rounded-full flex items-center justify-center mt-0.5">
+                    <BsCreditCard2Front className="w-3 h-3 text-primary-500" />
+                  </div>
+                  <p className="text-gray-700 text-sm">
+                    <span className="font-medium">Automated Payments</span> -
+                    Secure payment processing and reporting
+                  </p>
+                </div>
               </div>
-              <h3 className="font-semibold text-lg">No hidden charges</h3>
-              <p className="text-gray-600 text-sm">
-                Transparent pricing with no surprise fees. What you see is what
-                you pay - all utilities and amenities included.
-              </p>
             </div>
           </div>
         </div>
