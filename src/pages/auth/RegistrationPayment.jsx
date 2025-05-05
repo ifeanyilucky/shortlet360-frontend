@@ -46,7 +46,7 @@ export default function RegistrationPayment() {
       toast.success("Registration payment completed successfully!");
 
       // Navigate based on user role
-      if (result.user.role === "owner") {
+      if (user.role === "owner") {
         navigate("/owner/dashboard");
       } else {
         navigate("/user/dashboard");

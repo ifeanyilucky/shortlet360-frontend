@@ -696,7 +696,7 @@ export default function LandingPage() {
             </div>
             <div className="rounded-2xl overflow-hidden shadow-lg">
               <img
-                src="/images/living-room.jpg"
+                src="/images/people-holding-key.webp"
                 alt="Affordable Living"
                 className="w-full h-full object-cover"
               />
@@ -733,7 +733,7 @@ export default function LandingPage() {
               </div>
               <div className="col-span-1 row-span-1">
                 <img
-                  src="https://images.pexels.com/photos/1571458/pexels-photo-1571458.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2"
+                  src="/images/living-room2.jpeg"
                   alt="Bedroom"
                   className="w-full h-full object-cover rounded-lg shadow-md"
                 />
