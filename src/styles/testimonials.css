@@ -1,0 +1,17 @@
+@keyframes scroll-testimonials {
+  0% {
+    transform: translateX(0);
+  }
+  100% {
+    transform: translateX(-50%);
+  }
+}
+
+.auto-scroll-testimonials {
+  animation: scroll-testimonials 30s linear infinite;
+}
+
+/* Pause animation on hover */
+.auto-scroll-testimonials:hover {
+  animation-play-state: paused;
+}

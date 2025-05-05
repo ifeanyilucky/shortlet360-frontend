@@ -3,7 +3,6 @@ import { useEffect, useState, useCallback } from "react";
 import { useNavigate } from "react-router-dom";
 import { propertyStore } from "@store/propertyStore";
 import { FaEdit, FaTrash, FaFilter } from "react-icons/fa";
-import LoadingScreen from "../../../components/LoadingScreen";
 import LoadingOverlay from "../../../components/LoadingOverlay";
 import { useAuth } from "../../../hooks/useAuth";
 import Pagination from "../../../components/Pagination";

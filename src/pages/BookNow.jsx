@@ -279,8 +279,8 @@ export default function BookNow() {
               onClick={() => switchCategory("rent")}
               className={`flex items-center gap-2 px-6 py-3 text-sm font-medium ${
                 filters.category === "rent"
-                  ? "bg-blue-600 text-white"
-                  : "bg-white text-gray-700 hover:bg-gray-100"
+                  ? "bg-accent-500 text-white"
+                  : "bg-white text-gray-700 hover:bg-accent-50"
               }`}
             >
               <FiHome className="w-4 h-4" />
@@ -290,8 +290,8 @@ export default function BookNow() {
               onClick={() => switchCategory("shortlet")}
               className={`flex items-center gap-2 px-6 py-3 text-sm font-medium ${
                 filters.category === "shortlet"
-                  ? "bg-blue-600 text-white"
-                  : "bg-white text-gray-700 hover:bg-gray-100"
+                  ? "bg-accent-500 text-white"
+                  : "bg-white text-gray-700 hover:bg-accent-50"
               }`}
             >
               <MdApartment className="w-4 h-4" />
@@ -319,7 +319,7 @@ export default function BookNow() {
                 <input
                   type="text"
                   placeholder="Location, property name..."
-                  className="w-full pl-10 pr-4 py-3 text-sm text-gray-900 border border-gray-300 rounded-lg bg-white focus:ring-2 focus:ring-blue-500 focus:border-blue-500 focus:outline-none"
+                  className="w-full pl-10 pr-4 py-3 text-sm text-gray-900 border border-gray-300 rounded-lg bg-white focus:ring-2 focus:ring-accent-500 focus:border-accent-500 focus:outline-none"
                   value={filters.search}
                   onChange={(e) => handleFilter("search", e.target.value)}
                 />
@@ -338,7 +338,7 @@ export default function BookNow() {
                 <input
                   type="number"
                   placeholder="Number of bedrooms"
-                  className="w-full pl-10 pr-4 py-3 text-sm text-gray-900 border border-gray-300 rounded-lg bg-white focus:ring-2 focus:ring-blue-500 focus:border-blue-500 focus:outline-none"
+                  className="w-full pl-10 pr-4 py-3 text-sm text-gray-900 border border-gray-300 rounded-lg bg-white focus:ring-2 focus:ring-accent-500 focus:border-accent-500 focus:outline-none"
                   value={filters.bedrooms}
                   onChange={(e) =>
                     setFilters((prev) => ({
@@ -359,7 +359,7 @@ export default function BookNow() {
                 <input
                   type="number"
                   placeholder="Min"
-                  className="w-full px-4 py-3 text-sm text-gray-900 border border-gray-300 rounded-lg bg-white focus:ring-2 focus:ring-blue-500 focus:border-blue-500 focus:outline-none"
+                  className="w-full px-4 py-3 text-sm text-gray-900 border border-gray-300 rounded-lg bg-white focus:ring-2 focus:ring-accent-500 focus:border-accent-500 focus:outline-none"
                   value={filters.minPrice}
                   onChange={(e) => handleFilter("minPrice", e.target.value)}
                 />
@@ -367,7 +367,7 @@ export default function BookNow() {
                 <input
                   type="number"
                   placeholder="Max"
-                  className="w-full px-4 py-3 text-sm text-gray-900 border border-gray-300 rounded-lg bg-white focus:ring-2 focus:ring-blue-500 focus:border-blue-500 focus:outline-none"
+                  className="w-full px-4 py-3 text-sm text-gray-900 border border-gray-300 rounded-lg bg-white focus:ring-2 focus:ring-accent-500 focus:border-accent-500 focus:outline-none"
                   value={filters.maxPrice}
                   onChange={(e) =>
                     setFilters((prev) => ({
@@ -385,7 +385,7 @@ export default function BookNow() {
             <button
               type="button"
               onClick={() => setShowMoreFilters(!showMoreFilters)}
-              className="flex items-center gap-2 text-blue-600 hover:text-blue-800 font-medium text-sm"
+              className="flex items-center gap-2 text-accent-600 hover:text-accent-800 font-medium text-sm"
             >
               {showMoreFilters ? (
                 <>

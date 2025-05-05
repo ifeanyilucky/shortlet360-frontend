@@ -38,6 +38,10 @@ export const authService = {
     const response = await api.post("/auth/forgot-password", data);
     return response.data;
   },
+  completeRegistrationPayment: async (paymentData) => {
+    const response = await api.post("/auth/complete-registration-payment", { payment: paymentData });
+    return response.data;
+  },
 };
 
 export const propertyService = {

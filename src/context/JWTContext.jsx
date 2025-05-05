@@ -119,32 +119,46 @@ export function AuthProvider({ children }) {
   const login = async (payload) => {
     const { data } = await api.signin(payload);
 
-    const { token, user } = data;
+    const { token, user, requiresPayment } = data;
 
     setSession(token);
     dispatch({
       type: "LOGIN",
       payload: {
-        user,
+        user: { ...user, requiresPayment },
         role: user.role,
       },
     });
 
-    navigate("/");
+    // If user requires payment, redirect to payment page
+    if (requiresPayment) {
+      navigate("/auth/registration-payment");
+    } else {
+      navigate("/");
+    }
+
+    // Return the response data so the login page can access it
+    return data;
   };
 
   const register = async (payload) => {
     const response = await api.register(payload);
-    const { token, user } = response.data;
+    const { token, user, requiresPayment } = response.data;
 
     window.localStorage.setItem("accessToken", token);
     dispatch({
       type: "REGISTER",
       payload: {
-        user,
+        user: { ...user, requiresPayment },
         role: user.role,
       },
     });
+
+    // If user requires payment, redirect to payment page
+    if (requiresPayment) {
+      navigate("/auth/registration-payment");
+    }
+
     return response;
   };
 
@@ -177,6 +191,17 @@ export function AuthProvider({ children }) {
     return user;
   };
 
+  // Function to update user after registration payment
+  const setUser = (updatedUser) => {
+    dispatch({
+      type: "UPDATE",
+      payload: {
+        user: updatedUser,
+        role: updatedUser.role,
+      },
+    });
+  };
+
   return (
     <AuthContext.Provider
       value={{
@@ -189,6 +214,7 @@ export function AuthProvider({ children }) {
         forgotPassword,
         updateProfile,
         changePassword,
+        setUser,
       }}
     >
       {children}

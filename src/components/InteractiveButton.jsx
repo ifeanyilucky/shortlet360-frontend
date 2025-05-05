@@ -19,6 +19,8 @@ const InteractiveButton = ({
       "bg-primary-500 text-white hover:bg-primary-600 focus:ring-primary-500",
     secondary:
       "bg-gray-200 text-gray-700 hover:bg-gray-300 focus:ring-gray-500",
+    accent:
+      "bg-accent-500 text-white hover:bg-accent-600 focus:ring-accent-500",
     danger: "bg-red-600 text-white hover:bg-red-700 focus:ring-red-500",
     success: "bg-green-600 text-white hover:bg-green-700 focus:ring-green-500",
   };
@@ -80,7 +82,13 @@ InteractiveButton.propTypes = {
   children: PropTypes.node.isRequired,
   onClick: PropTypes.func,
   type: PropTypes.oneOf(["button", "submit", "reset"]),
-  variant: PropTypes.oneOf(["primary", "secondary", "danger", "success"]),
+  variant: PropTypes.oneOf([
+    "primary",
+    "secondary",
+    "accent",
+    "danger",
+    "success",
+  ]),
   size: PropTypes.oneOf(["small", "medium", "large"]),
   isLoading: PropTypes.bool,
   disabled: PropTypes.bool,

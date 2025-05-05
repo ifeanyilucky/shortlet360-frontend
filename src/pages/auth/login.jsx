@@ -8,6 +8,7 @@ import toast from "react-hot-toast";
 import { Icon } from "@iconify/react/dist/iconify.js";
 import AuthSocial from "../../components/auth/AuthSocial";
 import InteractiveButton from "../../components/InteractiveButton";
+import { FiEye, FiEyeOff } from "react-icons/fi";
 
 // Add validation schema
 const schema = yup.object().shape({
@@ -35,8 +36,17 @@ export default function Login() {
   const onSubmit = async (data) => {
     try {
       setSubmitLoading(true);
-      await login({ ...data, userType: selectedTab });
-      toast.success("Login successful");
+      const response = await login({ ...data, userType: selectedTab });
+
+      // The login function in JWTContext will handle redirection based on requiresPayment
+      // We just need to show an appropriate message
+      if (response?.requiresPayment) {
+        toast.success(
+          "Please complete your registration payment to activate your account"
+        );
+      } else {
+        toast.success("Login successful");
+      }
     } catch (error) {
       if (error?.response?.data?.message) {
         toast.error(error.response.data.message);
@@ -59,7 +69,7 @@ export default function Login() {
             Don&apos;t have an account?{" "}
             <Link
               to="/auth/register"
-              className="text-primary-500 hover:underline"
+              className="text-accent-600 font-medium hover:underline"
             >
               Register
             </Link>
@@ -92,14 +102,21 @@ export default function Login() {
           </button>
         </div> */}
 
-        <form className="space-y-4" onSubmit={handleSubmit(onSubmit)}>
+        <form className="space-y-6" onSubmit={handleSubmit(onSubmit)}>
           <div className="space-y-2">
+            <label
+              htmlFor="email"
+              className="text-sm font-medium text-gray-700"
+            >
+              Email Address
+            </label>
             <input
+              id="email"
               type="email"
-              placeholder="Email"
+              placeholder="Enter your email address"
               className={`w-full p-3 rounded-lg bg-gray-100 border ${
                 errors.email ? "border-red-500" : "border-gray-200"
-              } focus:outline-none focus:ring-2 focus:ring-primary-500`}
+              } focus:outline-none focus:ring-2 focus:ring-accent-500`}
               {...register("email")}
             />
             {errors.email && (
@@ -108,21 +125,29 @@ export default function Login() {
           </div>
 
           <div className="space-y-2">
+            <label
+              htmlFor="password"
+              className="text-sm font-medium text-gray-700"
+            >
+              Password
+            </label>
             <div className="relative">
               <input
+                id="password"
                 type={showPassword ? "text" : "password"}
                 placeholder="Enter your password"
                 className={`w-full p-3 rounded-lg bg-gray-100 border ${
                   errors.password ? "border-red-500" : "border-gray-200"
-                } focus:outline-none focus:ring-2 focus:ring-primary-500`}
+                } focus:outline-none focus:ring-2 focus:ring-accent-500`}
                 {...register("password")}
               />
               <button
                 type="button"
                 onClick={() => setShowPassword(!showPassword)}
-                className="absolute right-3 top-1/2 -translate-y-1/2"
+                className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500 hover:text-gray-700 transition-colors"
+                aria-label={showPassword ? "Hide password" : "Show password"}
               >
-                {showPassword ? "👁️" : "👁️‍🗨️"}
+                {showPassword ? <FiEyeOff size={18} /> : <FiEye size={18} />}
               </button>
             </div>
             {errors.password && (
@@ -132,11 +157,12 @@ export default function Login() {
 
           <InteractiveButton
             type="submit"
-            variant="primary"
+            variant="accent"
             isLoading={submitLoading}
-            className="w-full"
+            className="w-full py-3 text-base font-medium"
+            size="large"
           >
-            Login
+            {submitLoading ? "Logging in..." : "Login"}
           </InteractiveButton>
 
           {/* <div className="relative">

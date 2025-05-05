@@ -4,9 +4,12 @@ import NavLayout from "../layout/NavLayout";
 import GuestGuard from "../guards/GuestGuard";
 import AuthGuard from "../guards/AuthGuard";
 import RoleBasedGuard from "../guards/RoleBasedGuard";
+import RegistrationPaymentGuard from "../guards/RegistrationPaymentGuard";
+import ActiveUserGuard from "../guards/ActiveUserGuard";
 import { About, Blog, LandingPage, BookNow, ContactUs, FAQ } from "../pages";
 import Login from "../pages/auth/login";
 import Register from "../pages/auth/register";
+import RegistrationPayment from "../pages/auth/RegistrationPayment";
 import UserDashboard from "../pages/dashboard/user/dashboard";
 import OwnerDashboard from "../pages/dashboard/apartment-owner/dashboard";
 import OwnerLayout from "../layout/OwnerLayout";
@@ -50,7 +53,9 @@ export default function Router() {
           path: "user",
           element: (
             <RoleBasedGuard accessibleRoles={["user"]}>
-              <UserLayout />
+              <ActiveUserGuard>
+                <UserLayout />
+              </ActiveUserGuard>
             </RoleBasedGuard>
           ),
           children: [
@@ -66,7 +71,9 @@ export default function Router() {
           path: "owner",
           element: (
             <RoleBasedGuard accessibleRoles={["owner"]}>
-              <OwnerLayout />
+              <ActiveUserGuard>
+                <OwnerLayout />
+              </ActiveUserGuard>
             </RoleBasedGuard>
           ),
           children: [
@@ -100,6 +107,19 @@ export default function Router() {
         { path: "register", element: <Register /> },
         { path: "", element: <Navigate to="/auth/login" replace /> },
       ],
+    },
+    {
+      path: "auth/registration-payment",
+      element: (
+        <div className="min-h-screen bg-gray-50">
+          {/* <AuthLayout /> */}
+          <div className="flex justify-center items-center">
+            <RegistrationPaymentGuard>
+              <RegistrationPayment />
+            </RegistrationPaymentGuard>
+          </div>
+        </div>
+      ),
     },
     { path: "*", element: <Navigate to="/404" replace /> },
   ]);

@@ -26,10 +26,10 @@ import { Navigation, Pagination } from "swiper/modules";
 import "swiper/css";
 import "swiper/css/navigation";
 import "swiper/css/pagination";
-// import { usePaystackPayment } from "react-paystack";
+import { usePaystackPayment } from "react-paystack";
 import { bookingService } from "../services/api";
 import toast from "react-hot-toast";
-import { useFlutterwave, closePaymentModal } from "flutterwave-react-v3";
+import { paystackConfig } from "../config/paystack";
 
 // Custom CSS for the calendar and gallery
 const customStyles = `
@@ -220,25 +220,16 @@ export default function PropertyDetail() {
     fetchData();
   }, [id, getProperty]);
 
-  const config = {
-    public_key: "FLWPUBK_TEST-5799b619bfc474dd1f53bd4317b37851-X",
-    tx_ref: Date.now(),
-    amount: 100,
-    currency: "NGN",
-    payment_options: "card,mobilemoney,ussd",
-    customer: {
-      email: user?.email,
-      phone_number: user?.phone,
-      name: user?.first_name + " " + user?.last_name,
-    },
-    customizations: {
-      title: "my Payment Title",
-      description: "Payment for items in cart",
-      logo: "/logo.png",
-    },
-  };
+  // Configure Paystack payment
+  const config = paystackConfig({
+    email: user?.email || "",
+    amount: 100, // This will be updated dynamically
+    first_name: user?.first_name || "",
+    last_name: user?.last_name || "",
+    _id: user?._id || "",
+  });
 
-  const handleFlutterPayment = useFlutterwave(config);
+  const initializePayment = usePaystackPayment(config);
 
   if (isLoading) return <LoadingOverlay />;
 
@@ -247,6 +238,22 @@ export default function PropertyDetail() {
   };
 
   const handleBookNow = () => {
+    // Check if user is logged in
+    if (!user) {
+      toast.error("Please login to book this property");
+      navigate("/auth/login");
+      return;
+    }
+
+    // Check if user account is active
+    if (!user.is_active || user.registration_payment_status === "pending") {
+      toast.error(
+        "Please complete your registration payment to book properties"
+      );
+      navigate("/auth/registration-payment");
+      return;
+    }
+
     if (!startDate || !endDate) {
       toast.error("Please select check-in and check-out dates");
       return;
@@ -255,30 +262,60 @@ export default function PropertyDetail() {
     // Calculate payment amount based on selected dates and pricing option
     const paymentAmount = calculateShortletPrice();
 
-    // Update payment configuration
-    const updatedConfig = {
-      ...config,
-      amount: paymentAmount,
-      customizations: {
-        ...config.customizations,
-        title: `${property?.property_name} - Shortlet Booking`,
-        description: `${numberOfDays} ${
-          numberOfDays === 1 ? "day" : "days"
-        } stay (${selectedPricingOption} rate)`,
+    // Create a new config for this specific payment
+    const paymentConfig = {
+      ...paystackConfig({
+        ...user,
+        amount: paymentAmount,
+      }),
+      metadata: {
+        custom_fields: [
+          {
+            display_name: "Customer Name",
+            variable_name: "customer_name",
+            value: user?.first_name + " " + user?.last_name,
+          },
+          {
+            display_name: "Customer ID",
+            variable_name: "customer_id",
+            value: user?._id,
+          },
+          {
+            display_name: "Property",
+            variable_name: "property_name",
+            value: property?.property_name || "",
+          },
+          {
+            display_name: "Booking Type",
+            variable_name: "booking_type",
+            value: "shortlet",
+          },
+          {
+            display_name: "Duration",
+            variable_name: "duration",
+            value: `${numberOfDays} ${numberOfDays === 1 ? "day" : "days"}`,
+          },
+          {
+            display_name: "Rate",
+            variable_name: "rate",
+            value: selectedPricingOption,
+          },
+        ],
       },
     };
 
-    handleFlutterPayment({
-      ...updatedConfig,
-      callback: (response) => {
-        console.log(response);
-        handlePaymentSuccess(response);
-        closePaymentModal();
-      },
-      onClose: () => {
-        console.log("closed");
-      },
-    });
+    // Initialize Paystack payment
+    const onSuccess = (response) => {
+      console.log("Payment response:", response);
+      handlePaymentSuccess(response);
+    };
+
+    const onClose = () => {
+      toast.error("Payment was not completed");
+    };
+
+    // Use the hook at the component level and call the function here
+    initializePayment(onSuccess, onClose, paymentConfig);
   };
 
   // Function to check if a date is unavailable
@@ -647,19 +684,19 @@ export default function PropertyDetail() {
     }
   };
 
-  // Calculate monthly rent for Option 1 (2% interest)
+  // Calculate monthly rent for Option 1 (1.5% interest)
   const calculateMonthlyRentOption1 = () => {
     if (!property?.pricing?.rent_per_year) return 0;
 
     const { annual_rent } = property.pricing.rent_per_year;
 
-    // Calculate monthly rent with 2% interest
-    const monthlyRent = (annual_rent / 12) * 1.02;
+    // Calculate monthly rent with 1.5% interest
+    const monthlyRent = (annual_rent / 12) * 1.015;
 
     return monthlyRent;
   };
 
-  // Calculate monthly rent for Option 2 (3% interest)
+  // Calculate monthly rent for Option 2 (2% interest)
   const calculateMonthlyRentOption2 = () => {
     if (!property?.pricing?.rent_per_year) return 0;
 
@@ -682,8 +719,8 @@ export default function PropertyDetail() {
     if (is_caution_fee_active) totalAmount += caution_fee;
     if (is_legal_fee_active) totalAmount += legal_fee;
 
-    // Calculate monthly payment with 3% interest
-    const monthlyPayment = (totalAmount / 12) * 1.03;
+    // Calculate monthly payment with 2% interest
+    const monthlyPayment = (totalAmount / 12) * 1.02;
 
     return monthlyPayment;
   };
@@ -773,37 +810,80 @@ export default function PropertyDetail() {
   };
 
   const handleRentNow = () => {
+    // Check if user is logged in
+    if (!user) {
+      toast.error("Please login to rent this property");
+      navigate("/auth/login");
+      return;
+    }
+
+    // Check if user account is active
+    if (!user.is_active || user.registration_payment_status === "pending") {
+      toast.error(
+        "Please complete your registration payment to rent properties"
+      );
+      navigate("/auth/registration-payment");
+      return;
+    }
+
     // Update payment amount based on selected options
     const paymentAmount = calculateInitialPayment();
 
-    const updatedConfig = {
-      ...config,
-      amount: paymentAmount,
-      customizations: {
-        ...config.customizations,
-        title: `${property?.property_name} - ${
-          paymentPeriod === "yearly" ? "Yearly" : "Monthly"
-        } Rent`,
-        description:
-          paymentPeriod === "monthly"
-            ? `Initial payment for ${
-                monthlyPaymentOption === "option1" ? "Option 1" : "Option 2"
-              }`
-            : "Yearly rent payment",
+    // Create a new config for this specific payment
+    const paymentConfig = {
+      ...paystackConfig({
+        ...user,
+        amount: paymentAmount,
+      }),
+      metadata: {
+        custom_fields: [
+          {
+            display_name: "Customer Name",
+            variable_name: "customer_name",
+            value: user?.first_name + " " + user?.last_name,
+          },
+          {
+            display_name: "Customer ID",
+            variable_name: "customer_id",
+            value: user?._id,
+          },
+          {
+            display_name: "Property",
+            variable_name: "property_name",
+            value: property?.property_name || "",
+          },
+          {
+            display_name: "Booking Type",
+            variable_name: "booking_type",
+            value: "rent",
+          },
+          {
+            display_name: "Payment Period",
+            variable_name: "payment_period",
+            value: paymentPeriod,
+          },
+          {
+            display_name: "Payment Option",
+            variable_name: "payment_option",
+            value:
+              paymentPeriod === "monthly" ? monthlyPaymentOption : "yearly",
+          },
+        ],
       },
     };
 
-    handleFlutterPayment({
-      ...updatedConfig,
-      callback: (response) => {
-        console.log(response);
-        handlePaymentSuccess(response);
-        closePaymentModal();
-      },
-      onClose: () => {
-        console.log("closed");
-      },
-    });
+    // Initialize Paystack payment
+    const onSuccess = (response) => {
+      console.log("Payment response:", response);
+      handlePaymentSuccess(response);
+    };
+
+    const onClose = () => {
+      toast.error("Payment was not completed");
+    };
+
+    // Use the hook at the component level and call the function here
+    initializePayment(onSuccess, onClose, paymentConfig);
   };
 
   return (
@@ -1005,7 +1085,7 @@ export default function PropertyDetail() {
 
         {/* Property Details */}
         <div className="flex flex-col lg:flex-row gap-6 md:gap-8">
-          <div className="w-full lg:w-2/3">
+          <div className="w-full lg:w-3/4">
             {/* Basic Info */}
             <div className="bg-white rounded-3xl p-3 md:p-8 mb-8">
               <div className="flex flex-wrap items-center justify-between mb-6">
@@ -1085,7 +1165,7 @@ export default function PropertyDetail() {
           </div>
 
           {/* Booking Card */}
-          <div className="w-full md:min-w-[40%] sticky top-8">
+          <div className="w-full  sticky top-8">
             {property?.property_category === "shortlet" && (
               <div className="bg-white rounded-3xl p-6 shadow-lg">
                 <div className="flex justify-between items-start mb-6">
@@ -1726,12 +1806,12 @@ export default function PropertyDetail() {
                           {showTooltip && (
                             <div className="absolute right-0 sm:right-auto sm:left-0 md:right-0 md:left-auto w-64 p-2 mt-2 text-xs bg-white border rounded-md shadow-lg z-10">
                               <p className="mb-1">
-                                <strong>Option 1:</strong> Pay all fees upfront
-                                with 2% monthly interest on rent
+                                <strong>Option 1:</strong> Pay rental fees
+                                upfront with 1.5% monthly interest on rent
                               </p>
                               <p>
                                 <strong>Option 2:</strong> Pay everything
-                                monthly with 3% interest
+                                monthly with 2% interest
                               </p>
                             </div>
                           )}
@@ -1747,7 +1827,9 @@ export default function PropertyDetail() {
                           }`}
                         >
                           <div className="text-sm font-medium">Option 1</div>
-                          <div className="text-xs">Pay fees upfront</div>
+                          <div className="text-xs">
+                            Pay rental fees + Monthly Rent
+                          </div>
                         </button>
                         <button
                           onClick={() => setMonthlyPaymentOption("option2")}
@@ -1758,7 +1840,9 @@ export default function PropertyDetail() {
                           }`}
                         >
                           <div className="text-sm font-medium">Option 2</div>
-                          <div className="text-xs">Pay everything monthly</div>
+                          <div className="text-xs">
+                            Only monthly Rental payment
+                          </div>
                         </button>
                       </div>
                     </div>
@@ -1834,11 +1918,11 @@ export default function PropertyDetail() {
                         <>
                           <div className="bg-blue-50 p-3 rounded-lg mb-2">
                             <p className="text-sm font-medium text-blue-800 mb-1">
-                              Option 1: Pay fees upfront
+                              Option 1: Pay rental fees plus first Monthly Rent
                             </p>
                             <p className="text-xs text-blue-600">
-                              Pay all fees upfront with 2% monthly interest on
-                              rent
+                              Interest is 1.5% of the yearly rent and paid
+                              monthly for 12 months
                             </p>
                           </div>
 
@@ -1852,17 +1936,17 @@ export default function PropertyDetail() {
                             </span>
                           </div>
                           <div className="flex justify-between text-sm">
-                            <span>2% interest amount</span>
+                            <span>1.5% interest amount</span>
                             <span>
                               {fCurrency(
                                 (property?.pricing?.rent_per_year?.annual_rent /
                                   12) *
-                                  0.02
+                                  0.015
                               )}
                             </span>
                           </div>
                           <div className="flex justify-between text-sm font-medium">
-                            <span>Total Monthly Rent (with 2% interest)</span>
+                            <span>Total Monthly Rent (with 1.5% interest)</span>
                             <span>
                               {fCurrency(calculateMonthlyRentOption1())}
                             </span>
@@ -1925,11 +2009,11 @@ export default function PropertyDetail() {
                         <>
                           <div className="bg-blue-50 p-3 rounded-lg mb-2">
                             <p className="text-sm font-medium text-blue-800 mb-1">
-                              Option 2: Pay everything monthly
+                              Option 2: Only monthly Rental payment
                             </p>
                             <p className="text-xs text-blue-600">
-                              All fees and rent combined with 3% monthly
-                              interest
+                              Interest is 2% of the yearly rent plus rental fees
+                              and paid monthly for 12 months
                             </p>
                           </div>
 
@@ -1963,7 +2047,7 @@ export default function PropertyDetail() {
                             </span>
                           </div>
                           <div className="flex justify-between text-sm">
-                            <span>3% interest amount</span>
+                            <span>2% interest amount</span>
                             <span>
                               {fCurrency(
                                 ((property?.pricing?.rent_per_year
@@ -1989,13 +2073,13 @@ export default function PropertyDetail() {
                                         ?.legal_fee
                                     : 0)) /
                                   12) *
-                                  0.03
+                                  0.02
                               )}
                             </span>
                           </div>
                           <div className="flex justify-between text-sm font-medium">
                             <span>
-                              Total Monthly Payment (with 3% interest)
+                              Total Monthly Payment (with 2% interest)
                             </span>
                             <span>
                               {fCurrency(calculateMonthlyRentOption2())}
@@ -2035,8 +2119,8 @@ export default function PropertyDetail() {
                           </div>
                           <div className="text-xs text-blue-600 mt-1">
                             {monthlyPaymentOption === "option1"
-                              ? "2% monthly interest on rent only"
-                              : "3% monthly interest on total amount"}
+                              ? "1.5% monthly interest on rent only"
+                              : "2% monthly interest on total amount"}
                           </div>
                         </>
                       )}
