@@ -8,6 +8,7 @@ import { useState, useEffect } from "react";
 import { useAuth } from "../../../hooks/useAuth";
 import { propertyService } from "../../../services/api";
 import { fCurrency } from "../../../utils/formatNumber";
+import KycProgressIndicator from "../../../components/KycProgressIndicator";
 
 const getGreeting = () => {
   const hour = new Date().getHours();
@@ -64,6 +65,8 @@ export default function ApartmentOwnerDashboard() {
           </h1>
           <p className="text-gray-600">Here's an overview of your properties</p>
         </div>
+
+          
         <div className="w-full md:w-auto">
           <select
             className="w-full md:w-auto px-4 py-2 border rounded-lg"
@@ -76,7 +79,8 @@ export default function ApartmentOwnerDashboard() {
           </select>
         </div>
       </div>
-
+   {/* KYC Progress Indicator */}
+   <KycProgressIndicator />
       {/* Main Stats Grid */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6 mb-6 md:mb-8">
         <div className="bg-white p-4 md:p-6 rounded-lg shadow-sm">

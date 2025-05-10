@@ -10,6 +10,7 @@ import {
   HiOutlineTicket,
 } from "react-icons/hi";
 import { useNavigate } from "react-router-dom";
+import KycProgressIndicator from "../../../components/KycProgressIndicator";
 export default function UserDashboard() {
   const { statistics, isLoading, getUserStatistics } = userStore();
   const [timeframe, setTimeframe] = useState("30");
@@ -36,7 +37,8 @@ export default function UserDashboard() {
           <option value="365">Last year</option>
         </select>
       </div>
-
+     {/* KYC Progress Indicator */}
+     <KycProgressIndicator />
       {/* Statistics Cards */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6">
         <StatCard

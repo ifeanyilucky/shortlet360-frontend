@@ -14,7 +14,7 @@ import { uploadService } from "@services/api";
 import { yupResolver } from "@hookform/resolvers/yup";
 import * as yup from "yup";
 import KycVerificationStatus from "@components/KycVerificationStatus";
-import { useAuth } from "@hooks/useAuth";
+import { useAuth } from "../../../hooks/useAuth";
 
 export default function AddApartment() {
   const [current, setCurrent] = useState(0);

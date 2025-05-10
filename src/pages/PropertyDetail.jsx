@@ -249,14 +249,7 @@ export default function PropertyDetail() {
       return;
     }
 
-    // Check if user account is active
-    if (!user.is_active || user.registration_payment_status === "pending") {
-      toast.error(
-        "Please complete your registration payment to book properties"
-      );
-      navigate("/auth/registration-payment");
-      return;
-    }
+   console.log(user)
 
     // Check if dates are selected
     if (!startDate || !endDate) {
@@ -833,15 +826,13 @@ export default function PropertyDetail() {
       navigate("/auth/login");
       return;
     }
-
-    // Check if user account is active
-    if (!user.is_active || user.registration_payment_status === "pending") {
-      toast.error(
-        "Please complete your registration payment to rent properties"
-      );
-      navigate("/auth/registration-payment");
-      return;
-    }
+    
+if(user?.kyc?.tier1?.status !== "verified"){
+  toast.error("KYC verification required for renting properties");
+  navigate("/user/settings/kyc");
+  return;
+}
+   
 
     // Update payment amount based on selected options
     const paymentAmount = calculateInitialPayment();
@@ -1102,7 +1093,7 @@ export default function PropertyDetail() {
 
         {/* Property Details */}
         <div className="flex flex-col lg:flex-row gap-6 md:gap-8">
-          <div className="w-full lg:w-3/4">
+          <div className="w-full lg:w-[65%]">
             {/* Basic Info */}
             <div className="bg-white rounded-3xl p-3 md:p-8 mb-8">
               <div className="flex flex-wrap items-center justify-between mb-6">
@@ -1182,7 +1173,7 @@ export default function PropertyDetail() {
           </div>
 
           {/* Booking Card */}
-          <div className="w-full  sticky top-8">
+          <div className="lg:w-[35%]  sticky top-8">
             {property?.property_category === "shortlet" && (
               <div className="bg-white rounded-3xl p-6 shadow-lg">
                 <div className="flex justify-between items-start mb-6">
@@ -1755,10 +1746,11 @@ export default function PropertyDetail() {
                 )}
 
                 {/* KYC Verification Status */}
-                {user && user?._id !== property?.owner._id && startDate && endDate && (
+                {user && user?._id !== property?.owner._id && startDate && endDate && !kycVerified && (
                   <div className="mt-4 mb-2">
                     <KycVerificationStatus
-                      requiredTier={paymentPeriod === "monthly" ? "tier3" : "tier1"}
+                      // requiredTier={paymentPeriod === "monthly" ? "tier2" : "tier1"}
+                      requiredTier={"tier1"}
                       actionText="Continue to Payment"
                       onVerified={() => setKycVerified(true)}
                     />
@@ -2133,7 +2125,16 @@ export default function PropertyDetail() {
                       )}
                     </div>
                   </div>
-
+                  {user && user?._id !== property?.owner._id && !kycVerified && (
+                  <div className="mt-4 mb-2">
+                    <KycVerificationStatus
+                      // requiredTier={paymentPeriod === "monthly" ? "tier2" : "tier1"}
+                      requiredTier={"tier1"}
+                      actionText="Continue to Payment"
+                      onVerified={() => setKycVerified(true)}
+                    />
+                  </div>
+                )}
                   {/* Book Now Button */}
                   {user?._id === property?.owner._id ? (
                     <button
@@ -2154,6 +2155,8 @@ export default function PropertyDetail() {
                         : "Pay First Month"}
                     </button>
                   )}
+
+
                 </div>
               </div>
             )}

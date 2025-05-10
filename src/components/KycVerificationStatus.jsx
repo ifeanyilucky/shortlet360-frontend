@@ -105,6 +105,7 @@ export default function KycVerificationStatus({
           </p>
           <InteractiveButton
             onClick={handleCompleteKyc}
+            size="small"
             className="mt-3"
           >
             Check Status
