@@ -30,6 +30,8 @@ import { usePaystackPayment } from "react-paystack";
 import { bookingService } from "../services/api";
 import toast from "react-hot-toast";
 import { paystackConfig } from "../config/paystack";
+import KycVerificationStatus from "../components/KycVerificationStatus";
+import useKycStore from "../store/kycStore";
 
 // Custom CSS for the calendar and gallery
 const customStyles = `
@@ -190,6 +192,8 @@ export default function PropertyDetail() {
   const [paymentPeriod, setPaymentPeriod] = useState("yearly");
   const [monthlyPaymentOption, setMonthlyPaymentOption] = useState("option1");
   const [showTooltip, setShowTooltip] = useState(false);
+  const [kycVerified, setKycVerified] = useState(false);
+  const { getKycStatus } = useKycStore();
 
   useEffect(() => {
     // Inject custom styles
@@ -237,7 +241,7 @@ export default function PropertyDetail() {
     navigate(`/dashboard/apartment-owner/edit-property/${id}`);
   };
 
-  const handleBookNow = () => {
+  const handleBookNow = async () => {
     // Check if user is logged in
     if (!user) {
       toast.error("Please login to book this property");
@@ -254,8 +258,28 @@ export default function PropertyDetail() {
       return;
     }
 
+    // Check if dates are selected
     if (!startDate || !endDate) {
       toast.error("Please select check-in and check-out dates");
+      return;
+    }
+
+    // Check KYC verification status
+    try {
+      const kycResponse = await getKycStatus();
+      const requiredTier = paymentPeriod === "monthly" ? "tier3" : "tier1";
+
+      // Check if the required tier is verified
+      if (!kycResponse.kyc[requiredTier] || kycResponse.kyc[requiredTier].status !== "verified") {
+        setKycVerified(false);
+        toast.error(`KYC verification required for booking`);
+        return;
+      }
+
+      setKycVerified(true);
+    } catch (error) {
+      console.error("Error checking KYC status:", error);
+      toast.error("Unable to verify KYC status. Please try again.");
       return;
     }
 
@@ -1727,6 +1751,17 @@ export default function PropertyDetail() {
                       </p>
                       <p>* Cleaning fee is a one-time charge per stay</p>
                     </div>
+                  </div>
+                )}
+
+                {/* KYC Verification Status */}
+                {user && user?._id !== property?.owner._id && startDate && endDate && (
+                  <div className="mt-4 mb-2">
+                    <KycVerificationStatus
+                      requiredTier={paymentPeriod === "monthly" ? "tier3" : "tier1"}
+                      actionText="Continue to Payment"
+                      onVerified={() => setKycVerified(true)}
+                    />
                   </div>
                 )}
 

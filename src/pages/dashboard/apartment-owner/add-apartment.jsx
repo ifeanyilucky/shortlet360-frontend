@@ -13,10 +13,14 @@ import { useNavigate } from "react-router-dom";
 import { uploadService } from "@services/api";
 import { yupResolver } from "@hookform/resolvers/yup";
 import * as yup from "yup";
+import KycVerificationStatus from "@components/KycVerificationStatus";
+import { useAuth } from "@hooks/useAuth";
 
 export default function AddApartment() {
   const [current, setCurrent] = useState(0);
   const [submitLoading, setSubmitLoading] = useState(false);
+  const [kycVerified, setKycVerified] = useState(false);
+  const { user } = useAuth();
 
   const validationSchema = yup.object().shape({
     // Basic Info validations
@@ -276,11 +280,25 @@ export default function AddApartment() {
   console.log(methods.formState.errors);
   return (
     <div className="max-w-5xl p-5">
-      <FormProvider {...methods}>
-        <form
-          onSubmit={methods.handleSubmit(onSubmit)}
-          className="bg-white rounded-lg"
-        >
+      <h1 className="text-2xl font-semibold mb-6">Add New Apartment</h1>
+
+      {/* KYC Verification Check */}
+      {!kycVerified && (
+        <div className="mb-6">
+          <KycVerificationStatus
+            requiredTier="tier2"
+            actionText="Continue to Add Apartment"
+            onVerified={() => setKycVerified(true)}
+          />
+        </div>
+      )}
+
+      {kycVerified && (
+        <FormProvider {...methods}>
+          <form
+            onSubmit={methods.handleSubmit(onSubmit)}
+            className="bg-white rounded-lg"
+          >
           {/* Steps indicator */}
           <div className="relative flex justify-between mb-12">
             {/* Progress Line */}
@@ -295,7 +313,7 @@ export default function AddApartment() {
             {steps.map((step, index) => (
               <div key={index} className="relative flex flex-col items-center">
                 <div
-                  className={`w-10 h-10 rounded-full flex items-center justify-center z-10 
+                  className={`w-10 h-10 rounded-full flex items-center justify-center z-10
                                     ${
                                       index < current
                                         ? "bg-primary-500 text-white border-2 border-primary-500"
@@ -373,6 +391,7 @@ export default function AddApartment() {
           </div>
         </form>
       </FormProvider>
+      )}
     </div>
   );
 }

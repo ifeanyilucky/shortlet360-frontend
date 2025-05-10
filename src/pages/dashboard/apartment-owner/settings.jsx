@@ -6,6 +6,7 @@ import {
   FiBriefcase,
   FiCamera,
   FiLock,
+  FiShield,
 } from "react-icons/fi";
 import axios from "axios";
 import { toast } from "react-hot-toast";
@@ -213,6 +214,17 @@ export default function Settings() {
           >
             <FiLock className="mr-2" />
             Change Password
+          </button>
+          <button
+            onClick={() => window.location.href = `/${user?.role}/settings/kyc`}
+            className={`${
+              activeTab === "kyc"
+                ? "border-primary-500 text-primary-600"
+                : "border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300"
+            } whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm flex items-center`}
+          >
+            <FiShield className="mr-2" />
+            KYC Verification
           </button>
         </nav>
       </div>

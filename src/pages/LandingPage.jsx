@@ -255,7 +255,7 @@ export default function LandingPage() {
         <div className="w-full h-[300px] md:h-[500px] overflow-hidden relative">
           <div className="absolute inset-0 bg-gradient-to-t from-primary-700/50 to-transparent z-10"></div>
           <img
-            src={"/images/living-room.jpg"}
+            src={"/images/siting-room.jpeg"}
             alt="Hero"
             className="w-full h-full object-cover object-bottom transform scale-110"
           />

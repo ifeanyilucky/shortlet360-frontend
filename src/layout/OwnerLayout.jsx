@@ -9,6 +9,7 @@ import { HiMenuAlt2 } from "react-icons/hi";
 import { IoMdClose } from "react-icons/io";
 import { useState } from "react";
 import { useAuth } from "../hooks/useAuth";
+import KycProgressIndicator from "../components/KycProgressIndicator";
 
 const OwnerLayout = () => {
   const location = useLocation();
@@ -119,6 +120,9 @@ const OwnerLayout = () => {
             <img src={"/logo.png"} alt="logo" className="w-20 h-20" />
           </Link>
         </div>
+
+        {/* KYC Progress Indicator */}
+        <KycProgressIndicator />
 
         {/* Main Menu */}
         <nav className="flex-1 px-4">

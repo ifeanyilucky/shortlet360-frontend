@@ -25,6 +25,9 @@ import UserLayout from "../layout/UserLayout";
 import Receipt from "../components/Receipt";
 import UserBookingHistory from "../pages/dashboard/user/UserBookingHistory";
 import Favorite from "../pages/dashboard/user/favorite";
+// KYC Verification
+import KycVerification from "../pages/kyc/KycVerification";
+import VerifyEmail from "../pages/kyc/VerifyEmail";
 export default function Router() {
   const routes = useRoutes([
     {
@@ -38,6 +41,7 @@ export default function Router() {
         { path: "blog", element: <Blog /> },
         { path: "contact", element: <ContactUs /> },
         { path: "property/:id", element: <PropertyDetail /> },
+        { path: "verify-email/:token", element: <VerifyEmail /> },
       ],
     },
     { path: "/:property_id/receipt/:booking_id", element: <Receipt /> },
@@ -65,6 +69,7 @@ export default function Router() {
             { path: "bookings", element: <UserBookingHistory /> },
             { path: "favorites", element: <Favorite /> },
             { path: "settings", element: <Settings /> },
+            { path: "settings/kyc", element: <KycVerification /> },
           ],
         },
         {
@@ -85,6 +90,7 @@ export default function Router() {
             { path: "availability", element: <Availability /> },
             { path: "bookings", element: <Bookings /> },
             { path: "settings", element: <Settings /> },
+            { path: "settings/kyc", element: <KycVerification /> },
           ],
         },
         { path: "", element: <Navigate to="/dashboard/user" replace /> },
