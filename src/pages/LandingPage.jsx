@@ -76,17 +76,20 @@ export default function LandingPage() {
         <div className="absolute inset-0 bg-[url('/images/pattern.png')] opacity-10"></div>
         <div className="max-w-6xl mx-auto px-4 text-center pt-20 pb-10 relative z-10">
           <h1 className="text-4xl md:text-6xl font-bold mb-6 animate-fade-in">
-            Quality Apartments{" "}
+            Seamless Apartments{" "}
             <span className="text-accent-300 bg-clip-text text-transparent bg-gradient-to-r from-accent-300 to-accent-500">
               For Everyone
             </span>
           </h1>
 
           <p className="text-primary-100 max-w-3xl mx-auto mb-12 text-base md:text-lg px-4 animate-slide-up">
-            Aplet360 is your premier platform for finding and renting quality
-            apartments across Nigeria. Whether you're looking for a long-term
-            home or a short-term stay, find the perfect furnished apartment with
-            flexible payment options and hassle-free management.
+            Aplet360 is Africa's premier apartment rental and shortlet solutions
+            company, offering individuals, families, travelers, and corporate
+            clients seamless access to quality, verified, and affordable
+            property options across major cities in Nigeria and Africa while
+            providing 360 degree seamless home services designed to elevate
+            everyday living for Africans. We're not just providing homes, we're
+            providing lifestyles built on trust, comfort, and excellence.
           </p>
 
           {/* Search Section */}

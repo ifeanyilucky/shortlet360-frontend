@@ -687,11 +687,16 @@ export default function PropertyDetail() {
   // Calculate monthly rent for Option 1 (1.5% interest)
   const calculateMonthlyRentOption1 = () => {
     if (!property?.pricing?.rent_per_year) return 0;
-
     const { annual_rent } = property.pricing.rent_per_year;
 
-    // Calculate monthly rent with 1.5% interest
-    const monthlyRent = (annual_rent / 12) * 1.015;
+    // Calculate monthly base rent (yearly rent divided by 12)
+    const monthlyBaseRent = annual_rent / 12;
+
+    // Calculate monthly interest (1.5% of yearly rent)
+    const monthlyInterest = annual_rent * 0.015;
+
+    // Total monthly payment is base rent + interest
+    const monthlyRent = monthlyBaseRent + monthlyInterest;
 
     return monthlyRent;
   };
@@ -699,30 +704,18 @@ export default function PropertyDetail() {
   // Calculate monthly rent for Option 2 (2% interest)
   const calculateMonthlyRentOption2 = () => {
     if (!property?.pricing?.rent_per_year) return 0;
+    const { annual_rent } = property.pricing.rent_per_year;
 
-    const {
-      annual_rent,
-      agency_fee,
-      commission_fee,
-      caution_fee,
-      legal_fee,
-      is_agency_fee_active,
-      is_commission_fee_active,
-      is_caution_fee_active,
-      is_legal_fee_active,
-    } = property.pricing.rent_per_year;
+    // Calculate monthly base rent (yearly rent divided by 12)
+    const monthlyBaseRent = annual_rent / 12;
 
-    // Calculate total amount
-    let totalAmount = annual_rent;
-    if (is_agency_fee_active) totalAmount += agency_fee;
-    if (is_commission_fee_active) totalAmount += commission_fee;
-    if (is_caution_fee_active) totalAmount += caution_fee;
-    if (is_legal_fee_active) totalAmount += legal_fee;
+    // Calculate monthly interest (2% of yearly rent)
+    const monthlyInterest = annual_rent * 0.02;
 
-    // Calculate monthly payment with 2% interest
-    const monthlyPayment = (totalAmount / 12) * 1.02;
+    // Total monthly payment is base rent + interest
+    const monthlyRent = monthlyBaseRent + monthlyInterest;
 
-    return monthlyPayment;
+    return monthlyRent;
   };
 
   // Calculate price for shortlet based on selected pricing option and dates
@@ -1807,11 +1800,13 @@ export default function PropertyDetail() {
                             <div className="absolute right-0 sm:right-auto sm:left-0 md:right-0 md:left-auto w-64 p-2 mt-2 text-xs bg-white border rounded-md shadow-lg z-10">
                               <p className="mb-1">
                                 <strong>Option 1:</strong> Pay rental fees
-                                upfront with 1.5% monthly interest on rent
+                                upfront with 1.5% of yearly rent paid monthly
+                                (18% annually)
                               </p>
                               <p>
                                 <strong>Option 2:</strong> Pay everything
-                                monthly with 2% interest
+                                monthly with 2% of yearly rent paid monthly (24%
+                                annually)
                               </p>
                             </div>
                           )}
@@ -1921,8 +1916,8 @@ export default function PropertyDetail() {
                               Option 1: Pay rental fees plus first Monthly Rent
                             </p>
                             <p className="text-xs text-blue-600">
-                              Interest is 1.5% of the yearly rent and paid
-                              monthly for 12 months
+                              Interest is 1.5% of the yearly rent paid monthly
+                              (18% annually)
                             </p>
                           </div>
 
@@ -1939,8 +1934,7 @@ export default function PropertyDetail() {
                             <span>1.5% interest amount</span>
                             <span>
                               {fCurrency(
-                                (property?.pricing?.rent_per_year?.annual_rent /
-                                  12) *
+                                property?.pricing?.rent_per_year?.annual_rent *
                                   0.015
                               )}
                             </span>
@@ -2012,8 +2006,8 @@ export default function PropertyDetail() {
                               Option 2: Only monthly Rental payment
                             </p>
                             <p className="text-xs text-blue-600">
-                              Interest is 2% of the yearly rent plus rental fees
-                              and paid monthly for 12 months
+                              Interest is 2% of the yearly rent paid monthly
+                              (24% annually)
                             </p>
                           </div>
 
@@ -2050,29 +2044,7 @@ export default function PropertyDetail() {
                             <span>2% interest amount</span>
                             <span>
                               {fCurrency(
-                                ((property?.pricing?.rent_per_year
-                                  ?.annual_rent +
-                                  (property?.pricing?.rent_per_year
-                                    ?.is_agency_fee_active
-                                    ? property?.pricing?.rent_per_year
-                                        ?.agency_fee
-                                    : 0) +
-                                  (property?.pricing?.rent_per_year
-                                    ?.is_commission_fee_active
-                                    ? property?.pricing?.rent_per_year
-                                        ?.commission_fee
-                                    : 0) +
-                                  (property?.pricing?.rent_per_year
-                                    ?.is_caution_fee_active
-                                    ? property?.pricing?.rent_per_year
-                                        ?.caution_fee
-                                    : 0) +
-                                  (property?.pricing?.rent_per_year
-                                    ?.is_legal_fee_active
-                                    ? property?.pricing?.rent_per_year
-                                        ?.legal_fee
-                                    : 0)) /
-                                  12) *
+                                property?.pricing?.rent_per_year?.annual_rent *
                                   0.02
                               )}
                             </span>
@@ -2119,8 +2091,8 @@ export default function PropertyDetail() {
                           </div>
                           <div className="text-xs text-blue-600 mt-1">
                             {monthlyPaymentOption === "option1"
-                              ? "1.5% monthly interest on rent only"
-                              : "2% monthly interest on total amount"}
+                              ? "1.5% of yearly rent paid monthly (18% annually)"
+                              : "2% of yearly rent paid monthly (24% annually)"}
                           </div>
                         </>
                       )}

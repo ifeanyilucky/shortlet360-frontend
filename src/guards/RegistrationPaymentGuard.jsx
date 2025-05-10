@@ -4,18 +4,23 @@ import { useAuth } from "../hooks/useAuth";
 
 export default function RegistrationPaymentGuard({ children }) {
   const { isAuthenticated, user } = useAuth();
-  console.log("user", { isAuthenticated, user });
+
   // If not authenticated, redirect to login
   if (!isAuthenticated) {
     return <Navigate to="/auth/login" />;
   }
 
-  // If authenticated but doesn't require payment, redirect to home
-  if (!user?.registration_payment_status === "pending") {
+  // If user is not an owner, redirect to home
+  if (user?.role !== "owner") {
     return <Navigate to="/" />;
   }
 
-  // If user requires payment, allow access to the payment page
+  // If owner is already active or has paid, redirect to home
+  if (user?.is_active || user?.registration_payment_status === "paid") {
+    return <Navigate to="/" />;
+  }
+
+  // If owner requires payment, allow access to the payment page
   return <>{children}</>;
 }
 

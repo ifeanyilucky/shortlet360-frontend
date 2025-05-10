@@ -8,8 +8,8 @@ import { paystackConfig } from "../../config/paystack";
 import { authService } from "../../services/api";
 import LoadingOverlay from "../../components/LoadingOverlay";
 
-// Registration fee in Naira - same for both user and owner roles
-const REGISTRATION_FEE = 2000;
+// Registration fee in Naira - only for owner role
+const REGISTRATION_FEE = 20000;
 
 export default function RegistrationPayment() {
   const { user, setUser } = useAuth();
@@ -18,7 +18,12 @@ export default function RegistrationPayment() {
 
   useEffect(() => {
     // If user is already active or doesn't require payment, redirect to home
-    if (user?.is_active || !user?.registration_payment_status === "pending") {
+    if (user?.is_active || user?.registration_payment_status === "paid") {
+      navigate("/");
+    }
+
+    // If user is not an owner, redirect to home
+    if (user?.role !== "owner") {
       navigate("/");
     }
   }, [user, navigate]);
@@ -45,12 +50,8 @@ export default function RegistrationPayment() {
 
       toast.success("Registration payment completed successfully!");
 
-      // Navigate based on user role
-      if (user.role === "owner") {
-        navigate("/owner/dashboard");
-      } else {
-        navigate("/user/dashboard");
-      }
+      // Navigate to owner dashboard
+      navigate("/owner/dashboard");
     } catch (error) {
       console.error("Payment verification error:", error);
       toast.error(
@@ -73,13 +74,12 @@ export default function RegistrationPayment() {
           Complete Your Registration
         </h2>
         <p className="mt-2 text-center text-sm text-gray-600">
-          {user?.role === "owner"
-            ? "Please make a payment to activate your Landlord/Property Manager account"
-            : "Please make a payment to activate your Rental/Shortlet account"}
+          Please make a payment to activate your Landlord/Property Manager
+          account
         </p>
       </div>
 
-      <div className="mt-8 sm:mx-auto sm:w-full sm:max-w-md">
+      <div className="mt-8 sm:mx-auto sm:w-full sm:max-w-2xl">
         <div className="bg-white py-8 px-4 shadow sm:rounded-lg sm:px-10">
           <div className="space-y-6">
             <div>
@@ -87,7 +87,8 @@ export default function RegistrationPayment() {
                 Registration Fee
               </h3>
               <p className="mt-1 text-sm text-gray-500">
-                A one-time fee to activate your account
+                A one-time fee to activate your Landlord/Property Manager
+                account
               </p>
               <p className="mt-2 text-xl font-bold text-gray-900">
                 ₦{REGISTRATION_FEE.toLocaleString()}
@@ -96,39 +97,45 @@ export default function RegistrationPayment() {
 
             <div className="mt-6 bg-primary-50 p-4 rounded-lg border border-primary-100">
               <h4 className="font-medium text-primary-700 mb-3">
-                Complete your registration to enjoy the endless value that comes
-                with using Aplet360
+                Complete your registration to enjoy our comprehensive property
+                management services
               </h4>
 
-              {user?.role === "owner" ? (
-                <div className="space-y-2">
-                  <p className="text-sm text-gray-700 font-medium">
-                    As a Landlord/Property Manager, you&apos;ll get:
-                  </p>
-                  <ul className="text-sm text-gray-600 space-y-1 ml-5 list-disc">
-                    <li>Listing creation and management tools</li>
-                    <li>Access to verified tenants</li>
-                    <li>Booking sourcing and management</li>
-                    <li>Secure payment processing</li>
-                    {/* <li>Property promotion to targeted audiences</li> */}
-                    <li>24/7 maintenance and support services</li>
-                  </ul>
-                </div>
-              ) : (
-                <div className="space-y-2">
-                  <p className="text-sm text-gray-700 font-medium">
-                    As a Rental/Shortlet user, you&apos;ll get:
-                  </p>
-                  <ul className="text-sm text-gray-600 space-y-1 ml-5 list-disc">
-                    <li>Access to verified quality apartments</li>
-                    <li>Flexible monthly payment options</li>
-                    <li>Tenant protection and security</li>
-                    <li>Transparent pricing with no hidden fees</li>
-                    <li>Comprehensive home services</li>
-                    <li>24/7 customer support</li>
-                  </ul>
-                </div>
-              )}
+              <div className="space-y-2">
+                <p className="text-sm text-gray-700 font-medium">
+                  As a Landlord/Property Manager, you&apos;ll get:
+                </p>
+                <ul className="text-sm text-gray-600 space-y-1 ml-5 list-disc">
+                  <li>
+                    Rent Collection and Accounting (Receipt Issuing and Rental
+                    Remittance)
+                  </li>
+                  <li>Rental Income Guarantee</li>
+                  <li>
+                    Rental Administration (Lease Payment, Renewal, Termination,
+                    and Replacement)
+                  </li>
+                  <li>Quick Apartment Placement</li>
+                  <li>Tenant Verification</li>
+                  <li>
+                    Access to exclusive home services (Solar System, ApLet360
+                    TeleMed, ApLet360 Pharmacy)
+                  </li>
+                  <li>Property Valuation/Rent Review</li>
+                  <li>
+                    Legal Support and Dispute Resolution (Optional if you
+                    already have your lawyer)
+                  </li>
+                  <li>Property Advertising</li>
+                  <li>
+                    Access to quality and affordable property maintenance,
+                    repair, renovation and improvement
+                  </li>
+                </ul>
+                <p className="text-sm text-gray-700 font-medium mt-3">
+                  Service Fee: 5% to 10% of annual rent
+                </p>
+              </div>
             </div>
 
             <div className="mt-6">
@@ -136,20 +143,16 @@ export default function RegistrationPayment() {
                 <InteractiveButton
                   disabled={!user || !paystackPaymentConfig}
                   onClick={() => {
-                    // Define onSuccess callback - this will be called by Paystack after successful payment
                     const onSuccess = (reference) => {
                       console.log("Payment successful. Reference:", reference);
                       handlePaymentSuccess(reference);
                     };
 
-                    // Define onClose callback - this will be called if the user closes the payment modal
                     const onClose = () => {
                       console.log("Payment modal closed");
                       toast.error("Payment was not completed");
                     };
 
-                    // Initialize Paystack payment with the callbacks
-                    // This opens the Paystack payment modal
                     initializePayment({
                       onSuccess,
                       onClose,

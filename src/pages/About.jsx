@@ -17,9 +17,6 @@ export default function About() {
           <p className="text-xl text-primary-100 max-w-3xl mx-auto mb-2 animate-slide-up">
             Your seamless Home Experience with a click.
           </p>
-          <p className="text-xl text-primary-100 max-w-3xl mx-auto animate-slide-up">
-            Your Home, Your Lifestyle, Seamlessly Delivered.
-          </p>
         </div>
       </section>
 
@@ -49,13 +46,12 @@ export default function About() {
                 trust, comfort, and excellence.
               </p>
               <p className="text-tertiary-600 mb-6 text-lg">
-                At Aplet360, we are redefining the property rental experience by
-                eliminating trust barriers, promoting transparency, and
-                providing a premium, customer-first service that guarantees
-                peace of mind. Our portfolio spans rental apartments, luxury
-                apartments, affordable shortlets, serviced homes, meticulously
-                vetted to meet the highest standards of comfort, security, and
-                style.
+                We are redefining the property rental experience by eliminating
+                trust barriers, promoting transparency, and providing a premium,
+                customer-first service that guarantees peace of mind. Our
+                portfolio spans rental apartments, luxury apartments, affordable
+                shortlets, serviced homes, meticulously vetted to meet the
+                highest standards of comfort, security, and style.
               </p>
               <p className="text-tertiary-600 text-lg">
                 At Aplet360, we are not just connecting people to homes; we are

@@ -66,10 +66,14 @@ export default function Register() {
         role: selectedTab === "user" ? "user" : "owner",
       });
 
-      // The register function in JWTContext will handle redirection to payment page
-      toast.success(
-        "Registration successful! Please complete your payment to activate your account."
-      );
+      if (selectedTab === "owner") {
+        // The register function in JWTContext will handle redirection to payment page
+        toast.success(
+          "Registration successful! Please complete your payment to activate your account."
+        );
+      } else {
+        toast.success("Registration successful!");
+      }
 
       // No need to navigate here as JWTContext will handle it
     } catch (error) {

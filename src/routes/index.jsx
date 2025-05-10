@@ -112,12 +112,9 @@ export default function Router() {
       path: "auth/registration-payment",
       element: (
         <div className="min-h-screen bg-gray-50">
-          {/* <AuthLayout /> */}
-          <div className="flex justify-center items-center">
-            <RegistrationPaymentGuard>
-              <RegistrationPayment />
-            </RegistrationPaymentGuard>
-          </div>
+          <RegistrationPaymentGuard>
+            <RegistrationPayment />
+          </RegistrationPaymentGuard>
         </div>
       ),
     },

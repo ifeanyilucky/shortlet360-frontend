@@ -11,11 +11,22 @@ export default function ActiveUserGuard({ children }) {
     return <Navigate to="/auth/login" />;
   }
 
-  // If authenticated but account is not active, redirect to registration payment
-  if (!user?.is_active || user?.registration_payment_status === "pending") {
-    toast.error("Please complete your registration payment to access this page");
+  // For owners: check if account is active and payment is completed
+  if (
+    user?.role === "owner" &&
+    (!user?.is_active || user?.registration_payment_status === "pending")
+  ) {
+    toast.error(
+      "Please complete your registration payment to access this page"
+    );
     return <Navigate to="/auth/registration-payment" />;
   }
+
+  // // For users: no payment required, just check if account is active
+  // if (user?.role === "user" && !user?.is_active) {
+  //   toast.error("Your account is not active. Please contact support.");
+  //   return <Navigate to="/" />;
+  // }
 
   // If user is authenticated and active, allow access
   return <>{children}</>;

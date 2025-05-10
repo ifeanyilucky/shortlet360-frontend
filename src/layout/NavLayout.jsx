@@ -40,7 +40,7 @@ export default function NavLayout() {
       ],
     },
     { name: "FAQ", href: "/faq" },
-    { name: "Blog", href: "/blog" },
+    // { name: "Blog", href: "/blog" },
     { name: "Contact", href: "/contact" },
   ];
 
@@ -65,6 +65,7 @@ export default function NavLayout() {
     <div className="min-h-screen flex flex-col">
       {/* Payment notification banner */}
       {isAuthenticated &&
+        user?.role === "owner" &&
         (!user?.is_active ||
           user?.registration_payment_status === "pending") && (
           <div className="bg-accent-500 text-white py-2 px-4">
@@ -116,7 +117,7 @@ export default function NavLayout() {
                         />
                       </button>
                       {isBookDropdownOpen && (
-                        <div className="absolute z-10 mt-2 w-48 rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5">
+                        <div className="absolute  z-[999] mt-2 w-48 rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5">
                           <div
                             className="py-1"
                             role="menu"
@@ -210,7 +211,7 @@ export default function NavLayout() {
                           </button>
                           <button
                             onClick={() => {
-                              navigate("/settings");
+                              navigate(`/${user.role}/settings`);
                               setIsUserDropdownOpen(false);
                             }}
                             className="w-full flex items-center px-4 py-2 text-sm text-tertiary-700 hover:bg-tertiary-100"
