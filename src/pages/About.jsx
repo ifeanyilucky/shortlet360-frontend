@@ -15,7 +15,7 @@ export default function About() {
             About Aplet360
           </h1>
           <p className="text-xl text-primary-100 max-w-3xl mx-auto mb-2 animate-slide-up">
-            Your seamless Home Experience with a click.
+            Your seamless home experience with a click.
           </p>
         </div>
       </section>
@@ -74,7 +74,7 @@ export default function About() {
         <div className="container mx-auto px-4">
           <div className="text-center mb-16">
             <h2 className="text-3xl md:text-4xl font-bold mb-4 text-tertiary-900">
-              Our Mission, Vision & Values
+              Our Mission, Vision & Core Values
             </h2>
             <p className="text-tertiary-600 max-w-3xl mx-auto text-lg">
               At Aplet360, we&apos;re driven by a clear purpose and guided by
@@ -96,6 +96,19 @@ export default function About() {
                 technology, transparency, and innovation.
               </p>
             </div>
+            <div className="bg-white p-8 rounded-2xl shadow-card hover:shadow-elevated transition-all duration-300 transform hover:-translate-y-1">
+              <div className="w-16 h-16 bg-primary-100 rounded-2xl flex items-center justify-center mx-auto mb-6">
+                <FiStar className="w-8 h-8 text-primary-600" />
+              </div>
+              <h3 className="text-2xl font-semibold mb-4 text-tertiary-900">
+                Our Vision
+              </h3>
+              <p className="text-tertiary-600">
+                To become Africa&apos;s most trusted platform for premium
+                property solutions and home lifestyle services.
+              </p>
+            </div>
+
             <div className="bg-white p-8 rounded-2xl shadow-card hover:shadow-elevated transition-all duration-300 transform hover:-translate-y-1">
               <div className="w-16 h-16 bg-accent-100 rounded-2xl flex items-center justify-center mx-auto mb-6">
                 <FiCheckCircle className="w-8 h-8 text-accent-600" />
@@ -140,18 +153,6 @@ export default function About() {
                   </span>
                 </li>
               </ul>
-            </div>
-            <div className="bg-white p-8 rounded-2xl shadow-card hover:shadow-elevated transition-all duration-300 transform hover:-translate-y-1">
-              <div className="w-16 h-16 bg-primary-100 rounded-2xl flex items-center justify-center mx-auto mb-6">
-                <FiStar className="w-8 h-8 text-primary-600" />
-              </div>
-              <h3 className="text-2xl font-semibold mb-4 text-tertiary-900">
-                Our Vision
-              </h3>
-              <p className="text-tertiary-600">
-                To become Africa&apos;s most trusted platform for premium
-                property solutions and home lifestyle services.
-              </p>
             </div>
           </div>
         </div>
@@ -230,8 +231,9 @@ export default function About() {
                 Flexible Living Solutions
               </h3>
               <p className="text-tertiary-600">
-                Options from daily rentals to yearly leases across Nigeria and
-                expanding African cities.
+                Options for monthly and yearly leasing for rental apartments
+                while then daily to monthly lease for shortlet apartments across
+                Nigeria and expanding into African cities.
               </p>
             </div>
 
@@ -286,8 +288,8 @@ export default function About() {
                 Flexible Payments
               </h3>
               <p className="text-tertiary-600">
-                Two monthly payment options: 2% interest on rent with upfront
-                fees, or 3% interest with all costs divided monthly.
+                Two monthly payment options: 1.5% interest on rent with upfront
+                fees, or 2% interest with all costs divided monthly.
               </p>
             </div>
 

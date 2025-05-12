@@ -76,7 +76,7 @@ export default function LandingPage() {
         <div className="absolute inset-0 bg-[url('/images/pattern.png')] opacity-10"></div>
         <div className="max-w-6xl mx-auto px-4 text-center pt-20 pb-10 relative z-10">
           <h1 className="text-4xl md:text-6xl font-bold mb-6 animate-fade-in">
-            Seamless Apartments{" "}
+            Seamless Apartment{" "}
             <span className="text-accent-300 bg-clip-text text-transparent bg-gradient-to-r from-accent-300 to-accent-500">
               For Everyone
             </span>
@@ -267,7 +267,7 @@ export default function LandingPage() {
         <div className="max-w-6xl mx-auto px-4">
           <div className="text-center mb-16">
             <h2 className="text-3xl md:text-5xl font-bold mb-6">
-              Find your perfect space in{" "}
+              Find your perfect apartment in{" "}
               <span className="text-primary-600 bg-clip-text text-transparent bg-gradient-to-r from-primary-600 to-primary-500">
                 4 simple steps
               </span>
@@ -342,6 +342,32 @@ export default function LandingPage() {
               <BsArrowRight className="w-5 h-5" />
             </Link>
           </div>
+        </div>
+      </section>
+
+      {/* Rent now, pay later section */}
+      <section className="py-16 bg-primary-500 text-white">
+        <div className="max-w-6xl mx-auto px-4 text-center">
+          <h2 className="text-3xl md:text-4xl font-bold mb-6">
+            Rent that apartment now and pay later
+          </h2>
+          <p className="max-w-3xl mx-auto mb-6 text-primary-100">
+            We know you earn either daily, weekly, or monthly. We understand the
+            struggle behind paying yearly rent, that's why we are here for you.
+          </p>
+          <p className="max-w-3xl mx-auto mb-10 text-primary-100">
+            Enjoy the flexibility of renting your perfect apartment today with
+            our two convenient monthly payment options: Option 1 with 1.5%
+            monthly interest on rent (upfront fees) or Option 2 with 2% monthly
+            interest (all costs divided into monthly payments).
+          </p>
+          <Link
+            to="/book-now"
+            className="bg-white text-primary-500 px-8 py-3 rounded-full inline-flex items-center gap-2 hover:bg-primary-50 transition-colors font-medium"
+          >
+            <span>Explore Payment Options</span>
+            <BsArrowRight />
+          </Link>
         </div>
       </section>
 
@@ -538,7 +564,7 @@ export default function LandingPage() {
           <div className="flex flex-col md:flex-row gap-8 md:gap-20 mb-12">
             <div className="flex-1">
               <h2 className="text-3xl md:text-4xl font-bold">
-                Explore amazing spaces
+                Explore amazing apartments
                 <br />
                 on Aplet360 with flexible
                 <br />
@@ -547,10 +573,11 @@ export default function LandingPage() {
             </div>
             <div className="flex-1">
               <p className="text-gray-600 text-sm md:text-base">
-                Aplet360-managed apartments are move-in ready and all bills
-                inclusive. Living essentials including cooking gas supply, 24/7
-                power supply, treated water, waste management and facility
-                maintenance including plumbing and AC service.
+                Aplet360 ensures all listed apartments meet our high standards
+                of quality and comfort. We carefully vet each property to
+                guarantee a premium living experience for our clients, focusing
+                on cleanliness, safety, and modern amenities that cater to your
+                lifestyle needs.
               </p>
             </div>
           </div>
@@ -695,6 +722,36 @@ export default function LandingPage() {
                     </p>
                   </div>
                 </div>
+                <div className="flex items-start gap-3">
+                  <div className="w-10 h-10 bg-primary-100 rounded-full flex items-center justify-center mt-1">
+                    <MdApartment className="w-5 h-5 text-primary-500" />
+                  </div>
+                  <div>
+                    <h3 className="font-semibold mb-1">
+                      Seamless Apartment Letting Management
+                    </h3>
+                    <p className="text-gray-600 text-sm">
+                      Our expert team handles every aspect of property
+                      management, ensuring a hassle-free experience for both
+                      tenants and landlords.
+                    </p>
+                  </div>
+                </div>
+                <div className="flex items-start gap-3">
+                  <div className="w-10 h-10 bg-primary-100 rounded-full flex items-center justify-center mt-1">
+                    <BiSupport className="w-5 h-5 text-primary-500" />
+                  </div>
+                  <div>
+                    <h3 className="font-semibold mb-1">
+                      Exclusive Home Services
+                    </h3>
+                    <p className="text-gray-600 text-sm">
+                      Elevate your lifestyle with our curated selection of home
+                      services, from cleaning to maintenance, all designed to
+                      enhance your living experience.
+                    </p>
+                  </div>
+                </div>
               </div>
             </div>
             <div className="rounded-2xl overflow-hidden shadow-lg">
@@ -752,34 +809,23 @@ export default function LandingPage() {
               </h2>
 
               <div className="space-y-4 mt-8">
-                <div className="flex items-center gap-2">
-                  <div className="w-2 h-2 bg-primary-500 rounded-full"></div>
-                  <p className="text-gray-700">
-                    Listing creation and management
-                  </p>
-                </div>
-                <div className="flex items-center gap-2">
-                  <div className="w-2 h-2 bg-primary-500 rounded-full"></div>
-                  <p className="text-gray-700">
-                    Booking sourcing and management
-                  </p>
-                </div>
-                <div className="flex items-center gap-2">
-                  <div className="w-2 h-2 bg-primary-500 rounded-full"></div>
-                  <p className="text-gray-700">Guest check-in and check-out</p>
-                </div>
-                <div className="flex items-center gap-2">
-                  <div className="w-2 h-2 bg-primary-500 rounded-full"></div>
-                  <p className="text-gray-700">
-                    Comprehensive laundry, cleaning & toiletries management
-                  </p>
-                </div>
-                <div className="flex items-center gap-2">
-                  <div className="w-2 h-2 bg-primary-500 rounded-full"></div>
-                  <p className="text-gray-700">
-                    24/7 maintenance and support services
-                  </p>
-                </div>
+                {[
+                  "Listing Creation & Management",
+                  "Apartment Marketing",
+                  "Quick Apartment Placement",
+                  "Check-In & Check-Out Management",
+                  "Tenant & Landlord Protection",
+                  "24/7 Maintenance & Support",
+                  "Rental Administration & Accounting",
+                  "Guaranteed Rental Income all year round",
+                  "Guests and Tenant Verification",
+                  "Property Maintenance, Renovation, and Improvement",
+                ].map((item, index) => (
+                  <div key={index} className="flex items-center gap-2">
+                    <div className="w-2 h-2 bg-primary-500 rounded-full"></div>
+                    <p className="text-gray-700">{item}</p>
+                  </div>
+                ))}
               </div>
 
               <div className="mt-8">
@@ -792,28 +838,6 @@ export default function LandingPage() {
               </div>
             </div>
           </div>
-        </div>
-      </section>
-
-      {/* Rent now, pay later section */}
-      <section className="py-16 bg-primary-500 text-white">
-        <div className="max-w-6xl mx-auto px-4 text-center">
-          <h2 className="text-3xl md:text-4xl font-bold mb-6">
-            Rent that apartment now and pay later
-          </h2>
-          <p className="max-w-3xl mx-auto mb-10 text-primary-100">
-            Enjoy the flexibility of renting your perfect apartment today with
-            our two convenient monthly payment options: Option 1 with 2% monthly
-            interest on rent (upfront fees) or Option 2 with 3% monthly interest
-            (all costs divided into monthly payments).
-          </p>
-          <Link
-            to="/book-now"
-            className="bg-white text-primary-500 px-8 py-3 rounded-full inline-flex items-center gap-2 hover:bg-primary-50 transition-colors font-medium"
-          >
-            <span>Explore Payment Options</span>
-            <BsArrowRight />
-          </Link>
         </div>
       </section>
 

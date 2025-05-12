@@ -186,9 +186,9 @@ export default function ContactUs() {
                   <div>
                     <h3 className="text-lg font-semibold mb-2">Our Office</h3>
                     <p className="text-gray-600">
-                      123 Victoria Island
+                      38, Opebi Road, Adebola House,
                       <br />
-                      Lagos, Nigeria
+                      Car Park Wing, Ikeja Lagos.
                     </p>
                   </div>
                 </div>
@@ -198,15 +198,8 @@ export default function ContactUs() {
                     <FiPhone className="w-6 h-6 text-primary-500" />
                   </div>
                   <div>
-                    <h3 className="text-lg font-semibold mb-2">
-                      Phone Numbers
-                    </h3>
-                    <p className="text-gray-600 mb-1">
-                      Customer Support: +234 123 456 7890
-                    </p>
-                    <p className="text-gray-600">
-                      Property Inquiries: +234 987 654 3210
-                    </p>
+                    <h3 className="text-lg font-semibold mb-2">Phone Number</h3>
+                    <p className="text-gray-600">09038775464</p>
                   </div>
                 </div>
 
@@ -224,8 +217,11 @@ export default function ContactUs() {
                     <p className="text-gray-600 mb-1">
                       Support: support@aplet360.com
                     </p>
+                    <p className="text-gray-600 mb-1">
+                      Careers: careers@aplet360.com
+                    </p>
                     <p className="text-gray-600">
-                      Property Listings: listings@aplet360.com
+                      Operations: operations@aplet360.com
                     </p>
                   </div>
                 </div>
@@ -283,7 +279,7 @@ export default function ContactUs() {
                       <BsLinkedin className="w-5 h-5 text-primary-500" />
                     </a>
                     <a
-                      href="https://wa.me/2341234567890"
+                      href="https://wa.me/2349038775464"
                       target="_blank"
                       rel="noopener noreferrer"
                       className="w-10 h-10 bg-primary-100 rounded-full flex items-center justify-center hover:bg-primary-200 transition-colors"
@@ -342,9 +338,10 @@ export default function ContactUs() {
                 What payment options are available?
               </h3>
               <p className="text-gray-600">
-                We offer two monthly payment options: Option 1 with 2% monthly
-                interest on rent (upfront fees) or Option 2 with 3% monthly
-                interest (all costs divided into monthly payments).
+                We offer two monthly payment options: Option 1 with 1.5% monthly
+                interest of yearly rent paid monthly (18% annually) or Option 2
+                with 2% monthly interest of yearly rent paid monthly (24%
+                annually).
               </p>
             </div>
 
