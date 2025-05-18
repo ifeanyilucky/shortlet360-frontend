@@ -405,12 +405,18 @@ export default function NavLayout() {
       {/* Footer */}
       <footer className="bg-tertiary-50">
         <div className="max-w-7xl mx-auto py-12 px-4 sm:px-6 lg:px-8">
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-8">
+          <div className="grid grid-cols-2 md:grid-cols-5 gap-8">
             <div>
               <h3 className="text-sm font-semibold text-tertiary-400 tracking-wider uppercase">
                 Company
               </h3>
               <div className="mt-4 space-y-4">
+                <Link
+                  to="/"
+                  className="text-base text-tertiary-500 hover:text-tertiary-900 block"
+                >
+                  Home
+                </Link>
                 <Link
                   to="/about"
                   className="text-base text-tertiary-500 hover:text-tertiary-900 block"
@@ -418,10 +424,66 @@ export default function NavLayout() {
                   About
                 </Link>
                 <Link
+                  to="/career"
+                  className="text-base text-tertiary-500 hover:text-tertiary-900 block"
+                >
+                  Career
+                </Link>
+                <Link
                   to="/contact"
                   className="text-base text-tertiary-500 hover:text-tertiary-900 block"
                 >
-                  Contact
+                  Contact Us
+                </Link>
+              </div>
+            </div>
+            <div>
+              <h3 className="text-sm font-semibold text-tertiary-400 tracking-wider uppercase">
+                Services
+              </h3>
+              <div className="mt-4 space-y-4">
+                <Link
+                  to="/book-now?category=rent"
+                  className="text-base text-tertiary-500 hover:text-tertiary-900 block"
+                >
+                  Rental Apartments
+                </Link>
+                <Link
+                  to="/book-now?category=shortlet"
+                  className="text-base text-tertiary-500 hover:text-tertiary-900 block"
+                >
+                  Shortlet Apartments
+                </Link>
+                <Link
+                  to="/home-services"
+                  className="text-base text-tertiary-500 hover:text-tertiary-900 block"
+                >
+                  Home Services
+                </Link>
+              </div>
+            </div>
+            <div>
+              <h3 className="text-sm font-semibold text-tertiary-400 tracking-wider uppercase">
+                Programs
+              </h3>
+              <div className="mt-4 space-y-4">
+                <Link
+                  to="/referral-program"
+                  className="text-base text-tertiary-500 hover:text-tertiary-900 block"
+                >
+                  Referral Program
+                </Link>
+                <Link
+                  to="/become-artisan"
+                  className="text-base text-tertiary-500 hover:text-tertiary-900 block"
+                >
+                  Become Our Artisan
+                </Link>
+                <Link
+                  to="/marketplace"
+                  className="text-base text-tertiary-500 hover:text-tertiary-900 block"
+                >
+                  Marketplace
                 </Link>
               </div>
             </div>
@@ -436,6 +498,40 @@ export default function NavLayout() {
                 >
                   FAQ
                 </Link>
+                <Link
+                  to="/blog"
+                  className="text-base text-tertiary-500 hover:text-tertiary-900 block"
+                >
+                  Blog
+                </Link>
+                <Link
+                  to="/privacy-policy"
+                  className="text-base text-tertiary-500 hover:text-tertiary-900 block"
+                >
+                  Privacy Policy
+                </Link>
+                <Link
+                  to="/terms-conditions"
+                  className="text-base text-tertiary-500 hover:text-tertiary-900 block"
+                >
+                  Terms & Conditions
+                </Link>
+              </div>
+            </div>
+            <div>
+              <h3 className="text-sm font-semibold text-tertiary-400 tracking-wider uppercase">
+                Contact
+              </h3>
+              <div className="mt-4 space-y-4">
+                <p className="text-base text-tertiary-500 block">
+                  38, Opebi Road, Adebola House, Car Park Wing, Ikeja Lagos
+                </p>
+                <p className="text-base text-tertiary-500 block">
+                  Phone: 09038775464
+                </p>
+                <p className="text-base text-tertiary-500 block">
+                  Email: support@aplet360.com
+                </p>
               </div>
             </div>
           </div>

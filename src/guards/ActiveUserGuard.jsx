@@ -11,6 +11,11 @@ export default function ActiveUserGuard({ children }) {
     return <Navigate to="/auth/login" />;
   }
 
+  // Admin users don't need KYC or payment verification
+  if (user?.role === "admin") {
+    return <>{children}</>;
+  }
+
   // For owners: check if account is active and payment is completed
   if (
     user?.role === "owner" &&

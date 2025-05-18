@@ -1,38 +1,81 @@
-import { useState, useEffect } from "react";
-import { useForm } from "react-hook-form";
+import { useEffect } from "react";
+import { useForm, Controller } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import * as yup from "yup";
+import PropTypes from "prop-types";
 import { useAuth } from "../../hooks/useAuth";
 import useKycStore from "../../store/kycStore";
 import InteractiveButton from "../../components/InteractiveButton";
-import { HiCheckCircle, HiMail, HiPhone } from "react-icons/hi";
+import { HiCheckCircle, HiIdentification, HiPhone } from "react-icons/hi";
 import toast from "react-hot-toast";
+import PhoneInput from "react-phone-number-input";
+import "react-phone-number-input/style.css";
 
-// Form validation schema
-const phoneSchema = yup.object().shape({
+// Custom styles for PhoneInput
+const phoneInputStyles = `
+  .PhoneInput {
+    display: flex;
+    align-items: center;
+  }
+
+  .PhoneInputCountry {
+    margin-right: 0.5rem;
+  }
+
+  .PhoneInputCountryIcon {
+    width: 1.5rem;
+    height: 1rem;
+  }
+
+  .PhoneInputInput {
+    flex: 1;
+    min-width: 0;
+    border: none;
+    padding: 0;
+    outline: none;
+  }
+`;
+
+// Form validation schemas
+const tier1Schema = yup.object().shape({
   phone_number: yup
     .string()
     .required("Phone number is required")
-    .matches(
-      /^(\+?234|0)[789]\d{9}$/,
-      "Please enter a valid Nigerian phone number"
+    .test(
+      "is-valid-nigerian-number",
+      "Please enter a valid Nigerian phone number",
+      (value) => {
+        // Check if it's a valid Nigerian number format
+        return (
+          value &&
+          (value.startsWith("+234") ||
+            value.startsWith("234") ||
+            (value.startsWith("0") && value.length === 11))
+        );
+      }
     ),
+  nin: yup
+    .string()
+    .required("NIN is required")
+    .matches(/^\d{11}$/, "NIN must be 11 digits"),
 });
 
 export default function Tier1Verification({ kycStatus }) {
   const { user } = useAuth();
-  const { initiateTier1Verification, verifyPhoneNumber, isLoading } = useKycStore();
-  const [emailSent, setEmailSent] = useState(false);
+  const { initiatePhoneVerification, isLoading } = useKycStore();
 
+  // Tier 1 form
   const {
     register,
+    control,
     handleSubmit,
     formState: { errors },
     setValue,
   } = useForm({
-    resolver: yupResolver(phoneSchema),
+    resolver: yupResolver(tier1Schema),
     defaultValues: {
       phone_number: user?.phone_number || "",
+      nin: kycStatus?.tier1?.nin || "",
     },
   });
 
@@ -42,84 +85,18 @@ export default function Tier1Verification({ kycStatus }) {
     }
   }, [user, setValue]);
 
-  const handleSendVerificationEmail = async () => {
-    try {
-      await initiateTier1Verification();
-      setEmailSent(true);
-    } catch (error) {
-      console.error("Error sending verification email:", error);
-    }
-  };
-
-  const onSubmitPhone = async (data) => {
-    try {
-      await verifyPhoneNumber(data.phone_number);
-    } catch (error) {
-      console.error("Error verifying phone number:", error);
-    }
-  };
-
-  const isEmailVerified = kycStatus?.tier1?.email_verified;
   const isPhoneVerified = kycStatus?.tier1?.phone_verified;
+  const isNinVerified = kycStatus?.tier1?.nin_verified;
 
   return (
     <div>
+      <style>{phoneInputStyles}</style>
       <h2 className="text-xl font-semibold mb-4">Tier 1: Basic Verification</h2>
       <p className="text-gray-600 mb-6">
-        Verify your email and phone number to complete the basic verification.
+        Verify your phone number and NIN to complete the basic verification.
       </p>
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-        {/* Email Verification */}
-        <div className="border rounded-lg p-4">
-          <div className="flex items-center mb-4">
-            <HiMail className="w-6 h-6 text-blue-500 mr-2" />
-            <h3 className="text-lg font-medium">Email Verification</h3>
-          </div>
-
-          {isEmailVerified ? (
-            <div className="flex items-center text-green-600">
-              <HiCheckCircle className="w-5 h-5 mr-2" />
-              <span>Email verified successfully</span>
-            </div>
-          ) : (
-            <div>
-              <p className="text-gray-600 mb-4">
-                We'll send a verification link to your email address:{" "}
-                <strong>{user?.email}</strong>
-              </p>
-
-              {emailSent ? (
-                <div className="bg-blue-50 text-blue-700 p-3 rounded-md mb-4">
-                  <p>
-                    Verification email sent! Please check your inbox and click on the
-                    verification link.
-                  </p>
-                  <p className="mt-2 text-sm">
-                    Didn't receive the email?{" "}
-                    <button
-                      type="button"
-                      onClick={handleSendVerificationEmail}
-                      className="text-blue-600 underline"
-                      disabled={isLoading}
-                    >
-                      Resend email
-                    </button>
-                  </p>
-                </div>
-              ) : (
-                <InteractiveButton
-                  onClick={handleSendVerificationEmail}
-                  isLoading={isLoading}
-                  className="w-full"
-                >
-                  Send Verification Email
-                </InteractiveButton>
-              )}
-            </div>
-          )}
-        </div>
-
         {/* Phone Verification */}
         <div className="border rounded-lg p-4">
           <div className="flex items-center mb-4">
@@ -133,25 +110,47 @@ export default function Tier1Verification({ kycStatus }) {
               <span>Phone number verified successfully</span>
             </div>
           ) : (
-            <form onSubmit={handleSubmit(onSubmitPhone)}>
+            <form
+              onSubmit={handleSubmit((data) => {
+                initiatePhoneVerification(data.phone_number);
+                toast.success("Phone verification initiated");
+              })}
+            >
               <div className="mb-4">
-                <label htmlFor="phone_number" className="block text-sm font-medium text-gray-700 mb-1">
+                <label
+                  htmlFor="phone_number"
+                  className="block text-sm font-medium text-gray-700 mb-1"
+                >
                   Phone Number
                 </label>
-                <input
-                  id="phone_number"
-                  type="tel"
-                  placeholder="e.g. 08012345678"
-                  className={`w-full px-3 py-2 border rounded-md ${
-                    errors.phone_number ? "border-red-500" : "border-gray-300"
-                  }`}
-                  {...register("phone_number")}
+                <Controller
+                  name="phone_number"
+                  control={control}
+                  render={({ field }) => (
+                    <PhoneInput
+                      id="phone_number"
+                      placeholder="Enter phone number"
+                      defaultCountry="NG"
+                      countries={["NG"]}
+                      international={false}
+                      className={`w-full px-3 py-2 border rounded-md ${
+                        errors.phone_number
+                          ? "border-red-500"
+                          : "border-gray-300"
+                      }`}
+                      {...field}
+                    />
+                  )}
                 />
                 {errors.phone_number && (
-                  <p className="mt-1 text-sm text-red-600">{errors.phone_number.message}</p>
+                  <p className="mt-1 text-sm text-red-600">
+                    {errors.phone_number.message}
+                  </p>
                 )}
                 <p className="mt-1 text-xs text-gray-500">
-                  Enter a valid Nigerian phone number (e.g., 08012345678 or +2348012345678)
+                  Enter a valid Nigerian phone number. The country code (+234)
+                  will be automatically formatted for you. You can enter your
+                  number with or without the leading zero.
                 </p>
               </div>
 
@@ -165,17 +164,75 @@ export default function Tier1Verification({ kycStatus }) {
             </form>
           )}
         </div>
+
+        {/* NIN Verification */}
+        <div className="border rounded-lg p-4">
+          <div className="flex items-center mb-4">
+            <HiIdentification className="w-6 h-6 text-blue-500 mr-2" />
+            <h3 className="text-lg font-medium">NIN Verification</h3>
+          </div>
+
+          {isNinVerified ? (
+            <div className="flex items-center text-green-600">
+              <HiCheckCircle className="w-5 h-5 mr-2" />
+              <span>NIN verified successfully</span>
+            </div>
+          ) : (
+            <form
+              onSubmit={handleSubmit(() => {
+                // This would call a new API endpoint to verify NIN
+                toast.success("NIN verification initiated");
+              })}
+            >
+              <div className="mb-4">
+                <label
+                  htmlFor="nin"
+                  className="block text-sm font-medium text-gray-700 mb-1"
+                >
+                  National Identification Number (NIN)
+                </label>
+                <input
+                  id="nin"
+                  type="text"
+                  className={`w-full px-3 py-2 border rounded-md ${
+                    errors.nin ? "border-red-500" : "border-gray-300"
+                  }`}
+                  {...register("nin")}
+                />
+                {errors.nin && (
+                  <p className="mt-1 text-sm text-red-600">
+                    {errors.nin.message}
+                  </p>
+                )}
+                <p className="mt-1 text-xs text-gray-500">
+                  Enter your 11-digit NIN without spaces or special characters
+                </p>
+              </div>
+
+              <InteractiveButton
+                type="submit"
+                isLoading={isLoading}
+                className="w-full"
+              >
+                Verify NIN
+              </InteractiveButton>
+            </form>
+          )}
+        </div>
       </div>
 
-      {isEmailVerified && isPhoneVerified && (
+      {isPhoneVerified && isNinVerified && (
         <div className="mt-6 bg-green-50 text-green-700 p-4 rounded-md">
           <div className="flex items-center">
             <HiCheckCircle className="w-6 h-6 mr-2" />
-            <p className="font-medium">Tier 1 verification completed successfully!</p>
+            <p className="font-medium">
+              Tier 1 verification completed successfully!
+            </p>
           </div>
           {kycStatus?.tier1?.completed_at && (
             <p className="mt-1 text-sm">
-              Completed on: {new Date(kycStatus.tier1.completed_at).toLocaleDateString()}
+              Completed on:{" "}
+              {new Date(kycStatus.tier1.completed_at).toLocaleDateString()}
             </p>
           )}
         </div>
@@ -183,3 +240,27 @@ export default function Tier1Verification({ kycStatus }) {
     </div>
   );
 }
+
+// PropTypes validation
+Tier1Verification.propTypes = {
+  kycStatus: PropTypes.shape({
+    tier1: PropTypes.shape({
+      phone_verified: PropTypes.bool,
+      nin_verified: PropTypes.bool,
+      nin: PropTypes.string,
+      completed_at: PropTypes.string,
+      status: PropTypes.string,
+    }),
+  }),
+};
+
+// Default props
+Tier1Verification.defaultProps = {
+  kycStatus: {
+    tier1: {
+      phone_verified: false,
+      nin_verified: false,
+      nin: "",
+    },
+  },
+};

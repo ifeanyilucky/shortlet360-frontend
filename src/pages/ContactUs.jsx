@@ -15,6 +15,8 @@ import {
 } from "react-icons/bs";
 import InteractiveButton from "../components/InteractiveButton";
 import { Link } from "react-router-dom";
+import { formService } from "../services/api";
+import { toast } from "react-hot-toast";
 
 export default function ContactUs() {
   const [formData, setFormData] = useState({
@@ -35,14 +37,19 @@ export default function ContactUs() {
     }));
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     setIsSubmitting(true);
 
-    // Simulate form submission
-    setTimeout(() => {
-      setIsSubmitting(false);
+    try {
+      // Submit form data to API
+      await formService.submitContactForm(formData);
+
+      // Show success message
+      toast.success("Your message has been sent successfully!");
       setSubmitSuccess(true);
+
+      // Reset form
       setFormData({
         name: "",
         email: "",
@@ -55,7 +62,15 @@ export default function ContactUs() {
       setTimeout(() => {
         setSubmitSuccess(false);
       }, 5000);
-    }, 1500);
+    } catch (error) {
+      console.error("Error submitting contact form:", error);
+      toast.error(
+        error.response?.data?.message ||
+          "Failed to send message. Please try again."
+      );
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   return (

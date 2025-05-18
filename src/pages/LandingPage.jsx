@@ -40,7 +40,8 @@ export default function LandingPage() {
   const { properties, getProperties, isLoading } = propertyStore();
 
   useEffect(() => {
-    getProperties();
+    // Only fetch published properties for the landing page
+    getProperties({ publication_status: "published" });
   }, [getProperties]);
 
   const handlePriceSubmit = () => {
@@ -387,23 +388,22 @@ export default function LandingPage() {
             </div>
             <div className="flex-1">
               <p className="text-tertiary-600 text-lg">
-                Are you looking for your next apartment to rent? Or you are a
-                landlord looking for tenants to occupy your apartments? Or you
-                are a property manager looking for the best solution to bloom
-                your real estate business and fill up your shortlet apartments?
-                Aplet360 is for you. We have everyone's interest at heart.
+                Whether you're a tenant, landlord, agent, or property manager,
+                Aplet360 offers tailored benefits to meet your needs. Our
+                platform is designed to streamline the entire property
+                ecosystem, providing value at every step.
               </p>
             </div>
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-            {/* Landlords/Agents Benefits */}
+            {/* Landlords/Agents/Property Managers Benefits */}
             <div className="bg-white p-8 rounded-2xl shadow-card hover:shadow-elevated transition-all duration-300 transform hover:-translate-y-1 border border-tertiary-100">
               <div className="w-14 h-14 bg-primary-100 rounded-2xl flex items-center justify-center mb-6">
                 <IoHomeOutline className="w-7 h-7 text-primary-600" />
               </div>
               <h3 className="font-semibold text-xl mb-6 text-tertiary-900">
-                For Landlords & Agents
+                For Landlords, Agents & Property Managers
               </h3>
 
               <div className="space-y-4">
@@ -413,9 +413,9 @@ export default function LandingPage() {
                   </div>
                   <p className="text-tertiary-600">
                     <span className="font-medium text-tertiary-900">
-                      Maximize Returns
+                      Rental Income Guarantee
                     </span>{" "}
-                    - Higher occupancy rates and optimized pricing
+                    - Secure your income with our guarantee system
                   </p>
                 </div>
 
@@ -425,9 +425,9 @@ export default function LandingPage() {
                   </div>
                   <p className="text-tertiary-600">
                     <span className="font-medium text-tertiary-900">
-                      Verified Tenants
+                      Comprehensive Management
                     </span>{" "}
-                    - Quality tenants with thorough screening process
+                    - From rent collection to legal support
                   </p>
                 </div>
 
@@ -437,9 +437,9 @@ export default function LandingPage() {
                   </div>
                   <p className="text-tertiary-600">
                     <span className="font-medium text-tertiary-900">
-                      Flexible Listings
+                      Unlimited Listings
                     </span>{" "}
-                    - List for long-term rentals or short-term stays
+                    - One-time registration fee for unlimited property listings
                   </p>
                 </div>
               </div>
@@ -463,8 +463,7 @@ export default function LandingPage() {
                     <span className="font-medium text-tertiary-900">
                       Rental Assistance
                     </span>{" "}
-                    - We pay your landlord the full rent while you pay us
-                    monthly
+                    - We pay your landlord while you pay monthly
                   </p>
                 </div>
 
@@ -474,9 +473,9 @@ export default function LandingPage() {
                   </div>
                   <p className="text-tertiary-600">
                     <span className="font-medium text-tertiary-900">
-                      Monthly Rental Payment
+                      Monthly Payment Option
                     </span>{" "}
-                    - Flexible payment options with convenient monthly plans
+                    - Flexible payment plans to suit your budget
                   </p>
                 </div>
 
@@ -488,31 +487,19 @@ export default function LandingPage() {
                     <span className="font-medium text-tertiary-900">
                       Tenant Protection
                     </span>{" "}
-                    - No sudden eviction from your apartment by your landlord
-                  </p>
-                </div>
-
-                <div className="flex items-start gap-4">
-                  <div className="w-8 h-8 bg-accent-50 rounded-xl flex items-center justify-center mt-0.5 flex-shrink-0">
-                    <MdOutlineVerified className="w-4 h-4 text-accent-600" />
-                  </div>
-                  <p className="text-tertiary-600">
-                    <span className="font-medium text-tertiary-900">
-                      Verified Apartments
-                    </span>{" "}
-                    - No risk of being scammed by fake listings
+                    - No sudden evictions and dispute resolution
                   </p>
                 </div>
               </div>
             </div>
 
-            {/* Property Managers Benefits */}
+            {/* Shortlet Apartment Owners Benefits */}
             <div className="bg-white p-8 rounded-2xl shadow-card hover:shadow-elevated transition-all duration-300 transform hover:-translate-y-1 border border-tertiary-100">
               <div className="w-14 h-14 bg-primary-100 rounded-2xl flex items-center justify-center mb-6">
                 <BsArrowRight className="w-7 h-7 text-primary-600" />
               </div>
               <h3 className="font-semibold text-xl mb-6 text-tertiary-900">
-                For Property Managers
+                For Shortlet Apartment Owners
               </h3>
 
               <div className="space-y-4">
@@ -522,9 +509,9 @@ export default function LandingPage() {
                   </div>
                   <p className="text-tertiary-600">
                     <span className="font-medium text-tertiary-900">
-                      Streamlined Operations
+                      Efficient Administration
                     </span>{" "}
-                    - Efficient booking and management tools
+                    - Streamlined bookings and payments management
                   </p>
                 </div>
 
@@ -534,9 +521,9 @@ export default function LandingPage() {
                   </div>
                   <p className="text-tertiary-600">
                     <span className="font-medium text-tertiary-900">
-                      Guest Management
+                      Property Advertising
                     </span>{" "}
-                    - Simplified check-in/out and communication
+                    - Reach a wider audience with our platform
                   </p>
                 </div>
 
@@ -546,9 +533,9 @@ export default function LandingPage() {
                   </div>
                   <p className="text-tertiary-600">
                     <span className="font-medium text-tertiary-900">
-                      Automated Payments
+                      Maintenance Support
                     </span>{" "}
-                    - Secure payment processing and reporting
+                    - Access to quality and affordable property services
                   </p>
                 </div>
               </div>

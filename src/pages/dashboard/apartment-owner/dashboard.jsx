@@ -8,15 +8,8 @@ import { useState, useEffect } from "react";
 import { useAuth } from "../../../hooks/useAuth";
 import { propertyService } from "../../../services/api";
 import { fCurrency } from "../../../utils/formatNumber";
+import { getGreeting } from "../../../utils/helpers";
 import KycProgressIndicator from "../../../components/KycProgressIndicator";
-
-const getGreeting = () => {
-  const hour = new Date().getHours();
-  if (hour >= 5 && hour < 12) return "Good morning";
-  if (hour >= 12 && hour < 17) return "Good afternoon";
-  if (hour >= 17 && hour < 22) return "Good evening";
-  return "Good night";
-};
 
 export default function ApartmentOwnerDashboard() {
   const navigate = useNavigate();
@@ -66,7 +59,6 @@ export default function ApartmentOwnerDashboard() {
           <p className="text-gray-600">Here's an overview of your properties</p>
         </div>
 
-          
         <div className="w-full md:w-auto">
           <select
             className="w-full md:w-auto px-4 py-2 border rounded-lg"
@@ -79,8 +71,8 @@ export default function ApartmentOwnerDashboard() {
           </select>
         </div>
       </div>
-   {/* KYC Progress Indicator */}
-   <KycProgressIndicator />
+      {/* KYC Progress Indicator */}
+      <KycProgressIndicator />
       {/* Main Stats Grid */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6 mb-6 md:mb-8">
         <div className="bg-white p-4 md:p-6 rounded-lg shadow-sm">

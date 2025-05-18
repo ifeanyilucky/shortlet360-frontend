@@ -9,7 +9,8 @@ import { HiCheckCircle, HiExclamationCircle, HiClock } from "react-icons/hi";
 
 export default function KycVerification() {
   const { user } = useAuth();
-  const { kycStatus, requiredTiers, overallStatus, isLoading, getKycStatus } = useKycStore();
+  const { kycStatus, requiredTiers, overallStatus, isLoading, getKycStatus } =
+    useKycStore();
   const [activeTab, setActiveTab] = useState("tier1");
 
   useEffect(() => {
@@ -30,12 +31,12 @@ export default function KycVerification() {
       if (!kycStatus.tier1 || kycStatus.tier1.status !== "verified") {
         setActiveTab("tier1");
       } else if (
-        requiredTiers.includes("tier2") && 
+        requiredTiers.includes("tier2") &&
         (!kycStatus.tier2 || kycStatus.tier2.status !== "verified")
       ) {
         setActiveTab("tier2");
       } else if (
-        requiredTiers.includes("tier3") && 
+        requiredTiers.includes("tier3") &&
         (!kycStatus.tier3 || kycStatus.tier3.status !== "verified")
       ) {
         setActiveTab("tier3");
@@ -51,7 +52,7 @@ export default function KycVerification() {
     if (!kycStatus[tier]) {
       return <HiExclamationCircle className="w-6 h-6 text-gray-400" />;
     }
-    
+
     switch (kycStatus[tier].status) {
       case "verified":
         return <HiCheckCircle className="w-6 h-6 text-green-500" />;
@@ -68,7 +69,7 @@ export default function KycVerification() {
     if (!kycStatus[tier]) {
       return "Not Started";
     }
-    
+
     switch (kycStatus[tier].status) {
       case "verified":
         return "Verified";
@@ -85,7 +86,7 @@ export default function KycVerification() {
     if (!kycStatus[tier]) {
       return "bg-gray-100 text-gray-600";
     }
-    
+
     switch (kycStatus[tier].status) {
       case "verified":
         return "bg-green-100 text-green-800";
@@ -101,9 +102,12 @@ export default function KycVerification() {
   return (
     <div className="p-4 md:p-6 max-w-4xl mx-auto">
       <div className="mb-8">
-        <h1 className="text-2xl md:text-3xl font-bold mb-2">KYC Verification</h1>
+        <h1 className="text-2xl md:text-3xl font-bold mb-2">
+          KYC Verification
+        </h1>
         <p className="text-gray-600">
-          Complete the verification process to access all features of the platform.
+          Complete the verification process to access all features of the
+          platform.
         </p>
       </div>
 
@@ -111,7 +115,7 @@ export default function KycVerification() {
       <div className="bg-white rounded-lg shadow-sm p-4 mb-8">
         <h2 className="text-lg font-semibold mb-4">Verification Progress</h2>
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-          <div 
+          <div
             className={`p-4 rounded-lg border ${
               activeTab === "tier1" ? "border-blue-500" : "border-gray-200"
             } cursor-pointer`}
@@ -121,19 +125,25 @@ export default function KycVerification() {
               <h3 className="font-medium">Tier 1: Basic Verification</h3>
               {getStatusIcon("tier1")}
             </div>
-            <p className="text-sm text-gray-600 mb-2">Email & Phone Verification</p>
-            <span className={`text-xs px-2 py-1 rounded-full ${getStatusColor("tier1")}`}>
+            <p className="text-sm text-gray-600 mb-2">
+              Phone Number & NIN Verification
+            </p>
+            <span
+              className={`text-xs px-2 py-1 rounded-full ${getStatusColor(
+                "tier1"
+              )}`}
+            >
               {getStatusText("tier1")}
             </span>
           </div>
 
           {requiredTiers.includes("tier2") && (
-            <div 
+            <div
               className={`p-4 rounded-lg border ${
                 activeTab === "tier2" ? "border-blue-500" : "border-gray-200"
               } cursor-pointer ${
-                !kycStatus.tier1 || kycStatus.tier1.status !== "verified" 
-                  ? "opacity-50 cursor-not-allowed" 
+                !kycStatus.tier1 || kycStatus.tier1.status !== "verified"
+                  ? "opacity-50 cursor-not-allowed"
                   : ""
               }`}
               onClick={() => {
@@ -146,20 +156,24 @@ export default function KycVerification() {
                 <h3 className="font-medium">Tier 2: Identity Verification</h3>
                 {getStatusIcon("tier2")}
               </div>
-              <p className="text-sm text-gray-600 mb-2">Address & NIN Verification</p>
-              <span className={`text-xs px-2 py-1 rounded-full ${getStatusColor("tier2")}`}>
+              <p className="text-sm text-gray-600 mb-2">Address Verification</p>
+              <span
+                className={`text-xs px-2 py-1 rounded-full ${getStatusColor(
+                  "tier2"
+                )}`}
+              >
                 {getStatusText("tier2")}
               </span>
             </div>
           )}
 
           {requiredTiers.includes("tier3") && (
-            <div 
+            <div
               className={`p-4 rounded-lg border ${
                 activeTab === "tier3" ? "border-blue-500" : "border-gray-200"
               } cursor-pointer ${
-                !kycStatus.tier2 || kycStatus.tier2.status !== "verified" 
-                  ? "opacity-50 cursor-not-allowed" 
+                !kycStatus.tier2 || kycStatus.tier2.status !== "verified"
+                  ? "opacity-50 cursor-not-allowed"
                   : ""
               }`}
               onClick={() => {
@@ -172,8 +186,14 @@ export default function KycVerification() {
                 <h3 className="font-medium">Tier 3: Financial Verification</h3>
                 {getStatusIcon("tier3")}
               </div>
-              <p className="text-sm text-gray-600 mb-2">Employment & Bank Verification</p>
-              <span className={`text-xs px-2 py-1 rounded-full ${getStatusColor("tier3")}`}>
+              <p className="text-sm text-gray-600 mb-2">
+                Employment Check & Credit History Check
+              </p>
+              <span
+                className={`text-xs px-2 py-1 rounded-full ${getStatusColor(
+                  "tier3"
+                )}`}
+              >
                 {getStatusText("tier3")}
               </span>
             </div>

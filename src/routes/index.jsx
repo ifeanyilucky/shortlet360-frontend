@@ -6,7 +6,21 @@ import AuthGuard from "../guards/AuthGuard";
 import RoleBasedGuard from "../guards/RoleBasedGuard";
 import RegistrationPaymentGuard from "../guards/RegistrationPaymentGuard";
 import ActiveUserGuard from "../guards/ActiveUserGuard";
-import { About, Blog, LandingPage, BookNow, ContactUs, FAQ } from "../pages";
+import {
+  About,
+  Blog,
+  LandingPage,
+  BookNow,
+  ContactUs,
+  FAQ,
+  HomeServices,
+  Career,
+  ReferralProgram,
+  BecomeArtisan,
+  Marketplace,
+  PrivacyPolicy,
+  TermsConditions,
+} from "../pages";
 import Login from "../pages/auth/login";
 import Register from "../pages/auth/register";
 import RegistrationPayment from "../pages/auth/RegistrationPayment";
@@ -28,6 +42,21 @@ import Favorite from "../pages/dashboard/user/favorite";
 // KYC Verification
 import KycVerification from "../pages/kyc/KycVerification";
 import VerifyEmail from "../pages/kyc/VerifyEmail";
+// Admin
+import AdminLayout from "../layout/AdminLayout";
+import AdminDashboard from "../pages/dashboard/admin/dashboard";
+import AdminUsers from "../pages/dashboard/admin/users";
+import AdminRegularUsers from "../pages/dashboard/admin/regularUsers";
+import AdminOwners from "../pages/dashboard/admin/owners";
+import AdminProperties from "../pages/dashboard/admin/properties";
+import AdminBookings from "../pages/dashboard/admin/bookings";
+import AdminKyc from "../pages/dashboard/admin/kyc";
+import AdminSettings from "../pages/dashboard/admin/settings";
+import UserProfile from "../pages/dashboard/admin/userProfile";
+import EditProperty from "../pages/dashboard/admin/EditProperty";
+import EditBooking from "../pages/dashboard/admin/EditBooking";
+import AdminLogin from "../pages/admin/login";
+import AdminSignup from "../pages/admin/signup";
 export default function Router() {
   const routes = useRoutes([
     {
@@ -40,6 +69,13 @@ export default function Router() {
         { path: "faq", element: <FAQ /> },
         { path: "blog", element: <Blog /> },
         { path: "contact", element: <ContactUs /> },
+        { path: "home-services", element: <HomeServices /> },
+        { path: "career", element: <Career /> },
+        { path: "referral-program", element: <ReferralProgram /> },
+        { path: "become-artisan", element: <BecomeArtisan /> },
+        { path: "marketplace", element: <Marketplace /> },
+        { path: "privacy-policy", element: <PrivacyPolicy /> },
+        { path: "terms-conditions", element: <TermsConditions /> },
         { path: "property/:id", element: <PropertyDetail /> },
         { path: "verify-email/:token", element: <VerifyEmail /> },
       ],
@@ -93,6 +129,29 @@ export default function Router() {
             { path: "settings/kyc", element: <KycVerification /> },
           ],
         },
+        {
+          path: "admin",
+          element: (
+            <RoleBasedGuard accessibleRoles={["admin"]}>
+              <AdminLayout />
+            </RoleBasedGuard>
+          ),
+          children: [
+            { path: "", element: <Navigate to="dashboard" replace /> },
+            { path: "dashboard", element: <AdminDashboard /> },
+            { path: "users", element: <AdminUsers /> },
+            { path: "users/all", element: <AdminUsers /> },
+            { path: "users/regular", element: <AdminRegularUsers /> },
+            { path: "users/owners", element: <AdminOwners /> },
+            { path: "users/:id", element: <UserProfile /> },
+            { path: "properties", element: <AdminProperties /> },
+            { path: "properties/:id", element: <EditProperty /> },
+            { path: "bookings", element: <AdminBookings /> },
+            { path: "bookings/:id", element: <EditBooking /> },
+            { path: "kyc", element: <AdminKyc /> },
+            { path: "settings", element: <AdminSettings /> },
+          ],
+        },
         { path: "", element: <Navigate to="/dashboard/user" replace /> },
       ],
     },
@@ -123,6 +182,14 @@ export default function Router() {
           </RegistrationPaymentGuard>
         </div>
       ),
+    },
+    {
+      path: "admin/login",
+      element: <AdminLogin />,
+    },
+    {
+      path: "admin/signup",
+      element: <AdminSignup />,
     },
     { path: "*", element: <Navigate to="/404" replace /> },
   ]);

@@ -14,11 +14,11 @@ export const useKycStore = create((set, get) => ({
     try {
       set({ isLoading: true, error: null });
       const response = await kycService.getKycStatus();
-      set({ 
-        kycStatus: response.kyc, 
+      set({
+        kycStatus: response.kyc,
         requiredTiers: response.requiredTiers,
         overallStatus: response.overallStatus,
-        isLoading: false 
+        isLoading: false,
       });
       return response;
     } catch (error) {
@@ -26,7 +26,9 @@ export const useKycStore = create((set, get) => ({
         error: error.response?.data?.message || "Failed to fetch KYC status",
         isLoading: false,
       });
-      toast.error(error.response?.data?.message || "Failed to fetch KYC status");
+      toast.error(
+        error.response?.data?.message || "Failed to fetch KYC status"
+      );
       throw error;
     }
   },
@@ -36,29 +38,32 @@ export const useKycStore = create((set, get) => ({
     try {
       set({ isLoading: true, error: null });
       const response = await kycService.initiateTier1Verification();
-      set((state) => ({ 
+      set((state) => ({
         kycStatus: response.kyc,
-        isLoading: false 
+        isLoading: false,
       }));
       toast.success("Verification email sent successfully");
       return response;
     } catch (error) {
       set({
-        error: error.response?.data?.message || "Failed to initiate verification",
+        error:
+          error.response?.data?.message || "Failed to initiate verification",
         isLoading: false,
       });
-      toast.error(error.response?.data?.message || "Failed to initiate verification");
+      toast.error(
+        error.response?.data?.message || "Failed to initiate verification"
+      );
       throw error;
     }
   },
 
-  verifyPhoneNumber: async (phoneNumber) => {
+  initiatePhoneVerification: async (phoneNumber) => {
     try {
       set({ isLoading: true, error: null });
-      const response = await kycService.verifyPhoneNumber(phoneNumber);
-      set((state) => ({ 
+      const response = await kycService.initiatePhoneVerification(phoneNumber);
+      set((state) => ({
         kycStatus: response.kyc,
-        isLoading: false 
+        isLoading: false,
       }));
       toast.success("Phone number verified successfully");
       return response;
@@ -67,7 +72,27 @@ export const useKycStore = create((set, get) => ({
         error: error.response?.data?.message || "Failed to verify phone number",
         isLoading: false,
       });
-      toast.error(error.response?.data?.message || "Failed to verify phone number");
+      toast.error(
+        error.response?.data?.message || "Failed to verify phone number"
+      );
+      throw error;
+    }
+  },
+
+  // This method is kept for backward compatibility but is no longer used
+  verifyPhoneNumber: async (verificationCode) => {
+    try {
+      set({ isLoading: true, error: null });
+      toast.error(
+        "This verification method is no longer supported. Please use phone verification directly."
+      );
+      set({ isLoading: false });
+      throw new Error("This verification method is no longer supported");
+    } catch (error) {
+      set({
+        error: "This verification method is no longer supported",
+        isLoading: false,
+      });
       throw error;
     }
   },
@@ -77,18 +102,22 @@ export const useKycStore = create((set, get) => ({
     try {
       set({ isLoading: true, error: null });
       const response = await kycService.submitTier2Verification(data);
-      set((state) => ({ 
+      set((state) => ({
         kycStatus: response.kyc,
-        isLoading: false 
+        isLoading: false,
       }));
       toast.success("Tier 2 verification submitted successfully");
       return response;
     } catch (error) {
       set({
-        error: error.response?.data?.message || "Failed to submit Tier 2 verification",
+        error:
+          error.response?.data?.message ||
+          "Failed to submit Tier 2 verification",
         isLoading: false,
       });
-      toast.error(error.response?.data?.message || "Failed to submit Tier 2 verification");
+      toast.error(
+        error.response?.data?.message || "Failed to submit Tier 2 verification"
+      );
       throw error;
     }
   },
@@ -98,18 +127,22 @@ export const useKycStore = create((set, get) => ({
     try {
       set({ isLoading: true, error: null });
       const response = await kycService.submitTier3Verification(data);
-      set((state) => ({ 
+      set((state) => ({
         kycStatus: response.kyc,
-        isLoading: false 
+        isLoading: false,
       }));
       toast.success("Tier 3 verification submitted successfully");
       return response;
     } catch (error) {
       set({
-        error: error.response?.data?.message || "Failed to submit Tier 3 verification",
+        error:
+          error.response?.data?.message ||
+          "Failed to submit Tier 3 verification",
         isLoading: false,
       });
-      toast.error(error.response?.data?.message || "Failed to submit Tier 3 verification");
+      toast.error(
+        error.response?.data?.message || "Failed to submit Tier 3 verification"
+      );
       throw error;
     }
   },
@@ -123,7 +156,7 @@ export const useKycStore = create((set, get) => ({
       isLoading: false,
       error: null,
     });
-  }
+  },
 }));
 
 export default useKycStore;

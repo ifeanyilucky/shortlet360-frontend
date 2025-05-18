@@ -39,7 +39,9 @@ export const authService = {
     return response.data;
   },
   completeRegistrationPayment: async (paymentData) => {
-    const response = await api.post("/auth/complete-registration-payment", { payment: paymentData });
+    const response = await api.post("/auth/complete-registration-payment", {
+      payment: paymentData,
+    });
     return response.data;
   },
 };
@@ -156,6 +158,21 @@ export const uploadService = {
         "Content-Type": "multipart/form-data",
       },
     });
+    return response.data;
+  },
+};
+
+export const formService = {
+  submitHomeServiceForm: async (data) => {
+    const response = await api.post("/forms/home-service", data);
+    return response.data;
+  },
+  submitBecomeArtisanForm: async (data) => {
+    const response = await api.post("/forms/become-artisan", data);
+    return response.data;
+  },
+  submitContactForm: async (data) => {
+    const response = await api.post("/forms/contact", data);
     return response.data;
   },
 };

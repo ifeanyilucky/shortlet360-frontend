@@ -249,7 +249,7 @@ export default function PropertyDetail() {
       return;
     }
 
-   console.log(user)
+    console.log(user);
 
     // Check if dates are selected
     if (!startDate || !endDate) {
@@ -263,7 +263,10 @@ export default function PropertyDetail() {
       const requiredTier = paymentPeriod === "monthly" ? "tier3" : "tier1";
 
       // Check if the required tier is verified
-      if (!kycResponse.kyc[requiredTier] || kycResponse.kyc[requiredTier].status !== "verified") {
+      if (
+        !kycResponse.kyc[requiredTier] ||
+        kycResponse.kyc[requiredTier].status !== "verified"
+      ) {
         setKycVerified(false);
         toast.error(`KYC verification required for booking`);
         return;
@@ -826,13 +829,12 @@ export default function PropertyDetail() {
       navigate("/auth/login");
       return;
     }
-    
-if(user?.kyc?.tier1?.status !== "verified"){
-  toast.error("KYC verification required for renting properties");
-  navigate("/user/settings/kyc");
-  return;
-}
-   
+
+    if (user?.kyc?.tier1?.status !== "verified") {
+      toast.error("KYC verification required for renting properties");
+      navigate("/user/settings/kyc");
+      return;
+    }
 
     // Update payment amount based on selected options
     const paymentAmount = calculateInitialPayment();
@@ -1746,16 +1748,20 @@ if(user?.kyc?.tier1?.status !== "verified"){
                 )}
 
                 {/* KYC Verification Status */}
-                {user && user?._id !== property?.owner._id && startDate && endDate && !kycVerified && (
-                  <div className="mt-4 mb-2">
-                    <KycVerificationStatus
-                      // requiredTier={paymentPeriod === "monthly" ? "tier2" : "tier1"}
-                      requiredTier={"tier1"}
-                      actionText="Continue to Payment"
-                      onVerified={() => setKycVerified(true)}
-                    />
-                  </div>
-                )}
+                {user &&
+                  user?._id !== property?.owner._id &&
+                  startDate &&
+                  endDate &&
+                  !kycVerified && (
+                    <div className="mt-4 mb-2">
+                      <KycVerificationStatus
+                        // requiredTier={paymentPeriod === "monthly" ? "tier2" : "tier1"}
+                        requiredTier={"tier1"}
+                        actionText="Continue to Payment"
+                        onVerified={() => setKycVerified(true)}
+                      />
+                    </div>
+                  )}
 
                 {user?._id === property?.owner._id ? (
                   <button
@@ -1831,8 +1837,8 @@ if(user?.kyc?.tier1?.status !== "verified"){
                                 (18% annually)
                               </p>
                               <p>
-                                <strong>Option 2:</strong> Pay everything
-                                monthly with 2% of yearly rent paid monthly (24%
+                                <strong>Option 2:</strong> Pay monthly rent with
+                                2% of yearly rent as interest paid monthly (24%
                                 annually)
                               </p>
                             </div>
@@ -1863,7 +1869,7 @@ if(user?.kyc?.tier1?.status !== "verified"){
                         >
                           <div className="text-sm font-medium">Option 2</div>
                           <div className="text-xs">
-                            Only monthly Rental payment
+                            Monthly Rent with 2% interest
                           </div>
                         </button>
                       </div>
@@ -2030,7 +2036,7 @@ if(user?.kyc?.tier1?.status !== "verified"){
                         <>
                           <div className="bg-blue-50 p-3 rounded-lg mb-2">
                             <p className="text-sm font-medium text-blue-800 mb-1">
-                              Option 2: Only monthly Rental payment
+                              Option 2: Monthly Rental payment with interest
                             </p>
                             <p className="text-xs text-blue-600">
                               Interest is 2% of the yearly rent paid monthly
@@ -2042,27 +2048,7 @@ if(user?.kyc?.tier1?.status !== "verified"){
                             <span>Monthly Payment (without interest)</span>
                             <span>
                               {fCurrency(
-                                (property?.pricing?.rent_per_year?.annual_rent +
-                                  (property?.pricing?.rent_per_year
-                                    ?.is_agency_fee_active
-                                    ? property?.pricing?.rent_per_year
-                                        ?.agency_fee
-                                    : 0) +
-                                  (property?.pricing?.rent_per_year
-                                    ?.is_commission_fee_active
-                                    ? property?.pricing?.rent_per_year
-                                        ?.commission_fee
-                                    : 0) +
-                                  (property?.pricing?.rent_per_year
-                                    ?.is_caution_fee_active
-                                    ? property?.pricing?.rent_per_year
-                                        ?.caution_fee
-                                    : 0) +
-                                  (property?.pricing?.rent_per_year
-                                    ?.is_legal_fee_active
-                                    ? property?.pricing?.rent_per_year
-                                        ?.legal_fee
-                                    : 0)) /
+                                property?.pricing?.rent_per_year?.annual_rent /
                                   12
                               )}
                             </span>
@@ -2086,7 +2072,7 @@ if(user?.kyc?.tier1?.status !== "verified"){
                           </div>
 
                           <div className="flex justify-between text-sm text-gray-500 mt-1">
-                            <span>Includes rent and all fees</span>
+                            <span>Monthly rent with interest only</span>
                             <span></span>
                           </div>
                         </>
@@ -2125,16 +2111,18 @@ if(user?.kyc?.tier1?.status !== "verified"){
                       )}
                     </div>
                   </div>
-                  {user && user?._id !== property?.owner._id && !kycVerified && (
-                  <div className="mt-4 mb-2">
-                    <KycVerificationStatus
-                      // requiredTier={paymentPeriod === "monthly" ? "tier2" : "tier1"}
-                      requiredTier={"tier1"}
-                      actionText="Continue to Payment"
-                      onVerified={() => setKycVerified(true)}
-                    />
-                  </div>
-                )}
+                  {user &&
+                    user?._id !== property?.owner._id &&
+                    !kycVerified && (
+                      <div className="mt-4 mb-2">
+                        <KycVerificationStatus
+                          // requiredTier={paymentPeriod === "monthly" ? "tier2" : "tier1"}
+                          requiredTier={"tier1"}
+                          actionText="Continue to Payment"
+                          onVerified={() => setKycVerified(true)}
+                        />
+                      </div>
+                    )}
                   {/* Book Now Button */}
                   {user?._id === property?.owner._id ? (
                     <button
@@ -2155,8 +2143,6 @@ if(user?.kyc?.tier1?.status !== "verified"){
                         : "Pay First Month"}
                     </button>
                   )}
-
-
                 </div>
               </div>
             )}

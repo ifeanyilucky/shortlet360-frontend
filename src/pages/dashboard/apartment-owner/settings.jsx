@@ -14,15 +14,8 @@ import { useAuth } from "../../../hooks/useAuth";
 import { useForm } from "react-hook-form";
 import { uploadService } from "../../../services/api";
 import InteractiveButton from "../../../components/InteractiveButton";
+import { getGreeting } from "../../../utils/helpers";
 import clsx from "clsx";
-
-const getGreeting = () => {
-  const hour = new Date().getHours();
-  if (hour >= 5 && hour < 12) return "Good morning";
-  if (hour >= 12 && hour < 17) return "Good afternoon";
-  if (hour >= 17 && hour < 22) return "Good evening";
-  return "Good night";
-};
 
 const InputField = forwardRef(
   ({ label, icon: Icon, error, disabled, ...props }, ref) => {
@@ -216,7 +209,9 @@ export default function Settings() {
             Change Password
           </button>
           <button
-            onClick={() => window.location.href = `/${user?.role}/settings/kyc`}
+            onClick={() =>
+              (window.location.href = `/${user?.role}/settings/kyc`)
+            }
             className={`${
               activeTab === "kyc"
                 ? "border-primary-500 text-primary-600"

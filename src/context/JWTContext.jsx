@@ -1,9 +1,16 @@
-import { createContext, useEffect, useReducer } from "react";
+import { useEffect, useReducer } from "react";
 import PropTypes from "prop-types";
 // utils
 import { useNavigate } from "react-router-dom";
 import { isValidToken, setSession } from "../utils/jwt";
-import * as api from "../utils/axios";
+import API, {
+  register as registerApi,
+  signin,
+  forgotPassword,
+  resetPassword,
+  account,
+} from "../utils/axios";
+
 import { AuthContext } from "./AuthContext";
 import { authService } from "../services/api";
 // ----------------------------------------------------------------------
@@ -80,7 +87,7 @@ export function AuthProvider({ children }) {
 
         if (accessToken && isValidToken(accessToken)) {
           setSession(accessToken);
-          const { data } = await api.account();
+          const { data } = await account();
           const { user } = data;
           dispatch({
             type: "INITIALIZE",
@@ -117,7 +124,7 @@ export function AuthProvider({ children }) {
   }, []);
 
   const login = async (payload) => {
-    const { data } = await api.signin(payload);
+    const { data } = await signin(payload);
 
     const { token, user, requiresPayment } = data;
 
@@ -142,7 +149,7 @@ export function AuthProvider({ children }) {
   };
 
   const register = async (payload) => {
-    const response = await api.register(payload);
+    const response = await registerApi(payload);
     const { token, user, requiresPayment } = response.data;
 
     window.localStorage.setItem("accessToken", token);
@@ -168,11 +175,11 @@ export function AuthProvider({ children }) {
   };
 
   const forgotPassword = async (payload) => {
-    await api.forgotPassword(payload);
+    await authService.forgotPassword(payload);
   };
 
   const resetPassword = async (payload, token) => {
-    await api.resetPassword(payload, token);
+    await authService.resetPassword(token, payload);
   };
 
   const changePassword = async (payload) => {
@@ -202,6 +209,22 @@ export function AuthProvider({ children }) {
     });
   };
 
+  // Register admin user
+  const registerAdmin = async (payload) => {
+    // Check if admin code is valid (you can implement this check in your backend)
+    const adminCode = payload.adminCode;
+    // delete payload.adminCode; // Remove adminCode from payload before sending to API
+    delete payload.confirmPassword; // Remove confirmPassword from payload
+
+    // Call the admin registration API endpoint
+    const response = await API.post("/auth/admin/register", {
+      ...payload,
+      adminCode,
+    });
+
+    return response;
+  };
+
   return (
     <AuthContext.Provider
       value={{
@@ -210,6 +233,7 @@ export function AuthProvider({ children }) {
         login,
         logout,
         register,
+        registerAdmin,
         resetPassword,
         forgotPassword,
         updateProfile,

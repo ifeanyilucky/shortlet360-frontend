@@ -38,7 +38,7 @@ export default function VerifyEmail() {
 
   const handleNavigate = () => {
     if (user) {
-      navigate("/user/settings/kyc");
+      navigate(`/${user.role}/settings/kyc`);
     } else {
       navigate("/auth/login");
     }
@@ -50,8 +50,12 @@ export default function VerifyEmail() {
         {verificationStatus === "loading" && (
           <div className="text-center">
             <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-500 mx-auto"></div>
-            <h2 className="text-xl font-semibold mt-4">Verifying your email...</h2>
-            <p className="text-gray-600 mt-2">Please wait while we verify your email address.</p>
+            <h2 className="text-xl font-semibold mt-4">
+              Verifying your email...
+            </h2>
+            <p className="text-gray-600 mt-2">
+              Please wait while we verify your email address.
+            </p>
           </div>
         )}
 
@@ -60,14 +64,14 @@ export default function VerifyEmail() {
             <div className="mx-auto flex items-center justify-center h-12 w-12 rounded-full bg-green-100">
               <HiCheckCircle className="h-8 w-8 text-green-600" />
             </div>
-            <h2 className="text-xl font-semibold mt-4">Email Verified Successfully!</h2>
+            <h2 className="text-xl font-semibold mt-4">
+              Email Verified Successfully!
+            </h2>
             <p className="text-gray-600 mt-2">
-              Your email has been successfully verified. You can now continue with the KYC verification process.
+              Your email has been successfully verified. You can now continue
+              with the KYC verification process.
             </p>
-            <InteractiveButton
-              onClick={handleNavigate}
-              className="mt-6 w-full"
-            >
+            <InteractiveButton onClick={handleNavigate} className="mt-6 w-full">
               {user ? "Continue to KYC Verification" : "Login to Your Account"}
             </InteractiveButton>
           </div>
@@ -80,12 +84,10 @@ export default function VerifyEmail() {
             </div>
             <h2 className="text-xl font-semibold mt-4">Verification Failed</h2>
             <p className="text-gray-600 mt-2">
-              {errorMessage || "We couldn't verify your email. The verification link may be invalid or expired."}
+              {errorMessage ||
+                "We couldn't verify your email. The verification link may be invalid or expired."}
             </p>
-            <InteractiveButton
-              onClick={handleNavigate}
-              className="mt-6 w-full"
-            >
+            <InteractiveButton onClick={handleNavigate} className="mt-6 w-full">
               {user ? "Return to KYC Verification" : "Return to Login"}
             </InteractiveButton>
           </div>

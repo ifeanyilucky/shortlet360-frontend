@@ -262,7 +262,9 @@ export default function AddApartment() {
 
       await addProperty(finalFormData);
       toast.dismiss();
-      toast.success("Property added successfully!");
+      toast.success(
+        "Property added successfully! It will be reviewed by our team before being published."
+      );
       navigate("/owner/apartments");
     } catch (error) {
       toast.dismiss();
@@ -282,6 +284,33 @@ export default function AddApartment() {
     <div className="max-w-5xl p-5">
       <h1 className="text-2xl font-semibold mb-6">Add New Apartment</h1>
 
+      {/* Admin Review Notice */}
+      <div className="bg-blue-50 border-l-4 border-blue-500 p-4 mb-6">
+        <div className="flex items-start">
+          <div className="flex-shrink-0">
+            <svg
+              className="h-5 w-5 text-blue-500"
+              xmlns="http://www.w3.org/2000/svg"
+              viewBox="0 0 20 20"
+              fill="currentColor"
+            >
+              <path
+                fillRule="evenodd"
+                d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z"
+                clipRule="evenodd"
+              />
+            </svg>
+          </div>
+          <div className="ml-3">
+            <p className="text-sm text-blue-700">
+              <strong>Important:</strong> All new properties require admin
+              approval before being published on the platform. Our team will
+              review your listing within 24-48 hours.
+            </p>
+          </div>
+        </div>
+      </div>
+
       {/* KYC Verification Check */}
       {!kycVerified && (
         <div className="mb-6">
@@ -299,21 +328,24 @@ export default function AddApartment() {
             onSubmit={methods.handleSubmit(onSubmit)}
             className="bg-white rounded-lg"
           >
-          {/* Steps indicator */}
-          <div className="relative flex justify-between mb-12">
-            {/* Progress Line */}
-            <div className="absolute top-1/2 left-0 w-full h-[2px] bg-gray-200 -translate-y-1/2">
-              <div
-                className="h-full bg-primary-500 transition-all duration-300"
-                style={{ width: `${(current / (steps.length - 1)) * 100}%` }}
-              />
-            </div>
-
-            {/* Steps */}
-            {steps.map((step, index) => (
-              <div key={index} className="relative flex flex-col items-center">
+            {/* Steps indicator */}
+            <div className="relative flex justify-between mb-12">
+              {/* Progress Line */}
+              <div className="absolute top-1/2 left-0 w-full h-[2px] bg-gray-200 -translate-y-1/2">
                 <div
-                  className={`w-10 h-10 rounded-full flex items-center justify-center z-10
+                  className="h-full bg-primary-500 transition-all duration-300"
+                  style={{ width: `${(current / (steps.length - 1)) * 100}%` }}
+                />
+              </div>
+
+              {/* Steps */}
+              {steps.map((step, index) => (
+                <div
+                  key={index}
+                  className="relative flex flex-col items-center"
+                >
+                  <div
+                    className={`w-10 h-10 rounded-full flex items-center justify-center z-10
                                     ${
                                       index < current
                                         ? "bg-primary-500 text-white border-2 border-primary-500"
@@ -321,76 +353,76 @@ export default function AddApartment() {
                                         ? "bg-white text-primary-500 border-2 border-primary-500"
                                         : "bg-white text-gray-500 border-2 border-gray-200"
                                     }`}
-                >
-                  {index < current ? (
-                    <svg
-                      className="w-6 h-6"
-                      fill="none"
-                      stroke="currentColor"
-                      viewBox="0 0 24 24"
-                    >
-                      <path
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        strokeWidth={2}
-                        d="M5 13l4 4L19 7"
-                      />
-                    </svg>
-                  ) : (
-                    <span>{index + 1}</span>
-                  )}
-                </div>
-                <span
-                  className={`absolute -bottom-6 text-sm whitespace-nowrap
+                  >
+                    {index < current ? (
+                      <svg
+                        className="w-6 h-6"
+                        fill="none"
+                        stroke="currentColor"
+                        viewBox="0 0 24 24"
+                      >
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          strokeWidth={2}
+                          d="M5 13l4 4L19 7"
+                        />
+                      </svg>
+                    ) : (
+                      <span>{index + 1}</span>
+                    )}
+                  </div>
+                  <span
+                    className={`absolute -bottom-6 text-sm whitespace-nowrap
                                 ${
                                   index <= current
                                     ? "text-primary-500 font-medium"
                                     : "text-gray-500"
                                 }`}
+                  >
+                    {step.title}
+                  </span>
+                </div>
+              ))}
+            </div>
+
+            {/* Content */}
+            <div className="min-h-[400px] p-4">{steps[current].content}</div>
+
+            {/* Navigation */}
+            <div className="flex justify-between mt-8">
+              {current > 0 && (
+                <button
+                  type="button"
+                  onClick={prev}
+                  className="flex items-center px-4 py-2 bg-gray-100 text-gray-700 rounded-md hover:bg-gray-200"
                 >
-                  {step.title}
-                </span>
-              </div>
-            ))}
-          </div>
-
-          {/* Content */}
-          <div className="min-h-[400px] p-4">{steps[current].content}</div>
-
-          {/* Navigation */}
-          <div className="flex justify-between mt-8">
-            {current > 0 && (
-              <button
-                type="button"
-                onClick={prev}
-                className="flex items-center px-4 py-2 bg-gray-100 text-gray-700 rounded-md hover:bg-gray-200"
-              >
-                <FiChevronLeft className="mr-2" />
-                Previous
-              </button>
-            )}
-            {current < steps.length - 1 ? (
-              <button
-                type="button"
-                onClick={next}
-                className="flex items-center px-4 py-2 bg-primary-500 text-white rounded-md hover:bg-primary-600 ml-auto"
-              >
-                Next
-                <FiChevronRight className="ml-2" />
-              </button>
-            ) : (
-              <InteractiveButton
-                type="submit"
-                disabled={submitLoading}
-                isLoading={submitLoading}
-                className="flex items-center px-4 py-2 text-white rounded-md ml-auto disabled:opacity-50 disabled:cursor-not-allowed"
-              >
-                {submitLoading ? "Submitting..." : "Submit"}
-              </InteractiveButton>
-            )}
-          </div>
-        </form>
-      </FormProvider>
+                  <FiChevronLeft className="mr-2" />
+                  Previous
+                </button>
+              )}
+              {current < steps.length - 1 ? (
+                <button
+                  type="button"
+                  onClick={next}
+                  className="flex items-center px-4 py-2 bg-primary-500 text-white rounded-md hover:bg-primary-600 ml-auto"
+                >
+                  Next
+                  <FiChevronRight className="ml-2" />
+                </button>
+              ) : (
+                <InteractiveButton
+                  type="submit"
+                  disabled={submitLoading}
+                  isLoading={submitLoading}
+                  className="flex items-center px-4 py-2 text-white rounded-md ml-auto disabled:opacity-50 disabled:cursor-not-allowed"
+                >
+                  {submitLoading ? "Submitting..." : "Submit"}
+                </InteractiveButton>
+              )}
+            </div>
+          </form>
+        </FormProvider>
       )}
     </div>
   );

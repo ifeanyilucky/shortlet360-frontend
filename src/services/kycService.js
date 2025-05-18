@@ -13,8 +13,18 @@ export const kycService = {
     return response.data;
   },
 
-  verifyPhoneNumber: async (phoneNumber) => {
-    const response = await api.post("/kyc/tier1/verify-phone", { phone_number: phoneNumber });
+  initiatePhoneVerification: async (phoneNumber) => {
+    const response = await api.post("/kyc/tier1/initiate-phone", {
+      phone_number: phoneNumber,
+    });
+    return response.data;
+  },
+
+  // This method is kept for backward compatibility but is no longer used
+  verifyPhoneNumber: async (verificationCode) => {
+    const response = await api.post("/kyc/tier1/verify-phone", {
+      verification_code: verificationCode,
+    });
     return response.data;
   },
 
@@ -33,7 +43,7 @@ export const kycService = {
   submitTier3Verification: async (data) => {
     const response = await api.post("/kyc/tier3/submit", data);
     return response.data;
-  }
+  },
 };
 
 export default kycService;

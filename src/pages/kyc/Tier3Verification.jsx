@@ -17,7 +17,7 @@ const tier3Schema = yup.object().shape({
   employment_status: yup.string().required("Employment status is required"),
   work_address: yup.string().required("Work address is required"),
   work_phone: yup.string().required("Work phone is required"),
-  
+
   // Bank fields
   bank_name: yup.string().required("Bank name is required"),
   account_number: yup
@@ -72,7 +72,7 @@ export default function Tier3Verification({ kycStatus }) {
       setUploadingDocument(true);
       const formData = new FormData();
       formData.append("image", file);
-      
+
       const response = await uploadService.uploadImage(formData);
       setBankStatement(response.data);
       toast.success("Bank statement uploaded successfully");
@@ -105,43 +105,53 @@ export default function Tier3Verification({ kycStatus }) {
           document: bankStatement,
         },
       };
-      
+
       await submitTier3Verification(formattedData);
     } catch (error) {
       console.error("Error submitting Tier 3 verification:", error);
     }
   };
 
-  const isEmploymentVerified = kycStatus?.tier3?.employment?.verification_status === "verified";
-  const isBankVerified = kycStatus?.tier3?.bank_statement?.verification_status === "verified";
+  const isEmploymentVerified =
+    kycStatus?.tier3?.employment?.verification_status === "verified";
+  const isBankVerified =
+    kycStatus?.tier3?.bank_statement?.verification_status === "verified";
   const isTier3Verified = kycStatus?.tier3?.status === "verified";
   const isTier3Pending = kycStatus?.tier3?.status === "pending";
 
   return (
     <div>
-      <h2 className="text-xl font-semibold mb-4">Tier 3: Financial Verification</h2>
+      <h2 className="text-xl font-semibold mb-4">
+        Tier 3: Financial Verification
+      </h2>
       <p className="text-gray-600 mb-6">
-        Verify your employment and banking information to complete Tier 3 verification.
-        This is required for monthly rent payment options.
+        Complete employment check and credit history check to complete Tier 3
+        verification. This is required for monthly rent payment options.
       </p>
 
       {isTier3Verified ? (
         <div className="bg-green-50 text-green-700 p-4 rounded-md">
           <div className="flex items-center">
             <HiCheckCircle className="w-6 h-6 mr-2" />
-            <p className="font-medium">Tier 3 verification completed successfully!</p>
+            <p className="font-medium">
+              Tier 3 verification completed successfully!
+            </p>
           </div>
           {kycStatus?.tier3?.completed_at && (
             <p className="mt-1 text-sm">
-              Completed on: {new Date(kycStatus.tier3.completed_at).toLocaleDateString()}
+              Completed on:{" "}
+              {new Date(kycStatus.tier3.completed_at).toLocaleDateString()}
             </p>
           )}
         </div>
       ) : isTier3Pending ? (
         <div className="bg-yellow-50 text-yellow-700 p-4 rounded-md mb-6">
-          <p className="font-medium">Your Tier 3 verification is pending review.</p>
+          <p className="font-medium">
+            Your Tier 3 verification is pending review.
+          </p>
           <p className="mt-1 text-sm">
-            We'll notify you once the verification is complete. This usually takes 2-3 business days.
+            We'll notify you once the verification is complete. This usually
+            takes 2-3 business days.
           </p>
         </div>
       ) : (
@@ -159,7 +169,7 @@ export default function Tier3Verification({ kycStatus }) {
             >
               <div className="flex items-center">
                 <HiOfficeBuilding className="w-5 h-5 mr-2" />
-                Employment Information
+                Employment Check
               </div>
             </button>
             <button
@@ -173,7 +183,7 @@ export default function Tier3Verification({ kycStatus }) {
             >
               <div className="flex items-center">
                 <HiCreditCard className="w-5 h-5 mr-2" />
-                Bank Information
+                Credit History Check
               </div>
             </button>
           </div>
@@ -183,24 +193,34 @@ export default function Tier3Verification({ kycStatus }) {
             <div className="space-y-4">
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div>
-                  <label htmlFor="employer_name" className="block text-sm font-medium text-gray-700 mb-1">
+                  <label
+                    htmlFor="employer_name"
+                    className="block text-sm font-medium text-gray-700 mb-1"
+                  >
                     Employer Name
                   </label>
                   <input
                     id="employer_name"
                     type="text"
                     className={`w-full px-3 py-2 border rounded-md ${
-                      errors.employer_name ? "border-red-500" : "border-gray-300"
+                      errors.employer_name
+                        ? "border-red-500"
+                        : "border-gray-300"
                     }`}
                     {...register("employer_name")}
                   />
                   {errors.employer_name && (
-                    <p className="mt-1 text-sm text-red-600">{errors.employer_name.message}</p>
+                    <p className="mt-1 text-sm text-red-600">
+                      {errors.employer_name.message}
+                    </p>
                   )}
                 </div>
 
                 <div>
-                  <label htmlFor="position" className="block text-sm font-medium text-gray-700 mb-1">
+                  <label
+                    htmlFor="position"
+                    className="block text-sm font-medium text-gray-700 mb-1"
+                  >
                     Position/Title
                   </label>
                   <input
@@ -212,19 +232,26 @@ export default function Tier3Verification({ kycStatus }) {
                     {...register("position")}
                   />
                   {errors.position && (
-                    <p className="mt-1 text-sm text-red-600">{errors.position.message}</p>
+                    <p className="mt-1 text-sm text-red-600">
+                      {errors.position.message}
+                    </p>
                   )}
                 </div>
               </div>
 
               <div>
-                <label htmlFor="employment_status" className="block text-sm font-medium text-gray-700 mb-1">
+                <label
+                  htmlFor="employment_status"
+                  className="block text-sm font-medium text-gray-700 mb-1"
+                >
                   Employment Status
                 </label>
                 <select
                   id="employment_status"
                   className={`w-full px-3 py-2 border rounded-md ${
-                    errors.employment_status ? "border-red-500" : "border-gray-300"
+                    errors.employment_status
+                      ? "border-red-500"
+                      : "border-gray-300"
                   }`}
                   {...register("employment_status")}
                 >
@@ -236,12 +263,17 @@ export default function Tier3Verification({ kycStatus }) {
                   <option value="freelance">Freelance</option>
                 </select>
                 {errors.employment_status && (
-                  <p className="mt-1 text-sm text-red-600">{errors.employment_status.message}</p>
+                  <p className="mt-1 text-sm text-red-600">
+                    {errors.employment_status.message}
+                  </p>
                 )}
               </div>
 
               <div>
-                <label htmlFor="work_address" className="block text-sm font-medium text-gray-700 mb-1">
+                <label
+                  htmlFor="work_address"
+                  className="block text-sm font-medium text-gray-700 mb-1"
+                >
                   Work Address
                 </label>
                 <input
@@ -253,12 +285,17 @@ export default function Tier3Verification({ kycStatus }) {
                   {...register("work_address")}
                 />
                 {errors.work_address && (
-                  <p className="mt-1 text-sm text-red-600">{errors.work_address.message}</p>
+                  <p className="mt-1 text-sm text-red-600">
+                    {errors.work_address.message}
+                  </p>
                 )}
               </div>
 
               <div>
-                <label htmlFor="work_phone" className="block text-sm font-medium text-gray-700 mb-1">
+                <label
+                  htmlFor="work_phone"
+                  className="block text-sm font-medium text-gray-700 mb-1"
+                >
                   Work Phone
                 </label>
                 <input
@@ -270,7 +307,9 @@ export default function Tier3Verification({ kycStatus }) {
                   {...register("work_phone")}
                 />
                 {errors.work_phone && (
-                  <p className="mt-1 text-sm text-red-600">{errors.work_phone.message}</p>
+                  <p className="mt-1 text-sm text-red-600">
+                    {errors.work_phone.message}
+                  </p>
                 )}
               </div>
 
@@ -280,7 +319,7 @@ export default function Tier3Verification({ kycStatus }) {
                   onClick={() => setActiveSection("bank")}
                   className="px-4 py-2"
                 >
-                  Next: Bank Information
+                  Next: Credit History Check
                 </InteractiveButton>
               </div>
             </div>
@@ -291,8 +330,11 @@ export default function Tier3Verification({ kycStatus }) {
             <div className="space-y-4">
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div>
-                  <label htmlFor="bank_name" className="block text-sm font-medium text-gray-700 mb-1">
-                    Bank Name
+                  <label
+                    htmlFor="bank_name"
+                    className="block text-sm font-medium text-gray-700 mb-1"
+                  >
+                    Primary Bank
                   </label>
                   <input
                     id="bank_name"
@@ -303,31 +345,40 @@ export default function Tier3Verification({ kycStatus }) {
                     {...register("bank_name")}
                   />
                   {errors.bank_name && (
-                    <p className="mt-1 text-sm text-red-600">{errors.bank_name.message}</p>
+                    <p className="mt-1 text-sm text-red-600">
+                      {errors.bank_name.message}
+                    </p>
                   )}
                 </div>
 
                 <div>
-                  <label htmlFor="account_number" className="block text-sm font-medium text-gray-700 mb-1">
+                  <label
+                    htmlFor="account_number"
+                    className="block text-sm font-medium text-gray-700 mb-1"
+                  >
                     Account Number
                   </label>
                   <input
                     id="account_number"
                     type="text"
                     className={`w-full px-3 py-2 border rounded-md ${
-                      errors.account_number ? "border-red-500" : "border-gray-300"
+                      errors.account_number
+                        ? "border-red-500"
+                        : "border-gray-300"
                     }`}
                     {...register("account_number")}
                   />
                   {errors.account_number && (
-                    <p className="mt-1 text-sm text-red-600">{errors.account_number.message}</p>
+                    <p className="mt-1 text-sm text-red-600">
+                      {errors.account_number.message}
+                    </p>
                   )}
                 </div>
               </div>
 
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-1">
-                  Bank Statement (Last 3 months)
+                  Credit History Document (Last 3 months)
                 </label>
                 <div className="mt-1 flex justify-center px-6 pt-5 pb-6 border-2 border-gray-300 border-dashed rounded-md">
                   <div className="space-y-1 text-center">
@@ -363,21 +414,25 @@ export default function Tier3Verification({ kycStatus }) {
                       </label>
                       <p className="pl-1">or drag and drop</p>
                     </div>
-                    <p className="text-xs text-gray-500">PDF, PNG, JPG up to 5MB</p>
+                    <p className="text-xs text-gray-500">
+                      PDF, PNG, JPG up to 5MB
+                    </p>
                   </div>
                 </div>
                 {bankStatement && (
                   <div className="mt-2 flex items-center text-sm text-green-600">
                     <HiCheckCircle className="w-5 h-5 mr-1" />
-                    <span>Bank statement uploaded successfully</span>
+                    <span>Credit history document uploaded successfully</span>
                   </div>
                 )}
               </div>
 
               <div className="bg-blue-50 p-4 rounded-md mt-4">
                 <p className="text-sm text-blue-700">
-                  Your bank statement should clearly show your name, account number, bank name, and transactions
-                  for the last 3 months. This information will be used to verify your financial stability.
+                  Your credit history document should include bank statements,
+                  credit reports, or other financial records for the last 3
+                  months. This information will be used to verify your financial
+                  stability and creditworthiness.
                 </p>
               </div>
 
@@ -387,9 +442,9 @@ export default function Tier3Verification({ kycStatus }) {
                   onClick={() => setActiveSection("employment")}
                   className="px-4 py-2 bg-gray-200 text-gray-800 hover:bg-gray-300"
                 >
-                  Back to Employment
+                  Back to Employment Check
                 </InteractiveButton>
-                
+
                 <InteractiveButton
                   type="submit"
                   isLoading={isLoading}
