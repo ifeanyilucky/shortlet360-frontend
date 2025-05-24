@@ -38,7 +38,8 @@ export default function UserProfile() {
         role: res.data.user.role || "",
         is_active: res.data.user.is_active || false,
         is_verified: res.data.user.is_verified || false,
-        registration_payment_status: res.data.user.registration_payment_status || "",
+        registration_payment_status:
+          res.data.user.registration_payment_status || "",
       });
     } catch (error) {
       console.error(error);
@@ -100,7 +101,7 @@ export default function UserProfile() {
   return (
     <div className="relative">
       {saving && <LoadingOverlay />}
-      
+
       <div className="flex justify-between items-center mb-6">
         <div className="flex items-center">
           <button
@@ -230,7 +231,10 @@ export default function UserProfile() {
                 onChange={handleChange}
                 className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
               />
-              <label htmlFor="is_active" className="ml-2 block text-sm text-gray-900">
+              <label
+                htmlFor="is_active"
+                className="ml-2 block text-sm text-gray-900"
+              >
                 Active Account
               </label>
             </div>
@@ -243,7 +247,10 @@ export default function UserProfile() {
                 onChange={handleChange}
                 className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
               />
-              <label htmlFor="is_verified" className="ml-2 block text-sm text-gray-900">
+              <label
+                htmlFor="is_verified"
+                className="ml-2 block text-sm text-gray-900"
+              >
                 Verified Account
               </label>
             </div>
@@ -268,7 +275,8 @@ export default function UserProfile() {
           <div className="bg-white rounded-lg p-6 max-w-md w-full">
             <h3 className="text-lg font-semibold mb-4">Confirm Delete</h3>
             <p className="mb-6">
-              Are you sure you want to delete this user? This action cannot be undone.
+              Are you sure you want to delete this user? This action cannot be
+              undone.
             </p>
             <div className="flex justify-end space-x-3">
               <button

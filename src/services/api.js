@@ -175,4 +175,8 @@ export const formService = {
     const response = await api.post("/forms/contact", data);
     return response.data;
   },
+  submitDisputeResolutionForm: async (data) => {
+    const response = await api.post("/forms/dispute-resolution", data);
+    return response.data;
+  },
 };

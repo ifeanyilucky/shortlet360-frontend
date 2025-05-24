@@ -2,7 +2,7 @@ import { useState } from "react";
 import {
   FiUsers,
   FiGift,
-  FiDollarSign,
+  FiTool,
   FiSend,
   FiCopy,
   FiCheck,
@@ -47,27 +47,27 @@ export default function ReferralProgram() {
       icon: <FiUsers className="h-8 w-8 text-primary-500" />,
       title: "Invite Friends",
       description:
-        "Share your unique referral link with friends and family who are looking for rental or shortlet apartments.",
+        "Share your unique referral link with landlords, property managers, and potential tenants looking for rental or shortlet apartments.",
     },
     {
       icon: <FiGift className="h-8 w-8 text-primary-500" />,
-      title: "They Sign Up",
+      title: "They Sign Up & Verify",
       description:
-        "When they register using your referral link and complete their first booking, you both qualify for rewards.",
+        "When they register using your referral link and complete their account verification, you both qualify for Home Fix service rewards.",
     },
     {
-      icon: <FiDollarSign className="h-8 w-8 text-primary-500" />,
-      title: "Earn Rewards",
+      icon: <FiTool className="h-8 w-8 text-primary-500" />,
+      title: "Earn Home Fix Services",
       description:
-        "Receive credits towards your next booking or cash rewards for each successful referral.",
+        "Get free Home Fix services for home repairs and maintenance - no cash, just valuable services when you need them most.",
     },
   ];
 
   const rewards = [
-    "₦5,000 credit for each friend who completes a booking",
-    "Your friend gets ₦2,500 off their first booking",
-    "Earn up to ₦100,000 in referral credits per year",
-    "Redeem credits for discounts on your next booking or cash out",
+    "Get 1 FREE Home Fix service for every 5 landlords/property managers you refer who verify their accounts",
+    "Get 1 FREE Home Fix service for every 20 tenants/users you refer who verify their accounts",
+    "Free Home Fix services include plumbing, electrical work, painting, carpentry, and general repairs",
+    "No cash rewards - we reward you with the valuable services you actually need for your home",
   ];
 
   return (
@@ -79,8 +79,8 @@ export default function ReferralProgram() {
             Referral Program
           </h1>
           <p className="text-xl text-primary-100 max-w-3xl mx-auto">
-            Refer friends to Aplet360 and earn rewards for every successful
-            referral
+            Refer friends to Aplet360 and earn FREE Home Fix services - fix that
+            leaking roof or broken door without paying for it!
           </p>
         </div>
       </section>
@@ -115,8 +115,9 @@ export default function ReferralProgram() {
             {isAuthenticated ? (
               <>
                 <p className="text-tertiary-600 mb-8 text-center">
-                  Share this link with your friends and earn rewards when they
-                  sign up and book through Aplet360.
+                  Share this link with landlords and tenants to earn FREE Home
+                  Fix services when they sign up and verify their accounts on
+                  Aplet360.
                 </p>
                 <div className="flex items-center mb-8">
                   <input
@@ -201,8 +202,8 @@ export default function ReferralProgram() {
           <div className="text-center mb-12">
             <h2 className="text-3xl font-bold mb-4">Rewards</h2>
             <p className="text-lg text-tertiary-600 max-w-3xl mx-auto">
-              Here's what you and your friends can earn through our referral
-              program.
+              Here&apos;s how you can earn FREE Home Fix services through our
+              referral program - real value for your home maintenance needs.
             </p>
           </div>
 
@@ -231,25 +232,32 @@ export default function ReferralProgram() {
           <div className="bg-white p-6 rounded-lg shadow-md">
             <ul className="list-disc pl-5 space-y-2 text-tertiary-700">
               <li>
-                Referral rewards are only issued after your referred friend
-                completes their first booking.
+                Home Fix service rewards are only issued after your referred
+                friend completes their account verification and KYC process.
               </li>
               <li>
-                Both the referrer and the referred friend must have active
-                accounts on Aplet360.
+                Both the referrer and the referred friend must have active and
+                verified accounts on Aplet360.
               </li>
-              <li>Referral credits expire 12 months after they are issued.</li>
+              <li>
+                Free Home Fix services must be redeemed within 12 months of
+                earning them.
+              </li>
+              <li>
+                Home Fix services are subject to availability and must be
+                scheduled through Aplet360&apos;s HomeFix platform.
+              </li>
               <li>
                 Aplet360 reserves the right to modify or terminate the referral
                 program at any time.
               </li>
               <li>
-                Referral rewards cannot be combined with other promotional
-                offers.
+                Home Fix service rewards cannot be exchanged for cash or
+                combined with other promotional offers.
               </li>
               <li>
                 Users found abusing the referral program will have their
-                accounts suspended.
+                accounts suspended and forfeit all earned rewards.
               </li>
             </ul>
           </div>

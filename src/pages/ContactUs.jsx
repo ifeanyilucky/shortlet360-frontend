@@ -202,8 +202,7 @@ export default function ContactUs() {
                     <h3 className="text-lg font-semibold mb-2">Our Office</h3>
                     <p className="text-gray-600">
                       38, Opebi Road, Adebola House,
-                      <br />
-                      Car Park Wing, Ikeja Lagos.
+                      <br /> Ikeja Lagos.
                     </p>
                   </div>
                 </div>
@@ -214,7 +213,7 @@ export default function ContactUs() {
                   </div>
                   <div>
                     <h3 className="text-lg font-semibold mb-2">Phone Number</h3>
-                    <p className="text-gray-600">09038775464</p>
+                    <p className="text-gray-600">09122842288</p>
                   </div>
                 </div>
 

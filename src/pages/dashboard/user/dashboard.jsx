@@ -8,16 +8,26 @@ import {
   HiOutlineCash,
   HiOutlineLocationMarker,
   HiOutlineTicket,
+  HiOutlineClipboardCopy,
 } from "react-icons/hi";
 import { useNavigate } from "react-router-dom";
 import KycProgressIndicator from "../../../components/KycProgressIndicator";
+import { useAuth } from "../../../hooks/useAuth";
+import toast from "react-hot-toast";
 export default function UserDashboard() {
   const { statistics, isLoading, getUserStatistics } = userStore();
+  const { user } = useAuth();
   const [timeframe, setTimeframe] = useState("30");
   const navigate = useNavigate();
+
   useEffect(() => {
     getUserStatistics(timeframe);
-  }, [timeframe]);
+  }, [timeframe, getUserStatistics]);
+
+  const copyToClipboard = (text) => {
+    navigator.clipboard.writeText(text);
+    toast.success("User ID copied to clipboard!");
+  };
 
   if (isLoading) return <LoadingOverlay />;
 
@@ -37,8 +47,43 @@ export default function UserDashboard() {
           <option value="365">Last year</option>
         </select>
       </div>
-     {/* KYC Progress Indicator */}
-     <KycProgressIndicator />
+
+      {/* User ID Display */}
+      {user?.short_id && (
+        <div className="bg-gradient-to-r from-blue-50 to-indigo-50 border border-blue-200 rounded-xl p-6">
+          <div className="flex items-center justify-between">
+            <div>
+              <h3 className="text-lg font-semibold text-gray-800 mb-2">
+                Your User ID
+              </h3>
+              <p className="text-sm text-gray-600 mb-3">
+                Share this ID with property owners for dispute resolution or
+                support purposes.
+              </p>
+              <div className="flex items-center space-x-3">
+                <span className="text-2xl font-mono font-bold text-blue-600 bg-white px-4 py-2 rounded-lg border">
+                  {user.short_id}
+                </span>
+                <button
+                  onClick={() => copyToClipboard(user.short_id)}
+                  className="flex items-center space-x-2 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
+                >
+                  <HiOutlineClipboardCopy className="w-4 h-4" />
+                  <span>Copy</span>
+                </button>
+              </div>
+            </div>
+            <div className="hidden md:block">
+              <div className="w-16 h-16 bg-blue-100 rounded-full flex items-center justify-center">
+                <HiOutlineTicket className="w-8 h-8 text-blue-600" />
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* KYC Progress Indicator */}
+      <KycProgressIndicator />
       {/* Statistics Cards */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6">
         <StatCard

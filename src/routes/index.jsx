@@ -18,6 +18,7 @@ import {
   ReferralProgram,
   BecomeArtisan,
   Marketplace,
+  PropertyManagementSolutions,
   PrivacyPolicy,
   TermsConditions,
 } from "../pages";
@@ -39,6 +40,10 @@ import UserLayout from "../layout/UserLayout";
 import Receipt from "../components/Receipt";
 import UserBookingHistory from "../pages/dashboard/user/UserBookingHistory";
 import Favorite from "../pages/dashboard/user/favorite";
+import UserServiceRequest from "../pages/dashboard/user/ServiceRequest";
+import UserDisputeResolution from "../pages/dashboard/user/DisputeResolution";
+import OwnerServiceRequest from "../pages/dashboard/apartment-owner/ServiceRequest";
+import OwnerDisputeResolution from "../pages/dashboard/apartment-owner/DisputeResolution";
 // KYC Verification
 import KycVerification from "../pages/kyc/KycVerification";
 import VerifyEmail from "../pages/kyc/VerifyEmail";
@@ -74,6 +79,10 @@ export default function Router() {
         { path: "referral-program", element: <ReferralProgram /> },
         { path: "become-artisan", element: <BecomeArtisan /> },
         { path: "marketplace", element: <Marketplace /> },
+        {
+          path: "property-management-solutions",
+          element: <PropertyManagementSolutions />,
+        },
         { path: "privacy-policy", element: <PrivacyPolicy /> },
         { path: "terms-conditions", element: <TermsConditions /> },
         { path: "property/:id", element: <PropertyDetail /> },
@@ -104,6 +113,8 @@ export default function Router() {
             { path: "apartments", element: <Apartments /> },
             { path: "bookings", element: <UserBookingHistory /> },
             { path: "favorites", element: <Favorite /> },
+            { path: "service-request", element: <UserServiceRequest /> },
+            { path: "dispute-resolution", element: <UserDisputeResolution /> },
             { path: "settings", element: <Settings /> },
             { path: "settings/kyc", element: <KycVerification /> },
           ],
@@ -125,6 +136,8 @@ export default function Router() {
             { path: "edit-apartment/:id", element: <EditApartment /> },
             { path: "availability", element: <Availability /> },
             { path: "bookings", element: <Bookings /> },
+            { path: "service-request", element: <OwnerServiceRequest /> },
+            { path: "dispute-resolution", element: <OwnerDisputeResolution /> },
             { path: "settings", element: <Settings /> },
             { path: "settings/kyc", element: <KycVerification /> },
           ],

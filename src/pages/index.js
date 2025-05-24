@@ -12,5 +12,6 @@ export { default as Career } from "./Career";
 export { default as ReferralProgram } from "./ReferralProgram";
 export { default as BecomeArtisan } from "./BecomeArtisan";
 export { default as Marketplace } from "./Marketplace";
+export { default as PropertyManagementSolutions } from "./PropertyManagementSolutions";
 export { default as PrivacyPolicy } from "./PrivacyPolicy";
 export { default as TermsConditions } from "./TermsConditions";

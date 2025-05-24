@@ -1,7 +1,7 @@
 import { Link, Outlet, useLocation } from "react-router-dom";
 import { HiHome } from "react-icons/hi";
 import { BsCalendarCheck, BsClockHistory } from "react-icons/bs";
-import { FiSettings } from "react-icons/fi";
+import { FiSettings, FiTool, FiShield, FiHome } from "react-icons/fi";
 import { BiHelpCircle } from "react-icons/bi";
 import { RiLogoutBoxLine } from "react-icons/ri";
 import { MdOutlineAddHome } from "react-icons/md";
@@ -30,6 +30,12 @@ const OwnerLayout = () => {
 
   const menuItems = [
     {
+      path: "/",
+      icon: <FiHome size={20} />,
+      label: "Home",
+      isExternal: true,
+    },
+    {
       path: "/owner/dashboard",
       icon: <HiHome size={20} />,
       label: "Dashboard",
@@ -44,15 +50,20 @@ const OwnerLayout = () => {
       icon: <MdOutlineAddHome size={20} />,
       label: "Add Apartments",
     },
-    // {
-    //   path: "/owner/availability",
-    //   icon: <BsCalendarCheck size={20} />,
-    //   label: "Availability Calendar",
-    // },
     {
       path: "/owner/bookings",
       icon: <BsClockHistory size={20} />,
       label: "Booking History",
+    },
+    {
+      path: "/owner/service-request",
+      icon: <FiTool size={20} />,
+      label: "HomeFix",
+    },
+    {
+      path: "/owner/dispute-resolution",
+      icon: <FiShield size={20} />,
+      label: "User Protect",
     },
     {
       path: "/owner/settings",
@@ -116,27 +127,37 @@ const OwnerLayout = () => {
         {/* Logo */}
         <div className="p-6 text-center flex justify-center items-center">
           <Link to="/">
-            <img src={"/logo.png"} alt="logo" className="w-20 h-20" />
+            <img src={"/logo.png"} alt="logo" className="w-40 h-auto" />
           </Link>
         </div>
-
-   
 
         {/* Main Menu */}
         <nav className="flex-1 px-4">
           <ul className="space-y-2">
             {menuItems.map((item) => (
               <li key={item.path}>
-                <Link to={item.path} className={getMenuItemStyles(item.path)}>
-                  <span
-                    className={`${
-                      isActiveRoute(item.path) ? "text-white" : "text-gray-600"
-                    }`}
+                {item.isExternal ? (
+                  <a
+                    href={item.path}
+                    className="flex items-center gap-3 px-4 py-3 rounded-lg transition-all duration-200 text-gray-600 hover:bg-gray-100"
                   >
-                    {item.icon}
-                  </span>
-                  <span className="text-sm">{item.label}</span>
-                </Link>
+                    <span className="text-gray-600">{item.icon}</span>
+                    <span className="text-sm">{item.label}</span>
+                  </a>
+                ) : (
+                  <Link to={item.path} className={getMenuItemStyles(item.path)}>
+                    <span
+                      className={`${
+                        isActiveRoute(item.path)
+                          ? "text-white"
+                          : "text-gray-600"
+                      }`}
+                    >
+                      {item.icon}
+                    </span>
+                    <span className="text-sm">{item.label}</span>
+                  </Link>
+                )}
               </li>
             ))}
           </ul>

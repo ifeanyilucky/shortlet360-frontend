@@ -1,7 +1,6 @@
 import { useState } from "react";
 import {
   FiSend,
-  FiTool,
   FiClock,
   FiDollarSign,
   FiShield,
@@ -9,13 +8,19 @@ import {
 } from "react-icons/fi";
 import toast from "react-hot-toast";
 import { formService } from "../services/api";
+import { lagosLocationData } from "../utils/locations";
 
 export default function BecomeArtisan() {
   const [formData, setFormData] = useState({
     fullName: "",
     email: "",
     phone: "",
-    address: "",
+    address: {
+      street: "",
+      state: "Lagos",
+      localGovernment: "",
+      area: "",
+    },
     skillCategory: "",
     experience: "",
     idType: "",
@@ -57,10 +62,24 @@ export default function BecomeArtisan() {
 
   const handleChange = (e) => {
     const { name, value } = e.target;
-    setFormData((prev) => ({
-      ...prev,
-      [name]: value,
-    }));
+
+    if (name.startsWith("address.")) {
+      const addressField = name.split(".")[1];
+      setFormData((prev) => ({
+        ...prev,
+        address: {
+          ...prev.address,
+          [addressField]: value,
+          // Reset dependent fields when parent changes
+          ...(addressField === "localGovernment" && { area: "" }),
+        },
+      }));
+    } else {
+      setFormData((prev) => ({
+        ...prev,
+        [name]: value,
+      }));
+    }
   };
 
   const handleSubmit = async (e) => {
@@ -74,7 +93,12 @@ export default function BecomeArtisan() {
         fullName: "",
         email: "",
         phone: "",
-        address: "",
+        address: {
+          street: "",
+          state: "Lagos",
+          localGovernment: "",
+          area: "",
+        },
         skillCategory: "",
         experience: "",
         idType: "",
@@ -222,23 +246,112 @@ export default function BecomeArtisan() {
                     placeholder="Your phone number"
                   />
                 </div>
+              </div>
+
+              {/* Address Section */}
+              <div className="space-y-6">
+                <h3 className="text-lg font-semibold text-tertiary-900 border-b border-tertiary-200 pb-2">
+                  Address Information
+                </h3>
+
                 <div>
                   <label
-                    htmlFor="address"
+                    htmlFor="street"
                     className="block text-sm font-medium text-tertiary-700 mb-1"
                   >
-                    Address *
+                    Street Number and Name *
                   </label>
                   <input
                     type="text"
-                    id="address"
-                    name="address"
-                    value={formData.address}
+                    id="street"
+                    name="address.street"
+                    value={formData.address.street}
                     onChange={handleChange}
                     required
                     className="w-full px-4 py-2 border border-tertiary-300 rounded-md focus:ring-primary-500 focus:border-primary-500"
-                    placeholder="Your residential address"
+                    placeholder="e.g., 123 Main Street"
                   />
+                </div>
+
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                  <div>
+                    <label
+                      htmlFor="state"
+                      className="block text-sm font-medium text-tertiary-700 mb-1"
+                    >
+                      State *
+                    </label>
+                    <select
+                      id="state"
+                      name="address.state"
+                      value={formData.address.state}
+                      onChange={handleChange}
+                      required
+                      className="w-full px-4 py-2 border border-tertiary-300 rounded-md focus:ring-primary-500 focus:border-primary-500"
+                    >
+                      <option value="Lagos">Lagos</option>
+                    </select>
+                    <p className="text-xs text-tertiary-500 mt-1">
+                      Currently available in Lagos only
+                    </p>
+                  </div>
+
+                  <div>
+                    <label
+                      htmlFor="localGovernment"
+                      className="block text-sm font-medium text-tertiary-700 mb-1"
+                    >
+                      Local Government *
+                    </label>
+                    <select
+                      id="localGovernment"
+                      name="address.localGovernment"
+                      value={formData.address.localGovernment}
+                      onChange={handleChange}
+                      required
+                      className="w-full px-4 py-2 border border-tertiary-300 rounded-md focus:ring-primary-500 focus:border-primary-500"
+                    >
+                      <option value="">Select LGA</option>
+                      {Object.keys(lagosLocationData).map((lga) => (
+                        <option key={lga} value={lga}>
+                          {lga}
+                        </option>
+                      ))}
+                    </select>
+                  </div>
+
+                  <div>
+                    <label
+                      htmlFor="area"
+                      className="block text-sm font-medium text-tertiary-700 mb-1"
+                    >
+                      Area *
+                    </label>
+                    <select
+                      id="area"
+                      name="address.area"
+                      value={formData.address.area}
+                      onChange={handleChange}
+                      required
+                      disabled={!formData.address.localGovernment}
+                      className="w-full px-4 py-2 border border-tertiary-300 rounded-md focus:ring-primary-500 focus:border-primary-500 disabled:bg-tertiary-100 disabled:cursor-not-allowed"
+                    >
+                      <option value="">Select Area</option>
+                      {formData.address.localGovernment &&
+                        lagosLocationData[
+                          formData.address.localGovernment
+                        ]?.map((area) => (
+                          <option key={area} value={area}>
+                            {area}
+                          </option>
+                        ))}
+                    </select>
+                    {!formData.address.localGovernment && (
+                      <p className="text-xs text-tertiary-500 mt-1">
+                        Please select a Local Government first
+                      </p>
+                    )}
+                  </div>
                 </div>
               </div>
 

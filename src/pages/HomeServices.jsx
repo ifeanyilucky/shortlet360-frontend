@@ -2,6 +2,7 @@ import { useState } from "react";
 import { FiSend } from "react-icons/fi";
 import toast from "react-hot-toast";
 import { formService } from "../services/api";
+import { lagosLocationData } from "../utils/locations";
 
 export default function HomeServices() {
   const [formData, setFormData] = useState({
@@ -10,6 +11,12 @@ export default function HomeServices() {
     phone: "",
     service: "",
     description: "",
+    address: {
+      street: "",
+      state: "Lagos",
+      localGovernment: "",
+      area: "",
+    },
   });
   const [isSubmitting, setIsSubmitting] = useState(false);
 
@@ -33,10 +40,24 @@ export default function HomeServices() {
 
   const handleChange = (e) => {
     const { name, value } = e.target;
-    setFormData((prev) => ({
-      ...prev,
-      [name]: value,
-    }));
+
+    if (name.startsWith("address.")) {
+      const addressField = name.split(".")[1];
+      setFormData((prev) => ({
+        ...prev,
+        address: {
+          ...prev.address,
+          [addressField]: value,
+          // Reset dependent fields when parent changes
+          ...(addressField === "localGovernment" && { area: "" }),
+        },
+      }));
+    } else {
+      setFormData((prev) => ({
+        ...prev,
+        [name]: value,
+      }));
+    }
   };
 
   const handleSubmit = async (e) => {
@@ -52,6 +73,12 @@ export default function HomeServices() {
         phone: "",
         service: "",
         description: "",
+        address: {
+          street: "",
+          state: "Lagos",
+          localGovernment: "",
+          area: "",
+        },
       });
     } catch (error) {
       console.error("Error submitting form:", error);
@@ -63,14 +90,37 @@ export default function HomeServices() {
 
   return (
     <div className="min-h-screen">
-      {/* Hero Section */}
+      {/* Hero Section - HomeFix */}
       <section className="bg-primary-500 text-white py-20">
-        <div className="container mx-auto px-4 text-center">
-          <h1 className="text-4xl md:text-5xl font-bold mb-6">Home Services</h1>
-          <p className="text-xl text-primary-100 max-w-3xl mx-auto">
-            Professional home services to keep your living space in perfect
-            condition.
-          </p>
+        <div className="container mx-auto px-4">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+            <div>
+              <h1 className="text-4xl md:text-5xl font-bold mb-6">
+                Your trusted solution for Hassle-free Home Repairs
+              </h1>
+              <p className="text-xl text-primary-100 mb-8 leading-relaxed">
+                With HomeFix, we connect you with vetted professional artisans
+                at the click of a button. Whether it's plumbing, electrical
+                work, carpentry, appliance repairs or name it, we ensure fast,
+                cost affordable, and reliable service from experienced hands.
+                Say goodbye to unverified technicians and hidden charges. With
+                Aplet360, you enjoy seamless service booking, impeccable
+                deliver, and transparent pricing, all from the comfort of your
+                home.
+              </p>
+              <p className="text-lg text-primary-100 font-semibold">
+                HomeFix is your go-to service on Aplet360 for getting things
+                done right, every time. One click, and we fix it!
+              </p>
+            </div>
+            <div className="flex justify-center">
+              <img
+                src="/images/professional-technician.jpg"
+                alt="Professional technician ready to fix home"
+                className="rounded-lg shadow-lg max-w-full h-auto"
+              />
+            </div>
+          </div>
         </div>
       </section>
 
@@ -170,6 +220,113 @@ export default function HomeServices() {
                 </div>
               </div>
 
+              {/* Address Section */}
+              <div className="space-y-6">
+                <h3 className="text-lg font-semibold text-tertiary-900 border-b border-tertiary-200 pb-2">
+                  Service Address
+                </h3>
+
+                <div>
+                  <label
+                    htmlFor="street"
+                    className="block text-sm font-medium text-tertiary-700 mb-1"
+                  >
+                    Street Number and Name *
+                  </label>
+                  <input
+                    type="text"
+                    id="street"
+                    name="address.street"
+                    value={formData.address.street}
+                    onChange={handleChange}
+                    required
+                    className="w-full px-4 py-2 border border-tertiary-300 rounded-md focus:ring-primary-500 focus:border-primary-500"
+                    placeholder="e.g., 123 Main Street"
+                  />
+                </div>
+
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                  <div>
+                    <label
+                      htmlFor="state"
+                      className="block text-sm font-medium text-tertiary-700 mb-1"
+                    >
+                      State *
+                    </label>
+                    <select
+                      id="state"
+                      name="address.state"
+                      value={formData.address.state}
+                      onChange={handleChange}
+                      required
+                      className="w-full px-4 py-2 border border-tertiary-300 rounded-md focus:ring-primary-500 focus:border-primary-500"
+                    >
+                      <option value="Lagos">Lagos</option>
+                    </select>
+                    <p className="text-xs text-tertiary-500 mt-1">
+                      Currently available in Lagos only
+                    </p>
+                  </div>
+
+                  <div>
+                    <label
+                      htmlFor="localGovernment"
+                      className="block text-sm font-medium text-tertiary-700 mb-1"
+                    >
+                      Local Government *
+                    </label>
+                    <select
+                      id="localGovernment"
+                      name="address.localGovernment"
+                      value={formData.address.localGovernment}
+                      onChange={handleChange}
+                      required
+                      className="w-full px-4 py-2 border border-tertiary-300 rounded-md focus:ring-primary-500 focus:border-primary-500"
+                    >
+                      <option value="">Select LGA</option>
+                      {Object.keys(lagosLocationData).map((lga) => (
+                        <option key={lga} value={lga}>
+                          {lga}
+                        </option>
+                      ))}
+                    </select>
+                  </div>
+
+                  <div>
+                    <label
+                      htmlFor="area"
+                      className="block text-sm font-medium text-tertiary-700 mb-1"
+                    >
+                      Area *
+                    </label>
+                    <select
+                      id="area"
+                      name="address.area"
+                      value={formData.address.area}
+                      onChange={handleChange}
+                      required
+                      disabled={!formData.address.localGovernment}
+                      className="w-full px-4 py-2 border border-tertiary-300 rounded-md focus:ring-primary-500 focus:border-primary-500 disabled:bg-tertiary-100 disabled:cursor-not-allowed"
+                    >
+                      <option value="">Select Area</option>
+                      {formData.address.localGovernment &&
+                        lagosLocationData[
+                          formData.address.localGovernment
+                        ]?.map((area) => (
+                          <option key={area} value={area}>
+                            {area}
+                          </option>
+                        ))}
+                    </select>
+                    {!formData.address.localGovernment && (
+                      <p className="text-xs text-tertiary-500 mt-1">
+                        Please select a Local Government first
+                      </p>
+                    )}
+                  </div>
+                </div>
+              </div>
+
               <div>
                 <label
                   htmlFor="description"
@@ -230,6 +387,51 @@ export default function HomeServices() {
                 </p>
               </div>
             ))}
+          </div>
+        </div>
+      </section>
+
+      {/* Become an Artisan Section */}
+      <section className="py-20 bg-white">
+        <div className="container mx-auto px-4">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+            <div className="flex justify-center lg:order-2">
+              <img
+                src="images/black-carpenter.webp"
+                alt="Skilled artisan at work"
+                className="rounded-lg shadow-lg max-w-full h-auto"
+              />
+            </div>
+            <div className="lg:order-1">
+              <h2 className="text-3xl md:text-4xl font-bold mb-6 text-primary-600">
+                Join Aplet360&apos;s HomeFix Network - Earn More, Work Freely
+              </h2>
+              <p className="text-lg text-tertiary-700 mb-8 leading-relaxed">
+                Are you a skilled artisan or technician looking to expand beyond
+                where you are currently and increase your income? Becoming an
+                Artisan for Aplet360 is the best option for you. You can
+                register to receive verified job requests directly with zero
+                commission cuts. Just pay an affordable monthly fee to stay
+                active and visible on our dashboard while you keep 100% of what
+                you earn. No hidden charges, no middlemen, just real work from
+                real customers (Users of Aplet360).
+              </p>
+              <p className="text-lg text-tertiary-700 mb-8 leading-relaxed">
+                Whether you are a plumber, electrician, painter, or tiler or
+                name it, we connect you to clients who need your expertise. Join
+                Aplet360 today and enjoy freedom, flexibility, and full earnings
+                on every job you complete. Let&apos;s build your business
+                together.
+              </p>
+              <div className="flex justify-center lg:justify-start">
+                <a
+                  href="/become-artisan"
+                  className="inline-flex items-center px-8 py-3 border border-transparent text-base font-medium rounded-md shadow-sm text-white bg-orange-500 hover:bg-orange-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-orange-500 transition-colors"
+                >
+                  Become an Artisan
+                </a>
+              </div>
+            </div>
           </div>
         </div>
       </section>

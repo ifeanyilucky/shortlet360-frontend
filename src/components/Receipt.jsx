@@ -50,7 +50,7 @@ export default function Receipt() {
               <img
                 src="/logo.png"
                 alt="shortlet-360-logo"
-                className="w-16 sm:w-20 h-auto"
+                className="w-32 h-auto"
               />
             </div>
             <div className="text-center sm:text-right">

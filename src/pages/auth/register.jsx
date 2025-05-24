@@ -99,10 +99,12 @@ export default function Register() {
               Log in
             </Link>
           </p>
-          <p className="text-sm text-orange-600 mt-2">
-            Note: A one-time registration fee will be required to activate your
-            account after registration.
-          </p>
+          {selectedTab === "owner" && (
+            <p className="text-sm text-orange-600 mt-2">
+              Note: A one-time registration fee will be required to activate
+              your account after registration.
+            </p>
+          )}
         </div>
 
         {/* Custom tabs using Tailwind */}
@@ -160,7 +162,7 @@ export default function Register() {
                 Landlord/Property Manager
               </span>
               <p className="text-xs text-gray-500 text-center">
-                I want to list my properties
+                I want to list my properties/Get them Managed by Aplet360
               </p>
             </button>
           </div>

@@ -3,6 +3,7 @@ import { BsCashStack, BsCalendarCheck } from "react-icons/bs";
 import { AiOutlineStar } from "react-icons/ai";
 import { BiTime, BiTrendingUp } from "react-icons/bi";
 import { MdPendingActions, MdCancel } from "react-icons/md";
+import { HiOutlineClipboardCopy, HiOutlineTicket } from "react-icons/hi";
 import { useNavigate } from "react-router-dom";
 import { useState, useEffect } from "react";
 import { useAuth } from "../../../hooks/useAuth";
@@ -10,6 +11,7 @@ import { propertyService } from "../../../services/api";
 import { fCurrency } from "../../../utils/formatNumber";
 import { getGreeting } from "../../../utils/helpers";
 import KycProgressIndicator from "../../../components/KycProgressIndicator";
+import toast from "react-hot-toast";
 
 export default function ApartmentOwnerDashboard() {
   const navigate = useNavigate();
@@ -30,6 +32,11 @@ export default function ApartmentOwnerDashboard() {
       setLoading(false);
     }
   }
+
+  const copyToClipboard = (text) => {
+    navigator.clipboard.writeText(text);
+    toast.success("User ID copied to clipboard!");
+  };
 
   useEffect(() => {
     getOwnerStatistics();
@@ -71,6 +78,41 @@ export default function ApartmentOwnerDashboard() {
           </select>
         </div>
       </div>
+
+      {/* User ID Display */}
+      {user?.short_id && (
+        <div className="bg-gradient-to-r from-orange-50 to-amber-50 border border-orange-200 rounded-xl p-6 mb-6 md:mb-8">
+          <div className="flex items-center justify-between">
+            <div>
+              <h3 className="text-lg font-semibold text-gray-800 mb-2">
+                Your Account ID
+              </h3>
+              <p className="text-sm text-gray-600 mb-3">
+                Share this ID with tenants for dispute resolution or support
+                purposes.
+              </p>
+              <div className="flex items-center space-x-3">
+                <span className="text-2xl font-mono font-bold text-orange-600 bg-white px-4 py-2 rounded-lg border">
+                  {user.short_id}
+                </span>
+                <button
+                  onClick={() => copyToClipboard(user.short_id)}
+                  className="flex items-center space-x-2 px-4 py-2 bg-orange-600 text-white rounded-lg hover:bg-orange-700 transition-colors"
+                >
+                  <HiOutlineClipboardCopy className="w-4 h-4" />
+                  <span>Copy</span>
+                </button>
+              </div>
+            </div>
+            <div className="hidden md:block">
+              <div className="w-16 h-16 bg-orange-100 rounded-full flex items-center justify-center">
+                <HiOutlineTicket className="w-8 h-8 text-orange-600" />
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+
       {/* KYC Progress Indicator */}
       <KycProgressIndicator />
       {/* Main Stats Grid */}

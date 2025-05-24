@@ -15,7 +15,7 @@ export default function About() {
             About Aplet360
           </h1>
           <p className="text-xl text-primary-100 max-w-3xl mx-auto mb-2 animate-slide-up">
-            Your seamless home experience with a click.
+            Your Home with a Click.
           </p>
         </div>
       </section>
@@ -45,24 +45,13 @@ export default function About() {
                 just providing homes, we&apos;re providing lifestyles built on
                 trust, comfort, and excellence.
               </p>
-              <p className="text-tertiary-600 mb-6 text-lg">
+              <p className="text-tertiary-600 text-lg">
                 We are redefining the property rental experience by eliminating
                 trust barriers, promoting transparency, and providing a premium,
                 customer-first service that guarantees peace of mind. Our
                 portfolio spans rental apartments, luxury apartments, affordable
                 shortlets, serviced homes, meticulously vetted to meet the
                 highest standards of comfort, security, and style.
-              </p>
-              <p className="text-tertiary-600 text-lg">
-                At Aplet360, we are not just connecting people to homes; we are
-                building trust, creating memories, and leading the
-                transformation of Africa&apos;s property rental industry. We
-                combine trusted property solutions with comprehensive home
-                management services, giving residents and guests the ultimate
-                peace of mind. Whether it&apos;s finding the perfect rental
-                property, shortlet apartments, or managing your home services —
-                Aplet360 is your trusted partner for living smarter, better, and
-                safer.
               </p>
             </div>
           </div>
@@ -162,6 +151,16 @@ export default function About() {
       <section className="py-20 bg-white">
         <div className="container mx-auto px-4">
           <div className="text-center mb-16">
+            <p className="text-tertiary-600 max-w-4xl mx-auto text-lg mb-12">
+              At Aplet360, we are not just connecting people to homes; we are
+              building trust, creating memories, and leading the transformation
+              of Africa&apos;s property rental industry. We combine trusted
+              property solutions with comprehensive home management services,
+              giving residents and guests the ultimate peace of mind. Whether
+              it&apos;s finding the perfect rental property, shortlet
+              apartments, or managing your home services — Aplet360 is your
+              trusted partner for living smarter, better, and safer.
+            </p>
             <h2 className="text-3xl md:text-4xl font-bold mb-4 text-tertiary-900">
               Unique Value Proposition (UVP)
             </h2>

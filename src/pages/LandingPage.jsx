@@ -1,17 +1,10 @@
-import {
-  FiChevronDown,
-  FiStar,
-  FiShield,
-  FiHome,
-  FiDollarSign,
-} from "react-icons/fi";
-import { MdApartment, MdOutlineVerified } from "react-icons/md";
+import { FiChevronDown, FiStar, FiShield } from "react-icons/fi";
+import { MdApartment } from "react-icons/md";
 import {
   BsCreditCard2Front,
   BsCalendarCheck,
   BsShieldCheck,
   BsArrowRight,
-  BsHouseDoor,
 } from "react-icons/bs";
 import { HiUsers } from "react-icons/hi";
 import {
@@ -84,13 +77,14 @@ export default function LandingPage() {
           </h1>
 
           <p className="text-primary-100 max-w-3xl mx-auto mb-12 text-base md:text-lg px-4 animate-slide-up">
-            Aplet360 is Africa's premier apartment rental and shortlet solutions
-            company, offering individuals, families, travelers, and corporate
-            clients seamless access to quality, verified, and affordable
-            property options across major cities in Nigeria and Africa while
-            providing 360 degree seamless home services designed to elevate
-            everyday living for Africans. We're not just providing homes, we're
-            providing lifestyles built on trust, comfort, and excellence.
+            Aplet360 is Africa&apos;s premier apartment rental and shortlet
+            solutions company, offering individuals, families, travelers, and
+            corporate clients seamless access to quality, verified, and
+            affordable property options across major cities in Nigeria and
+            Africa while providing 360 degree seamless home services designed to
+            elevate everyday living for Africans. We&apos;re not just providing
+            homes, we&apos;re providing lifestyles built on trust, comfort, and
+            excellence.
           </p>
 
           {/* Search Section */}
@@ -354,7 +348,8 @@ export default function LandingPage() {
           </h2>
           <p className="max-w-3xl mx-auto mb-6 text-primary-100">
             We know you earn either daily, weekly, or monthly. We understand the
-            struggle behind paying yearly rent, that's why we are here for you.
+            struggle behind paying yearly rent, that&apos;s why we are here for
+            you.
           </p>
           <p className="max-w-3xl mx-auto mb-10 text-primary-100">
             Enjoy the flexibility of renting your perfect apartment today with
@@ -388,9 +383,9 @@ export default function LandingPage() {
             </div>
             <div className="flex-1">
               <p className="text-tertiary-600 text-lg">
-                Whether you're a tenant, landlord, agent, or property manager,
-                Aplet360 offers tailored benefits to meet your needs. Our
-                platform is designed to streamline the entire property
+                Whether you&apos;re a tenant, landlord, agent, or property
+                manager, Aplet360 offers tailored benefits to meet your needs.
+                Our platform is designed to streamline the entire property
                 ecosystem, providing value at every step.
               </p>
             </div>
@@ -539,6 +534,76 @@ export default function LandingPage() {
                   </p>
                 </div>
               </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* HomeFix Services Section */}
+      <section className="py-16 bg-gradient-to-b from-tertiary-50 to-white">
+        <div className="max-w-6xl mx-auto px-4">
+          <div className="text-center mb-16">
+            <p className="text-accent-500 font-semibold mb-4">
+              HOMEFIX SERVICES
+            </p>
+            <h2 className="text-3xl md:text-5xl font-bold mb-6">
+              Complete home services
+              <br />
+              <span className="text-accent-500">at your fingertips</span>
+            </h2>
+            <p className="text-tertiary-600 max-w-3xl mx-auto text-lg">
+              From cleaning to repairs, our professional artisans are ready to
+              handle all your home service needs. Quality work, affordable
+              prices, and reliable service guaranteed.
+            </p>
+          </div>
+
+          {/* Services Grid */}
+          <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-6 mb-12">
+            {[
+              { name: "Cleaning", icon: "🧹" },
+              { name: "Plumbing", icon: "🔧" },
+              { name: "Electrical", icon: "⚡" },
+              { name: "Painting", icon: "🎨" },
+              { name: "Carpentry", icon: "🔨" },
+              { name: "Gardening", icon: "🌱" },
+              { name: "Appliance Repair", icon: "🔧" },
+              { name: "HVAC", icon: "❄️" },
+              { name: "Locksmith", icon: "🔐" },
+              { name: "Pest Control", icon: "🐛" },
+              { name: "Moving", icon: "📦" },
+              { name: "Security", icon: "🛡️" },
+            ].map((service, index) => (
+              <div
+                key={index}
+                className="bg-white p-6 rounded-2xl shadow-card hover:shadow-elevated transition-all duration-300 transform hover:-translate-y-1 text-center"
+              >
+                <div className="text-3xl mb-3">{service.icon}</div>
+                <h3 className="font-semibold text-sm text-tertiary-900">
+                  {service.name}
+                </h3>
+              </div>
+            ))}
+          </div>
+
+          {/* CTA Section */}
+          <div className="text-center">
+            <div className="bg-white p-8 rounded-3xl shadow-card border border-tertiary-100 max-w-2xl mx-auto">
+              <h3 className="text-2xl font-bold mb-4 text-tertiary-900">
+                Need a service? We&apos;ve got you covered!
+              </h3>
+              <p className="text-tertiary-600 mb-6">
+                Professional, vetted artisans ready to help with any home
+                service need. Quick response, quality work, and transparent
+                pricing.
+              </p>
+              <Link
+                to="/home-services"
+                className="bg-accent-500 hover:bg-accent-600 text-white px-8 py-4 rounded-full inline-flex items-center gap-2 transition-all duration-300 shadow-lg hover:shadow-xl transform hover:-translate-y-0.5 font-medium"
+              >
+                <span>Request a Service</span>
+                <BsArrowRight className="w-5 h-5" />
+              </Link>
             </div>
           </div>
         </div>
@@ -792,7 +857,7 @@ export default function LandingPage() {
                 PROPERTY MANAGEMENT SOLUTIONS
               </p>
               <h2 className="text-3xl md:text-5xl font-bold text-primary-600 mb-6">
-                Get the most reliable property management solutions in Lagos
+                Get the most Reliable Property Management Solution in Nigeria
               </h2>
 
               <div className="space-y-4 mt-8">

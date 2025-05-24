@@ -39,6 +39,7 @@ export default function NavLayout() {
         { name: "Shortlet Apartments", href: "/book-now?category=shortlet" },
       ],
     },
+    { name: "HomeFix", href: "/home-services" },
     { name: "FAQ", href: "/faq" },
     // { name: "Blog", href: "/blog" },
     { name: "Contact", href: "/contact" },
@@ -458,7 +459,13 @@ export default function NavLayout() {
                   to="/home-services"
                   className="text-base text-tertiary-500 hover:text-tertiary-900 block"
                 >
-                  Home Services
+                  HomeFix
+                </Link>
+                <Link
+                  to="/property-management-solutions"
+                  className="text-base text-tertiary-500 hover:text-tertiary-900 block"
+                >
+                  Property Management Solutions
                 </Link>
               </div>
             </div>
@@ -498,12 +505,13 @@ export default function NavLayout() {
                 >
                   FAQ
                 </Link>
-                <Link
+                {/* <Link
                   to="/blog"
+
                   className="text-base text-tertiary-500 hover:text-tertiary-900 block"
                 >
                   Blog
-                </Link>
+                </Link> */}
                 <Link
                   to="/privacy-policy"
                   className="text-base text-tertiary-500 hover:text-tertiary-900 block"
@@ -524,10 +532,10 @@ export default function NavLayout() {
               </h3>
               <div className="mt-4 space-y-4">
                 <p className="text-base text-tertiary-500 block">
-                  38, Opebi Road, Adebola House, Car Park Wing, Ikeja Lagos
+                  38, Opebi Road, Adebola House, Ikeja Lagos
                 </p>
                 <p className="text-base text-tertiary-500 block">
-                  Phone: 09038775464
+                  Phone: 09122842288
                 </p>
                 <p className="text-base text-tertiary-500 block">
                   Email: support@aplet360.com
