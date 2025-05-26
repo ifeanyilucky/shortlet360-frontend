@@ -44,19 +44,19 @@ export default function ReferralProgram() {
 
   const steps = [
     {
-      icon: <FiUsers className="h-8 w-8 text-primary-500" />,
+      icon: <FiUsers className="h-8 w-8 text-primary-900" />,
       title: "Invite Friends",
       description:
         "Share your unique referral link with landlords, property managers, and potential tenants looking for rental or shortlet apartments.",
     },
     {
-      icon: <FiGift className="h-8 w-8 text-primary-500" />,
+      icon: <FiGift className="h-8 w-8 text-primary-900" />,
       title: "They Sign Up & Verify",
       description:
         "When they register using your referral link and complete their account verification, you both qualify for Home Fix service rewards.",
     },
     {
-      icon: <FiTool className="h-8 w-8 text-primary-500" />,
+      icon: <FiTool className="h-8 w-8 text-primary-900" />,
       title: "Earn Home Fix Services",
       description:
         "Get free Home Fix services for home repairs and maintenance - no cash, just valuable services when you need them most.",
@@ -73,7 +73,7 @@ export default function ReferralProgram() {
   return (
     <div className="min-h-screen">
       {/* Hero Section */}
-      <section className="bg-primary-500 text-white py-20">
+      <section className="bg-primary-900 text-white py-20">
         <div className="container mx-auto px-4 text-center">
           <h1 className="text-4xl md:text-5xl font-bold mb-6">
             Referral Program
@@ -124,11 +124,11 @@ export default function ReferralProgram() {
                     type="text"
                     value={referralLink}
                     readOnly
-                    className="flex-grow px-4 py-2 border border-tertiary-300 rounded-l-md focus:ring-primary-500 focus:border-primary-500"
+                    className="flex-grow px-4 py-2 border border-tertiary-300 rounded-l-md focus:ring-primary-900 focus:border-primary-900"
                   />
                   <button
                     onClick={handleCopyLink}
-                    className="inline-flex items-center px-4 py-2 border border-transparent rounded-r-md shadow-sm text-white bg-primary-600 hover:bg-primary-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500"
+                    className="inline-flex items-center px-4 py-2 border border-transparent rounded-r-md shadow-sm text-white bg-primary-900 hover:bg-primary-900 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-900"
                   >
                     {copied ? (
                       <FiCheck className="h-5 w-5" />
@@ -152,12 +152,12 @@ export default function ReferralProgram() {
                       onChange={(e) => setReferralEmail(e.target.value)}
                       placeholder="Friend's email address"
                       required
-                      className="flex-grow px-4 py-2 border border-tertiary-300 rounded-md sm:rounded-r-none focus:ring-primary-500 focus:border-primary-500"
+                      className="flex-grow px-4 py-2 border border-tertiary-300 rounded-md sm:rounded-r-none focus:ring-primary-900 focus:border-primary-900"
                     />
                     <button
                       type="submit"
                       disabled={isSubmitting}
-                      className="inline-flex items-center justify-center px-6 py-2 border border-transparent rounded-md sm:rounded-l-none shadow-sm text-white bg-primary-600 hover:bg-primary-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500 disabled:opacity-50"
+                      className="inline-flex items-center justify-center px-6 py-2 border border-transparent rounded-md sm:rounded-l-none shadow-sm text-white bg-primary-900 hover:bg-primary-900 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-900 disabled:opacity-50"
                     >
                       {isSubmitting ? (
                         "Sending..."
@@ -179,13 +179,13 @@ export default function ReferralProgram() {
                 <div className="flex flex-col sm:flex-row justify-center gap-4">
                   <Link
                     to="/auth/login"
-                    className="inline-flex items-center justify-center px-6 py-2 border border-primary-500 rounded-md shadow-sm text-primary-600 bg-white hover:bg-primary-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500"
+                    className="inline-flex items-center justify-center px-6 py-2 border border-primary-900 rounded-md shadow-sm text-primary-900 bg-white hover:bg-primary-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-900"
                   >
                     Log In
                   </Link>
                   <Link
                     to="/auth/register"
-                    className="inline-flex items-center justify-center px-6 py-2 border border-transparent rounded-md shadow-sm text-white bg-primary-600 hover:bg-primary-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500"
+                    className="inline-flex items-center justify-center px-6 py-2 border border-transparent rounded-md shadow-sm text-white bg-primary-900 hover:bg-primary-900 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-900"
                   >
                     Create Account
                   </Link>
@@ -214,7 +214,7 @@ export default function ReferralProgram() {
                 className="flex items-start p-4 bg-tertiary-50 rounded-lg"
               >
                 <div className="flex-shrink-0 mr-3">
-                  <FiGift className="h-6 w-6 text-primary-500" />
+                  <FiGift className="h-6 w-6 text-primary-900" />
                 </div>
                 <p className="text-tertiary-700">{reward}</p>
               </div>

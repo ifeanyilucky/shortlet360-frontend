@@ -8,7 +8,7 @@ export default function About() {
   return (
     <div className="min-h-screen">
       {/* Hero Section */}
-      <section className="bg-gradient-to-b from-primary-600 to-primary-700 text-white py-24 relative overflow-hidden">
+      <section className="bg-gradient-to-b from-primary-900 to-primary-900 text-white py-24 relative overflow-hidden">
         <div className="absolute inset-0 bg-[url('/images/pattern.png')] opacity-10"></div>
         <div className="container mx-auto px-4 text-center relative z-10">
           <h1 className="text-4xl md:text-6xl font-bold mb-6 animate-fade-in">
@@ -74,7 +74,7 @@ export default function About() {
           <div className="grid md:grid-cols-3 gap-8">
             <div className="bg-white p-8 rounded-2xl shadow-card hover:shadow-elevated transition-all duration-300 transform hover:-translate-y-1">
               <div className="w-16 h-16 bg-primary-100 rounded-2xl flex items-center justify-center mx-auto mb-6">
-                <FiHome className="w-8 h-8 text-primary-600" />
+                <FiHome className="w-8 h-8 text-primary-900" />
               </div>
               <h3 className="text-2xl font-semibold mb-4 text-tertiary-900">
                 Our Mission
@@ -87,7 +87,7 @@ export default function About() {
             </div>
             <div className="bg-white p-8 rounded-2xl shadow-card hover:shadow-elevated transition-all duration-300 transform hover:-translate-y-1">
               <div className="w-16 h-16 bg-primary-100 rounded-2xl flex items-center justify-center mx-auto mb-6">
-                <FiStar className="w-8 h-8 text-primary-600" />
+                <FiStar className="w-8 h-8 text-primary-900" />
               </div>
               <h3 className="text-2xl font-semibold mb-4 text-tertiary-900">
                 Our Vision
@@ -172,7 +172,7 @@ export default function About() {
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
             <div className="bg-white p-8 rounded-2xl shadow-card hover:shadow-elevated transition-all duration-300 transform hover:-translate-y-1 border border-tertiary-100">
               <div className="w-12 h-12 bg-primary-100 rounded-2xl flex items-center justify-center mb-4">
-                <BsBuilding className="w-6 h-6 text-primary-600" />
+                <BsBuilding className="w-6 h-6 text-primary-900" />
               </div>
               <h3 className="font-semibold text-xl mb-3 text-tertiary-900">
                 All-in-One Platform
@@ -198,7 +198,7 @@ export default function About() {
 
             <div className="bg-white p-8 rounded-2xl shadow-card hover:shadow-elevated transition-all duration-300 transform hover:-translate-y-1 border border-tertiary-100">
               <div className="w-12 h-12 bg-primary-100 rounded-2xl flex items-center justify-center mb-4">
-                <FiCheckCircle className="w-6 h-6 text-primary-600" />
+                <FiCheckCircle className="w-6 h-6 text-primary-900" />
               </div>
               <h3 className="font-semibold text-xl mb-3 text-tertiary-900">
                 Zero Fraud Guarantee
@@ -224,7 +224,7 @@ export default function About() {
 
             <div className="bg-white p-8 rounded-2xl shadow-card hover:shadow-elevated transition-all duration-300 transform hover:-translate-y-1 border border-tertiary-100">
               <div className="w-12 h-12 bg-primary-100 rounded-2xl flex items-center justify-center mb-4">
-                <MdApartment className="w-6 h-6 text-primary-600" />
+                <MdApartment className="w-6 h-6 text-primary-900" />
               </div>
               <h3 className="font-semibold text-xl mb-3 text-tertiary-900">
                 Flexible Living Solutions
@@ -281,7 +281,7 @@ export default function About() {
 
             <div className="bg-white p-8 rounded-2xl shadow-card hover:shadow-elevated transition-all duration-300 transform hover:-translate-y-1 text-center">
               <div className="w-16 h-16 bg-primary-100 rounded-2xl flex items-center justify-center mx-auto mb-4">
-                <BsCreditCard2Front className="w-8 h-8 text-primary-600" />
+                <BsCreditCard2Front className="w-8 h-8 text-primary-900" />
               </div>
               <h3 className="font-semibold text-xl mb-3 text-tertiary-900">
                 Flexible Payments
@@ -307,7 +307,7 @@ export default function About() {
 
             <div className="bg-white p-8 rounded-2xl shadow-card hover:shadow-elevated transition-all duration-300 transform hover:-translate-y-1 text-center">
               <div className="w-16 h-16 bg-primary-100 rounded-2xl flex items-center justify-center mx-auto mb-4">
-                <FiUsers className="w-8 h-8 text-primary-600" />
+                <FiUsers className="w-8 h-8 text-primary-900" />
               </div>
               <h3 className="font-semibold text-xl mb-3 text-tertiary-900">
                 Dedicated Support
@@ -322,7 +322,7 @@ export default function About() {
       </section>
 
       {/* Stats Section */}
-      <section className="py-20 bg-gradient-to-b from-primary-600 to-primary-700 text-white relative overflow-hidden">
+      <section className="py-20 bg-gradient-to-b from-primary-900 to-primary-900 text-white relative overflow-hidden">
         <div className="absolute inset-0 bg-[url('/images/pattern.png')] opacity-10"></div>
         <div className="container mx-auto px-4 relative z-10">
           <div className="grid grid-cols-2 md:grid-cols-4 gap-8 text-center">

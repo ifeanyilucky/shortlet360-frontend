@@ -5,8 +5,6 @@ import * as yup from "yup";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { useAuth } from "../../hooks/useAuth";
 import toast from "react-hot-toast";
-import { Icon } from "@iconify/react/dist/iconify.js";
-import AuthSocial from "../../components/auth/AuthSocial";
 import InteractiveButton from "../../components/InteractiveButton";
 import { FiEye, FiEyeOff } from "react-icons/fi";
 
@@ -23,7 +21,6 @@ export default function Login() {
   const [showPassword, setShowPassword] = useState(false);
   const [submitLoading, setSubmitLoading] = useState(false);
   const { login } = useAuth();
-  const [selectedTab, setSelectedTab] = useState("user");
 
   const {
     register,
@@ -36,7 +33,7 @@ export default function Login() {
   const onSubmit = async (data) => {
     try {
       setSubmitLoading(true);
-      const response = await login({ ...data, userType: selectedTab });
+      const response = await login(data);
 
       // The login function in JWTContext will handle redirection based on requiresPayment
       // We just need to show an appropriate message
@@ -82,8 +79,8 @@ export default function Login() {
             className={`w-1/2 rounded-lg py-2.5 text-sm font-medium leading-5 transition-colors
               ${
                 selectedTab === "user"
-                  ? "bg-primary-500 text-white shadow"
-                  : "text-primary-500 hover:bg-primary-200"
+                  ? "bg-primary-900 text-white shadow"
+                  : "text-primary-900 hover:bg-primary-200"
               }`}
             onClick={() => setSelectedTab("user")}
           >
@@ -93,8 +90,8 @@ export default function Login() {
             className={`w-1/2 rounded-lg py-2.5 text-sm font-medium leading-5 transition-colors
               ${
                 selectedTab === "owner"
-                  ? "bg-primary-500 text-white shadow"
-                  : "text-primary-500 hover:bg-primary-200"
+                  ? "bg-primary-900 text-white shadow"
+                  : "text-primary-900 hover:bg-primary-200"
               }`}
             onClick={() => setSelectedTab("owner")}
           >
@@ -125,12 +122,20 @@ export default function Login() {
           </div>
 
           <div className="space-y-2">
-            <label
-              htmlFor="password"
-              className="text-sm font-medium text-gray-700"
-            >
-              Password
-            </label>
+            <div className="flex justify-between items-center">
+              <label
+                htmlFor="password"
+                className="text-sm font-medium text-gray-700"
+              >
+                Password
+              </label>
+              <Link
+                to="/auth/forgot-password"
+                className="text-sm text-accent-600 hover:text-accent-700 font-medium hover:underline"
+              >
+                Forgot Password?
+              </Link>
+            </div>
             <div className="relative">
               <input
                 id="password"

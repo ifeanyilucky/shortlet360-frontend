@@ -15,22 +15,64 @@ import {
 import { IoLocationOutline, IoHomeOutline } from "react-icons/io5";
 import { BiBed, BiBath, BiSupport } from "react-icons/bi";
 import { HiOutlineUsers } from "react-icons/hi2";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { propertyStore } from "../store/propertyStore";
 import { Link, useNavigate } from "react-router-dom";
 import { fCurrency } from "@utils/formatNumber";
 import "../styles/testimonials.css";
+import "../styles/slider.css";
 
 export default function LandingPage() {
   const navigate = useNavigate();
   const [showPriceDropdown, setShowPriceDropdown] = useState(false);
+
+  // Price range constants
+  const MIN_PRICE = 200000; // 200k
+  const MAX_PRICE = 10000000; // 10m
+
   const [searchParams, setSearchParams] = useState({
     location: "",
-    priceRange: { from: "", to: "" },
+    priceRange: { from: MIN_PRICE, to: MAX_PRICE },
     bedrooms: "1",
     category: "rent", // Default to rent
   });
   const { properties, getProperties, isLoading } = propertyStore();
+
+  // Format price for display
+  const formatPrice = useCallback((price) => {
+    if (price >= 1000000) {
+      return `₦${(price / 1000000).toFixed(1)}M`;
+    } else if (price >= 1000) {
+      return `₦${(price / 1000).toFixed(0)}K`;
+    }
+    return `₦${price}`;
+  }, []);
+
+  // Handle slider changes
+  const handleSliderChange = useCallback((type, value) => {
+    const newValue = parseInt(value);
+    setSearchParams((prev) => {
+      const currentRange = prev.priceRange;
+
+      if (type === "from") {
+        return {
+          ...prev,
+          priceRange: {
+            ...currentRange,
+            from: Math.min(newValue, currentRange.to - 10000), // Ensure minimum gap
+          },
+        };
+      } else {
+        return {
+          ...prev,
+          priceRange: {
+            ...currentRange,
+            to: Math.max(newValue, currentRange.from + 10000), // Ensure minimum gap
+          },
+        };
+      }
+    });
+  }, []);
 
   useEffect(() => {
     // Only fetch published properties for the landing page
@@ -66,7 +108,7 @@ export default function LandingPage() {
 
   return (
     <div>
-      <section className="min-h-screen bg-gradient-to-b from-primary-600 to-primary-700 text-white h-full mt-0 relative overflow-hidden">
+      <section className="min-h-screen bg-gradient-to-b from-primary-900 to-primary-900 text-white h-full mt-0 relative overflow-hidden">
         <div className="absolute inset-0 bg-[url('/images/pattern.png')] opacity-10"></div>
         <div className="max-w-6xl mx-auto px-4 text-center pt-20 pb-10 relative z-10">
           <h1 className="text-4xl md:text-6xl font-bold mb-6 animate-fade-in">
@@ -93,7 +135,7 @@ export default function LandingPage() {
             className="bg-white/95 backdrop-blur-sm p-6 rounded-3xl md:rounded-full flex flex-col md:flex-row items-stretch md:items-center justify-between gap-4 max-w-4xl mx-auto px-6 shadow-elevated border border-white/20 animate-slide-up"
           >
             <div className="flex-1 text-left">
-              <p className="text-xs text-primary-600 font-medium mb-1">
+              <p className="text-xs text-primary-900 font-medium mb-1">
                 LOCATION
               </p>
               <input
@@ -111,18 +153,15 @@ export default function LandingPage() {
             </div>
 
             <div className="flex-1 text-left md:border-x border-tertiary-200 md:px-4 relative">
-              <p className="text-xs text-primary-600 font-medium mb-1">PRICE</p>
+              <p className="text-xs text-primary-900 font-medium mb-1">PRICE</p>
               <button
                 type="button"
                 onClick={() => setShowPriceDropdown(!showPriceDropdown)}
-                className="flex items-center justify-between w-full text-sm text-tertiary-700 hover:text-primary-600 transition-colors"
+                className="flex items-center justify-between w-full text-sm text-tertiary-700 hover:text-primary-900 transition-colors"
               >
                 <span>
-                  {searchParams.priceRange.from || searchParams.priceRange.to
-                    ? `₦${searchParams.priceRange.from || 0} - ₦${
-                        searchParams.priceRange.to || "∞"
-                      }`
-                    : "Price range"}
+                  {formatPrice(searchParams.priceRange.from)} -{" "}
+                  {formatPrice(searchParams.priceRange.to)}
                 </span>
                 <FiChevronDown
                   className={`transform transition-transform ${
@@ -132,66 +171,121 @@ export default function LandingPage() {
               </button>
 
               {showPriceDropdown && (
-                <div className="absolute top-full left-0 mt-2 bg-white rounded-xl p-4 w-full md:w-64 shadow-elevated z-50 border border-tertiary-100">
-                  <div className="space-y-4">
-                    <div>
-                      <p className="text-xs text-primary-600 font-medium mb-2">
-                        FROM
-                      </p>
-                      <input
-                        type="number"
-                        value={searchParams.priceRange.from}
-                        onChange={(e) =>
-                          setSearchParams((prev) => ({
-                            ...prev,
-                            priceRange: {
-                              ...prev.priceRange,
-                              from: e.target.value,
-                            },
-                          }))
-                        }
-                        className="w-full bg-tertiary-50 rounded-lg p-2 text-sm outline-none text-tertiary-700 border border-tertiary-200 focus:border-primary-400 transition-colors"
-                      />
+                <div className="absolute top-full left-0 mt-2 bg-white rounded-xl p-6 w-full md:w-80 shadow-elevated border border-tertiary-100 z-[99999999]">
+                  <div className="space-y-6">
+                    {/* Price Display */}
+                    <div className="flex justify-between items-center">
+                      <div className="text-center">
+                        <p className="text-xs text-primary-900 font-medium mb-1">
+                          FROM
+                        </p>
+                        <p className="text-lg font-semibold text-tertiary-900">
+                          {formatPrice(searchParams.priceRange.from)}
+                        </p>
+                      </div>
+                      <div className="text-center">
+                        <p className="text-xs text-primary-900 font-medium mb-1">
+                          TO
+                        </p>
+                        <p className="text-lg font-semibold text-tertiary-900">
+                          {formatPrice(searchParams.priceRange.to)}
+                        </p>
+                      </div>
                     </div>
-                    <div>
-                      <p className="text-xs text-primary-600 font-medium mb-2">
-                        TO
-                      </p>
-                      <input
-                        type="number"
-                        value={searchParams.priceRange.to}
-                        onChange={(e) =>
-                          setSearchParams((prev) => ({
-                            ...prev,
-                            priceRange: {
-                              ...prev.priceRange,
-                              to: e.target.value,
-                            },
-                          }))
-                        }
-                        className="w-full bg-tertiary-50 rounded-lg p-2 text-sm outline-none text-tertiary-700 border border-tertiary-200 focus:border-primary-400 transition-colors"
-                      />
+
+                    {/* Dual Range Slider */}
+                    <div className="relative">
+                      {/* Background track */}
+                      <div className="h-2 bg-tertiary-200 rounded-full relative">
+                        {/* Active range track */}
+                        <div
+                          className="absolute h-2 bg-primary-900 rounded-full"
+                          style={{
+                            left: `${
+                              ((searchParams.priceRange.from - MIN_PRICE) /
+                                (MAX_PRICE - MIN_PRICE)) *
+                              100
+                            }%`,
+                            width: `${
+                              ((searchParams.priceRange.to -
+                                searchParams.priceRange.from) /
+                                (MAX_PRICE - MIN_PRICE)) *
+                              100
+                            }%`,
+                          }}
+                        />
+                      </div>
+
+                      {/* Range slider container */}
+                      <div className="relative mt-[-8px]">
+                        {/* From slider */}
+                        <input
+                          type="range"
+                          min={MIN_PRICE}
+                          max={MAX_PRICE}
+                          step="10000"
+                          value={searchParams.priceRange.from}
+                          onChange={(e) =>
+                            handleSliderChange("from", e.target.value)
+                          }
+                          className="absolute w-full h-2 bg-transparent appearance-none cursor-pointer slider-thumb slider-thumb-lower"
+                          style={{
+                            zIndex:
+                              searchParams.priceRange.from >
+                              searchParams.priceRange.to - 50000
+                                ? 5
+                                : 1,
+                          }}
+                        />
+
+                        {/* To slider */}
+                        <input
+                          type="range"
+                          min={MIN_PRICE}
+                          max={MAX_PRICE}
+                          step="10000"
+                          value={searchParams.priceRange.to}
+                          onChange={(e) =>
+                            handleSliderChange("to", e.target.value)
+                          }
+                          className="absolute w-full h-2 bg-transparent appearance-none cursor-pointer slider-thumb slider-thumb-upper"
+                          style={{
+                            zIndex:
+                              searchParams.priceRange.from >
+                              searchParams.priceRange.to - 50000
+                                ? 1
+                                : 5,
+                          }}
+                        />
+                      </div>
+
+                      {/* Price markers */}
+                      <div className="flex justify-between mt-4 text-xs text-tertiary-500">
+                        <span>{formatPrice(MIN_PRICE)}</span>
+                        <span>{formatPrice(MAX_PRICE)}</span>
+                      </div>
                     </div>
+
                     <div className="flex justify-between gap-2">
                       <button
                         type="button"
                         onClick={() => {
                           setSearchParams((prev) => ({
                             ...prev,
-                            priceRange: { from: "", to: "" },
+                            priceRange: { from: MIN_PRICE, to: MAX_PRICE },
                           }));
                           setShowPriceDropdown(false);
                         }}
                         className="flex-1 px-4 py-2 text-sm rounded-lg bg-tertiary-100 hover:bg-tertiary-200 text-tertiary-700 transition-colors"
                       >
-                        Clear
+                        Reset
                       </button>
                       <button
                         type="button"
                         onClick={handlePriceSubmit}
-                        className="flex-1 px-4 py-2 text-sm rounded-lg bg-primary-500 hover:bg-primary-600 text-white transition-colors"
+                        className="flex-1 px-4 py-2 text-sm rounded-lg bg-primary-900 hover:bg-primary-900 text-white transition-colors"
                       >
-                        Save
+                        Apply
                       </button>
                     </div>
                   </div>
@@ -200,11 +294,11 @@ export default function LandingPage() {
             </div>
 
             <div className="flex-1 text-left">
-              <p className="text-xs text-primary-600 font-medium mb-1">
+              <p className="text-xs text-primary-900 font-medium mb-1">
                 BEDROOMS
               </p>
               <select
-                className="w-full bg-transparent outline-none text-sm text-tertiary-700 hover:text-primary-600 transition-colors"
+                className="w-full bg-transparent outline-none text-sm text-tertiary-700 hover:text-primary-900 transition-colors"
                 value={searchParams.bedrooms}
                 onChange={(e) =>
                   setSearchParams((prev) => ({
@@ -222,9 +316,9 @@ export default function LandingPage() {
             </div>
 
             <div className="flex-1 text-left md:border-x border-tertiary-200 md:px-4">
-              <p className="text-xs text-primary-600 font-medium mb-1">TYPE</p>
+              <p className="text-xs text-primary-900 font-medium mb-1">TYPE</p>
               <select
-                className="w-full bg-transparent outline-none text-sm text-tertiary-700 hover:text-primary-600 transition-colors"
+                className="w-full bg-transparent outline-none text-sm text-tertiary-700 hover:text-primary-900 transition-colors"
                 value={searchParams.category}
                 onChange={(e) =>
                   setSearchParams((prev) => ({
@@ -248,7 +342,7 @@ export default function LandingPage() {
         </div>
 
         <div className="w-full h-[300px] md:h-[500px] overflow-hidden relative">
-          <div className="absolute inset-0 bg-gradient-to-t from-primary-700/50 to-transparent z-10"></div>
+          <div className="absolute bg-gradient-to-t from-primary-900/50 to-transparent z-10"></div>
           <img
             src={"/images/siting-room.jpeg"}
             alt="Hero"
@@ -263,7 +357,7 @@ export default function LandingPage() {
           <div className="text-center mb-16">
             <h2 className="text-3xl md:text-5xl font-bold mb-6">
               Find your perfect apartment in{" "}
-              <span className="text-primary-600 bg-clip-text text-transparent bg-gradient-to-r from-primary-600 to-primary-500">
+              <span className="text-primary-900 bg-clip-text text-transparent bg-gradient-to-r from-primary-900 to-primary-900">
                 4 simple steps
               </span>
             </h2>
@@ -277,7 +371,7 @@ export default function LandingPage() {
           <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
             <div className="bg-white p-8 rounded-2xl shadow-card hover:shadow-elevated transition-all duration-300 transform hover:-translate-y-1">
               <div className="w-14 h-14 bg-primary-100 rounded-2xl flex items-center justify-center mx-auto mb-6">
-                <IoHomeOutline className="w-7 h-7 text-primary-600" />
+                <IoHomeOutline className="w-7 h-7 text-primary-900" />
               </div>
               <h3 className="font-semibold text-xl mb-6 text-tertiary-900">
                 Search
@@ -303,7 +397,7 @@ export default function LandingPage() {
 
             <div className="bg-white p-8 rounded-2xl shadow-card hover:shadow-elevated transition-all duration-300 transform hover:-translate-y-1">
               <div className="w-14 h-14 bg-primary-100 rounded-2xl flex items-center justify-center mx-auto mb-6">
-                <RiSecurePaymentLine className="w-7 h-7 text-primary-600" />
+                <RiSecurePaymentLine className="w-7 h-7 text-primary-900" />
               </div>
               <h3 className="font-semibold text-xl mb-6 text-tertiary-900">
                 Pay
@@ -331,7 +425,7 @@ export default function LandingPage() {
           <div className="text-center mt-12">
             <Link
               to="/book-now"
-              className="bg-primary-500 text-white px-8 py-4 rounded-full inline-flex items-center gap-2 hover:bg-primary-600 transition-all duration-300 shadow-lg hover:shadow-xl transform hover:-translate-y-0.5"
+              className="bg-primary-900 text-white px-8 py-4 rounded-full inline-flex items-center gap-2 hover:bg-primary-900 transition-all duration-300 shadow-lg hover:shadow-xl transform hover:-translate-y-0.5"
             >
               <span className="font-medium">Book Now</span>
               <BsArrowRight className="w-5 h-5" />
@@ -341,10 +435,10 @@ export default function LandingPage() {
       </section>
 
       {/* Rent now, pay later section */}
-      <section className="py-16 bg-primary-500 text-white">
+      <section className="py-16 bg-primary-900 text-white">
         <div className="max-w-6xl mx-auto px-4 text-center">
           <h2 className="text-3xl md:text-4xl font-bold mb-6">
-            Rent that apartment now and pay later
+            Rent that apartment now and pay monthly
           </h2>
           <p className="max-w-3xl mx-auto mb-6 text-primary-100">
             We know you earn either daily, weekly, or monthly. We understand the
@@ -359,7 +453,7 @@ export default function LandingPage() {
           </p>
           <Link
             to="/book-now"
-            className="bg-white text-primary-500 px-8 py-3 rounded-full inline-flex items-center gap-2 hover:bg-primary-50 transition-colors font-medium"
+            className="bg-white text-primary-900 px-8 py-3 rounded-full inline-flex items-center gap-2 hover:bg-primary-50 transition-colors font-medium"
           >
             <span>Explore Payment Options</span>
             <BsArrowRight />
@@ -395,7 +489,7 @@ export default function LandingPage() {
             {/* Landlords/Agents/Property Managers Benefits */}
             <div className="bg-white p-8 rounded-2xl shadow-card hover:shadow-elevated transition-all duration-300 transform hover:-translate-y-1 border border-tertiary-100">
               <div className="w-14 h-14 bg-primary-100 rounded-2xl flex items-center justify-center mb-6">
-                <IoHomeOutline className="w-7 h-7 text-primary-600" />
+                <IoHomeOutline className="w-7 h-7 text-primary-900" />
               </div>
               <h3 className="font-semibold text-xl mb-6 text-tertiary-900">
                 For Landlords, Agents & Property Managers
@@ -404,7 +498,7 @@ export default function LandingPage() {
               <div className="space-y-4">
                 <div className="flex items-start gap-4">
                   <div className="w-8 h-8 bg-primary-50 rounded-xl flex items-center justify-center mt-0.5 flex-shrink-0">
-                    <RiMoneyDollarCircleLine className="w-4 h-4 text-primary-600" />
+                    <RiMoneyDollarCircleLine className="w-4 h-4 text-primary-900" />
                   </div>
                   <p className="text-tertiary-600">
                     <span className="font-medium text-tertiary-900">
@@ -416,7 +510,7 @@ export default function LandingPage() {
 
                 <div className="flex items-start gap-4">
                   <div className="w-8 h-8 bg-primary-50 rounded-xl flex items-center justify-center mt-0.5 flex-shrink-0">
-                    <BsShieldCheck className="w-4 h-4 text-primary-600" />
+                    <BsShieldCheck className="w-4 h-4 text-primary-900" />
                   </div>
                   <p className="text-tertiary-600">
                     <span className="font-medium text-tertiary-900">
@@ -428,7 +522,7 @@ export default function LandingPage() {
 
                 <div className="flex items-start gap-4">
                   <div className="w-8 h-8 bg-primary-50 rounded-xl flex items-center justify-center mt-0.5 flex-shrink-0">
-                    <BsCalendarCheck className="w-4 h-4 text-primary-600" />
+                    <BsCalendarCheck className="w-4 h-4 text-primary-900" />
                   </div>
                   <p className="text-tertiary-600">
                     <span className="font-medium text-tertiary-900">
@@ -458,7 +552,8 @@ export default function LandingPage() {
                     <span className="font-medium text-tertiary-900">
                       Rental Assistance
                     </span>{" "}
-                    - We pay your landlord while you pay monthly
+                    - We handle all the stress of sourcing and vetting
+                    apartments for you to easily make a choice and move in
                   </p>
                 </div>
 
@@ -470,7 +565,8 @@ export default function LandingPage() {
                     <span className="font-medium text-tertiary-900">
                       Monthly Payment Option
                     </span>{" "}
-                    - Flexible payment plans to suit your budget
+                    - Flexible monthly payment plan to move in with just the
+                    payment of the first month
                   </p>
                 </div>
 
@@ -482,7 +578,8 @@ export default function LandingPage() {
                     <span className="font-medium text-tertiary-900">
                       Tenant Protection
                     </span>{" "}
-                    - No sudden evictions and dispute resolution
+                    - Legal support to protect tenants&apos; rights via dispute
+                    resolution and no sudden evictions
                   </p>
                 </div>
               </div>
@@ -491,7 +588,7 @@ export default function LandingPage() {
             {/* Shortlet Apartment Owners Benefits */}
             <div className="bg-white p-8 rounded-2xl shadow-card hover:shadow-elevated transition-all duration-300 transform hover:-translate-y-1 border border-tertiary-100">
               <div className="w-14 h-14 bg-primary-100 rounded-2xl flex items-center justify-center mb-6">
-                <BsArrowRight className="w-7 h-7 text-primary-600" />
+                <BsArrowRight className="w-7 h-7 text-primary-900" />
               </div>
               <h3 className="font-semibold text-xl mb-6 text-tertiary-900">
                 For Shortlet Apartment Owners
@@ -500,7 +597,7 @@ export default function LandingPage() {
               <div className="space-y-4">
                 <div className="flex items-start gap-4">
                   <div className="w-8 h-8 bg-primary-50 rounded-xl flex items-center justify-center mt-0.5 flex-shrink-0">
-                    <FiStar className="w-4 h-4 text-primary-600" />
+                    <FiStar className="w-4 h-4 text-primary-900" />
                   </div>
                   <p className="text-tertiary-600">
                     <span className="font-medium text-tertiary-900">
@@ -512,7 +609,7 @@ export default function LandingPage() {
 
                 <div className="flex items-start gap-4">
                   <div className="w-8 h-8 bg-primary-50 rounded-xl flex items-center justify-center mt-0.5 flex-shrink-0">
-                    <HiUsers className="w-4 h-4 text-primary-600" />
+                    <HiUsers className="w-4 h-4 text-primary-900" />
                   </div>
                   <p className="text-tertiary-600">
                     <span className="font-medium text-tertiary-900">
@@ -524,7 +621,7 @@ export default function LandingPage() {
 
                 <div className="flex items-start gap-4">
                   <div className="w-8 h-8 bg-primary-50 rounded-xl flex items-center justify-center mt-0.5 flex-shrink-0">
-                    <BsCreditCard2Front className="w-4 h-4 text-primary-600" />
+                    <BsCreditCard2Front className="w-4 h-4 text-primary-900" />
                   </div>
                   <p className="text-tertiary-600">
                     <span className="font-medium text-tertiary-900">
@@ -539,13 +636,11 @@ export default function LandingPage() {
         </div>
       </section>
 
-      {/* HomeFix Services Section */}
+      {/* HomeFix  Section */}
       <section className="py-16 bg-gradient-to-b from-tertiary-50 to-white">
         <div className="max-w-6xl mx-auto px-4">
           <div className="text-center mb-16">
-            <p className="text-accent-500 font-semibold mb-4">
-              HOMEFIX SERVICES
-            </p>
+            <p className="text-accent-500 font-semibold mb-4">HomeFix</p>
             <h2 className="text-3xl md:text-5xl font-bold mb-6">
               Complete home services
               <br />
@@ -725,7 +820,7 @@ export default function LandingPage() {
           <div className="text-center mt-10">
             <Link
               to="/book-now"
-              className="w-full md:w-auto bg-primary-500 text-white px-8 py-3 rounded-full text-sm hover:bg-primary-600"
+              className="w-full md:w-auto bg-primary-900 text-white px-8 py-3 rounded-full text-sm hover:bg-primary-900"
             >
               View Listings
             </Link>
@@ -738,7 +833,7 @@ export default function LandingPage() {
         <div className="max-w-6xl mx-auto px-4">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-12 items-center">
             <div>
-              <p className="text-primary-500 font-medium mb-4">YOUR GATEWAY</p>
+              <p className="text-primary-900 font-medium mb-4">YOUR GATEWAY</p>
               <h2 className="text-3xl md:text-4xl font-bold mb-6">
                 To more <span className="text-accent-500">affordable</span>{" "}
                 living
@@ -752,7 +847,7 @@ export default function LandingPage() {
               <div className="space-y-4">
                 <div className="flex items-start gap-3">
                   <div className="w-10 h-10 bg-primary-100 rounded-full flex items-center justify-center mt-1">
-                    <RiMoneyDollarCircleLine className="w-5 h-5 text-primary-500" />
+                    <RiMoneyDollarCircleLine className="w-5 h-5 text-primary-900" />
                   </div>
                   <div>
                     <h3 className="font-semibold mb-1">Competitive Pricing</h3>
@@ -764,7 +859,7 @@ export default function LandingPage() {
                 </div>
                 <div className="flex items-start gap-3">
                   <div className="w-10 h-10 bg-primary-100 rounded-full flex items-center justify-center mt-1">
-                    <BsShieldCheck className="w-5 h-5 text-primary-500" />
+                    <BsShieldCheck className="w-5 h-5 text-primary-900" />
                   </div>
                   <div>
                     <h3 className="font-semibold mb-1">Secure Transactions</h3>
@@ -776,7 +871,7 @@ export default function LandingPage() {
                 </div>
                 <div className="flex items-start gap-3">
                   <div className="w-10 h-10 bg-primary-100 rounded-full flex items-center justify-center mt-1">
-                    <MdApartment className="w-5 h-5 text-primary-500" />
+                    <MdApartment className="w-5 h-5 text-primary-900" />
                   </div>
                   <div>
                     <h3 className="font-semibold mb-1">
@@ -791,7 +886,7 @@ export default function LandingPage() {
                 </div>
                 <div className="flex items-start gap-3">
                   <div className="w-10 h-10 bg-primary-100 rounded-full flex items-center justify-center mt-1">
-                    <BiSupport className="w-5 h-5 text-primary-500" />
+                    <BiSupport className="w-5 h-5 text-primary-900" />
                   </div>
                   <div>
                     <h3 className="font-semibold mb-1">
@@ -821,29 +916,8 @@ export default function LandingPage() {
       <section className="py-16 bg-white">
         <div className="max-w-6xl mx-auto px-4">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 items-center">
-            <div className="grid grid-cols-2 gap-4">
-              <div className="col-span-2 md:col-span-1 row-span-1">
-                <img
-                  src="https://images.pexels.com/photos/2343467/pexels-photo-2343467.jpeg"
-                  alt="Kitchen"
-                  className="w-full h-full object-cover rounded-lg shadow-md"
-                />
-              </div>
-              <div className="col-span-2 md:col-span-1 row-span-1">
-                <img
-                  src="https://images.pexels.com/photos/1571458/pexels-photo-1571458.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2"
-                  alt="Living Room"
-                  className="w-full h-full object-cover rounded-lg shadow-md"
-                />
-              </div>
-              <div className="col-span-1 row-span-1">
-                <img
-                  src="https://images.pexels.com/photos/7327213/pexels-photo-7327213.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2"
-                  alt="Happy Guests"
-                  className="w-full h-full object-cover rounded-lg shadow-md"
-                />
-              </div>
-              <div className="col-span-1 row-span-1">
+            <div>
+              <div className="w-full h-96">
                 <img
                   src="/images/living-room2.jpeg"
                   alt="Bedroom"
@@ -856,7 +930,7 @@ export default function LandingPage() {
               <p className="text-gray-500 uppercase font-medium mb-2">
                 PROPERTY MANAGEMENT SOLUTIONS
               </p>
-              <h2 className="text-3xl md:text-5xl font-bold text-primary-600 mb-6">
+              <h2 className="text-3xl md:text-5xl font-bold text-primary-900 mb-6">
                 Get the most Reliable Property Management Solution in Nigeria
               </h2>
 
@@ -874,7 +948,7 @@ export default function LandingPage() {
                   "Property Maintenance, Renovation, and Improvement",
                 ].map((item, index) => (
                   <div key={index} className="flex items-center gap-2">
-                    <div className="w-2 h-2 bg-primary-500 rounded-full"></div>
+                    <div className="w-2 h-2 bg-primary-900 rounded-full"></div>
                     <p className="text-gray-700">{item}</p>
                   </div>
                 ))}
@@ -883,7 +957,7 @@ export default function LandingPage() {
               <div className="mt-8">
                 <Link
                   to="/auth/login?property-management=true"
-                  className="bg-primary-500 text-white px-8 py-3 rounded-full inline-flex items-center gap-2 hover:bg-primary-600 transition-colors"
+                  className="bg-primary-900 text-white px-8 py-3 rounded-full inline-flex items-center gap-2 hover:bg-primary-900 transition-colors"
                 >
                   <span>Sign Up Now</span>
                 </Link>
@@ -897,7 +971,7 @@ export default function LandingPage() {
       <section className="py-16 bg-white">
         <div className="max-w-6xl mx-auto px-4">
           <div className="text-center mb-12">
-            <p className="text-primary-500 font-medium mb-2">TESTIMONIALS</p>
+            <p className="text-primary-900 font-medium mb-2">TESTIMONIALS</p>
             <h2 className="text-3xl md:text-4xl font-bold mb-4">
               People love us & you will love us too
             </h2>
@@ -918,7 +992,7 @@ export default function LandingPage() {
               <div className="bg-white p-6 rounded-xl shadow-lg hover:shadow-xl transition-shadow border border-gray-100 w-80">
                 <div className="flex items-center gap-4 mb-6">
                   <div className="w-16 h-16 bg-primary-100 rounded-full flex items-center justify-center">
-                    <span className="text-primary-500 font-semibold text-xl">
+                    <span className="text-primary-900 font-semibold text-xl">
                       TA
                     </span>
                   </div>
@@ -944,7 +1018,7 @@ export default function LandingPage() {
               <div className="bg-white p-6 rounded-xl shadow-lg hover:shadow-xl transition-shadow border border-gray-100 w-80">
                 <div className="flex items-center gap-4 mb-6">
                   <div className="w-16 h-16 bg-primary-100 rounded-full flex items-center justify-center">
-                    <span className="text-primary-500 font-semibold text-xl">
+                    <span className="text-primary-900 font-semibold text-xl">
                       JK
                     </span>
                   </div>
@@ -969,7 +1043,7 @@ export default function LandingPage() {
               <div className="bg-white p-6 rounded-xl shadow-lg hover:shadow-xl transition-shadow border border-gray-100 w-80">
                 <div className="flex items-center gap-4 mb-6">
                   <div className="w-16 h-16 bg-primary-100 rounded-full flex items-center justify-center">
-                    <span className="text-primary-500 font-semibold text-xl">
+                    <span className="text-primary-900 font-semibold text-xl">
                       HR
                     </span>
                   </div>
@@ -996,7 +1070,7 @@ export default function LandingPage() {
               <div className="bg-white p-6 rounded-xl shadow-lg hover:shadow-xl transition-shadow border border-gray-100 w-80">
                 <div className="flex items-center gap-4 mb-6">
                   <div className="w-16 h-16 bg-primary-100 rounded-full flex items-center justify-center">
-                    <span className="text-primary-500 font-semibold text-xl">
+                    <span className="text-primary-900 font-semibold text-xl">
                       TA
                     </span>
                   </div>
@@ -1022,7 +1096,7 @@ export default function LandingPage() {
               <div className="bg-white p-6 rounded-xl shadow-lg hover:shadow-xl transition-shadow border border-gray-100 w-80">
                 <div className="flex items-center gap-4 mb-6">
                   <div className="w-16 h-16 bg-primary-100 rounded-full flex items-center justify-center">
-                    <span className="text-primary-500 font-semibold text-xl">
+                    <span className="text-primary-900 font-semibold text-xl">
                       JK
                     </span>
                   </div>

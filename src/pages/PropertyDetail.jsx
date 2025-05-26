@@ -1163,7 +1163,7 @@ export default function PropertyDetail() {
                 <div className="space-y-3">
                   {property?.house_rules.map((rule, index) => (
                     <div key={index} className="flex items-start gap-3">
-                      <span className="text-primary-500">•</span>
+                      <span className="text-primary-900">•</span>
                       <p className="text-gray-600 text-sm sm:text-base">
                         {rule}
                       </p>

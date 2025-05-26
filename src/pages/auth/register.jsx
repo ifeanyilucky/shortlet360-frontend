@@ -95,7 +95,7 @@ export default function Register() {
           <h1 className="text-4xl font-medium mb-2">Create an account</h1>
           <p className="text-gray-600">
             Already have an account?{" "}
-            <Link to="/auth/login" className="text-primary-500 hover:underline">
+            <Link to="/auth/login" className="text-primary-900 hover:underline">
               Log in
             </Link>
           </p>
@@ -144,7 +144,7 @@ export default function Register() {
               className={`flex flex-col items-center p-4 rounded-xl border-2 transition-all duration-200
                 ${
                   selectedTab === "owner"
-                    ? "border-primary-500 bg-primary-50 shadow-md"
+                    ? "border-primary-900 bg-primary-50 shadow-md"
                     : "border-gray-200 hover:border-primary-300 hover:bg-primary-50"
                 }`}
               onClick={() => setSelectedTab("owner")}
@@ -152,7 +152,7 @@ export default function Register() {
               <div
                 className={`p-3 rounded-full mb-2 ${
                   selectedTab === "owner"
-                    ? "bg-primary-500 text-white"
+                    ? "bg-primary-900 text-white"
                     : "bg-gray-100 text-gray-600"
                 }`}
               >
@@ -183,7 +183,7 @@ export default function Register() {
                 placeholder="Enter your first name"
                 className={`w-full p-3 rounded-lg bg-gray-100 border ${
                   errors.first_name ? "border-red-500" : "border-gray-200"
-                } focus:outline-none focus:ring-2 focus:ring-primary-500`}
+                } focus:outline-none focus:ring-2 focus:ring-primary-900`}
                 {...register("first_name")}
               />
               {errors.first_name && (
@@ -206,7 +206,7 @@ export default function Register() {
                 placeholder="Enter your last name"
                 className={`w-full p-3 rounded-lg bg-gray-100 border ${
                   errors.last_name ? "border-red-500" : "border-gray-200"
-                } focus:outline-none focus:ring-2 focus:ring-primary-500`}
+                } focus:outline-none focus:ring-2 focus:ring-primary-900`}
                 {...register("last_name")}
               />
               {errors.last_name && (
@@ -230,7 +230,7 @@ export default function Register() {
               placeholder="Enter your email address"
               className={`w-full p-3 rounded-lg bg-gray-100 border ${
                 errors.email ? "border-red-500" : "border-gray-200"
-              } focus:outline-none focus:ring-2 focus:ring-primary-500`}
+              } focus:outline-none focus:ring-2 focus:ring-primary-900`}
               {...register("email")}
             />
             {errors.email && (
@@ -250,7 +250,7 @@ export default function Register() {
                 id="business_name"
                 type="text"
                 placeholder="Enter your business name (Optional)"
-                className="w-full p-3 rounded-lg bg-gray-100 border border-gray-200 focus:outline-none focus:ring-2 focus:ring-primary-500"
+                className="w-full p-3 rounded-lg bg-gray-100 border border-gray-200 focus:outline-none focus:ring-2 focus:ring-primary-900"
                 {...register("business_name")}
               />
             </div>
@@ -269,7 +269,7 @@ export default function Register() {
                 placeholder="Enter your password"
                 className={`w-full p-3 rounded-lg bg-gray-100 border ${
                   errors.password ? "border-red-500" : "border-gray-200"
-                } focus:outline-none focus:ring-2 focus:ring-primary-500`}
+                } focus:outline-none focus:ring-2 focus:ring-primary-900`}
                 {...register("password")}
               />
               <button
@@ -300,7 +300,7 @@ export default function Register() {
                 placeholder="Confirm your password"
                 className={`w-full p-3 rounded-lg bg-gray-100 border ${
                   errors.confirmPassword ? "border-red-500" : "border-gray-200"
-                } focus:outline-none focus:ring-2 focus:ring-primary-500`}
+                } focus:outline-none focus:ring-2 focus:ring-primary-900`}
                 {...register("confirmPassword")}
               />
               <button
@@ -331,7 +331,7 @@ export default function Register() {
               id="terms"
               checked={agreed}
               onChange={(e) => setAgreed(e.target.checked)}
-              className="w-5 h-5 rounded border-gray-300 text-primary-500 focus:ring-primary-500"
+              className="w-5 h-5 rounded border-gray-300 text-primary-900 focus:ring-primary-900"
             />
             <label htmlFor="terms" className="text-sm text-gray-700">
               I agree to the{" "}

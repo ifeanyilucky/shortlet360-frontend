@@ -23,7 +23,7 @@ export default function BasicInfo() {
               type="radio"
               value="shortlet"
               {...register("property_category")}
-              className="h-4 w-4 text-primary-600 focus:ring-primary-500 border-gray-300"
+              className="h-4 w-4 text-primary-900 focus:ring-primary-900 border-gray-300"
             />
             <span className="ml-2 text-sm text-gray-700">Shortlet</span>
           </label>
@@ -32,7 +32,7 @@ export default function BasicInfo() {
               type="radio"
               value="rent"
               {...register("property_category")}
-              className="h-4 w-4 text-primary-600 focus:ring-primary-500 border-gray-300"
+              className="h-4 w-4 text-primary-900 focus:ring-primary-900 border-gray-300"
             />
             <span className="ml-2 text-sm text-gray-700">Rent</span>
           </label>
@@ -59,7 +59,7 @@ export default function BasicInfo() {
                 },
               })}
               placeholder="Enter property name"
-              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500"
+              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-900"
             />
             {errors.property_name && (
               <p className="mt-1 text-sm text-red-600">
@@ -82,7 +82,7 @@ export default function BasicInfo() {
               })}
               placeholder="Describe your property"
               rows={4}
-              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500"
+              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-900"
             />
             {errors.property_description && (
               <p className="mt-1 text-sm text-red-600">
@@ -99,7 +99,7 @@ export default function BasicInfo() {
               {...register("property_type", {
                 required: "Please select a property type",
               })}
-              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500"
+              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-900"
             >
               <option value="">Select property type</option>
               {propertyTypes.map((type) => (
@@ -127,7 +127,7 @@ export default function BasicInfo() {
                   required: "Number of bedrooms is required",
                   min: { value: 0, message: "Cannot be negative" },
                 })}
-                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500"
+                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-900"
               />
               {errors.bedroom_count && (
                 <p className="mt-1 text-sm text-red-600">
@@ -147,7 +147,7 @@ export default function BasicInfo() {
                   required: "Number of bathrooms is required",
                   min: { value: 0, message: "Cannot be negative" },
                 })}
-                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500"
+                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-900"
               />
               {errors.bathroom_count && (
                 <p className="mt-1 text-sm text-red-600">
@@ -167,7 +167,7 @@ export default function BasicInfo() {
                   required: "Maximum number of guests is required",
                   min: { value: 1, message: "Must be at least 1" },
                 })}
-                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500"
+                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-900"
               />
               {errors.max_guests && (
                 <p className="mt-1 text-sm text-red-600">
@@ -193,7 +193,7 @@ export default function BasicInfo() {
                 required: "Street address is required",
               })}
               placeholder="Enter street address"
-              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500"
+              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-900"
             />
             {errors.location?.street_address && (
               <p className="mt-1 text-sm text-red-600">
@@ -211,7 +211,7 @@ export default function BasicInfo() {
                 type="text"
                 {...register("location.city", { required: "City is required" })}
                 placeholder="Enter city"
-                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500"
+                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-900"
               />
               {errors.location?.city && (
                 <p className="mt-1 text-sm text-red-600">
@@ -230,7 +230,7 @@ export default function BasicInfo() {
                   required: "State is required",
                 })}
                 placeholder="Enter state"
-                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500"
+                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-900"
               />
               {errors.location?.state && (
                 <p className="mt-1 text-sm text-red-600">
@@ -250,7 +250,7 @@ export default function BasicInfo() {
                 required: "Country is required",
               })}
               placeholder="Enter country"
-              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500"
+              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-900"
             />
             {errors.location?.country && (
               <p className="mt-1 text-sm text-red-600">

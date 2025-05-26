@@ -44,7 +44,7 @@ export default function Receipt() {
     <div className="min-h-screen bg-gray-50 py-8 px-4 sm:px-6 lg:px-8">
       <div className="max-w-3xl mx-auto bg-white shadow-lg rounded-lg">
         {/* Header */}
-        <div className="p-4 sm:p-6 border-b border-primary-500">
+        <div className="p-4 sm:p-6 border-b border-primary-900">
           <div className="flex flex-col sm:flex-row justify-between items-center gap-4 sm:gap-0">
             <div className="flex items-center space-x-2">
               <img
@@ -139,7 +139,7 @@ export default function Receipt() {
           <div className="border-t pt-4">
             <div className="flex justify-between items-center mb-2">
               <span className="text-sm sm:text-base font-medium">Total</span>
-              <span className="font-medium text-primary-500 text-base sm:text-lg">
+              <span className="font-medium text-primary-900 text-base sm:text-lg">
                 {formatCurrency(booking.total_price)}
               </span>
             </div>
@@ -171,7 +171,7 @@ export default function Receipt() {
           <div className="mt-4 sm:mt-6 bg-gray-50 rounded-lg p-3 sm:p-4">
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-6">
               <div>
-                <h4 className="text-sm sm:text-base text-primary-500 font-medium mb-2 sm:mb-3">
+                <h4 className="text-sm sm:text-base text-primary-900 font-medium mb-2 sm:mb-3">
                   Guest Information
                 </h4>
                 <p className="text-xs sm:text-sm text-gray-600 mb-1">
@@ -185,7 +185,7 @@ export default function Receipt() {
                 </p>
               </div>
               <div>
-                <h4 className="text-sm sm:text-base text-primary-500 font-medium mb-2 sm:mb-3">
+                <h4 className="text-sm sm:text-base text-primary-900 font-medium mb-2 sm:mb-3">
                   Aplet360 Support
                 </h4>
                 <p className="text-xs sm:text-sm text-gray-600 mb-1">
@@ -221,7 +221,7 @@ export default function Receipt() {
           <div className="mt-4 sm:mt-6 text-center">
             <button
               onClick={() => window.print()}
-              className="bg-primary-500 text-white px-4 sm:px-6 py-2 text-sm sm:text-base rounded-lg hover:bg-primary-600 transition-colors"
+              className="bg-primary-900 text-white px-4 sm:px-6 py-2 text-sm sm:text-base rounded-lg hover:bg-primary-900 transition-colors"
             >
               PRINT
             </button>

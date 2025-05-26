@@ -82,7 +82,7 @@ export default function ImageUpload() {
     <div className="space-y-6">
       <div
         className={`border-2 border-dashed rounded-lg p-6 ${
-          dragActive ? "border-primary-500 bg-primary-50" : "border-gray-300"
+          dragActive ? "border-primary-900 bg-primary-50" : "border-gray-300"
         }`}
         onDragEnter={handleDrag}
         onDragLeave={handleDrag}
@@ -95,7 +95,7 @@ export default function ImageUpload() {
             <button
               type="button"
               onClick={() => fileInputRef.current?.click()}
-              className="px-4 py-2 bg-primary-500 text-white rounded-md hover:bg-primary-600"
+              className="px-4 py-2 bg-primary-900 text-white rounded-md hover:bg-primary-900"
             >
               Select Files
             </button>
@@ -134,7 +134,7 @@ export default function ImageUpload() {
               <FiX className="w-4 h-4" />
             </button>
             {index === 0 && (
-              <div className="absolute top-2 left-2 px-2 py-1 bg-primary-500 text-white text-xs rounded">
+              <div className="absolute top-2 left-2 px-2 py-1 bg-primary-900 text-white text-xs rounded">
                 Cover Photo
               </div>
             )}

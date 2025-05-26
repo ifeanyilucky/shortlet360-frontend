@@ -2,7 +2,14 @@ import { Link, useLocation, Outlet, useNavigate } from "react-router-dom";
 import { useAuth } from "../hooks/useAuth";
 import { useState, useRef, useEffect } from "react";
 import { HiMenu, HiX, HiChevronDown } from "react-icons/hi";
-import { FiLogOut, FiUser, FiSettings } from "react-icons/fi";
+import {
+  FiLogOut,
+  FiUser,
+  FiSettings,
+  FiMapPin,
+  FiPhone,
+  FiMail,
+} from "react-icons/fi";
 
 export default function NavLayout() {
   const { isAuthenticated, user, logout } = useAuth();
@@ -84,13 +91,13 @@ export default function NavLayout() {
             </div>
           </div>
         )}
-      <nav className="bg-white shadow-sm">
+      <nav className="bg-white shadow-sm sticky top-0 z-50">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between h-16 items-center">
             <div className="flex">
               {/* Logo */}
               <div className="flex-shrink-0 flex items-center">
-                <Link to="/" className="text-xl font-bold text-primary-600">
+                <Link to="/" className="text-xl font-bold text-primary-900">
                   <img src="/logo.png" alt="Aplet360" className="w-16 h-auto" />
                 </Link>
               </div>
@@ -106,7 +113,7 @@ export default function NavLayout() {
                         }
                         className={`${
                           location.pathname.startsWith("/book-now")
-                            ? "border-primary-500 text-tertiary-900"
+                            ? "border-primary-900 text-tertiary-900"
                             : "border-transparent text-tertiary-500 hover:border-tertiary-300 hover:text-tertiary-700"
                         } inline-flex items-center px-1 pt-1 border-b-2 text-sm font-medium`}
                       >
@@ -145,7 +152,7 @@ export default function NavLayout() {
                       to={item.href}
                       className={`${
                         location.pathname === item.href
-                          ? "border-primary-500 text-tertiary-900"
+                          ? "border-primary-900 text-tertiary-900"
                           : "border-transparent text-tertiary-500 hover:border-tertiary-300 hover:text-tertiary-700"
                       } inline-flex items-center px-1 pt-1 border-b-2 text-sm font-medium`}
                     >
@@ -174,7 +181,7 @@ export default function NavLayout() {
                               className="h-full w-full object-cover"
                             />
                           ) : (
-                            <div className="h-full w-full flex items-center justify-center text-primary-600 font-medium">
+                            <div className="h-full w-full flex items-center justify-center text-primary-900 font-medium">
                               {user.first_name?.[0]}
                               {user.last_name?.[0]}
                             </div>
@@ -243,7 +250,7 @@ export default function NavLayout() {
                     </Link>
                     <Link
                       to="/auth/register"
-                      className="bg-primary-500 text-white px-4 py-2 rounded-md text-sm font-medium hover:bg-primary-600 transition-colors"
+                      className="bg-primary-900 text-white px-4 py-2 rounded-md text-sm font-medium hover:bg-primary-900 transition-colors"
                     >
                       Register
                     </Link>
@@ -255,7 +262,7 @@ export default function NavLayout() {
               <div className="flex items-center sm:hidden">
                 <button
                   onClick={() => setIsOpen(!isOpen)}
-                  className="inline-flex items-center justify-center p-2 rounded-md text-tertiary-400 hover:text-tertiary-500 hover:bg-tertiary-100 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-primary-500"
+                  className="inline-flex items-center justify-center p-2 rounded-md text-tertiary-400 hover:text-tertiary-500 hover:bg-tertiary-100 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-primary-900"
                 >
                   <span className="sr-only">Open main menu</span>
                   {isOpen ? (
@@ -279,7 +286,7 @@ export default function NavLayout() {
                     onClick={() => setIsBookDropdownOpen(!isBookDropdownOpen)}
                     className={`${
                       location.pathname.startsWith("/book-now")
-                        ? "bg-primary-50 border-primary-500 text-primary-700"
+                        ? "bg-primary-50 border-primary-900 text-primary-900"
                         : "border-transparent text-tertiary-600 hover:bg-tertiary-50 hover:border-tertiary-300 hover:text-tertiary-800"
                     } w-full flex items-center justify-between pl-3 pr-4 py-2 border-l-4 text-base font-medium`}
                   >
@@ -315,7 +322,7 @@ export default function NavLayout() {
                   onClick={() => setIsOpen(false)}
                   className={`${
                     location.pathname === item.href
-                      ? "bg-primary-50 border-primary-500 text-primary-700"
+                      ? "bg-primary-50 border-primary-900 text-primary-900"
                       : "border-transparent text-tertiary-600 hover:bg-tertiary-50 hover:border-tertiary-300 hover:text-tertiary-800"
                   } block pl-3 pr-4 py-2 border-l-4 text-base font-medium`}
                 >
@@ -335,7 +342,7 @@ export default function NavLayout() {
                         className="h-full w-full object-cover"
                       />
                     ) : (
-                      <div className="h-full w-full flex items-center justify-center text-primary-600 font-medium">
+                      <div className="h-full w-full flex items-center justify-center text-primary-900 font-medium">
                         {user.first_name?.[0]}
                         {user.last_name?.[0]}
                       </div>
@@ -408,7 +415,7 @@ export default function NavLayout() {
         <div className="max-w-7xl mx-auto py-12 px-4 sm:px-6 lg:px-8">
           <div className="grid grid-cols-2 md:grid-cols-5 gap-8">
             <div>
-              <h3 className="text-sm font-semibold text-tertiary-400 tracking-wider uppercase">
+              <h3 className="text-sm font-semibold text-accent-500 tracking-wider uppercase">
                 Company
               </h3>
               <div className="mt-4 space-y-4">
@@ -439,7 +446,7 @@ export default function NavLayout() {
               </div>
             </div>
             <div>
-              <h3 className="text-sm font-semibold text-tertiary-400 tracking-wider uppercase">
+              <h3 className="text-sm font-semibold text-accent-500 tracking-wider uppercase">
                 Services
               </h3>
               <div className="mt-4 space-y-4">
@@ -470,7 +477,7 @@ export default function NavLayout() {
               </div>
             </div>
             <div>
-              <h3 className="text-sm font-semibold text-tertiary-400 tracking-wider uppercase">
+              <h3 className="text-sm font-semibold text-accent-500 tracking-wider uppercase">
                 Programs
               </h3>
               <div className="mt-4 space-y-4">
@@ -495,7 +502,7 @@ export default function NavLayout() {
               </div>
             </div>
             <div>
-              <h3 className="text-sm font-semibold text-tertiary-400 tracking-wider uppercase">
+              <h3 className="text-sm font-semibold text-accent-500 tracking-wider uppercase">
                 Support
               </h3>
               <div className="mt-4 space-y-4">
@@ -527,19 +534,26 @@ export default function NavLayout() {
               </div>
             </div>
             <div>
-              <h3 className="text-sm font-semibold text-tertiary-400 tracking-wider uppercase">
+              <h3 className="text-sm font-semibold text-accent-500 tracking-wider uppercase">
                 Contact
               </h3>
               <div className="mt-4 space-y-4">
-                <p className="text-base text-tertiary-500 block">
-                  38, Opebi Road, Adebola House, Ikeja Lagos
-                </p>
-                <p className="text-base text-tertiary-500 block">
-                  Phone: 09122842288
-                </p>
-                <p className="text-base text-tertiary-500 block">
-                  Email: support@aplet360.com
-                </p>
+                <div className="flex items-start space-x-3">
+                  <FiMapPin className="h-5 w-5 text-accent-500 mt-0.5 flex-shrink-0" />
+                  <p className="text-base text-tertiary-500">
+                    38, Opebi Road, Adebola House, Ikeja Lagos
+                  </p>
+                </div>
+                <div className="flex items-center space-x-3">
+                  <FiPhone className="h-5 w-5 text-accent-500 flex-shrink-0" />
+                  <p className="text-base text-tertiary-500">09122842288</p>
+                </div>
+                <div className="flex items-center space-x-3">
+                  <FiMail className="h-5 w-5 text-accent-500 flex-shrink-0" />
+                  <p className="text-base text-tertiary-500">
+                    support@aplet360.com
+                  </p>
+                </div>
               </div>
             </div>
           </div>

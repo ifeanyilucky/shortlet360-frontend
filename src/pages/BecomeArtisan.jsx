@@ -115,24 +115,25 @@ export default function BecomeArtisan() {
 
   const benefits = [
     {
-      icon: <FiDollarSign className="h-8 w-8 text-primary-500" />,
-      title: "Competitive Pay",
+      icon: <FiDollarSign className="h-8 w-8 text-primary-900" />,
+      title: "Zero Deduction",
       description:
-        "Earn competitive rates for your services with transparent payment terms.",
+        "Earn 100% of your service charge for every job that you complete with HomeFix.",
     },
     {
-      icon: <FiClock className="h-8 w-8 text-primary-500" />,
+      icon: <FiClock className="h-8 w-8 text-primary-900" />,
       title: "Flexible Schedule",
-      description: "Choose when you work and manage your own availability.",
+      description:
+        "Choose when you work and manage your own availability. You have the option to accept or decline a job based on your availability.",
     },
     {
-      icon: <FiUsers className="h-8 w-8 text-primary-500" />,
+      icon: <FiUsers className="h-8 w-8 text-primary-900" />,
       title: "Steady Clients",
       description:
-        "Access a large customer base without having to find clients yourself.",
+        "You have the opportunity to get your calendars fully booked with viable jobs from Aplet360 users.",
     },
     {
-      icon: <FiShield className="h-8 w-8 text-primary-500" />,
+      icon: <FiShield className="h-8 w-8 text-primary-900" />,
       title: "Professional Support",
       description:
         "Get support from our team to help you succeed in your work.",
@@ -142,7 +143,7 @@ export default function BecomeArtisan() {
   return (
     <div className="min-h-screen">
       {/* Hero Section */}
-      <section className="bg-primary-500 text-white py-20">
+      <section className="bg-primary-900 text-white py-20">
         <div className="container mx-auto px-4 text-center">
           <h1 className="text-4xl md:text-5xl font-bold mb-6">
             Become an Artisan
@@ -151,6 +152,51 @@ export default function BecomeArtisan() {
             Join our network of skilled professionals and grow your business
             with Aplet360
           </p>
+        </div>
+      </section>
+
+      {/* Become an Artisan Section */}
+      <section className="py-20 bg-white">
+        <div className="container mx-auto px-4">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+            <div className="flex justify-center lg:order-2">
+              <img
+                src="images/black-carpenter.webp"
+                alt="Skilled artisan at work"
+                className="rounded-lg shadow-lg max-w-full h-auto"
+              />
+            </div>
+            <div className="lg:order-1">
+              <h2 className="text-3xl md:text-4xl font-bold mb-6 text-primary-900">
+                Join Aplet360&apos;s HomeFix Network - Earn More, Work Freely
+              </h2>
+              <p className="text-lg text-tertiary-700 mb-8 leading-relaxed">
+                Are you a skilled artisan or technician looking to expand beyond
+                where you are currently and increase your income? Becoming an
+                Artisan for Aplet360 is the best option for you. You can
+                register to receive verified job requests directly with zero
+                commission cuts. Just pay an affordable monthly fee to stay
+                active and visible on our dashboard while you keep 100% of what
+                you earn. No hidden charges, no middlemen, just real work from
+                real customers (Users of Aplet360).
+              </p>
+              <p className="text-lg text-tertiary-700 mb-8 leading-relaxed">
+                Whether you are a plumber, electrician, painter, or tiler or
+                name it, we connect you to clients who need your expertise. Join
+                Aplet360 today and enjoy freedom, flexibility, and full earnings
+                on every job you complete. Let&apos;s build your business
+                together.
+              </p>
+              <div className="flex justify-center lg:justify-start">
+                <a
+                  href="#apply"
+                  className="inline-flex items-center px-8 py-3 border border-transparent text-base font-medium rounded-md shadow-sm text-white bg-orange-500 hover:bg-orange-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-orange-500 transition-colors"
+                >
+                  Become an Artisan
+                </a>
+              </div>
+            </div>
+          </div>
         </div>
       </section>
 
@@ -176,7 +222,7 @@ export default function BecomeArtisan() {
       </section>
 
       {/* Application Form */}
-      <section className="py-16 bg-tertiary-50">
+      <section className="py-16 bg-tertiary-50" id="apply">
         <div className="container mx-auto px-4 max-w-4xl">
           <div className="bg-white p-8 rounded-lg shadow-lg">
             <h2 className="text-2xl font-bold mb-6 text-center">
@@ -203,7 +249,7 @@ export default function BecomeArtisan() {
                     value={formData.fullName}
                     onChange={handleChange}
                     required
-                    className="w-full px-4 py-2 border border-tertiary-300 rounded-md focus:ring-primary-500 focus:border-primary-500"
+                    className="w-full px-4 py-2 border border-tertiary-300 rounded-md focus:ring-primary-900 focus:border-primary-900"
                     placeholder="Your full name"
                   />
                 </div>
@@ -221,7 +267,7 @@ export default function BecomeArtisan() {
                     value={formData.email}
                     onChange={handleChange}
                     required
-                    className="w-full px-4 py-2 border border-tertiary-300 rounded-md focus:ring-primary-500 focus:border-primary-500"
+                    className="w-full px-4 py-2 border border-tertiary-300 rounded-md focus:ring-primary-900 focus:border-primary-900"
                     placeholder="Your email address"
                   />
                 </div>
@@ -242,7 +288,7 @@ export default function BecomeArtisan() {
                     value={formData.phone}
                     onChange={handleChange}
                     required
-                    className="w-full px-4 py-2 border border-tertiary-300 rounded-md focus:ring-primary-500 focus:border-primary-500"
+                    className="w-full px-4 py-2 border border-tertiary-300 rounded-md focus:ring-primary-900 focus:border-primary-900"
                     placeholder="Your phone number"
                   />
                 </div>
@@ -268,7 +314,7 @@ export default function BecomeArtisan() {
                     value={formData.address.street}
                     onChange={handleChange}
                     required
-                    className="w-full px-4 py-2 border border-tertiary-300 rounded-md focus:ring-primary-500 focus:border-primary-500"
+                    className="w-full px-4 py-2 border border-tertiary-300 rounded-md focus:ring-primary-900 focus:border-primary-900"
                     placeholder="e.g., 123 Main Street"
                   />
                 </div>
@@ -287,7 +333,7 @@ export default function BecomeArtisan() {
                       value={formData.address.state}
                       onChange={handleChange}
                       required
-                      className="w-full px-4 py-2 border border-tertiary-300 rounded-md focus:ring-primary-500 focus:border-primary-500"
+                      className="w-full px-4 py-2 border border-tertiary-300 rounded-md focus:ring-primary-900 focus:border-primary-900"
                     >
                       <option value="Lagos">Lagos</option>
                     </select>
@@ -309,7 +355,7 @@ export default function BecomeArtisan() {
                       value={formData.address.localGovernment}
                       onChange={handleChange}
                       required
-                      className="w-full px-4 py-2 border border-tertiary-300 rounded-md focus:ring-primary-500 focus:border-primary-500"
+                      className="w-full px-4 py-2 border border-tertiary-300 rounded-md focus:ring-primary-900 focus:border-primary-900"
                     >
                       <option value="">Select LGA</option>
                       {Object.keys(lagosLocationData).map((lga) => (
@@ -334,7 +380,7 @@ export default function BecomeArtisan() {
                       onChange={handleChange}
                       required
                       disabled={!formData.address.localGovernment}
-                      className="w-full px-4 py-2 border border-tertiary-300 rounded-md focus:ring-primary-500 focus:border-primary-500 disabled:bg-tertiary-100 disabled:cursor-not-allowed"
+                      className="w-full px-4 py-2 border border-tertiary-300 rounded-md focus:ring-primary-900 focus:border-primary-900 disabled:bg-tertiary-100 disabled:cursor-not-allowed"
                     >
                       <option value="">Select Area</option>
                       {formData.address.localGovernment &&
@@ -369,7 +415,7 @@ export default function BecomeArtisan() {
                     value={formData.skillCategory}
                     onChange={handleChange}
                     required
-                    className="w-full px-4 py-2 border border-tertiary-300 rounded-md focus:ring-primary-500 focus:border-primary-500"
+                    className="w-full px-4 py-2 border border-tertiary-300 rounded-md focus:ring-primary-900 focus:border-primary-900"
                   >
                     <option value="">Select your skill category</option>
                     {skillCategories.map((category) => (
@@ -392,7 +438,7 @@ export default function BecomeArtisan() {
                     value={formData.experience}
                     onChange={handleChange}
                     required
-                    className="w-full px-4 py-2 border border-tertiary-300 rounded-md focus:ring-primary-500 focus:border-primary-500"
+                    className="w-full px-4 py-2 border border-tertiary-300 rounded-md focus:ring-primary-900 focus:border-primary-900"
                   >
                     <option value="">Select your experience</option>
                     {experienceOptions.map((option) => (
@@ -418,7 +464,7 @@ export default function BecomeArtisan() {
                     value={formData.idType}
                     onChange={handleChange}
                     required
-                    className="w-full px-4 py-2 border border-tertiary-300 rounded-md focus:ring-primary-500 focus:border-primary-500"
+                    className="w-full px-4 py-2 border border-tertiary-300 rounded-md focus:ring-primary-900 focus:border-primary-900"
                   >
                     <option value="">Select ID type</option>
                     {idTypes.map((type) => (
@@ -442,7 +488,7 @@ export default function BecomeArtisan() {
                     value={formData.idNumber}
                     onChange={handleChange}
                     required
-                    className="w-full px-4 py-2 border border-tertiary-300 rounded-md focus:ring-primary-500 focus:border-primary-500"
+                    className="w-full px-4 py-2 border border-tertiary-300 rounded-md focus:ring-primary-900 focus:border-primary-900"
                     placeholder="Your ID number"
                   />
                 </div>
@@ -462,7 +508,7 @@ export default function BecomeArtisan() {
                   onChange={handleChange}
                   required
                   rows={5}
-                  className="w-full px-4 py-2 border border-tertiary-300 rounded-md focus:ring-primary-500 focus:border-primary-500"
+                  className="w-full px-4 py-2 border border-tertiary-300 rounded-md focus:ring-primary-900 focus:border-primary-900"
                   placeholder="Describe your skills, experience, and why you want to join our network..."
                 ></textarea>
               </div>
@@ -471,7 +517,7 @@ export default function BecomeArtisan() {
                 <button
                   type="submit"
                   disabled={isSubmitting}
-                  className="inline-flex items-center px-6 py-3 border border-transparent text-base font-medium rounded-md shadow-sm text-white bg-primary-600 hover:bg-primary-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500 disabled:opacity-50 disabled:cursor-not-allowed"
+                  className="inline-flex items-center px-6 py-3 border border-transparent text-base font-medium rounded-md shadow-sm text-white bg-primary-900 hover:bg-primary-900 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-900 disabled:opacity-50 disabled:cursor-not-allowed"
                 >
                   {isSubmitting ? (
                     "Submitting..."

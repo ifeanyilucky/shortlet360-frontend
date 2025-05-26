@@ -4,13 +4,14 @@ export default function Marketplace() {
   return (
     <div className="min-h-screen bg-gray-50">
       {/* Hero Section */}
-      <section className="bg-primary-500 text-white py-20">
+      <section className="bg-primary-900 text-white py-20">
         <div className="container mx-auto px-4 text-center">
           <h1 className="text-4xl md:text-5xl font-bold mb-6">
             Aplet360 Marketplace
           </h1>
           <p className="text-xl text-primary-100 max-w-3xl mx-auto">
-            Your one-stop shop for quality home products and furnishings
+            Your one-stop shop for home products, utilities, food items, and
+            everything you need for comfortable living
           </p>
         </div>
       </section>
@@ -31,28 +32,29 @@ export default function Marketplace() {
               </h2>
 
               <p className="text-lg text-tertiary-600 mb-8 leading-relaxed">
-                We're working hard to bring you an amazing marketplace
+                We&apos;re working hard to bring you an amazing marketplace
                 experience where you can shop for furniture, appliances, home
-                decor, and everything you need to make your apartment feel like
-                home.
+                decor, utility products, food items, and everything you need to
+                make your apartment feel like home.
               </p>
 
               <div className="grid md:grid-cols-3 gap-8 mb-12">
                 <div className="text-center">
                   <div className="bg-primary-100 p-4 rounded-full w-16 h-16 mx-auto mb-4 flex items-center justify-center">
-                    <FiShoppingBag className="h-8 w-8 text-primary-500" />
+                    <FiShoppingBag className="h-8 w-8 text-primary-900" />
                   </div>
                   <h3 className="font-semibold text-tertiary-800 mb-2">
                     Quality Products
                   </h3>
                   <p className="text-tertiary-600 text-sm">
-                    Curated selection of home essentials and furniture
+                    Curated selection of home essentials, furniture, utilities,
+                    and food items
                   </p>
                 </div>
 
                 <div className="text-center">
                   <div className="bg-primary-100 p-4 rounded-full w-16 h-16 mx-auto mb-4 flex items-center justify-center">
-                    <FiClock className="h-8 w-8 text-primary-500" />
+                    <FiClock className="h-8 w-8 text-primary-900" />
                   </div>
                   <h3 className="font-semibold text-tertiary-800 mb-2">
                     Fast Delivery
@@ -65,7 +67,7 @@ export default function Marketplace() {
                 <div className="text-center">
                   <div className="bg-primary-100 p-4 rounded-full w-16 h-16 mx-auto mb-4 flex items-center justify-center">
                     <svg
-                      className="h-8 w-8 text-primary-500"
+                      className="h-8 w-8 text-primary-900"
                       fill="none"
                       stroke="currentColor"
                       viewBox="0 0 24 24"

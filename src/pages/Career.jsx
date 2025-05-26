@@ -14,30 +14,30 @@ export default function Career() {
 
   const values = [
     {
-      icon: <FiHeart className="h-8 w-8 text-primary-500" />,
+      icon: <FiHeart className="h-8 w-8 text-primary-900" />,
       title: "Customer First",
       description:
         "We prioritize our customers' needs and satisfaction in everything we do.",
     },
     {
-      icon: <FiAward className="h-8 w-8 text-primary-500" />,
+      icon: <FiAward className="h-8 w-8 text-primary-900" />,
       title: "Excellence",
       description: "We strive for excellence in our services and operations.",
     },
     {
-      icon: <FiUsers className="h-8 w-8 text-primary-500" />,
+      icon: <FiUsers className="h-8 w-8 text-primary-900" />,
       title: "Teamwork",
       description:
         "We believe in collaboration and supporting each other to achieve our goals.",
     },
     {
-      icon: <FiTrendingUp className="h-8 w-8 text-primary-500" />,
+      icon: <FiTrendingUp className="h-8 w-8 text-primary-900" />,
       title: "Innovation",
       description:
         "We embrace new ideas and technologies to improve our services.",
     },
     {
-      icon: <FiGlobe className="h-8 w-8 text-primary-500" />,
+      icon: <FiGlobe className="h-8 w-8 text-primary-900" />,
       title: "Integrity",
       description:
         "We conduct our business with honesty, transparency, and ethical standards.",
@@ -58,7 +58,7 @@ export default function Career() {
   return (
     <div className="min-h-screen">
       {/* Hero Section */}
-      <section className="bg-primary-500 text-white py-20">
+      <section className="bg-primary-900 text-white py-20">
         <div className="container mx-auto px-4 text-center">
           <h1 className="text-4xl md:text-5xl font-bold mb-6">
             Careers at Aplet360
@@ -84,7 +84,7 @@ export default function Career() {
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
             <div className="bg-tertiary-50 p-8 rounded-lg">
-              <h3 className="text-2xl font-bold mb-4 text-primary-600">
+              <h3 className="text-2xl font-bold mb-4 text-primary-900">
                 Our Mission
               </h3>
               <p className="text-tertiary-700 mb-6">
@@ -99,7 +99,7 @@ export default function Career() {
               </p>
             </div>
             <div className="bg-tertiary-50 p-8 rounded-lg">
-              <h3 className="text-2xl font-bold mb-4 text-primary-600">
+              <h3 className="text-2xl font-bold mb-4 text-primary-900">
                 Our Culture
               </h3>
               <p className="text-tertiary-700 mb-6">
@@ -154,7 +154,7 @@ export default function Career() {
                 className="flex items-start p-4 bg-tertiary-50 rounded-lg"
               >
                 <div className="flex-shrink-0 mr-3">
-                  <FiBriefcase className="h-6 w-6 text-primary-500" />
+                  <FiBriefcase className="h-6 w-6 text-primary-900" />
                 </div>
                 <p className="text-tertiary-700">{benefit}</p>
               </div>
@@ -164,7 +164,7 @@ export default function Career() {
       </section>
 
       {/* Current Openings CTA */}
-      <section className="py-16 bg-primary-500 text-white">
+      <section className="py-16 bg-primary-900 text-white">
         <div className="container mx-auto px-4 text-center">
           <h2 className="text-3xl font-bold mb-6">Ready to Join Our Team?</h2>
           <p className="max-w-3xl mx-auto mb-8 text-primary-100">
@@ -173,7 +173,7 @@ export default function Career() {
           </p>
           <button
             onClick={() => setIsOpeningsModalOpen(true)}
-            className="bg-white text-primary-500 px-8 py-3 rounded-full font-medium hover:bg-primary-50 transition-colors"
+            className="bg-white text-primary-900 px-8 py-3 rounded-full font-medium hover:bg-primary-50 transition-colors"
           >
             Current Openings
           </button>
@@ -197,7 +197,7 @@ export default function Career() {
             You can also send your resume to{" "}
             <a
               href="mailto:careers@aplet360.com"
-              className="text-primary-600 hover:underline"
+              className="text-primary-900 hover:underline"
             >
               careers@aplet360.com
             </a>{" "}

@@ -95,12 +95,12 @@ export default function AmenitiesRules() {
             value={newAmenity}
             onChange={(e) => setNewAmenity(e.target.value)}
             placeholder="Add custom amenity"
-            className="flex-1 px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500"
+            className="flex-1 px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-900"
           />
           <button
             type="button"
             onClick={handleAddAmenity}
-            className="px-4 py-2 bg-primary-500 text-white rounded-md hover:bg-primary-600 flex items-center"
+            className="px-4 py-2 bg-primary-900 text-white rounded-md hover:bg-primary-900 flex items-center"
           >
             <FiPlus className="mr-1" /> Add
           </button>
@@ -116,7 +116,7 @@ export default function AmenitiesRules() {
               <button
                 type="button"
                 onClick={() => removeAmenity(amenity)}
-                className="ml-2 text-primary-600 hover:text-primary-800"
+                className="ml-2 text-primary-900 hover:text-primary-800"
               >
                 <FiX />
               </button>
@@ -134,12 +134,12 @@ export default function AmenitiesRules() {
             value={newRule}
             onChange={(e) => setNewRule(e.target.value)}
             placeholder="Add a house rule"
-            className="flex-1 px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500"
+            className="flex-1 px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-900"
           />
           <button
             type="button"
             onClick={handleAddRule}
-            className="px-4 py-2 bg-primary-500 text-white rounded-md hover:bg-primary-600 flex items-center"
+            className="px-4 py-2 bg-primary-900 text-white rounded-md hover:bg-primary-900 flex items-center"
           >
             <FiPlus className="mr-1" /> Add
           </button>

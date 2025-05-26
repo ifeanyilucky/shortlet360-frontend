@@ -1,6 +1,5 @@
 import PropTypes from "prop-types";
 
-
 const InteractiveButton = ({
   children,
   onClick,
@@ -17,7 +16,7 @@ const InteractiveButton = ({
 
   const variants = {
     primary:
-      "bg-primary-500 text-white hover:bg-primary-600 focus:ring-primary-500",
+      "bg-primary-900 text-white hover:bg-primary-900 focus:ring-primary-900",
     secondary:
       "bg-gray-200 text-gray-700 hover:bg-gray-300 focus:ring-gray-500",
     accent:

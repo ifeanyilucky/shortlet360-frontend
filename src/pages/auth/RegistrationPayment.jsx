@@ -96,7 +96,7 @@ export default function RegistrationPayment() {
             </div>
 
             <div className="mt-6 bg-primary-50 p-4 rounded-lg border border-primary-100">
-              <h4 className="font-medium text-primary-700 mb-3">
+              <h4 className="font-medium text-primary-900 mb-3">
                 Complete your registration to enjoy our comprehensive property
                 management services
               </h4>
@@ -172,14 +172,14 @@ export default function RegistrationPayment() {
                 By completing this payment, you agree to our{" "}
                 <a
                   href="/terms"
-                  className="text-primary-600 hover:text-primary-500"
+                  className="text-primary-900 hover:text-primary-900"
                 >
                   Terms of Service
                 </a>{" "}
                 and{" "}
                 <a
                   href="/privacy"
-                  className="text-primary-600 hover:text-primary-500"
+                  className="text-primary-900 hover:text-primary-900"
                 >
                   Privacy Policy
                 </a>

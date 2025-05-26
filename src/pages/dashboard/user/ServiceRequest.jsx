@@ -116,8 +116,12 @@ export default function ServiceRequest() {
           <FiTool className="w-5 h-5 text-orange-600" />
         </div>
         <div>
-          <h1 className="text-2xl font-semibold text-gray-800">HomeFix Service Request</h1>
-          <p className="text-gray-600">Request professional home services from vetted artisans</p>
+          <h1 className="text-2xl font-semibold text-gray-800">
+            HomeFix Service Request
+          </h1>
+          <p className="text-gray-600">
+            Request professional home services from vetted artisans
+          </p>
         </div>
       </div>
 
@@ -145,7 +149,7 @@ export default function ServiceRequest() {
                 value={formData.name}
                 onChange={handleChange}
                 required
-                className="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-primary-500 focus:border-primary-500"
+                className="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-primary-900 focus:border-primary-900"
                 placeholder="Your full name"
               />
             </div>
@@ -163,7 +167,7 @@ export default function ServiceRequest() {
                 value={formData.email}
                 onChange={handleChange}
                 required
-                className="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-primary-500 focus:border-primary-500"
+                className="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-primary-900 focus:border-primary-900"
                 placeholder="Your email address"
               />
             </div>
@@ -184,7 +188,7 @@ export default function ServiceRequest() {
                 value={formData.phone}
                 onChange={handleChange}
                 required
-                className="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-primary-500 focus:border-primary-500"
+                className="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-primary-900 focus:border-primary-900"
                 placeholder="Your phone number"
               />
             </div>
@@ -201,7 +205,7 @@ export default function ServiceRequest() {
                 value={formData.service}
                 onChange={handleChange}
                 required
-                className="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-primary-500 focus:border-primary-500"
+                className="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-primary-900 focus:border-primary-900"
               >
                 <option value="">Select a service</option>
                 {serviceOptions.map((service) => (
@@ -233,7 +237,7 @@ export default function ServiceRequest() {
                 value={formData.address.street}
                 onChange={handleChange}
                 required
-                className="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-primary-500 focus:border-primary-500"
+                className="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-primary-900 focus:border-primary-900"
                 placeholder="e.g., 123 Main Street"
               />
             </div>
@@ -252,7 +256,7 @@ export default function ServiceRequest() {
                   value={formData.address.state}
                   onChange={handleChange}
                   required
-                  className="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-primary-500 focus:border-primary-500"
+                  className="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-primary-900 focus:border-primary-900"
                 >
                   <option value="Lagos">Lagos</option>
                 </select>
@@ -274,7 +278,7 @@ export default function ServiceRequest() {
                   value={formData.address.localGovernment}
                   onChange={handleChange}
                   required
-                  className="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-primary-500 focus:border-primary-500"
+                  className="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-primary-900 focus:border-primary-900"
                 >
                   <option value="">Select LGA</option>
                   {Object.keys(lagosLocationData).map((lga) => (
@@ -299,17 +303,17 @@ export default function ServiceRequest() {
                   onChange={handleChange}
                   required
                   disabled={!formData.address.localGovernment}
-                  className="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-primary-500 focus:border-primary-500 disabled:bg-gray-100 disabled:cursor-not-allowed"
+                  className="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-primary-900 focus:border-primary-900 disabled:bg-gray-100 disabled:cursor-not-allowed"
                 >
                   <option value="">Select Area</option>
                   {formData.address.localGovernment &&
-                    lagosLocationData[
-                      formData.address.localGovernment
-                    ]?.map((area) => (
-                      <option key={area} value={area}>
-                        {area}
-                      </option>
-                    ))}
+                    lagosLocationData[formData.address.localGovernment]?.map(
+                      (area) => (
+                        <option key={area} value={area}>
+                          {area}
+                        </option>
+                      )
+                    )}
                 </select>
                 {!formData.address.localGovernment && (
                   <p className="text-xs text-gray-500 mt-1">
@@ -334,7 +338,7 @@ export default function ServiceRequest() {
               onChange={handleChange}
               required
               rows={5}
-              className="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-primary-500 focus:border-primary-500"
+              className="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-primary-900 focus:border-primary-900"
               placeholder="Please describe what you need help with..."
             ></textarea>
           </div>

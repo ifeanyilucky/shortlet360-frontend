@@ -15,7 +15,7 @@ export default function PropertyManagementSolutions() {
   return (
     <div className="min-h-screen">
       {/* Hero Section */}
-      <section className="bg-gradient-to-b from-primary-600 to-primary-700 text-white py-24 relative overflow-hidden">
+      <section className="bg-gradient-to-b from-primary-900 to-primary-900 text-white py-24 relative overflow-hidden">
         <div className="absolute inset-0 bg-[url('/images/pattern.png')] opacity-10"></div>
         <div className="container mx-auto px-4 text-center relative z-10">
           <h1 className="text-4xl md:text-6xl font-bold mb-6 animate-fade-in">
@@ -94,7 +94,7 @@ export default function PropertyManagementSolutions() {
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
             <div className="bg-white p-8 rounded-2xl shadow-card hover:shadow-elevated transition-all duration-300 transform hover:-translate-y-1">
               <div className="w-16 h-16 bg-primary-100 rounded-2xl flex items-center justify-center mx-auto mb-6">
-                <FiUsers className="w-8 h-8 text-primary-600" />
+                <FiUsers className="w-8 h-8 text-primary-900" />
               </div>
               <h3 className="text-2xl font-semibold mb-4 text-tertiary-900 text-center">
                 Tenant Management
@@ -150,7 +150,7 @@ export default function PropertyManagementSolutions() {
 
             <div className="bg-white p-8 rounded-2xl shadow-card hover:shadow-elevated transition-all duration-300 transform hover:-translate-y-1">
               <div className="w-16 h-16 bg-primary-100 rounded-2xl flex items-center justify-center mx-auto mb-6">
-                <FiSettings className="w-8 h-8 text-primary-600" />
+                <FiSettings className="w-8 h-8 text-primary-900" />
               </div>
               <h3 className="text-2xl font-semibold mb-4 text-tertiary-900 text-center">
                 Maintenance & Repairs
@@ -204,7 +204,7 @@ export default function PropertyManagementSolutions() {
 
             <div className="bg-white p-8 rounded-2xl shadow-card hover:shadow-elevated transition-all duration-300 transform hover:-translate-y-1">
               <div className="w-16 h-16 bg-primary-100 rounded-2xl flex items-center justify-center mx-auto mb-6">
-                <MdSecurity className="w-8 h-8 text-primary-600" />
+                <MdSecurity className="w-8 h-8 text-primary-900" />
               </div>
               <h3 className="text-2xl font-semibold mb-4 text-tertiary-900 text-center">
                 Legal & Compliance
@@ -275,7 +275,7 @@ export default function PropertyManagementSolutions() {
           <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-8">
             <div className="text-center">
               <div className="w-16 h-16 bg-primary-100 rounded-2xl flex items-center justify-center mx-auto mb-4">
-                <FiShield className="w-8 h-8 text-primary-600" />
+                <FiShield className="w-8 h-8 text-primary-900" />
               </div>
               <h3 className="font-semibold text-xl mb-3 text-tertiary-900">
                 Trusted & Reliable
@@ -301,7 +301,7 @@ export default function PropertyManagementSolutions() {
 
             <div className="text-center">
               <div className="w-16 h-16 bg-primary-100 rounded-2xl flex items-center justify-center mx-auto mb-4">
-                <FiTrendingUp className="w-8 h-8 text-primary-600" />
+                <FiTrendingUp className="w-8 h-8 text-primary-900" />
               </div>
               <h3 className="font-semibold text-xl mb-3 text-tertiary-900">
                 Maximize Returns
@@ -343,7 +343,7 @@ export default function PropertyManagementSolutions() {
 
           <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-8">
             <div className="bg-white p-6 rounded-2xl shadow-card text-center">
-              <div className="w-12 h-12 bg-primary-500 text-white rounded-full flex items-center justify-center mx-auto mb-4 text-xl font-bold">
+              <div className="w-12 h-12 bg-primary-900 text-white rounded-full flex items-center justify-center mx-auto mb-4 text-xl font-bold">
                 1
               </div>
               <h3 className="font-semibold text-lg mb-3 text-tertiary-900">
@@ -356,7 +356,7 @@ export default function PropertyManagementSolutions() {
             </div>
 
             <div className="bg-white p-6 rounded-2xl shadow-card text-center">
-              <div className="w-12 h-12 bg-primary-500 text-white rounded-full flex items-center justify-center mx-auto mb-4 text-xl font-bold">
+              <div className="w-12 h-12 bg-primary-900 text-white rounded-full flex items-center justify-center mx-auto mb-4 text-xl font-bold">
                 2
               </div>
               <h3 className="font-semibold text-lg mb-3 text-tertiary-900">
@@ -369,7 +369,7 @@ export default function PropertyManagementSolutions() {
             </div>
 
             <div className="bg-white p-6 rounded-2xl shadow-card text-center">
-              <div className="w-12 h-12 bg-primary-500 text-white rounded-full flex items-center justify-center mx-auto mb-4 text-xl font-bold">
+              <div className="w-12 h-12 bg-primary-900 text-white rounded-full flex items-center justify-center mx-auto mb-4 text-xl font-bold">
                 3
               </div>
               <h3 className="font-semibold text-lg mb-3 text-tertiary-900">
@@ -382,7 +382,7 @@ export default function PropertyManagementSolutions() {
             </div>
 
             <div className="bg-white p-6 rounded-2xl shadow-card text-center">
-              <div className="w-12 h-12 bg-primary-500 text-white rounded-full flex items-center justify-center mx-auto mb-4 text-xl font-bold">
+              <div className="w-12 h-12 bg-primary-900 text-white rounded-full flex items-center justify-center mx-auto mb-4 text-xl font-bold">
                 4
               </div>
               <h3 className="font-semibold text-lg mb-3 text-tertiary-900">
@@ -398,7 +398,7 @@ export default function PropertyManagementSolutions() {
       </section>
 
       {/* CTA Section */}
-      <section className="py-20 bg-gradient-to-b from-primary-600 to-primary-700 text-white relative overflow-hidden">
+      <section className="py-20 bg-gradient-to-b from-primary-900 to-primary-900 text-white relative overflow-hidden">
         <div className="absolute inset-0 bg-[url('/images/pattern.png')] opacity-10"></div>
         <div className="container mx-auto px-4 text-center relative z-10">
           <h2 className="text-3xl md:text-4xl font-bold mb-6">

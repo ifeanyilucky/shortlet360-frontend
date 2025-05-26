@@ -10,6 +10,7 @@ export default function HomeServices() {
     email: "",
     phone: "",
     service: "",
+    customService: "",
     description: "",
     address: {
       street: "",
@@ -37,6 +38,38 @@ export default function HomeServices() {
     "Home Security",
     "Other",
   ];
+
+  const serviceDescriptions = {
+    Cleaning:
+      "Professional cleaning services for your home, delivered by our experienced and reliable cleaning specialists.",
+    Plumbing:
+      "Expert plumbing solutions for your home, provided by our qualified and licensed plumbing professionals.",
+    Electrical:
+      "Seasoned electrical services for your home, handled by our certified and skilled electrical technicians.",
+    Carpentry:
+      "Proficient carpentry work for your home, crafted by our experienced and detail-oriented carpenters.",
+    Painting:
+      "Professional painting services for your home, executed by our qualified and artistic painting experts.",
+    Gardening:
+      "Expert gardening and landscaping services for your home, maintained by our seasoned horticulture specialists.",
+    "Appliance Repair":
+      "Skilled appliance repair services for your home, performed by our experienced and certified repair technicians.",
+    HVAC: "Professional heating, ventilation, and air conditioning services for your home, delivered by our qualified HVAC specialists.",
+    Locksmith:
+      "Expert locksmith services for your home, provided by our experienced and trusted security professionals.",
+    "Pest Control":
+      "Seasoned pest control solutions for your home, handled by our qualified and licensed pest management experts.",
+    "Furniture Assembly":
+      "Proficient furniture assembly services for your home, completed by our skilled and detail-focused assembly specialists.",
+    "Moving Services":
+      "Professional moving and relocation services for your home, managed by our experienced and reliable moving experts.",
+    "Interior Design":
+      "Expert interior design consultation for your home, provided by our qualified and creative design professionals.",
+    "Home Security":
+      "Skilled home security installation and maintenance for your home, delivered by our experienced security system specialists.",
+    Other:
+      "Specialized services for your home, handled by our qualified and versatile service professionals.",
+  };
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -72,6 +105,7 @@ export default function HomeServices() {
         email: "",
         phone: "",
         service: "",
+        customService: "",
         description: "",
         address: {
           street: "",
@@ -91,12 +125,13 @@ export default function HomeServices() {
   return (
     <div className="min-h-screen">
       {/* Hero Section - HomeFix */}
-      <section className="bg-primary-500 text-white py-20">
+      <section className="bg-primary-900 text-white py-20">
         <div className="container mx-auto px-4">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
             <div>
               <h1 className="text-4xl md:text-5xl font-bold mb-6">
-                Your trusted solution for Hassle-free Home Repairs
+                HomeFix
+                {/* Your trusted solution for Hassle-free Home Repairs */}
               </h1>
               <p className="text-xl text-primary-100 mb-8 leading-relaxed">
                 With HomeFix, we connect you with vetted professional artisans
@@ -152,7 +187,7 @@ export default function HomeServices() {
                     value={formData.name}
                     onChange={handleChange}
                     required
-                    className="w-full px-4 py-2 border border-tertiary-300 rounded-md focus:ring-primary-500 focus:border-primary-500"
+                    className="w-full px-4 py-2 border border-tertiary-300 rounded-md focus:ring-primary-900 focus:border-primary-900"
                     placeholder="Your full name"
                   />
                 </div>
@@ -170,7 +205,7 @@ export default function HomeServices() {
                     value={formData.email}
                     onChange={handleChange}
                     required
-                    className="w-full px-4 py-2 border border-tertiary-300 rounded-md focus:ring-primary-500 focus:border-primary-500"
+                    className="w-full px-4 py-2 border border-tertiary-300 rounded-md focus:ring-primary-900 focus:border-primary-900"
                     placeholder="Your email address"
                   />
                 </div>
@@ -191,7 +226,7 @@ export default function HomeServices() {
                     value={formData.phone}
                     onChange={handleChange}
                     required
-                    className="w-full px-4 py-2 border border-tertiary-300 rounded-md focus:ring-primary-500 focus:border-primary-500"
+                    className="w-full px-4 py-2 border border-tertiary-300 rounded-md focus:ring-primary-900 focus:border-primary-900"
                     placeholder="Your phone number"
                   />
                 </div>
@@ -208,7 +243,7 @@ export default function HomeServices() {
                     value={formData.service}
                     onChange={handleChange}
                     required
-                    className="w-full px-4 py-2 border border-tertiary-300 rounded-md focus:ring-primary-500 focus:border-primary-500"
+                    className="w-full px-4 py-2 border border-tertiary-300 rounded-md focus:ring-primary-900 focus:border-primary-900"
                   >
                     <option value="">Select a service</option>
                     {serviceOptions.map((service) => (
@@ -218,6 +253,29 @@ export default function HomeServices() {
                     ))}
                   </select>
                 </div>
+              </div>
+
+              {/* Custom Service Field */}
+              <div>
+                <label
+                  htmlFor="customService"
+                  className="block text-sm font-medium text-tertiary-700 mb-1"
+                >
+                  Preferred Service (if not listed above)
+                </label>
+                <input
+                  type="text"
+                  id="customService"
+                  name="customService"
+                  value={formData.customService}
+                  onChange={handleChange}
+                  className="w-full px-4 py-2 border border-tertiary-300 rounded-md focus:ring-primary-900 focus:border-primary-900"
+                  placeholder="e.g., Pool cleaning, Solar panel installation, etc."
+                />
+                <p className="text-xs text-tertiary-500 mt-1">
+                  If your preferred service is not in the dropdown above, please
+                  specify it here
+                </p>
               </div>
 
               {/* Address Section */}
@@ -240,7 +298,7 @@ export default function HomeServices() {
                     value={formData.address.street}
                     onChange={handleChange}
                     required
-                    className="w-full px-4 py-2 border border-tertiary-300 rounded-md focus:ring-primary-500 focus:border-primary-500"
+                    className="w-full px-4 py-2 border border-tertiary-300 rounded-md focus:ring-primary-900 focus:border-primary-900"
                     placeholder="e.g., 123 Main Street"
                   />
                 </div>
@@ -259,7 +317,7 @@ export default function HomeServices() {
                       value={formData.address.state}
                       onChange={handleChange}
                       required
-                      className="w-full px-4 py-2 border border-tertiary-300 rounded-md focus:ring-primary-500 focus:border-primary-500"
+                      className="w-full px-4 py-2 border border-tertiary-300 rounded-md focus:ring-primary-900 focus:border-primary-900"
                     >
                       <option value="Lagos">Lagos</option>
                     </select>
@@ -281,7 +339,7 @@ export default function HomeServices() {
                       value={formData.address.localGovernment}
                       onChange={handleChange}
                       required
-                      className="w-full px-4 py-2 border border-tertiary-300 rounded-md focus:ring-primary-500 focus:border-primary-500"
+                      className="w-full px-4 py-2 border border-tertiary-300 rounded-md focus:ring-primary-900 focus:border-primary-900"
                     >
                       <option value="">Select LGA</option>
                       {Object.keys(lagosLocationData).map((lga) => (
@@ -306,7 +364,7 @@ export default function HomeServices() {
                       onChange={handleChange}
                       required
                       disabled={!formData.address.localGovernment}
-                      className="w-full px-4 py-2 border border-tertiary-300 rounded-md focus:ring-primary-500 focus:border-primary-500 disabled:bg-tertiary-100 disabled:cursor-not-allowed"
+                      className="w-full px-4 py-2 border border-tertiary-300 rounded-md focus:ring-primary-900 focus:border-primary-900 disabled:bg-tertiary-100 disabled:cursor-not-allowed"
                     >
                       <option value="">Select Area</option>
                       {formData.address.localGovernment &&
@@ -341,7 +399,7 @@ export default function HomeServices() {
                   onChange={handleChange}
                   required
                   rows={5}
-                  className="w-full px-4 py-2 border border-tertiary-300 rounded-md focus:ring-primary-500 focus:border-primary-500"
+                  className="w-full px-4 py-2 border border-tertiary-300 rounded-md focus:ring-primary-900 focus:border-primary-900"
                   placeholder="Please describe what you need help with..."
                 ></textarea>
               </div>
@@ -350,7 +408,7 @@ export default function HomeServices() {
                 <button
                   type="submit"
                   disabled={isSubmitting}
-                  className="inline-flex items-center px-6 py-3 border border-transparent text-base font-medium rounded-md shadow-sm text-white bg-primary-600 hover:bg-primary-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500 disabled:opacity-50 disabled:cursor-not-allowed"
+                  className="inline-flex items-center px-6 py-3 border border-transparent text-base font-medium rounded-md shadow-sm text-white bg-primary-900 hover:bg-primary-900 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-900 disabled:opacity-50 disabled:cursor-not-allowed"
                 >
                   {isSubmitting ? (
                     "Submitting..."
@@ -378,60 +436,14 @@ export default function HomeServices() {
                 key={service}
                 className="bg-white p-6 rounded-lg shadow-md hover:shadow-lg transition-shadow"
               >
-                <h3 className="text-xl font-semibold mb-3 text-primary-600">
+                <h3 className="text-xl font-semibold mb-3 text-primary-900">
                   {service}
                 </h3>
                 <p className="text-tertiary-600">
-                  Professional {service.toLowerCase()} services for your home,
-                  delivered by our vetted and skilled artisans.
+                  {serviceDescriptions[service]}
                 </p>
               </div>
             ))}
-          </div>
-        </div>
-      </section>
-
-      {/* Become an Artisan Section */}
-      <section className="py-20 bg-white">
-        <div className="container mx-auto px-4">
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
-            <div className="flex justify-center lg:order-2">
-              <img
-                src="images/black-carpenter.webp"
-                alt="Skilled artisan at work"
-                className="rounded-lg shadow-lg max-w-full h-auto"
-              />
-            </div>
-            <div className="lg:order-1">
-              <h2 className="text-3xl md:text-4xl font-bold mb-6 text-primary-600">
-                Join Aplet360&apos;s HomeFix Network - Earn More, Work Freely
-              </h2>
-              <p className="text-lg text-tertiary-700 mb-8 leading-relaxed">
-                Are you a skilled artisan or technician looking to expand beyond
-                where you are currently and increase your income? Becoming an
-                Artisan for Aplet360 is the best option for you. You can
-                register to receive verified job requests directly with zero
-                commission cuts. Just pay an affordable monthly fee to stay
-                active and visible on our dashboard while you keep 100% of what
-                you earn. No hidden charges, no middlemen, just real work from
-                real customers (Users of Aplet360).
-              </p>
-              <p className="text-lg text-tertiary-700 mb-8 leading-relaxed">
-                Whether you are a plumber, electrician, painter, or tiler or
-                name it, we connect you to clients who need your expertise. Join
-                Aplet360 today and enjoy freedom, flexibility, and full earnings
-                on every job you complete. Let&apos;s build your business
-                together.
-              </p>
-              <div className="flex justify-center lg:justify-start">
-                <a
-                  href="/become-artisan"
-                  className="inline-flex items-center px-8 py-3 border border-transparent text-base font-medium rounded-md shadow-sm text-white bg-orange-500 hover:bg-orange-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-orange-500 transition-colors"
-                >
-                  Become an Artisan
-                </a>
-              </div>
-            </div>
           </div>
         </div>
       </section>

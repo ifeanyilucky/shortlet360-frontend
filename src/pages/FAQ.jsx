@@ -212,7 +212,7 @@ export default function FAQ() {
   return (
     <div className="min-h-screen">
       {/* Hero Section */}
-      <section className="bg-primary-500 text-white py-20">
+      <section className="bg-primary-900 text-white py-20">
         <div className="container mx-auto px-4 text-center">
           <h1 className="text-4xl md:text-5xl font-bold mb-6">
             Frequently Asked Questions
@@ -228,7 +228,7 @@ export default function FAQ() {
       <section className="py-8 bg-white border-b">
         <div className="container mx-auto px-4">
           <div className="max-w-2xl mx-auto relative">
-            <div className="flex items-center border-2 border-gray-300 rounded-full overflow-hidden focus-within:border-primary-500 transition-colors">
+            <div className="flex items-center border-2 border-gray-300 rounded-full overflow-hidden focus-within:border-primary-900 transition-colors">
               <div className="pl-4">
                 <FiSearch className="w-5 h-5 text-gray-400" />
               </div>
@@ -255,7 +255,7 @@ export default function FAQ() {
                 onClick={() => setActiveCategory(category.id)}
                 className={`flex items-center px-4 py-2 rounded-full text-sm font-medium transition-colors ${
                   activeCategory === category.id
-                    ? "bg-primary-500 text-white"
+                    ? "bg-primary-900 text-white"
                     : "bg-white text-gray-700 hover:bg-gray-100"
                 }`}
               >
@@ -313,9 +313,9 @@ export default function FAQ() {
                                 {faq.question}
                               </h3>
                               {expandedQuestions[`${categoryId}-${index}`] ? (
-                                <FiChevronUp className="flex-shrink-0 text-primary-500" />
+                                <FiChevronUp className="flex-shrink-0 text-primary-900" />
                               ) : (
-                                <FiChevronDown className="flex-shrink-0 text-primary-500" />
+                                <FiChevronDown className="flex-shrink-0 text-primary-900" />
                               )}
                             </button>
                             {expandedQuestions[`${categoryId}-${index}`] && (
@@ -345,9 +345,9 @@ export default function FAQ() {
                         {faq.question}
                       </h3>
                       {expandedQuestions[`${activeCategory}-${index}`] ? (
-                        <FiChevronUp className="flex-shrink-0 text-primary-500" />
+                        <FiChevronUp className="flex-shrink-0 text-primary-900" />
                       ) : (
-                        <FiChevronDown className="flex-shrink-0 text-primary-500" />
+                        <FiChevronDown className="flex-shrink-0 text-primary-900" />
                       )}
                     </button>
                     {expandedQuestions[`${activeCategory}-${index}`] && (
@@ -380,7 +380,7 @@ export default function FAQ() {
       </section>
 
       {/* CTA Section */}
-      <section className="py-16 bg-primary-500 text-white">
+      <section className="py-16 bg-primary-900 text-white">
         <div className="container mx-auto px-4 text-center">
           <h2 className="text-3xl font-bold mb-6">
             Ready to Find Your Perfect Apartment?
@@ -390,7 +390,7 @@ export default function FAQ() {
             options designed to suit your needs.
           </p>
           <Link to="/book-now">
-            <button className="bg-white text-primary-500 px-8 py-3 rounded-full font-medium hover:bg-primary-50 transition-colors">
+            <button className="bg-white text-primary-900 px-8 py-3 rounded-full font-medium hover:bg-primary-50 transition-colors">
               Browse Apartments
             </button>
           </Link>

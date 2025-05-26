@@ -1,0 +1,102 @@
+/* Custom Range Slider Styles */
+.slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  outline: none;
+  pointer-events: auto;
+  background: transparent;
+}
+
+.slider-thumb::-webkit-slider-track {
+  height: 8px;
+  background: transparent;
+  border: none;
+  outline: none;
+  pointer-events: none;
+}
+
+.slider-thumb::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  height: 20px;
+  width: 20px;
+  border-radius: 50%;
+  background: #02164F;
+  cursor: pointer;
+  border: 3px solid #ffffff;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+  pointer-events: auto;
+  position: relative;
+}
+
+.slider-thumb::-moz-range-track {
+  height: 8px;
+  background: transparent;
+  border: none;
+  outline: none;
+  pointer-events: none;
+}
+
+.slider-thumb::-moz-range-thumb {
+  height: 20px;
+  width: 20px;
+  border-radius: 50%;
+  background: #02164F;
+  cursor: pointer;
+  border: 3px solid #ffffff;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+  pointer-events: auto;
+  -moz-appearance: none;
+  border: none;
+}
+
+/* Lower slider (from) - different color to distinguish */
+.slider-thumb-lower::-webkit-slider-thumb {
+  background: #02164F;
+  border: 3px solid #ffffff;
+}
+
+.slider-thumb-lower::-moz-range-thumb {
+  background: #02164F;
+  border: 3px solid #ffffff;
+}
+
+/* Upper slider (to) - slightly different styling */
+.slider-thumb-upper::-webkit-slider-thumb {
+  background: #02164F;
+  border: 3px solid #ffffff;
+}
+
+.slider-thumb-upper::-moz-range-thumb {
+  background: #02164F;
+  border: 3px solid #ffffff;
+}
+
+.slider-thumb:focus {
+  outline: none;
+}
+
+.slider-thumb:focus::-webkit-slider-thumb {
+  box-shadow: 0 0 0 3px rgba(2, 22, 79, 0.2), 0 2px 8px rgba(0, 0, 0, 0.2);
+}
+
+.slider-thumb:focus::-moz-range-thumb {
+  box-shadow: 0 0 0 3px rgba(2, 22, 79, 0.2), 0 2px 8px rgba(0, 0, 0, 0.2);
+}
+
+.slider-thumb:active::-webkit-slider-thumb {
+  transform: scale(1.1);
+}
+
+.slider-thumb:active::-moz-range-thumb {
+  transform: scale(1.1);
+}
+
+/* Firefox specific fixes */
+.slider-thumb::-moz-range-progress {
+  background: transparent;
+}
+
+.slider-thumb::-moz-focus-outer {
+  border: 0;
+}

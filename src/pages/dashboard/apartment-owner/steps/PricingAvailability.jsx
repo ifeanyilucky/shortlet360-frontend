@@ -40,7 +40,7 @@ const PriceInput = ({ type, field, value, onChange, error, hideLabel }) => {
           value={localValue}
           onChange={handleChange}
           onBlur={handleBlur}
-          className="w-full pl-8 pr-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500"
+          className="w-full pl-8 pr-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-900"
         />
       </div>
       {error && <p className="mt-1 text-sm text-red-600">{error}</p>}
@@ -127,7 +127,7 @@ export default function PricingAvailability() {
             onChange={(e) =>
               handlePricingChange(type, "is_active", e.target.checked)
             }
-            className="h-4 w-4 text-primary-600 focus:ring-primary-500 border-gray-300 rounded"
+            className="h-4 w-4 text-primary-900 focus:ring-primary-900 border-gray-300 rounded"
           />
           <span className="ml-2 text-sm text-gray-600">Enable</span>
         </label>
@@ -164,7 +164,7 @@ export default function PricingAvailability() {
     <div className="border p-4 rounded-lg space-y-4">
       <div className="flex items-center justify-between">
         <h3 className="text-lg font-medium">Rental Pricing</h3>
-        <span className="text-sm text-primary-600 font-medium">Required</span>
+        <span className="text-sm text-primary-900 font-medium">Required</span>
       </div>
       <div className="space-y-6">
         <div>
@@ -203,7 +203,7 @@ export default function PricingAvailability() {
                         { shouldValidate: true }
                       );
                     }}
-                    className="h-4 w-4 text-primary-600 focus:ring-primary-500 border-gray-300 rounded"
+                    className="h-4 w-4 text-primary-900 focus:ring-primary-900 border-gray-300 rounded"
                   />
                   <span className="ml-2 text-sm text-gray-600">Enable</span>
                 </label>
@@ -258,7 +258,7 @@ export default function PricingAvailability() {
                 endDate={endDate}
                 minDate={new Date()}
                 dateFormat="MMMM d, yyyy"
-                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500"
+                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-900"
                 placeholderText="Select start date"
               />
             </div>
@@ -274,7 +274,7 @@ export default function PricingAvailability() {
                 endDate={endDate}
                 minDate={startDate}
                 dateFormat="MMMM d, yyyy"
-                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500"
+                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-900"
                 placeholderText="Select end date"
               />
             </div>

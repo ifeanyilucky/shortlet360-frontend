@@ -141,7 +141,7 @@ export default function ReviewStep({ formData = {} }) {
       {/* Basic Info Review */}
       <div className="border rounded-lg p-4">
         <div className="flex items-center mb-4">
-          <FiHome className="text-primary-500 mr-2" />
+          <FiHome className="text-primary-900 mr-2" />
           <h3 className="text-lg font-medium text-gray-900">
             Property Details
           </h3>
@@ -183,7 +183,7 @@ export default function ReviewStep({ formData = {} }) {
       {/* Location Review */}
       <div className="border rounded-lg p-4">
         <div className="flex items-center mb-4">
-          <FiMapPin className="text-primary-500 mr-2" />
+          <FiMapPin className="text-primary-900 mr-2" />
           <h3 className="text-lg font-medium text-gray-900">Location</h3>
         </div>
         <p className="text-gray-900">
@@ -200,7 +200,7 @@ export default function ReviewStep({ formData = {} }) {
       {/* Amenities & Rules Review */}
       <div className="border rounded-lg p-4">
         <div className="flex items-center mb-4">
-          <FiList className="text-primary-500 mr-2" />
+          <FiList className="text-primary-900 mr-2" />
           <h3 className="text-lg font-medium text-gray-900">
             Amenities & Rules
           </h3>
@@ -275,7 +275,7 @@ export default function ReviewStep({ formData = {} }) {
       {/* Images Review */}
       <div className="border rounded-lg p-4">
         <div className="flex items-center mb-4">
-          <FiImage className="text-primary-500 mr-2" />
+          <FiImage className="text-primary-900 mr-2" />
           <h3 className="text-lg font-medium text-gray-900">Images</h3>
         </div>
         {propertyImages.length > 0 ? (

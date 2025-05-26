@@ -24,6 +24,8 @@ import {
 } from "../pages";
 import Login from "../pages/auth/login";
 import Register from "../pages/auth/register";
+import ForgotPassword from "../pages/auth/ForgotPassword";
+import ResetPassword from "../pages/auth/ResetPassword";
 import RegistrationPayment from "../pages/auth/RegistrationPayment";
 import UserDashboard from "../pages/dashboard/user/dashboard";
 import OwnerDashboard from "../pages/dashboard/apartment-owner/dashboard";
@@ -183,6 +185,7 @@ export default function Router() {
       children: [
         { path: "login", element: <Login /> },
         { path: "register", element: <Register /> },
+        { path: "forgot-password", element: <ForgotPassword /> },
         { path: "", element: <Navigate to="/auth/login" replace /> },
       ],
     },
@@ -193,6 +196,16 @@ export default function Router() {
           <RegistrationPaymentGuard>
             <RegistrationPayment />
           </RegistrationPaymentGuard>
+        </div>
+      ),
+    },
+    {
+      path: "reset-password/:token",
+      element: (
+        <div className="min-h-screen bg-gray-50">
+          <div className="flex justify-center items-center">
+            <ResetPassword />
+          </div>
         </div>
       ),
     },

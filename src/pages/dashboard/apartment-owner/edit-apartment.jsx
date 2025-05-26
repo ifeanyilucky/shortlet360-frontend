@@ -205,7 +205,7 @@ export default function EditApartment() {
   if (isLoading) {
     return (
       <div className="flex justify-center items-center h-[400px]">
-        <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-primary-500"></div>
+        <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-primary-900"></div>
       </div>
     );
   }
@@ -222,7 +222,7 @@ export default function EditApartment() {
             {/* Progress Line */}
             <div className="absolute top-1/2 left-0 w-full h-[2px] bg-gray-200 -translate-y-1/2">
               <div
-                className="h-full bg-primary-500 transition-all duration-300"
+                className="h-full bg-primary-900 transition-all duration-300"
                 style={{ width: `${(current / (steps.length - 1)) * 100}%` }}
               />
             </div>
@@ -234,9 +234,9 @@ export default function EditApartment() {
                   className={`w-10 h-10 rounded-full flex items-center justify-center z-10
                                     ${
                                       index < current
-                                        ? "bg-primary-500 text-white border-2 border-primary-500"
+                                        ? "bg-primary-900 text-white border-2 border-primary-900"
                                         : index === current
-                                        ? "bg-white text-primary-500 border-2 border-primary-500"
+                                        ? "bg-white text-primary-900 border-2 border-primary-900"
                                         : "bg-white text-gray-500 border-2 border-gray-200"
                                     }`}
                 >
@@ -262,7 +262,7 @@ export default function EditApartment() {
                   className={`absolute -bottom-6 text-sm whitespace-nowrap
                                 ${
                                   index <= current
-                                    ? "text-primary-500 font-medium"
+                                    ? "text-primary-900 font-medium"
                                     : "text-gray-500"
                                 }`}
                 >
@@ -291,7 +291,7 @@ export default function EditApartment() {
               <button
                 type="button"
                 onClick={next}
-                className="flex items-center px-4 py-2 bg-primary-500 text-white rounded-md hover:bg-primary-600 ml-auto"
+                className="flex items-center px-4 py-2 bg-primary-900 text-white rounded-md hover:bg-primary-900 ml-auto"
               >
                 Next
                 <FiChevronRight className="ml-2" />

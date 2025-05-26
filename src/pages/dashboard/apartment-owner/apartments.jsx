@@ -149,7 +149,7 @@ export default function Apartments() {
           </button>
 
           <button
-            className="py-2 bg-primary-500 text-xs px-3 text-white hover:bg-primary-600 rounded-full"
+            className="py-2 bg-primary-900 text-xs px-3 text-white hover:bg-primary-900 rounded-full"
             onClick={() => handleView(row._id)}
           >
             Check availability

@@ -76,7 +76,7 @@ export default function ContactUs() {
   return (
     <div className="min-h-screen">
       {/* Hero Section */}
-      <section className="bg-primary-500 text-white py-20">
+      <section className="bg-primary-900 text-white py-20">
         <div className="container mx-auto px-4 text-center">
           <h1 className="text-4xl md:text-5xl font-bold mb-6">Contact Us</h1>
           <p className="text-xl text-primary-100 max-w-3xl mx-auto">
@@ -111,7 +111,7 @@ export default function ContactUs() {
                       name="name"
                       value={formData.name}
                       onChange={handleChange}
-                      className="w-full px-4 py-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500"
+                      className="w-full px-4 py-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-900"
                       placeholder="John Doe"
                       required
                     />
@@ -125,7 +125,7 @@ export default function ContactUs() {
                       name="email"
                       value={formData.email}
                       onChange={handleChange}
-                      className="w-full px-4 py-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500"
+                      className="w-full px-4 py-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-900"
                       placeholder="your@email.com"
                       required
                     />
@@ -142,7 +142,7 @@ export default function ContactUs() {
                       name="phone"
                       value={formData.phone}
                       onChange={handleChange}
-                      className="w-full px-4 py-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500"
+                      className="w-full px-4 py-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-900"
                       placeholder="+234 123 456 7890"
                     />
                   </div>
@@ -155,7 +155,7 @@ export default function ContactUs() {
                       name="subject"
                       value={formData.subject}
                       onChange={handleChange}
-                      className="w-full px-4 py-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500"
+                      className="w-full px-4 py-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-900"
                       placeholder="How can we help you?"
                       required
                     />
@@ -171,7 +171,7 @@ export default function ContactUs() {
                     value={formData.message}
                     onChange={handleChange}
                     rows="5"
-                    className="w-full px-4 py-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500"
+                    className="w-full px-4 py-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-900"
                     placeholder="Please provide details about your inquiry..."
                     required
                   ></textarea>
@@ -196,7 +196,7 @@ export default function ContactUs() {
               <div className="space-y-8">
                 <div className="flex items-start space-x-4">
                   <div className="w-12 h-12 bg-primary-100 rounded-full flex items-center justify-center flex-shrink-0">
-                    <FiMapPin className="w-6 h-6 text-primary-500" />
+                    <FiMapPin className="w-6 h-6 text-primary-900" />
                   </div>
                   <div>
                     <h3 className="text-lg font-semibold mb-2">Our Office</h3>
@@ -209,7 +209,7 @@ export default function ContactUs() {
 
                 <div className="flex items-start space-x-4">
                   <div className="w-12 h-12 bg-primary-100 rounded-full flex items-center justify-center flex-shrink-0">
-                    <FiPhone className="w-6 h-6 text-primary-500" />
+                    <FiPhone className="w-6 h-6 text-primary-900" />
                   </div>
                   <div>
                     <h3 className="text-lg font-semibold mb-2">Phone Number</h3>
@@ -219,7 +219,7 @@ export default function ContactUs() {
 
                 <div className="flex items-start space-x-4">
                   <div className="w-12 h-12 bg-primary-100 rounded-full flex items-center justify-center flex-shrink-0">
-                    <FiMail className="w-6 h-6 text-primary-500" />
+                    <FiMail className="w-6 h-6 text-primary-900" />
                   </div>
                   <div>
                     <h3 className="text-lg font-semibold mb-2">
@@ -242,7 +242,7 @@ export default function ContactUs() {
 
                 <div className="flex items-start space-x-4">
                   <div className="w-12 h-12 bg-primary-100 rounded-full flex items-center justify-center flex-shrink-0">
-                    <FiClock className="w-6 h-6 text-primary-500" />
+                    <FiClock className="w-6 h-6 text-primary-900" />
                   </div>
                   <div>
                     <h3 className="text-lg font-semibold mb-2">
@@ -266,7 +266,7 @@ export default function ContactUs() {
                       rel="noopener noreferrer"
                       className="w-10 h-10 bg-primary-100 rounded-full flex items-center justify-center hover:bg-primary-200 transition-colors"
                     >
-                      <BsTwitterX className="w-5 h-5 text-primary-500" />
+                      <BsTwitterX className="w-5 h-5 text-primary-900" />
                     </a>
                     <a
                       href="https://facebook.com"
@@ -274,7 +274,7 @@ export default function ContactUs() {
                       rel="noopener noreferrer"
                       className="w-10 h-10 bg-primary-100 rounded-full flex items-center justify-center hover:bg-primary-200 transition-colors"
                     >
-                      <BsFacebook className="w-5 h-5 text-primary-500" />
+                      <BsFacebook className="w-5 h-5 text-primary-900" />
                     </a>
                     <a
                       href="https://instagram.com"
@@ -282,7 +282,7 @@ export default function ContactUs() {
                       rel="noopener noreferrer"
                       className="w-10 h-10 bg-primary-100 rounded-full flex items-center justify-center hover:bg-primary-200 transition-colors"
                     >
-                      <BsInstagram className="w-5 h-5 text-primary-500" />
+                      <BsInstagram className="w-5 h-5 text-primary-900" />
                     </a>
                     <a
                       href="https://linkedin.com"
@@ -290,7 +290,7 @@ export default function ContactUs() {
                       rel="noopener noreferrer"
                       className="w-10 h-10 bg-primary-100 rounded-full flex items-center justify-center hover:bg-primary-200 transition-colors"
                     >
-                      <BsLinkedin className="w-5 h-5 text-primary-500" />
+                      <BsLinkedin className="w-5 h-5 text-primary-900" />
                     </a>
                     <a
                       href="https://wa.me/2349038775464"
@@ -298,7 +298,7 @@ export default function ContactUs() {
                       rel="noopener noreferrer"
                       className="w-10 h-10 bg-primary-100 rounded-full flex items-center justify-center hover:bg-primary-200 transition-colors"
                     >
-                      <BsWhatsapp className="w-5 h-5 text-primary-500" />
+                      <BsWhatsapp className="w-5 h-5 text-primary-900" />
                     </a>
                   </div>
                 </div>
@@ -315,7 +315,7 @@ export default function ContactUs() {
           <div className="h-96 bg-gray-200 rounded-lg overflow-hidden">
             {/* Placeholder for map - in a real implementation, you would use Google Maps or similar */}
             <div className="w-full h-full flex items-center justify-center bg-primary-100">
-              <FiMapPin className="w-16 h-16 text-primary-500" />
+              <FiMapPin className="w-16 h-16 text-primary-900" />
             </div>
           </div>
         </div>
@@ -336,7 +336,7 @@ export default function ContactUs() {
           <div className="grid md:grid-cols-2 gap-8 max-w-4xl mx-auto">
             <div className="bg-gray-50 p-6 rounded-lg">
               <h3 className="text-lg font-semibold mb-3 flex items-center">
-                <FiMessageSquare className="w-5 h-5 mr-2 text-primary-500" />
+                <FiMessageSquare className="w-5 h-5 mr-2 text-primary-900" />
                 How do I rent an apartment?
               </h3>
               <p className="text-gray-600">
@@ -348,7 +348,7 @@ export default function ContactUs() {
 
             <div className="bg-gray-50 p-6 rounded-lg">
               <h3 className="text-lg font-semibold mb-3 flex items-center">
-                <FiMessageSquare className="w-5 h-5 mr-2 text-primary-500" />
+                <FiMessageSquare className="w-5 h-5 mr-2 text-primary-900" />
                 What payment options are available?
               </h3>
               <p className="text-gray-600">
@@ -361,7 +361,7 @@ export default function ContactUs() {
 
             <div className="bg-gray-50 p-6 rounded-lg">
               <h3 className="text-lg font-semibold mb-3 flex items-center">
-                <FiMessageSquare className="w-5 h-5 mr-2 text-primary-500" />
+                <FiMessageSquare className="w-5 h-5 mr-2 text-primary-900" />
                 How long is the rental process?
               </h3>
               <p className="text-gray-600">
@@ -373,7 +373,7 @@ export default function ContactUs() {
 
             <div className="bg-gray-50 p-6 rounded-lg">
               <h3 className="text-lg font-semibold mb-3 flex items-center">
-                <FiMessageSquare className="w-5 h-5 mr-2 text-primary-500" />
+                <FiMessageSquare className="w-5 h-5 mr-2 text-primary-900" />
                 Do you offer short-term stays?
               </h3>
               <p className="text-gray-600">
@@ -387,7 +387,7 @@ export default function ContactUs() {
           <div className="text-center mt-10">
             <Link
               to="/faq"
-              className="text-primary-500 font-medium inline-flex items-center hover:underline"
+              className="text-primary-900 font-medium inline-flex items-center hover:underline"
             >
               View All FAQs
               <svg
@@ -410,7 +410,7 @@ export default function ContactUs() {
       </section>
 
       {/* CTA Section */}
-      <section className="py-16 bg-primary-500 text-white">
+      <section className="py-16 bg-primary-900 text-white">
         <div className="container mx-auto px-4 text-center">
           <h2 className="text-3xl font-bold mb-6">
             Ready to Find Your Perfect Apartment?
@@ -420,7 +420,7 @@ export default function ContactUs() {
             options designed to suit your needs.
           </p>
           <Link to="/book-now">
-            <button className="bg-white text-primary-500 px-8 py-3 rounded-full font-medium hover:bg-primary-50 transition-colors">
+            <button className="bg-white text-primary-900 px-8 py-3 rounded-full font-medium hover:bg-primary-50 transition-colors">
               Browse Apartments
             </button>
           </Link>
