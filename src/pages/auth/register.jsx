@@ -6,7 +6,18 @@ import { yupResolver } from "@hookform/resolvers/yup";
 import { useAuth } from "../../hooks/useAuth";
 import toast from "react-hot-toast";
 import InteractiveButton from "../../components/InteractiveButton";
-import { FiHome, FiEye, FiEyeOff } from "react-icons/fi";
+import {
+  FiHome,
+  FiEye,
+  FiEyeOff,
+  FiCheck,
+  FiShield,
+  FiCreditCard,
+  FiUsers,
+  FiStar,
+  FiTool,
+  FiHeart,
+} from "react-icons/fi";
 import { MdApartment } from "react-icons/md";
 
 // Update validation schema
@@ -167,6 +178,99 @@ export default function Register() {
             </button>
           </div>
         </div>
+
+        {/* Tenant Benefits Section - Only show for user role */}
+        {selectedTab === "user" && (
+          <div className="bg-gradient-to-br from-accent-50 to-accent-100 rounded-xl p-6 border border-accent-200">
+            <h3 className="text-lg font-semibold text-accent-800 mb-4 flex items-center">
+              <FiStar className="mr-2" />
+              Your Benefits as a Tenant
+            </h3>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+              <div className="flex items-start space-x-3">
+                <FiCheck
+                  className="text-accent-600 mt-1 flex-shrink-0"
+                  size={16}
+                />
+                <span className="text-sm text-accent-700">
+                  Rental Assistance
+                </span>
+              </div>
+              <div className="flex items-start space-x-3">
+                <FiCreditCard
+                  className="text-accent-600 mt-1 flex-shrink-0"
+                  size={16}
+                />
+                <span className="text-sm text-accent-700">
+                  Monthly Rental payment option
+                </span>
+              </div>
+              <div className="flex items-start space-x-3">
+                <FiShield
+                  className="text-accent-600 mt-1 flex-shrink-0"
+                  size={16}
+                />
+                <span className="text-sm text-accent-700">
+                  Tenant protection (No sudden eviction)
+                </span>
+              </div>
+              <div className="flex items-start space-x-3">
+                <FiUsers
+                  className="text-accent-600 mt-1 flex-shrink-0"
+                  size={16}
+                />
+                <span className="text-sm text-accent-700">
+                  Verified apartments and landlords
+                </span>
+              </div>
+              <div className="flex items-start space-x-3">
+                <FiHeart
+                  className="text-accent-600 mt-1 flex-shrink-0"
+                  size={16}
+                />
+                <span className="text-sm text-accent-700">
+                  Access to Aplet360 Marketplace
+                </span>
+              </div>
+              <div className="flex items-start space-x-3">
+                <FiTool
+                  className="text-accent-600 mt-1 flex-shrink-0"
+                  size={16}
+                />
+                <span className="text-sm text-accent-700">
+                  Affordable home maintenance services
+                </span>
+              </div>
+              <div className="flex items-start space-x-3">
+                <FiCheck
+                  className="text-accent-600 mt-1 flex-shrink-0"
+                  size={16}
+                />
+                <span className="text-sm text-accent-700">
+                  Mortgage/NHIS Access and Support
+                </span>
+              </div>
+              <div className="flex items-start space-x-3">
+                <FiShield
+                  className="text-accent-600 mt-1 flex-shrink-0"
+                  size={16}
+                />
+                <span className="text-sm text-accent-700">
+                  No over-charged property rentals
+                </span>
+              </div>
+              <div className="flex items-start space-x-3 md:col-span-2">
+                <FiUsers
+                  className="text-accent-600 mt-1 flex-shrink-0"
+                  size={16}
+                />
+                <span className="text-sm text-accent-700">
+                  Dispute resolution (Landlord and Tenant Dispute Management)
+                </span>
+              </div>
+            </div>
+          </div>
+        )}
 
         <form className="space-y-6" onSubmit={handleSubmit(onSubmit)}>
           <div className="grid grid-cols-2 gap-4">

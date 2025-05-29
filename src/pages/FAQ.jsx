@@ -10,6 +10,8 @@ import {
   FiUsers,
   FiCalendar,
   FiInfo,
+  FiStar,
+  FiCheck,
 } from "react-icons/fi";
 import { MdApartment } from "react-icons/md";
 import { Link } from "react-router-dom";
@@ -23,6 +25,7 @@ export default function FAQ() {
   // FAQ categories with icons
   const categories = [
     { id: "general", name: "General", icon: <FiInfo /> },
+    { id: "benefits", name: "Tenant Benefits", icon: <FiStar /> },
     { id: "apartments", name: "Apartment Rentals", icon: <MdApartment /> },
     { id: "shortlets", name: "Short-term Stays", icon: <FiHome /> },
     { id: "payment", name: "Payment Options", icon: <FiDollarSign /> },
@@ -52,6 +55,58 @@ export default function FAQ() {
         question: "How do I contact customer support?",
         answer:
           "You can reach our customer support team through multiple channels: email at support@aplet360.com, phone at +234 123 456 7890, or through the contact form on our Contact Us page. Our support team is available Monday to Friday from 8:00 AM to 6:00 PM, and Saturday from 9:00 AM to 3:00 PM.",
+      },
+    ],
+    benefits: [
+      {
+        question: "What benefits do I get as a tenant with Aplet360?",
+        answer:
+          "As a tenant with Aplet360, you enjoy comprehensive benefits including rental assistance, monthly payment options, tenant protection against sudden eviction, verified apartments and landlords, access to our exclusive Aplet360 Marketplace, affordable home maintenance services, mortgage/NHIS access and support, protection from overcharged rentals, and professional dispute resolution services.",
+      },
+      {
+        question: "How does the rental assistance work?",
+        answer:
+          "Our rental assistance program provides support to help you secure and maintain your rental. This includes guidance through the rental process, assistance with documentation, and support in case of any rental-related challenges you may face.",
+      },
+      {
+        question: "What is the monthly rental payment option?",
+        answer:
+          "We offer flexible monthly payment plans that allow you to spread your rental costs over time instead of paying large upfront amounts. This makes quality housing more accessible and helps you manage your finances better.",
+      },
+      {
+        question: "How are tenants protected from sudden eviction?",
+        answer:
+          "We provide tenant protection services that ensure landlords follow proper legal procedures for any tenancy issues. Our team mediates between tenants and landlords to prevent unlawful evictions and ensure your rights are protected throughout your tenancy.",
+      },
+      {
+        question: "How do you verify apartments and landlords?",
+        answer:
+          "All properties and landlords on our platform undergo thorough verification. We check property ownership documents, inspect properties for quality and safety, verify landlord credentials, and ensure all listings meet our standards. This protects you from scams and ensures you're dealing with legitimate property owners.",
+      },
+      {
+        question: "What is the Aplet360 Marketplace?",
+        answer:
+          "The Aplet360 Marketplace is an exclusive shopping platform for our tenants, offering affordable items and foods. It's designed to help you save money on everyday essentials and enjoy special discounts as part of your tenant benefits.",
+      },
+      {
+        question: "What home maintenance services are available?",
+        answer:
+          "We provide access to affordable, vetted home maintenance services at the click of a button. This includes plumbing, electrical work, cleaning services, appliance repairs, and other essential home maintenance needs, all at discounted rates for our tenants.",
+      },
+      {
+        question: "How does the mortgage/NHIS access and support work?",
+        answer:
+          "We provide guidance and support for accessing mortgage opportunities and National Health Insurance Scheme (NHIS) benefits. Our team can help you navigate these systems and connect you with relevant financial institutions and healthcare providers.",
+      },
+      {
+        question: "How do you prevent overcharged property rentals?",
+        answer:
+          "We maintain fair market pricing by regularly monitoring rental rates in different areas and ensuring our listed properties are competitively priced. We also eliminate unrealistic agency fees and hidden costs, providing transparent pricing for all our rental properties.",
+      },
+      {
+        question: "How does the dispute resolution service work?",
+        answer:
+          "Our professional dispute resolution service mediates conflicts between landlords and tenants. We provide a neutral platform for resolving issues, ensure fair treatment for both parties, and help reach amicable solutions without the need for costly legal proceedings.",
       },
     ],
     apartments: [
