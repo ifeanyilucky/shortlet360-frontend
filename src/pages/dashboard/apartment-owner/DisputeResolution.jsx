@@ -122,7 +122,8 @@ export default function OwnerDisputeResolution() {
             Owner Protect - Dispute Resolution
           </h1>
           <p className="text-gray-600">
-            Get help resolving issues with guests or property-related concerns
+            Get help resolving issues with tenant/shortlet guests or
+            property-related concerns
           </p>
         </div>
       </div>
@@ -137,10 +138,10 @@ export default function OwnerDisputeResolution() {
             </h3>
             <p className="text-sm text-blue-700 mt-1">
               Our Owner Protect service ensures fair resolution of disputes
-              between property owners and guests. Submit your concern below and
-              our mediation team will investigate and work towards a fair
-              solution within 24-48 hours. We protect your interests while
-              maintaining platform integrity.
+              between property owners and tenant/shortlet guests. Submit your
+              concern below and our mediation team will investigate and work
+              towards a fair solution within 24-48 hours. We protect your
+              interests while maintaining platform integrity.
             </p>
           </div>
         </div>
