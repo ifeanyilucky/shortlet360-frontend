@@ -693,7 +693,7 @@ export default function LandingPage() {
                 pricing.
               </p>
               <Link
-                to="/home-services"
+                to="/home-fix"
                 className="bg-accent-500 hover:bg-accent-600 text-white px-8 py-4 rounded-full inline-flex items-center gap-2 transition-all duration-300 shadow-lg hover:shadow-xl transform hover:-translate-y-0.5 font-medium"
               >
                 <span>Request a Service</span>

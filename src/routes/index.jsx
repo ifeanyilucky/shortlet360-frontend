@@ -76,7 +76,7 @@ export default function Router() {
         { path: "faq", element: <FAQ /> },
         { path: "blog", element: <Blog /> },
         { path: "contact", element: <ContactUs /> },
-        { path: "home-services", element: <HomeServices /> },
+        { path: "home-fix", element: <HomeServices /> },
         { path: "career", element: <Career /> },
         { path: "referral-program", element: <ReferralProgram /> },
         { path: "become-artisan", element: <BecomeArtisan /> },

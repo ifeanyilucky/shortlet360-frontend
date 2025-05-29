@@ -117,10 +117,7 @@ export default function RegistrationPayment() {
                   </li>
                   <li>Quick Apartment Placement</li>
                   <li>Tenant Verification</li>
-                  <li>
-                    Access to exclusive home services (Solar System, ApLet360
-                    TeleMed, ApLet360 Pharmacy)
-                  </li>
+                  <li>Access to exclusive home services</li>
                   <li>Property Valuation/Rent Review</li>
                   <li>
                     Legal Support and Dispute Resolution (Optional if you

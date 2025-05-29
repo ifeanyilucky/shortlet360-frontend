@@ -5,8 +5,7 @@ import {
   FiAlertTriangle,
   FiDollarSign,
 } from "react-icons/fi";
-import toast from "react-hot-toast";
-import { formService } from "../../../services/api";
+
 import DisputePayment from "../../../components/DisputePayment";
 
 export default function OwnerDisputeResolution() {
@@ -14,7 +13,6 @@ export default function OwnerDisputeResolution() {
     name: "",
     email: "",
     phone: "",
-    actionType: "", // "report" or "dispute"
     disputeType: "",
     bookingReference: "",
     propertyName: "",
@@ -22,19 +20,19 @@ export default function OwnerDisputeResolution() {
     description: "",
     urgencyLevel: "medium",
   });
-  const [isSubmitting, setIsSubmitting] = useState(false);
+
   const [showDisputeModal, setShowDisputeModal] = useState(false);
   const [showPayment, setShowPayment] = useState(false);
 
   const disputeTypes = [
-    "Property Damage by Guest",
-    "Payment Issues from Guest",
-    "Guest Violation of House Rules",
-    "Unauthorized Guests/Parties",
-    "Late Checkout/Overstay",
-    "Cleaning/Maintenance Disputes",
-    "Guest Communication Problems",
-    "Cancellation Disputes",
+    "Property Damage by Tenant/Shortlet Guest",
+    "Payment Issues from Tenant/Shortlet Guest",
+    "Tenant/Shortlet Guest Violation of House Rules",
+    "Unauthorized Tenant/Shortlet Guest/Parties",
+    "Late Checkout/Overstay by Tenant/Shortlet Guest",
+    "Cleaning/Maintenance Disputes by Tenant/Shortlet Guest",
+    "Tenant/Shortlet Guest Communication Problems",
+    "Cancellation Disputes by Tenant/Shortlet Guest",
     "Security Deposit Claims",
     "Noise Complaints from Neighbors",
     "Fraudulent Booking",
@@ -56,11 +54,6 @@ export default function OwnerDisputeResolution() {
   const handleChange = (e) => {
     const { name, value } = e.target;
 
-    // Show modal when user selects "dispute"
-    if (name === "actionType" && value === "dispute") {
-      setShowDisputeModal(true);
-    }
-
     setFormData((prev) => ({
       ...prev,
       [name]: value,
@@ -69,58 +62,19 @@ export default function OwnerDisputeResolution() {
 
   const handleDisputeConfirm = () => {
     setShowDisputeModal(false);
-    // Keep the dispute selection
+    // Show payment component for dispute
+    setShowPayment(true);
   };
 
   const handleDisputeCancel = () => {
     setShowDisputeModal(false);
-    setFormData((prev) => ({
-      ...prev,
-      actionType: "",
-    }));
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setIsSubmitting(true);
 
-    try {
-      if (formData.actionType === "dispute") {
-        // For disputes, show payment component
-        setShowPayment(true);
-        setIsSubmitting(false);
-        return;
-      }
-
-      // For reports, submit directly
-      await formService.submitDisputeResolutionForm({
-        ...formData,
-        userRole: "Property Owner",
-      });
-
-      toast.success(
-        "Your report has been submitted successfully! Our team will contact you within 24 hours."
-      );
-
-      // Reset form
-      setFormData({
-        name: "",
-        email: "",
-        phone: "",
-        actionType: "",
-        disputeType: "",
-        bookingReference: "",
-        propertyName: "",
-        otherPartyId: "",
-        description: "",
-        urgencyLevel: "medium",
-      });
-    } catch (error) {
-      console.error("Error submitting:", error);
-      toast.error("Failed to submit your request. Please try again.");
-    } finally {
-      setIsSubmitting(false);
-    }
+    // Show dispute confirmation modal first
+    setShowDisputeModal(true);
   };
 
   const handlePaymentSuccess = () => {
@@ -130,7 +84,6 @@ export default function OwnerDisputeResolution() {
       name: "",
       email: "",
       phone: "",
-      actionType: "",
       disputeType: "",
       bookingReference: "",
       propertyName: "",
@@ -203,32 +156,21 @@ export default function OwnerDisputeResolution() {
         </p>
 
         <form onSubmit={handleSubmit} className="space-y-6">
-          {/* Action Type Selection */}
-          <div>
-            <label
-              htmlFor="actionType"
-              className="block text-sm font-medium text-gray-700 mb-1"
-            >
-              Select Action *
-            </label>
-            <select
-              id="actionType"
-              name="actionType"
-              value={formData.actionType}
-              onChange={handleChange}
-              required
-              className="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500"
-            >
-              <option value="">Choose an action</option>
-              <option value="report">Report an Issue (Free)</option>
-              <option value="dispute">
-                Enter a Dispute (₦2,000 - Involves Legal Team)
-              </option>
-            </select>
-            <p className="text-xs text-gray-500 mt-1">
-              Reports are free and handled by our support team. Disputes involve
-              our legal team and cost ₦2,000.
-            </p>
+          {/* Dispute Fee Notice */}
+          <div className="bg-orange-50 border border-orange-200 rounded-lg p-4">
+            <div className="flex items-start space-x-3">
+              <FiDollarSign className="w-5 h-5 text-orange-600 mt-0.5" />
+              <div>
+                <h3 className="text-sm font-medium text-orange-800">
+                  Dispute Resolution Fee: ₦2,000
+                </h3>
+                <p className="text-sm text-orange-700 mt-1">
+                  All dispute submissions require a ₦2,000 fee which covers
+                  legal review, professional mediation, documentation, and
+                  resolution enforcement.
+                </p>
+              </div>
+            </div>
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -355,7 +297,7 @@ export default function OwnerDisputeResolution() {
                 htmlFor="otherPartyId"
                 className="block text-sm font-medium text-gray-700 mb-1"
               >
-                Tenant/Guest ID {formData.actionType === "dispute" && "*"}
+                Tenant/Shortlet guest ID *
               </label>
               <input
                 type="text"
@@ -363,14 +305,13 @@ export default function OwnerDisputeResolution() {
                 name="otherPartyId"
                 value={formData.otherPartyId}
                 onChange={handleChange}
-                required={formData.actionType === "dispute"}
+                required
                 className="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500"
                 placeholder="e.g., USR123456"
               />
               <p className="text-xs text-gray-500 mt-1">
-                {formData.actionType === "dispute"
-                  ? "Required for disputes - Enter the ID of the tenant/guest"
-                  : "Optional - Enter the ID of the tenant/guest if known"}
+                Enter the ID of the tenant/shortlet guest involved in this
+                dispute
               </p>
             </div>
           </div>
@@ -424,16 +365,9 @@ export default function OwnerDisputeResolution() {
           <div className="flex justify-center">
             <button
               type="submit"
-              disabled={isSubmitting}
-              className="inline-flex items-center px-6 py-3 border border-transparent text-base font-medium rounded-md shadow-sm text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 disabled:opacity-50 disabled:cursor-not-allowed"
+              className="inline-flex items-center px-6 py-3 border border-transparent text-base font-medium rounded-md shadow-sm text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
             >
-              {isSubmitting ? (
-                "Submitting..."
-              ) : (
-                <>
-                  <FiSend className="mr-2" /> Submit Dispute
-                </>
-              )}
+              <FiSend className="mr-2" /> Submit Dispute (₦2,000)
             </button>
           </div>
         </form>

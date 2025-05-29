@@ -6,7 +6,6 @@ import { IoLocationOutline } from "react-icons/io5";
 import { BiBed, BiBath } from "react-icons/bi";
 import { HiOutlineUsers } from "react-icons/hi2";
 import {
-  BsBookmark,
   BsShare,
   BsX,
   BsTwitterX,
@@ -187,11 +186,9 @@ export default function PropertyDetail() {
   const { user } = useAuth();
   const [isFullScreen, setIsFullScreen] = useState(false);
   const [fullScreenIndex, setFullScreenIndex] = useState(0);
-  const [showShareTooltip] = useState(false);
   const [selectedPricingOption, setSelectedPricingOption] = useState("day"); // Default to day pricing
   const [paymentPeriod, setPaymentPeriod] = useState("yearly");
-  const [monthlyPaymentOption, setMonthlyPaymentOption] = useState("option1");
-  const [showTooltip, setShowTooltip] = useState(false);
+  const [monthlyPaymentOption, setMonthlyPaymentOption] = useState("6months");
   const [kycVerified, setKycVerified] = useState(false);
   const { getKycStatus } = useKycStore();
 
@@ -260,7 +257,7 @@ export default function PropertyDetail() {
     // Check KYC verification status
     try {
       const kycResponse = await getKycStatus();
-      const requiredTier = paymentPeriod === "monthly" ? "tier3" : "tier1";
+      const requiredTier = paymentPeriod !== "yearly" ? "tier3" : "tier1";
 
       // Check if the required tier is verified
       if (
@@ -694,48 +691,78 @@ export default function PropertyDetail() {
       return total;
     }
 
-    // For monthly payment, calculate based on the selected option
-    if (monthlyPaymentOption === "option1") {
-      // Option 1: Monthly rent with 2% interest
-      return calculateMonthlyRentOption1();
-    } else {
-      // Option 2: All fees combined with 3% interest
-      return calculateMonthlyRentOption2();
+    // For installment payments, calculate based on the selected option
+    if (monthlyPaymentOption === "6months") {
+      return calculate6MonthsPayment();
+    } else if (monthlyPaymentOption === "12months") {
+      return calculate12MonthsPayment();
     }
+
+    return 0;
   };
 
-  // Calculate monthly rent for Option 1 (1.5% interest)
-  const calculateMonthlyRentOption1 = () => {
+  // Calculate 6 months payment (1.5% monthly interest)
+  const calculate6MonthsPayment = () => {
     if (!property?.pricing?.rent_per_year) return 0;
-    const { annual_rent } = property.pricing.rent_per_year;
 
-    // Calculate monthly base rent (yearly rent divided by 12)
-    const monthlyBaseRent = annual_rent / 12;
+    const {
+      annual_rent,
+      agency_fee,
+      commission_fee,
+      caution_fee,
+      legal_fee,
+      is_agency_fee_active,
+      is_commission_fee_active,
+      is_caution_fee_active,
+      is_legal_fee_active,
+    } = property.pricing.rent_per_year;
 
-    // Calculate monthly interest (1.5% of yearly rent)
-    const monthlyInterest = annual_rent * 0.015;
+    // Calculate total base amount (rent + all fees)
+    let totalAmount = annual_rent;
+    if (is_agency_fee_active) totalAmount += agency_fee;
+    if (is_commission_fee_active) totalAmount += commission_fee;
+    if (is_caution_fee_active) totalAmount += caution_fee;
+    if (is_legal_fee_active) totalAmount += legal_fee;
 
-    // Total monthly payment is base rent + interest
-    const monthlyRent = monthlyBaseRent + monthlyInterest;
+    // Calculate monthly interest (1.5% of total amount)
+    const monthlyInterest = totalAmount * 0.015;
 
-    return monthlyRent;
+    // Monthly payment = (total amount / 6) + monthly interest
+    const monthlyPayment = totalAmount / 6 + monthlyInterest;
+
+    return monthlyPayment;
   };
 
-  // Calculate monthly rent for Option 2 (2% interest)
-  const calculateMonthlyRentOption2 = () => {
+  // Calculate 12 months payment (2% monthly interest)
+  const calculate12MonthsPayment = () => {
     if (!property?.pricing?.rent_per_year) return 0;
-    const { annual_rent } = property.pricing.rent_per_year;
 
-    // Calculate monthly base rent (yearly rent divided by 12)
-    const monthlyBaseRent = annual_rent / 12;
+    const {
+      annual_rent,
+      agency_fee,
+      commission_fee,
+      caution_fee,
+      legal_fee,
+      is_agency_fee_active,
+      is_commission_fee_active,
+      is_caution_fee_active,
+      is_legal_fee_active,
+    } = property.pricing.rent_per_year;
 
-    // Calculate monthly interest (2% of yearly rent)
-    const monthlyInterest = annual_rent * 0.02;
+    // Calculate total base amount (rent + all fees)
+    let totalAmount = annual_rent;
+    if (is_agency_fee_active) totalAmount += agency_fee;
+    if (is_commission_fee_active) totalAmount += commission_fee;
+    if (is_caution_fee_active) totalAmount += caution_fee;
+    if (is_legal_fee_active) totalAmount += legal_fee;
 
-    // Total monthly payment is base rent + interest
-    const monthlyRent = monthlyBaseRent + monthlyInterest;
+    // Calculate monthly interest (2% of total amount)
+    const monthlyInterest = totalAmount * 0.02;
 
-    return monthlyRent;
+    // Monthly payment = (total amount / 12) + monthly interest
+    const monthlyPayment = totalAmount / 12 + monthlyInterest;
+
+    return monthlyPayment;
   };
 
   // Calculate price for shortlet based on selected pricing option and dates
@@ -786,40 +813,19 @@ export default function PropertyDetail() {
   const calculateInitialPayment = () => {
     if (!property?.pricing?.rent_per_year) return 0;
 
-    const {
-      annual_rent,
-      agency_fee,
-      commission_fee,
-      caution_fee,
-      legal_fee,
-      is_agency_fee_active,
-      is_commission_fee_active,
-      is_caution_fee_active,
-      is_legal_fee_active,
-    } = property.pricing.rent_per_year;
-
     if (paymentPeriod === "yearly") {
       // For yearly payment, return the total annual amount
-      let total = annual_rent;
-      if (is_agency_fee_active) total += agency_fee;
-      if (is_commission_fee_active) total += commission_fee;
-      if (is_caution_fee_active) total += caution_fee;
-      if (is_legal_fee_active) total += legal_fee;
-      return total;
+      return calculateTotalRent();
     }
 
-    if (monthlyPaymentOption === "option1") {
-      // Option 1: First month's rent + all fees
-      let total = calculateMonthlyRentOption1();
-      if (is_agency_fee_active) total += agency_fee;
-      if (is_commission_fee_active) total += commission_fee;
-      if (is_caution_fee_active) total += caution_fee;
-      if (is_legal_fee_active) total += legal_fee;
-      return total;
-    } else {
-      // Option 2: Just the first month's payment
-      return calculateMonthlyRentOption2();
+    // For installment payments, return the first month's payment
+    if (monthlyPaymentOption === "6months") {
+      return calculate6MonthsPayment();
+    } else if (monthlyPaymentOption === "12months") {
+      return calculate12MonthsPayment();
     }
+
+    return 0;
   };
 
   const handleRentNow = () => {
@@ -875,8 +881,7 @@ export default function PropertyDetail() {
           {
             display_name: "Payment Option",
             variable_name: "payment_option",
-            value:
-              paymentPeriod === "monthly" ? monthlyPaymentOption : "yearly",
+            value: paymentPeriod === "yearly" ? "yearly" : monthlyPaymentOption,
           },
         ],
       },
@@ -1785,332 +1790,243 @@ export default function PropertyDetail() {
             {property?.property_category === "rent" && (
               <div className="bg-white rounded-3xl p-6 shadow-lg">
                 <div className="flex flex-col gap-4">
-                  {/* Payment Period Selection */}
-                  <div className="flex flex-col gap-2">
-                    <label className="font-medium text-gray-700">
-                      Payment Options
-                    </label>
-                    <div className="grid grid-cols-2 gap-2">
-                      <button
-                        onClick={() => setPaymentPeriod("yearly")}
-                        className={`px-4 py-2 rounded-lg border transition-colors ${
-                          paymentPeriod === "yearly"
-                            ? "bg-blue-600 text-white border-blue-600"
-                            : "border-gray-300 hover:border-blue-600"
-                        }`}
-                      >
-                        Yearly
-                      </button>
-                      <button
-                        onClick={() => setPaymentPeriod("monthly")}
-                        className={`px-4 py-2 rounded-lg border transition-colors ${
-                          paymentPeriod === "monthly"
-                            ? "bg-blue-600 text-white border-blue-600"
-                            : "border-gray-300 hover:border-blue-600"
-                        }`}
-                      >
-                        Monthly
-                      </button>
+                  {/* Total Purchase Display */}
+                  <div className="bg-gray-50 rounded-2xl p-4 mb-4">
+                    <div className="flex justify-between items-center">
+                      <span className="text-gray-600 font-medium">
+                        Total Purchase:
+                      </span>
+                      <span className="text-2xl font-bold text-blue-600">
+                        {fCurrency(calculateTotalRent())}
+                      </span>
                     </div>
                   </div>
 
-                  {/* Monthly Payment Options */}
-                  {paymentPeriod === "monthly" && (
-                    <div className="flex flex-col gap-2">
-                      <div className="flex items-center justify-between">
-                        <label className="font-medium text-gray-700">
-                          Monthly Payment Option
-                        </label>
-                        <div className="relative">
-                          <button
-                            className="text-gray-500 hover:text-gray-700"
-                            onMouseEnter={() => setShowTooltip(true)}
-                            onMouseLeave={() => setShowTooltip(false)}
+                  {/* Payment Options */}
+                  <div className="space-y-3">
+                    {/* Yearly Payment Option */}
+                    <div
+                      className={`border-2 rounded-2xl p-4 cursor-pointer transition-all ${
+                        paymentPeriod === "yearly"
+                          ? "border-blue-500 bg-blue-50"
+                          : "border-gray-200 hover:border-blue-300"
+                      }`}
+                      onClick={() => setPaymentPeriod("yearly")}
+                    >
+                      <div className="flex items-center justify-between mb-3">
+                        <div className="flex items-center gap-3">
+                          <div
+                            className={`w-5 h-5 rounded-full border-2 flex items-center justify-center ${
+                              paymentPeriod === "yearly"
+                                ? "border-blue-500 bg-blue-500"
+                                : "border-gray-300"
+                            }`}
                           >
-                            <BsInfoCircle />
-                          </button>
-                          {showTooltip && (
-                            <div className="absolute right-0 sm:right-auto sm:left-0 md:right-0 md:left-auto w-64 p-2 mt-2 text-xs bg-white border rounded-md shadow-lg z-10">
-                              <p className="mb-1">
-                                <strong>Option 1:</strong> Pay rental fees
-                                upfront with 1.5% of yearly rent paid monthly
-                                (18% annually)
-                              </p>
-                              <p>
-                                <strong>Option 2:</strong> Pay monthly rent with
-                                2% of yearly rent as interest paid monthly (24%
-                                annually)
-                              </p>
-                            </div>
-                          )}
+                            {paymentPeriod === "yearly" && (
+                              <div className="w-2 h-2 bg-white rounded-full"></div>
+                            )}
+                          </div>
+                          <div>
+                            <p className="font-bold text-lg">One-off Payment</p>
+                            <p className="text-sm text-gray-600">for 1 Year</p>
+                          </div>
                         </div>
                       </div>
-                      <div className="grid grid-cols-2 gap-2">
-                        <button
-                          onClick={() => setMonthlyPaymentOption("option1")}
-                          className={`px-4 py-2 rounded-lg border transition-colors ${
-                            monthlyPaymentOption === "option1"
-                              ? "bg-blue-600 text-white border-blue-600"
-                              : "border-gray-300 hover:border-blue-600"
-                          }`}
-                        >
-                          <div className="text-sm font-medium">Option 1</div>
-                          <div className="text-xs">
-                            Pay rental fees + Monthly Rent
-                          </div>
-                        </button>
-                        <button
-                          onClick={() => setMonthlyPaymentOption("option2")}
-                          className={`px-4 py-2 rounded-lg border transition-colors ${
-                            monthlyPaymentOption === "option2"
-                              ? "bg-blue-600 text-white border-blue-600"
-                              : "border-gray-300 hover:border-blue-600"
-                          }`}
-                        >
-                          <div className="text-sm font-medium">Option 2</div>
-                          <div className="text-xs">
-                            Monthly Rent with 2% interest
-                          </div>
-                        </button>
+                      <div className="space-y-2 text-sm">
+                        <div className="flex justify-between">
+                          <span className="text-gray-600">Interest Rate:</span>
+                          <span className="font-medium">0%</span>
+                        </div>
+                        <div className="flex justify-between">
+                          <span className="text-gray-600">Interest Value:</span>
+                          <span className="font-medium">{fCurrency(0)}</span>
+                        </div>
+                        <div className="flex justify-between font-bold text-lg border-t pt-2">
+                          <span>Total:</span>
+                          <span>{fCurrency(calculateTotalRent())}</span>
+                        </div>
                       </div>
                     </div>
-                  )}
 
-                  {/* Pricing Breakdown */}
-                  <div className="space-y-3 border-t pt-4">
-                    {/* Yearly Payment Breakdown */}
-                    {paymentPeriod === "yearly" && (
-                      <>
-                        <div className="flex justify-between text-sm">
-                          <span>Yearly Rent</span>
+                    {/* 6 Months Payment Option */}
+                    <div
+                      className={`border-2 rounded-2xl p-4 cursor-pointer transition-all ${
+                        paymentPeriod === "6months"
+                          ? "border-blue-500 bg-blue-50"
+                          : "border-gray-200 hover:border-blue-300"
+                      }`}
+                      onClick={() => {
+                        setPaymentPeriod("6months");
+                        setMonthlyPaymentOption("6months");
+                      }}
+                    >
+                      <div className="flex items-center justify-between mb-3">
+                        <div className="flex items-center gap-3">
+                          <div
+                            className={`w-5 h-5 rounded-full border-2 flex items-center justify-center ${
+                              paymentPeriod === "6months"
+                                ? "border-blue-500 bg-blue-500"
+                                : "border-gray-300"
+                            }`}
+                          >
+                            {paymentPeriod === "6months" && (
+                              <div className="w-2 h-2 bg-white rounded-full"></div>
+                            )}
+                          </div>
+                          <div>
+                            <p className="font-bold text-lg">
+                              {fCurrency(calculate6MonthsPayment())}/month
+                            </p>
+                            <p className="text-sm text-gray-600">
+                              for 6 months
+                            </p>
+                          </div>
+                        </div>
+                      </div>
+                      <div className="space-y-2 text-sm">
+                        <div className="flex justify-between">
+                          <span className="text-gray-600">Interest rate:</span>
+                          <span className="font-medium">1.50%</span>
+                        </div>
+                        <div className="flex justify-between">
+                          <span className="text-gray-600">Interest value:</span>
+                          <span className="font-medium">
+                            {fCurrency(calculateTotalRent() * 0.015)}
+                          </span>
+                        </div>
+                        <div className="flex justify-between font-bold text-lg border-t pt-2">
+                          <span>Total:</span>
+                          <span>
+                            {fCurrency(calculate6MonthsPayment() * 6)}
+                          </span>
+                        </div>
+                      </div>
+                    </div>
+
+                    {/* 12 Months Payment Option */}
+                    <div
+                      className={`border-2 rounded-2xl p-4 cursor-pointer transition-all ${
+                        paymentPeriod === "12months"
+                          ? "border-blue-500 bg-blue-50"
+                          : "border-gray-200 hover:border-blue-300"
+                      }`}
+                      onClick={() => {
+                        setPaymentPeriod("12months");
+                        setMonthlyPaymentOption("12months");
+                      }}
+                    >
+                      <div className="flex items-center justify-between mb-3">
+                        <div className="flex items-center gap-3">
+                          <div
+                            className={`w-5 h-5 rounded-full border-2 flex items-center justify-center ${
+                              paymentPeriod === "12months"
+                                ? "border-blue-500 bg-blue-500"
+                                : "border-gray-300"
+                            }`}
+                          >
+                            {paymentPeriod === "12months" && (
+                              <div className="w-2 h-2 bg-white rounded-full"></div>
+                            )}
+                          </div>
+                          <div>
+                            <p className="font-bold text-lg">
+                              {fCurrency(calculate12MonthsPayment())}/month
+                            </p>
+                            <p className="text-sm text-gray-600">
+                              for 12 months
+                            </p>
+                          </div>
+                        </div>
+                      </div>
+                      <div className="space-y-2 text-sm">
+                        <div className="flex justify-between">
+                          <span className="text-gray-600">Interest rate:</span>
+                          <span className="font-medium">2.00%</span>
+                        </div>
+                        <div className="flex justify-between">
+                          <span className="text-gray-600">Interest value:</span>
+                          <span className="font-medium">
+                            {fCurrency(calculateTotalRent() * 0.02)}
+                          </span>
+                        </div>
+                        <div className="flex justify-between font-bold text-lg border-t pt-2">
+                          <span>Total:</span>
+                          <span>
+                            {fCurrency(calculate12MonthsPayment() * 12)}
+                          </span>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Simple Breakdown */}
+                  <div className="bg-gray-50 rounded-2xl p-4 mt-4">
+                    <h4 className="font-semibold text-gray-800 mb-3">
+                      Pay Now
+                    </h4>
+                    <div className="space-y-2 text-sm">
+                      <div className="flex justify-between">
+                        <span>Yearly Rent:</span>
+                        <span>
+                          {fCurrency(
+                            property?.pricing?.rent_per_year?.annual_rent || 0
+                          )}
+                        </span>
+                      </div>
+                      {property?.pricing?.rent_per_year
+                        ?.is_agency_fee_active && (
+                        <div className="flex justify-between">
+                          <span>Agency Fee:</span>
                           <span>
                             {fCurrency(
-                              property?.pricing?.rent_per_year?.annual_rent
+                              property?.pricing?.rent_per_year?.agency_fee || 0
                             )}
                           </span>
                         </div>
-
-                        {property?.pricing?.rent_per_year
-                          ?.is_agency_fee_active && (
-                          <div className="flex justify-between text-sm">
-                            <span>Agency Fee</span>
-                            <span>
-                              {fCurrency(
-                                property?.pricing?.rent_per_year?.agency_fee
-                              )}
-                            </span>
-                          </div>
-                        )}
-
-                        {property?.pricing?.rent_per_year
-                          ?.is_commission_fee_active && (
-                          <div className="flex justify-between text-sm">
-                            <span>Commission Fee</span>
-                            <span>
-                              {fCurrency(
-                                property?.pricing?.rent_per_year?.commission_fee
-                              )}
-                            </span>
-                          </div>
-                        )}
-
-                        {property?.pricing?.rent_per_year
-                          ?.is_caution_fee_active && (
-                          <div className="flex justify-between text-sm">
-                            <span>Caution Fee</span>
-                            <span>
-                              {fCurrency(
-                                property?.pricing?.rent_per_year?.caution_fee
-                              )}
-                            </span>
-                          </div>
-                        )}
-
-                        {property?.pricing?.rent_per_year
-                          ?.is_legal_fee_active && (
-                          <div className="flex justify-between text-sm">
-                            <span>Legal Fee</span>
-                            <span>
-                              {fCurrency(
-                                property?.pricing?.rent_per_year?.legal_fee
-                              )}
-                            </span>
-                          </div>
-                        )}
-                      </>
-                    )}
-
-                    {/* Monthly Payment Option 1 Breakdown */}
-                    {paymentPeriod === "monthly" &&
-                      monthlyPaymentOption === "option1" && (
-                        <>
-                          <div className="bg-blue-50 p-3 rounded-lg mb-2">
-                            <p className="text-sm font-medium text-blue-800 mb-1">
-                              Option 1: Pay rental fees plus first Monthly Rent
-                            </p>
-                            <p className="text-xs text-blue-600">
-                              Interest is 1.5% of the yearly rent paid monthly
-                              (18% annually)
-                            </p>
-                          </div>
-
-                          <div className="flex justify-between text-sm">
-                            <span>Monthly Rent (without interest)</span>
-                            <span>
-                              {fCurrency(
-                                property?.pricing?.rent_per_year?.annual_rent /
-                                  12
-                              )}
-                            </span>
-                          </div>
-                          <div className="flex justify-between text-sm">
-                            <span>1.5% interest amount</span>
-                            <span>
-                              {fCurrency(
-                                property?.pricing?.rent_per_year?.annual_rent *
-                                  0.015
-                              )}
-                            </span>
-                          </div>
-                          <div className="flex justify-between text-sm font-medium">
-                            <span>Total Monthly Rent (with 1.5% interest)</span>
-                            <span>
-                              {fCurrency(calculateMonthlyRentOption1())}
-                            </span>
-                          </div>
-
-                          {property?.pricing?.rent_per_year
-                            ?.is_agency_fee_active && (
-                            <div className="flex justify-between text-sm">
-                              <span>Agency Fee (one-time)</span>
-                              <span>
-                                {fCurrency(
-                                  property?.pricing?.rent_per_year?.agency_fee
-                                )}
-                              </span>
-                            </div>
-                          )}
-
-                          {property?.pricing?.rent_per_year
-                            ?.is_commission_fee_active && (
-                            <div className="flex justify-between text-sm">
-                              <span>Commission Fee (one-time)</span>
-                              <span>
-                                {fCurrency(
-                                  property?.pricing?.rent_per_year
-                                    ?.commission_fee
-                                )}
-                              </span>
-                            </div>
-                          )}
-
-                          {property?.pricing?.rent_per_year
-                            ?.is_caution_fee_active && (
-                            <div className="flex justify-between text-sm">
-                              <span>Caution Fee (one-time)</span>
-                              <span>
-                                {fCurrency(
-                                  property?.pricing?.rent_per_year?.caution_fee
-                                )}
-                              </span>
-                            </div>
-                          )}
-
-                          {property?.pricing?.rent_per_year
-                            ?.is_legal_fee_active && (
-                            <div className="flex justify-between text-sm">
-                              <span>Legal Fee (one-time)</span>
-                              <span>
-                                {fCurrency(
-                                  property?.pricing?.rent_per_year?.legal_fee
-                                )}
-                              </span>
-                            </div>
-                          )}
-                        </>
                       )}
-
-                    {/* Monthly Payment Option 2 Breakdown */}
-                    {paymentPeriod === "monthly" &&
-                      monthlyPaymentOption === "option2" && (
-                        <>
-                          <div className="bg-blue-50 p-3 rounded-lg mb-2">
-                            <p className="text-sm font-medium text-blue-800 mb-1">
-                              Option 2: Monthly Rental payment with interest
-                            </p>
-                            <p className="text-xs text-blue-600">
-                              Interest is 2% of the yearly rent paid monthly
-                              (24% annually)
-                            </p>
-                          </div>
-
-                          <div className="flex justify-between text-sm">
-                            <span>Monthly Payment (without interest)</span>
-                            <span>
-                              {fCurrency(
-                                property?.pricing?.rent_per_year?.annual_rent /
-                                  12
-                              )}
-                            </span>
-                          </div>
-                          <div className="flex justify-between text-sm">
-                            <span>2% interest amount</span>
-                            <span>
-                              {fCurrency(
-                                property?.pricing?.rent_per_year?.annual_rent *
-                                  0.02
-                              )}
-                            </span>
-                          </div>
-                          <div className="flex justify-between text-sm font-medium">
-                            <span>
-                              Total Monthly Payment (with 2% interest)
-                            </span>
-                            <span>
-                              {fCurrency(calculateMonthlyRentOption2())}
-                            </span>
-                          </div>
-
-                          <div className="flex justify-between text-sm text-gray-500 mt-1">
-                            <span>Monthly rent with interest only</span>
-                            <span></span>
-                          </div>
-                        </>
+                      {property?.pricing?.rent_per_year
+                        ?.is_commission_fee_active && (
+                        <div className="flex justify-between">
+                          <span>Agreement Fee:</span>
+                          <span>
+                            {fCurrency(
+                              property?.pricing?.rent_per_year
+                                ?.commission_fee || 0
+                            )}
+                          </span>
+                        </div>
                       )}
-
-                    {/* Payment Summary */}
-                    <div className="mt-4 p-3 bg-blue-50 rounded-lg">
-                      {paymentPeriod === "yearly" ? (
-                        <>
-                          <div className="flex justify-between pt-2 font-semibold text-blue-800">
-                            <span>Total Yearly Payment</span>
-                            <span>{fCurrency(calculateInitialPayment())}</span>
-                          </div>
-                        </>
-                      ) : (
-                        <>
-                          <div className="flex justify-between font-semibold text-blue-800">
-                            <span>Initial Payment</span>
-                            <span>{fCurrency(calculateInitialPayment())}</span>
-                          </div>
-                          <div className="text-xs text-blue-600 mt-1 mb-3">
-                            {monthlyPaymentOption === "option1"
-                              ? "Pay all fees upfront + first month's rent"
-                              : "First month's payment only"}
-                          </div>
-                          <div className="flex justify-between pt-2 border-t border-blue-200 font-semibold text-blue-800">
-                            <span>Monthly Payment</span>
-                            <span>{fCurrency(calculateTotalRent())}</span>
-                          </div>
-                          <div className="text-xs text-blue-600 mt-1">
-                            {monthlyPaymentOption === "option1"
-                              ? "1.5% of yearly rent paid monthly (18% annually)"
-                              : "2% of yearly rent paid monthly (24% annually)"}
-                          </div>
-                        </>
+                      {property?.pricing?.rent_per_year
+                        ?.is_caution_fee_active && (
+                        <div className="flex justify-between">
+                          <span>Caution Fee:</span>
+                          <span>
+                            {fCurrency(
+                              property?.pricing?.rent_per_year?.caution_fee || 0
+                            )}
+                          </span>
+                        </div>
                       )}
+                      {property?.pricing?.rent_per_year
+                        ?.is_legal_fee_active && (
+                        <div className="flex justify-between">
+                          <span>Legal Fee:</span>
+                          <span>
+                            {fCurrency(
+                              property?.pricing?.rent_per_year?.legal_fee || 0
+                            )}
+                          </span>
+                        </div>
+                      )}
+                      <div className="border-t pt-2 mt-2">
+                        <div className="flex justify-between font-bold">
+                          <span>Total:</span>
+                          <span>{fCurrency(calculateTotalRent())}</span>
+                        </div>
+                      </div>
                     </div>
                   </div>
+
                   {user &&
                     user?._id !== property?.owner._id &&
                     !kycVerified && (
@@ -2138,9 +2054,9 @@ export default function PropertyDetail() {
                     >
                       {paymentPeriod === "yearly"
                         ? "Pay Yearly Rent"
-                        : monthlyPaymentOption === "option1"
-                        ? "Pay Initial Amount"
-                        : "Pay First Month"}
+                        : paymentPeriod === "6months"
+                        ? "Pay First Month (6 Months Plan)"
+                        : "Pay First Month (12 Months Plan)"}
                     </button>
                   )}
                 </div>

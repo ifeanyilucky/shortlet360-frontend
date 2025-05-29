@@ -46,7 +46,7 @@ export default function NavLayout() {
         { name: "Shortlet Apartments", href: "/book-now?category=shortlet" },
       ],
     },
-    { name: "HomeFix", href: "/home-services" },
+    { name: "HomeFix", href: "/home-fix" },
     { name: "FAQ", href: "/faq" },
     // { name: "Blog", href: "/blog" },
     { name: "Contact", href: "/contact" },
@@ -463,7 +463,7 @@ export default function NavLayout() {
                   Shortlet Apartments
                 </Link>
                 <Link
-                  to="/home-services"
+                  to="/home-fix"
                   className="text-base text-tertiary-500 hover:text-tertiary-900 block"
                 >
                   HomeFix
