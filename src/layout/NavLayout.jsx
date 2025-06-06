@@ -10,6 +10,13 @@ import {
   FiPhone,
   FiMail,
 } from "react-icons/fi";
+import {
+  BsLinkedin,
+  BsInstagram,
+  BsFacebook,
+  BsTwitterX,
+  BsYoutube,
+} from "react-icons/bs";
 
 export default function NavLayout() {
   const { isAuthenticated, user, logout } = useAuth();
@@ -557,8 +564,57 @@ export default function NavLayout() {
               </div>
             </div>
           </div>
+
+          {/* Social Media Section */}
           <div className="mt-8 border-t border-tertiary-200 pt-8">
-            <p className="text-base text-tertiary-400 text-center">
+            <div className="flex flex-col items-center space-y-4">
+              <h3 className="text-sm font-semibold text-accent-500 tracking-wider uppercase">
+                Follow Us
+              </h3>
+              <div className="flex space-x-4">
+                <a
+                  href="https://www.linkedin.com/company/aplet360/"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="w-10 h-10 bg-tertiary-200 rounded-full flex items-center justify-center hover:bg-accent-500 hover:text-white transition-colors"
+                >
+                  <BsLinkedin className="w-5 h-5" />
+                </a>
+                <a
+                  href="https://www.linkedin.com/company/aplet360/"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="w-10 h-10 bg-tertiary-200 rounded-full flex items-center justify-center hover:bg-accent-500 hover:text-white transition-colors"
+                >
+                  <BsInstagram className="w-5 h-5" />
+                </a>
+                <a
+                  href="https://www.facebook.com/share/1ATyYoWpQF/?mibextid=wwXIfr"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="w-10 h-10 bg-tertiary-200 rounded-full flex items-center justify-center hover:bg-accent-500 hover:text-white transition-colors"
+                >
+                  <BsFacebook className="w-5 h-5" />
+                </a>
+                <a
+                  href="https://x.com/aplet360?s=21"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="w-10 h-10 bg-tertiary-200 rounded-full flex items-center justify-center hover:bg-accent-500 hover:text-white transition-colors"
+                >
+                  <BsTwitterX className="w-5 h-5" />
+                </a>
+                <a
+                  href="https://youtube.com/@aplet360?si=xlxqbodjVnmvdXb8"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="w-10 h-10 bg-tertiary-200 rounded-full flex items-center justify-center hover:bg-accent-500 hover:text-white transition-colors"
+                >
+                  <BsYoutube className="w-5 h-5" />
+                </a>
+              </div>
+            </div>
+            <p className="text-base text-tertiary-400 text-center mt-6">
               © {new Date().getFullYear()} Aplet360. All rights reserved.
             </p>
           </div>

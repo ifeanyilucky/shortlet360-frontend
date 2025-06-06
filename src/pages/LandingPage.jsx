@@ -112,9 +112,9 @@ export default function LandingPage() {
         <div className="absolute inset-0 bg-[url('/images/pattern.png')] opacity-10"></div>
         <div className="max-w-6xl mx-auto px-4 text-center pt-20 pb-10 relative z-10">
           <h1 className="text-4xl md:text-6xl font-bold mb-6 animate-fade-in">
-            Seamless Apartment{" "}
+            Seamless Apartment Rental & Management Solutions{" "}
             <span className="text-accent-300 bg-clip-text text-transparent bg-gradient-to-r from-accent-300 to-accent-500">
-              For Everyone
+              For Everyone.
             </span>
           </h1>
 

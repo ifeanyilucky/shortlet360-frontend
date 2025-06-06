@@ -1,10 +1,18 @@
 import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
-import { FiUsers, FiHome, FiCalendar, FiKey, FiDollarSign } from "react-icons/fi";
+import {
+  FiUsers,
+  FiHome,
+  FiCalendar,
+  FiKey,
+  FiDollarSign,
+  FiGift,
+} from "react-icons/fi";
 import { MdOutlineAddHome } from "react-icons/md";
 import { HiOutlineUsers } from "react-icons/hi";
 import { getGreeting } from "../../../utils/helpers";
 import adminService from "../../../services/adminService";
+import { referralService } from "../../../services/api";
 import { useAuth } from "../../../hooks/useAuth";
 import { fCurrency } from "../../../utils/formatNumber";
 import { format } from "date-fns";
@@ -13,6 +21,7 @@ export default function AdminDashboard() {
   const [greeting, setGreeting] = useState(getGreeting());
   const [loading, setLoading] = useState(true);
   const [dashboardStats, setDashboardStats] = useState(null);
+  const [referralAnalytics, setReferralAnalytics] = useState(null);
   const [timeframe, setTimeframe] = useState("30");
   const { user } = useAuth();
 
@@ -28,8 +37,18 @@ export default function AdminDashboard() {
     }
   }
 
+  async function getReferralAnalytics() {
+    try {
+      const response = await referralService.getReferralAnalytics();
+      setReferralAnalytics(response.data);
+    } catch (error) {
+      console.log("Error fetching referral analytics:", error);
+    }
+  }
+
   useEffect(() => {
     getDashboardStats();
+    getReferralAnalytics();
   }, [timeframe]);
 
   useEffect(() => {
@@ -142,6 +161,26 @@ export default function AdminDashboard() {
             <div>
               <p className="text-sm text-gray-500">Total Revenue</p>
               <h3 className="text-2xl font-bold">{fCurrency(stats.revenue)}</h3>
+            </div>
+          </div>
+        </div>
+
+        <div className="bg-white rounded-lg shadow-sm p-6">
+          <div className="flex items-center">
+            <div className="p-3 rounded-full bg-pink-100 text-pink-600 mr-4">
+              <FiGift size={24} />
+            </div>
+            <div>
+              <p className="text-sm text-gray-500">Total Referrals</p>
+              <h3 className="text-2xl font-bold">
+                {referralAnalytics?.overview?.totalReferrals || 0}
+              </h3>
+              <Link
+                to="/admin/referrals"
+                className="text-xs text-pink-600 hover:underline"
+              >
+                View Details →
+              </Link>
             </div>
           </div>
         </div>

@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import {
   FiUsers,
   FiGift,
@@ -6,22 +6,49 @@ import {
   FiSend,
   FiCopy,
   FiCheck,
+  FiTrendingUp,
+  FiClock,
+  FiAward,
 } from "react-icons/fi";
 import { useAuth } from "../hooks/useAuth";
 import { Link } from "react-router-dom";
 import toast from "react-hot-toast";
+import { referralService } from "../services/api";
 
 export default function ReferralProgram() {
   const { isAuthenticated, user } = useAuth();
   const [copied, setCopied] = useState(false);
   const [referralEmail, setReferralEmail] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [referralStats, setReferralStats] = useState(null);
+  const [loadingStats, setLoadingStats] = useState(false);
 
-  // This would be generated from the backend in a real implementation
+  // Generate referral code and link
+  const currentYear = new Date().getFullYear();
   const referralCode = isAuthenticated
-    ? `APLET-${user?.short_id || "REF"}-2023`
-    : "APLET-REF-2023";
-  const referralLink = `https://aplet360.com/register?ref=${referralCode}`;
+    ? referralStats?.referralCode ||
+      `APLET-${user?.short_id || "REF"}-${currentYear}`
+    : `APLET-REF-${currentYear}`;
+  const referralLink = `${window.location.origin}/auth/register?ref=${referralCode}`;
+
+  // Fetch referral statistics
+  useEffect(() => {
+    if (isAuthenticated) {
+      fetchReferralStats();
+    }
+  }, [isAuthenticated]);
+
+  const fetchReferralStats = async () => {
+    try {
+      setLoadingStats(true);
+      const response = await referralService.getReferralStats();
+      setReferralStats(response.data);
+    } catch (error) {
+      console.error("Error fetching referral stats:", error);
+    } finally {
+      setLoadingStats(false);
+    }
+  };
 
   const handleCopyLink = () => {
     navigator.clipboard.writeText(referralLink);
@@ -30,16 +57,26 @@ export default function ReferralProgram() {
     setTimeout(() => setCopied(false), 3000);
   };
 
-  const handleReferralSubmit = (e) => {
+  const handleReferralSubmit = async (e) => {
     e.preventDefault();
     setIsSubmitting(true);
 
-    // Simulate API call
-    setTimeout(() => {
-      setIsSubmitting(false);
+    try {
+      await referralService.sendReferralInvitation({
+        email: referralEmail,
+      });
+
+      toast.success(`Invitation sent to ${referralEmail} successfully!`);
       setReferralEmail("");
-      toast.success(`Invitation sent to ${referralEmail}`);
-    }, 1500);
+    } catch (error) {
+      console.error("Error sending referral invitation:", error);
+      const errorMessage =
+        error.response?.data?.message ||
+        "Failed to send invitation. Please try again.";
+      toast.error(errorMessage);
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   const steps = [
@@ -103,6 +140,183 @@ export default function ReferralProgram() {
           </div>
         </div>
       </section>
+
+      {/* Referral Statistics Section - Only show for authenticated users */}
+      {isAuthenticated && referralStats && (
+        <section className="py-16 bg-white">
+          <div className="container mx-auto px-4 max-w-6xl">
+            <h2 className="text-3xl font-bold mb-12 text-center">
+              Your Referral Performance
+            </h2>
+
+            {/* Stats Cards */}
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+              <div className="bg-gradient-to-br from-blue-50 to-blue-100 p-6 rounded-lg border border-blue-200">
+                <div className="flex items-center justify-between">
+                  <div>
+                    <p className="text-sm text-blue-600 font-medium">
+                      Total Referrals
+                    </p>
+                    <h3 className="text-2xl font-bold text-blue-800">
+                      {referralStats.totalReferrals}
+                    </h3>
+                  </div>
+                  <FiUsers className="text-blue-600 text-2xl" />
+                </div>
+              </div>
+
+              <div className="bg-gradient-to-br from-green-50 to-green-100 p-6 rounded-lg border border-green-200">
+                <div className="flex items-center justify-between">
+                  <div>
+                    <p className="text-sm text-green-600 font-medium">
+                      Verified Referrals
+                    </p>
+                    <h3 className="text-2xl font-bold text-green-800">
+                      {referralStats.verifiedReferrals}
+                    </h3>
+                  </div>
+                  <FiCheck className="text-green-600 text-2xl" />
+                </div>
+              </div>
+
+              <div className="bg-gradient-to-br from-yellow-50 to-yellow-100 p-6 rounded-lg border border-yellow-200">
+                <div className="flex items-center justify-between">
+                  <div>
+                    <p className="text-sm text-yellow-600 font-medium">
+                      Pending Verification
+                    </p>
+                    <h3 className="text-2xl font-bold text-yellow-800">
+                      {referralStats.pendingReferrals}
+                    </h3>
+                  </div>
+                  <FiClock className="text-yellow-600 text-2xl" />
+                </div>
+              </div>
+
+              <div className="bg-gradient-to-br from-purple-50 to-purple-100 p-6 rounded-lg border border-purple-200">
+                <div className="flex items-center justify-between">
+                  <div>
+                    <p className="text-sm text-purple-600 font-medium">
+                      Earned Rewards
+                    </p>
+                    <h3 className="text-2xl font-bold text-purple-800">
+                      {referralStats.earnedRewards}
+                    </h3>
+                  </div>
+                  <FiAward className="text-purple-600 text-2xl" />
+                </div>
+              </div>
+            </div>
+
+            {/* Reward Breakdown */}
+            {referralStats.rewardBreakdown && (
+              <div className="bg-tertiary-50 p-6 rounded-lg mb-8">
+                <h3 className="text-lg font-semibold mb-4">Reward Breakdown</h3>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <div className="bg-white p-4 rounded-lg">
+                    <p className="text-sm text-gray-600">Owner Referrals</p>
+                    <p className="text-lg font-semibold">
+                      {referralStats.rewardBreakdown.ownerReferrals} referrals ={" "}
+                      {referralStats.rewardBreakdown.ownerRewards} rewards
+                    </p>
+                    <p className="text-xs text-gray-500">
+                      1 reward per 5 owner referrals
+                    </p>
+                  </div>
+                  <div className="bg-white p-4 rounded-lg">
+                    <p className="text-sm text-gray-600">User Referrals</p>
+                    <p className="text-lg font-semibold">
+                      {referralStats.rewardBreakdown.userReferrals} referrals ={" "}
+                      {referralStats.rewardBreakdown.userRewards} rewards
+                    </p>
+                    <p className="text-xs text-gray-500">
+                      1 reward per 20 user referrals
+                    </p>
+                  </div>
+                </div>
+              </div>
+            )}
+
+            {/* Recent Referrals */}
+            {referralStats.recentReferrals &&
+              referralStats.recentReferrals.length > 0 && (
+                <div className="bg-white border border-gray-200 rounded-lg overflow-hidden">
+                  <div className="px-6 py-4 border-b border-gray-200">
+                    <h3 className="text-lg font-semibold">Recent Referrals</h3>
+                  </div>
+                  <div className="overflow-x-auto">
+                    <table className="w-full">
+                      <thead className="bg-gray-50">
+                        <tr>
+                          <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                            User
+                          </th>
+                          <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                            Role
+                          </th>
+                          <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                            Status
+                          </th>
+                          <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                            Date
+                          </th>
+                        </tr>
+                      </thead>
+                      <tbody className="bg-white divide-y divide-gray-200">
+                        {referralStats.recentReferrals.map((referral) => (
+                          <tr key={referral.id}>
+                            <td className="px-6 py-4 whitespace-nowrap">
+                              <div>
+                                <p className="text-sm font-medium text-gray-900">
+                                  {referral.referredUser?.first_name}{" "}
+                                  {referral.referredUser?.last_name}
+                                </p>
+                                <p className="text-sm text-gray-500">
+                                  {referral.referredUser?.email}
+                                </p>
+                              </div>
+                            </td>
+                            <td className="px-6 py-4 whitespace-nowrap">
+                              <span
+                                className={`inline-flex px-2 py-1 text-xs font-semibold rounded-full ${
+                                  referral.role === "owner"
+                                    ? "bg-blue-100 text-blue-800"
+                                    : "bg-green-100 text-green-800"
+                                }`}
+                              >
+                                {referral.role === "owner"
+                                  ? "Property Owner"
+                                  : "User"}
+                              </span>
+                            </td>
+                            <td className="px-6 py-4 whitespace-nowrap">
+                              <span
+                                className={`inline-flex px-2 py-1 text-xs font-semibold rounded-full ${
+                                  referral.status === "verified"
+                                    ? "bg-green-100 text-green-800"
+                                    : "bg-yellow-100 text-yellow-800"
+                                }`}
+                              >
+                                {referral.status === "verified"
+                                  ? "Verified"
+                                  : "Pending"}
+                              </span>
+                            </td>
+                            <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                              {new Date(
+                                referral.createdAt
+                              ).toLocaleDateString()}
+                            </td>
+                          </tr>
+                        ))}
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
+              )}
+          </div>
+        </section>
+      )}
 
       {/* Referral Link Section */}
       <section className="py-16 bg-tertiary-50">

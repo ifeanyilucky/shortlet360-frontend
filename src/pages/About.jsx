@@ -1,6 +1,15 @@
 import { FiUsers, FiHome, FiCheckCircle, FiStar } from "react-icons/fi";
 import { MdApartment } from "react-icons/md";
-import { BsBuilding, BsShieldCheck, BsCreditCard2Front } from "react-icons/bs";
+import {
+  BsBuilding,
+  BsShieldCheck,
+  BsCreditCard2Front,
+  BsLinkedin,
+  BsInstagram,
+  BsFacebook,
+  BsTwitterX,
+  BsYoutube,
+} from "react-icons/bs";
 import { Link } from "react-router-dom";
 import InteractiveButton from "../components/InteractiveButton";
 
@@ -342,6 +351,61 @@ export default function About() {
               <div className="text-4xl font-bold mb-2">98%</div>
               <div className="text-primary-100">Satisfaction Rate</div>
             </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Social Media Section */}
+      <section className="py-16 bg-white">
+        <div className="container mx-auto px-4 text-center">
+          <h2 className="text-3xl md:text-4xl font-bold mb-6 text-tertiary-900">
+            Connect With Us
+          </h2>
+          <p className="text-tertiary-600 max-w-3xl mx-auto mb-8 text-lg">
+            Follow us on social media for the latest updates, property listings,
+            and home living tips.
+          </p>
+          <div className="flex justify-center space-x-6">
+            <a
+              href="https://www.linkedin.com/company/aplet360/"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="w-12 h-12 bg-primary-100 rounded-full flex items-center justify-center hover:bg-primary-200 transition-colors transform hover:scale-110"
+            >
+              <BsLinkedin className="w-6 h-6 text-primary-900" />
+            </a>
+            <a
+              href="https://www.linkedin.com/company/aplet360/"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="w-12 h-12 bg-primary-100 rounded-full flex items-center justify-center hover:bg-primary-200 transition-colors transform hover:scale-110"
+            >
+              <BsInstagram className="w-6 h-6 text-primary-900" />
+            </a>
+            <a
+              href="https://www.facebook.com/share/1ATyYoWpQF/?mibextid=wwXIfr"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="w-12 h-12 bg-primary-100 rounded-full flex items-center justify-center hover:bg-primary-200 transition-colors transform hover:scale-110"
+            >
+              <BsFacebook className="w-6 h-6 text-primary-900" />
+            </a>
+            <a
+              href="https://x.com/aplet360?s=21"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="w-12 h-12 bg-primary-100 rounded-full flex items-center justify-center hover:bg-primary-200 transition-colors transform hover:scale-110"
+            >
+              <BsTwitterX className="w-6 h-6 text-primary-900" />
+            </a>
+            <a
+              href="https://youtube.com/@aplet360?si=xlxqbodjVnmvdXb8"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="w-12 h-12 bg-primary-100 rounded-full flex items-center justify-center hover:bg-primary-200 transition-colors transform hover:scale-110"
+            >
+              <BsYoutube className="w-6 h-6 text-primary-900" />
+            </a>
           </div>
         </div>
       </section>

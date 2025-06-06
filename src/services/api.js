@@ -179,4 +179,36 @@ export const formService = {
     const response = await api.post("/forms/dispute-resolution", data);
     return response.data;
   },
+  submitInspectionRequest: async (data) => {
+    const response = await api.post("/forms/inspection-request", data);
+    return response.data;
+  },
+};
+
+export const referralService = {
+  sendReferralInvitation: async (data) => {
+    const response = await api.post("/referral/send-invitation", data);
+    return response.data;
+  },
+  getReferralStats: async () => {
+    const response = await api.get("/referral/stats");
+    return response.data;
+  },
+  // Admin endpoints
+  getAllReferrals: async (params = {}) => {
+    const queryParams = new URLSearchParams();
+    Object.entries(params).forEach(([key, value]) => {
+      if (value !== undefined && value !== null && value !== "") {
+        queryParams.append(key, value);
+      }
+    });
+    const response = await api.get(
+      `/referral/admin/all?${queryParams.toString()}`
+    );
+    return response.data;
+  },
+  getReferralAnalytics: async () => {
+    const response = await api.get("/referral/admin/analytics");
+    return response.data;
+  },
 };

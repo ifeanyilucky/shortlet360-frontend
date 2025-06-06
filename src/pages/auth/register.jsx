@@ -1,5 +1,5 @@
-import { Link } from "react-router-dom";
-import { useState } from "react";
+import { Link, useSearchParams } from "react-router-dom";
+import { useState, useEffect } from "react";
 import { useForm } from "react-hook-form";
 import * as yup from "yup";
 import { yupResolver } from "@hookform/resolvers/yup";
@@ -17,6 +17,7 @@ import {
   FiStar,
   FiTool,
   FiHeart,
+  FiGift,
 } from "react-icons/fi";
 import { MdApartment } from "react-icons/md";
 
@@ -55,14 +56,51 @@ export default function Register() {
   const { register: registerUser } = useAuth();
   const [submitLoading, setSubmitLoading] = useState(false);
   const [selectedTab, setSelectedTab] = useState("user");
+  const [searchParams] = useSearchParams();
+  const [referralCode, setReferralCode] = useState("");
+  const [referrerInfo, setReferrerInfo] = useState(null);
 
   const {
     register,
     handleSubmit,
     formState: { errors },
+    setValue,
   } = useForm({
     resolver: yupResolver(schema),
   });
+
+  // Handle referral code from URL parameters
+  useEffect(() => {
+    const refCode = searchParams.get("ref");
+    if (refCode) {
+      setReferralCode(refCode);
+      setValue("referral_code", refCode);
+
+      // Extract referrer info from referral code - more flexible validation
+      const referralCodeMatch = refCode.match(/^APLET-(.+)-(\d{4})$/);
+      if (referralCodeMatch) {
+        const referrerShortId = referralCodeMatch[1];
+        const year = referralCodeMatch[2];
+        setReferrerInfo({
+          shortId: referrerShortId,
+          code: refCode,
+          year: year,
+        });
+        toast.success(
+          `You're signing up with a referral code! You and your referrer will both earn rewards.`
+        );
+      } else if (refCode.startsWith("APLET-")) {
+        // Even if format doesn't match exactly, still show as referral if it starts with APLET-
+        setReferrerInfo({
+          shortId: "unknown",
+          code: refCode,
+        });
+        toast.success(
+          `You're signing up with a referral code! You and your referrer will both earn rewards.`
+        );
+      }
+    }
+  }, [searchParams, setValue]);
 
   const onSubmit = async (data) => {
     if (!agreed) {
@@ -72,10 +110,17 @@ export default function Register() {
 
     try {
       setSubmitLoading(true);
-      await registerUser({
+      const registrationData = {
         ...data,
         role: selectedTab === "user" ? "user" : "owner",
-      });
+      };
+
+      // Include referral code if present
+      if (referralCode) {
+        registrationData.referral_code = referralCode;
+      }
+
+      const response = await registerUser(registrationData);
 
       if (selectedTab === "owner") {
         // The register function in JWTContext will handle redirection to payment page
@@ -84,6 +129,14 @@ export default function Register() {
         );
       } else {
         toast.success("Registration successful!");
+      }
+
+      // Show referral success message if applicable
+      if (response?.referralInfo) {
+        toast.success(
+          `Welcome! You were referred by ${response.referralInfo.referredBy}. You'll both earn rewards once your account is verified!`,
+          { duration: 6000 }
+        );
       }
 
       // No need to navigate here as JWTContext will handle it
@@ -267,6 +320,35 @@ export default function Register() {
                 <span className="text-sm text-accent-700">
                   Dispute resolution (Landlord and Tenant Dispute Management)
                 </span>
+              </div>
+            </div>
+          </div>
+        )}
+
+        {/* Referral Info Display */}
+        {referrerInfo && (
+          <div className="bg-gradient-to-br from-green-50 to-green-100 rounded-xl p-6 border border-green-200">
+            <h3 className="text-lg font-semibold text-green-800 mb-3 flex items-center">
+              <FiGift className="mr-2" />
+              Referral Bonus!
+            </h3>
+            <div className="space-y-2">
+              <p className="text-sm text-green-700">
+                🎉 You're signing up with a referral code:{" "}
+                <span className="font-mono font-semibold">
+                  {referrerInfo.code}
+                </span>
+              </p>
+              <p className="text-sm text-green-700">
+                ✨ Both you and your referrer will earn{" "}
+                <strong>FREE Home Fix services</strong> once your account is
+                verified!
+              </p>
+              <div className="mt-3 p-3 bg-green-200 rounded-lg">
+                <p className="text-xs text-green-800 font-medium">
+                  Reward Details: Complete your registration and account
+                  verification to unlock your rewards.
+                </p>
               </div>
             </div>
           </div>

@@ -2,6 +2,7 @@ import { useState } from "react";
 import { FiSend, FiTool } from "react-icons/fi";
 import toast from "react-hot-toast";
 import { formService } from "../../../services/api";
+import { lagosLocationData } from "../../../utils/locations";
 
 export default function OwnerServiceRequest() {
   const [formData, setFormData] = useState({
@@ -39,27 +40,6 @@ export default function OwnerServiceRequest() {
     "Renovation Services",
     "Other",
   ];
-
-  // Lagos State Location Data (abbreviated for brevity)
-  const lagosLocationData = {
-    AGEGE: ["Atobaje", "Darocha", "Iloro/Onipetesi", "Isale Odo/Ayige"],
-    "AJEROMI/IFELODUN": ["Aiyetoro", "Alaba", "Alakoto/Ibafon", "Amukoko"],
-    ALIMISHO: ["Abesan", "Abaranje/Okerube", "Aboru", "Abule-Egba"],
-    "AMUWO ODOFIN": ["Abule Osun Onireke", "Ado Soba", "Agboju", "Eko Akete"],
-    APAPA: ["Abete", "Alafia", "Anjorin", "Apapa"],
-    EPE: ["Agbowa", "Agbowa 2/Ado", "Aiyetoro/Lagbade/Agbala/Oloto"],
-    "ETI-OSA": ["1004 Aboyade", "Addo/Okeira", "Ajah", "Ajiran/Osapa"],
-    "IBEJU-LEKKI": ["Abraham Adesanya", "Ibeju", "Ise/Igbogun", "Iwerekun"],
-    "IFAKO IJAIYE": ["Abule-Egba", "Agbado Dalemo", "Alagbado/Kollinton"],
-    KOSEOFE: ["Agboyi", "Agidi/Orishigun", "Agiliti/Maidan", "Araromi/Ifako"],
-    "LAGOS ISLAND": ["Ajele", "Alagba/Obadina", "Anikantamo", "Araromi Odo"],
-    "LAGOS MAINLAND": ["Abule Ijesha", "Abule Oja", "Adekunle/Aiyetoro"],
-    MUSHIN: ["Alafia/Adeoyo", "Alakara", "Babalosa", "Idi-Araba"],
-    OJO: ["Ajangbadi", "Egan", "Etegbin", "Iba"],
-    "OSHODI ISOLO": ["Afariogun", "Aigbaka", "Ailegun", "Ajao Estate"],
-    SHOMOLU: ["Aiyetoro/Mafowoku", "Akoka/Anu-Oluwapo", "Apelehin"],
-    SURULERE: ["Adeniran Ogunsanya", "Ogunbiade", "Airways", "Akinhanmi Cole"],
-  };
 
   const handleChange = (e) => {
     const { name, value } = e.target;

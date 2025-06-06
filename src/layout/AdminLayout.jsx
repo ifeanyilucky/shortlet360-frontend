@@ -94,6 +94,11 @@ export default function AdminLayout() {
       icon: <FiKey size={20} />,
       label: "KYC Verification",
     },
+    {
+      path: "/admin/referrals",
+      icon: <FiUsers size={20} />,
+      label: "Referral Management",
+    },
     // {
     //   path: "/admin/reports",
     //   icon: <HiOutlineDocumentReport size={20} />,

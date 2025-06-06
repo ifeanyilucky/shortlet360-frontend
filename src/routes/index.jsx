@@ -62,6 +62,7 @@ import AdminSettings from "../pages/dashboard/admin/settings";
 import UserProfile from "../pages/dashboard/admin/userProfile";
 import EditProperty from "../pages/dashboard/admin/EditProperty";
 import EditBooking from "../pages/dashboard/admin/EditBooking";
+import AdminReferrals from "../pages/dashboard/admin/referrals";
 import AdminLogin from "../pages/admin/login";
 import AdminSignup from "../pages/admin/signup";
 export default function Router() {
@@ -164,6 +165,7 @@ export default function Router() {
             { path: "bookings", element: <AdminBookings /> },
             { path: "bookings/:id", element: <EditBooking /> },
             { path: "kyc", element: <AdminKyc /> },
+            { path: "referrals", element: <AdminReferrals /> },
             { path: "settings", element: <AdminSettings /> },
           ],
         },

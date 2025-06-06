@@ -12,6 +12,7 @@ import {
   BsFacebook,
   BsLinkedin,
   BsInstagram,
+  BsYoutube,
 } from "react-icons/bs";
 import InteractiveButton from "../components/InteractiveButton";
 import { Link } from "react-router-dom";
@@ -261,23 +262,15 @@ export default function ContactUs() {
                   </h3>
                   <div className="flex space-x-4">
                     <a
-                      href="https://twitter.com"
+                      href="https://www.linkedin.com/company/aplet360/"
                       target="_blank"
                       rel="noopener noreferrer"
                       className="w-10 h-10 bg-primary-100 rounded-full flex items-center justify-center hover:bg-primary-200 transition-colors"
                     >
-                      <BsTwitterX className="w-5 h-5 text-primary-900" />
+                      <BsLinkedin className="w-5 h-5 text-primary-900" />
                     </a>
                     <a
-                      href="https://facebook.com"
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="w-10 h-10 bg-primary-100 rounded-full flex items-center justify-center hover:bg-primary-200 transition-colors"
-                    >
-                      <BsFacebook className="w-5 h-5 text-primary-900" />
-                    </a>
-                    <a
-                      href="https://instagram.com"
+                      href="https://www.linkedin.com/company/aplet360/"
                       target="_blank"
                       rel="noopener noreferrer"
                       className="w-10 h-10 bg-primary-100 rounded-full flex items-center justify-center hover:bg-primary-200 transition-colors"
@@ -285,12 +278,28 @@ export default function ContactUs() {
                       <BsInstagram className="w-5 h-5 text-primary-900" />
                     </a>
                     <a
-                      href="https://linkedin.com"
+                      href="https://www.facebook.com/share/1ATyYoWpQF/?mibextid=wwXIfr"
                       target="_blank"
                       rel="noopener noreferrer"
                       className="w-10 h-10 bg-primary-100 rounded-full flex items-center justify-center hover:bg-primary-200 transition-colors"
                     >
-                      <BsLinkedin className="w-5 h-5 text-primary-900" />
+                      <BsFacebook className="w-5 h-5 text-primary-900" />
+                    </a>
+                    <a
+                      href="https://x.com/aplet360?s=21"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="w-10 h-10 bg-primary-100 rounded-full flex items-center justify-center hover:bg-primary-200 transition-colors"
+                    >
+                      <BsTwitterX className="w-5 h-5 text-primary-900" />
+                    </a>
+                    <a
+                      href="https://youtube.com/@aplet360?si=xlxqbodjVnmvdXb8"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="w-10 h-10 bg-primary-100 rounded-full flex items-center justify-center hover:bg-primary-200 transition-colors"
+                    >
+                      <BsYoutube className="w-5 h-5 text-primary-900" />
                     </a>
                     <a
                       href="https://wa.me/2349038775464"

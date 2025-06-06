@@ -15,6 +15,7 @@ import {
   BsInfoCircle,
   BsChevronLeft,
   BsChevronRight,
+  BsCalendar,
 } from "react-icons/bs";
 import { fCurrency } from "@utils/formatNumber";
 import { useAuth } from "../hooks/useAuth";
@@ -26,7 +27,7 @@ import "swiper/css";
 import "swiper/css/navigation";
 import "swiper/css/pagination";
 import { usePaystackPayment } from "react-paystack";
-import { bookingService } from "../services/api";
+import { bookingService, formService } from "../services/api";
 import toast from "react-hot-toast";
 import { paystackConfig } from "../config/paystack";
 import KycVerificationStatus from "../components/KycVerificationStatus";
@@ -192,6 +193,18 @@ export default function PropertyDetail() {
   const [kycVerified, setKycVerified] = useState(false);
   const { getKycStatus } = useKycStore();
 
+  // Inspection request state
+  const [showInspectionForm, setShowInspectionForm] = useState(false);
+  const [inspectionFormData, setInspectionFormData] = useState({
+    fullName: "",
+    phoneNumber: "",
+    propertyId: "",
+    preferredDate1: "",
+    preferredDate2: "",
+    preferredDate3: "",
+  });
+  const [isSubmittingInspection, setIsSubmittingInspection] = useState(false);
+
   useEffect(() => {
     // Inject custom styles
     const styleSheet = document.createElement("style");
@@ -212,6 +225,12 @@ export default function PropertyDetail() {
           bookingService.getPropertyAvailability(id),
         ]);
         setAvailabilityData(availabilityResponse.data.data);
+
+        // Set property ID for inspection form
+        setInspectionFormData((prev) => ({
+          ...prev,
+          propertyId: id,
+        }));
       } catch (error) {
         console.error("Error fetching data:", error);
         toast.error("Error fetching property availability");
@@ -220,6 +239,42 @@ export default function PropertyDetail() {
 
     fetchData();
   }, [id, getProperty]);
+
+  // Handle inspection form input changes
+  const handleInspectionFormChange = (e) => {
+    const { name, value } = e.target;
+    setInspectionFormData((prev) => ({
+      ...prev,
+      [name]: value,
+    }));
+  };
+
+  // Handle inspection form submission
+  const handleInspectionSubmit = async (e) => {
+    e.preventDefault();
+    setIsSubmittingInspection(true);
+
+    try {
+      await formService.submitInspectionRequest(inspectionFormData);
+      toast.success(
+        "Inspection request submitted successfully! We'll contact you soon."
+      );
+      setShowInspectionForm(false);
+      setInspectionFormData({
+        fullName: "",
+        phoneNumber: "",
+        propertyId: id,
+        preferredDate1: "",
+        preferredDate2: "",
+        preferredDate3: "",
+      });
+    } catch (error) {
+      console.error("Error submitting inspection request:", error);
+      toast.error("Failed to submit inspection request. Please try again.");
+    } finally {
+      setIsSubmittingInspection(false);
+    }
+  };
 
   // Configure Paystack payment
   const config = paystackConfig({
@@ -917,7 +972,16 @@ export default function PropertyDetail() {
             </div>
             <div className="flex items-start sm:items-center text-gray-600 mb-2">
               <IoLocationOutline className="w-5 h-5 mr-2 flex-shrink-0 mt-0.5 sm:mt-0" />
-              <span className="text-sm sm:text-base">{`${property?.location.street_address}, ${property?.location.city}, ${property?.location.state}`}</span>
+              <span className="text-sm sm:text-base">
+                {user?._id === property?.owner._id
+                  ? `${property?.location.street_address}, ${property?.location.city}, ${property?.location.state}`
+                  : `${property?.location.city}, ${property?.location.state}`}
+              </span>
+              {user?._id !== property?.owner._id && (
+                <span className="ml-2 text-xs bg-blue-100 text-blue-800 px-2 py-1 rounded-full">
+                  Full address shown after booking
+                </span>
+              )}
             </div>
             <div className="flex flex-wrap items-center gap-2 sm:gap-3">
               <span
@@ -1776,13 +1840,24 @@ export default function PropertyDetail() {
                     Edit
                   </button>
                 ) : (
-                  <button
-                    onClick={handleBookNow}
-                    disabled={!startDate || !endDate}
-                    className="w-full bg-blue-600 text-white py-3 rounded-xl font-medium hover:bg-blue-700 disabled:bg-gray-400 disabled:cursor-not-allowed mt-6"
-                  >
-                    Pay & Book Now
-                  </button>
+                  <>
+                    <button
+                      onClick={handleBookNow}
+                      disabled={!startDate || !endDate}
+                      className="w-full bg-blue-600 text-white py-3 rounded-xl font-medium hover:bg-blue-700 disabled:bg-gray-400 disabled:cursor-not-allowed mt-6"
+                    >
+                      Pay & Book Now
+                    </button>
+
+                    {/* Inspection Request Button */}
+                    <button
+                      onClick={() => setShowInspectionForm(true)}
+                      className="w-full bg-gray-100 text-gray-700 py-3 rounded-xl font-medium hover:bg-gray-200 mt-3 flex items-center justify-center gap-2"
+                    >
+                      <BsCalendar className="w-4 h-4" />
+                      Request Inspection
+                    </button>
+                  </>
                 )}
               </div>
             )}
@@ -2048,16 +2123,27 @@ export default function PropertyDetail() {
                       Edit
                     </button>
                   ) : (
-                    <button
-                      onClick={handleRentNow}
-                      className="w-full bg-blue-600 text-white py-3 rounded-xl font-medium hover:bg-blue-700 mt-4"
-                    >
-                      {paymentPeriod === "yearly"
-                        ? "Pay Yearly Rent"
-                        : paymentPeriod === "6months"
-                        ? "Pay First Month (6 Months Plan)"
-                        : "Pay First Month (12 Months Plan)"}
-                    </button>
+                    <>
+                      <button
+                        onClick={handleRentNow}
+                        className="w-full bg-blue-600 text-white py-3 rounded-xl font-medium hover:bg-blue-700 mt-4"
+                      >
+                        {paymentPeriod === "yearly"
+                          ? "Pay Yearly Rent"
+                          : paymentPeriod === "6months"
+                          ? "Pay First Month (6 Months Plan)"
+                          : "Pay First Month (12 Months Plan)"}
+                      </button>
+
+                      {/* Inspection Request Button */}
+                      <button
+                        onClick={() => setShowInspectionForm(true)}
+                        className="w-full bg-gray-100 text-gray-700 py-3 rounded-xl font-medium hover:bg-gray-200 mt-3 flex items-center justify-center gap-2"
+                      >
+                        <BsCalendar className="w-4 h-4" />
+                        Request Inspection
+                      </button>
+                    </>
                   )}
                 </div>
               </div>
@@ -2065,6 +2151,144 @@ export default function PropertyDetail() {
           </div>
         </div>
       </div>
+
+      {/* Inspection Request Modal */}
+      {showInspectionForm && (
+        <div className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4">
+          <div className="bg-white rounded-2xl max-w-md w-full max-h-[90vh] overflow-y-auto">
+            <div className="p-6">
+              <div className="flex items-center justify-between mb-6">
+                <h3 className="text-xl font-semibold text-gray-800">
+                  Request Property Inspection
+                </h3>
+                <button
+                  onClick={() => setShowInspectionForm(false)}
+                  className="p-2 hover:bg-gray-100 rounded-full transition-colors"
+                >
+                  <BsX className="w-6 h-6" />
+                </button>
+              </div>
+
+              <form onSubmit={handleInspectionSubmit} className="space-y-4">
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                    Full Name *
+                  </label>
+                  <input
+                    type="text"
+                    name="fullName"
+                    value={inspectionFormData.fullName}
+                    onChange={handleInspectionFormChange}
+                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    placeholder="Enter your full name"
+                    required
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                    Phone Number *
+                  </label>
+                  <input
+                    type="tel"
+                    name="phoneNumber"
+                    value={inspectionFormData.phoneNumber}
+                    onChange={handleInspectionFormChange}
+                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    placeholder="Enter your phone number"
+                    required
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                    Property Reference
+                  </label>
+                  <input
+                    type="text"
+                    value={property?.short_id || ""}
+                    className="w-full px-4 py-3 border border-gray-300 rounded-lg bg-gray-50"
+                    disabled
+                  />
+                </div>
+
+                <div className="space-y-3">
+                  <label className="block text-sm font-medium text-gray-700">
+                    Preferred Inspection Dates *
+                  </label>
+                  <p className="text-xs text-gray-500 mb-3">
+                    Please provide 3 preferred dates for the inspection
+                  </p>
+
+                  <div>
+                    <label className="block text-xs text-gray-600 mb-1">
+                      First Choice
+                    </label>
+                    <input
+                      type="date"
+                      name="preferredDate1"
+                      value={inspectionFormData.preferredDate1}
+                      onChange={handleInspectionFormChange}
+                      min={new Date().toISOString().split("T")[0]}
+                      className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                      required
+                    />
+                  </div>
+
+                  <div>
+                    <label className="block text-xs text-gray-600 mb-1">
+                      Second Choice
+                    </label>
+                    <input
+                      type="date"
+                      name="preferredDate2"
+                      value={inspectionFormData.preferredDate2}
+                      onChange={handleInspectionFormChange}
+                      min={new Date().toISOString().split("T")[0]}
+                      className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                      required
+                    />
+                  </div>
+
+                  <div>
+                    <label className="block text-xs text-gray-600 mb-1">
+                      Third Choice
+                    </label>
+                    <input
+                      type="date"
+                      name="preferredDate3"
+                      value={inspectionFormData.preferredDate3}
+                      onChange={handleInspectionFormChange}
+                      min={new Date().toISOString().split("T")[0]}
+                      className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                      required
+                    />
+                  </div>
+                </div>
+
+                <div className="flex gap-3 pt-4">
+                  <button
+                    type="button"
+                    onClick={() => setShowInspectionForm(false)}
+                    className="flex-1 px-4 py-3 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors"
+                  >
+                    Cancel
+                  </button>
+                  <button
+                    type="submit"
+                    disabled={isSubmittingInspection}
+                    className="flex-1 px-4 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 disabled:bg-blue-400 disabled:cursor-not-allowed transition-colors"
+                  >
+                    {isSubmittingInspection
+                      ? "Submitting..."
+                      : "Submit Request"}
+                  </button>
+                </div>
+              </form>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
