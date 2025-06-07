@@ -382,7 +382,7 @@ export default function DisputeResolution() {
         </p>
         <div className="text-sm text-gray-600">
           <p>📧 Email: support@aplet360.com</p>
-          <p>📞 Phone: 09038775464</p>
+          <p>📞 Phone: 09122842288</p>
           <p>🕒 Hours: Monday - Friday, 8:00 AM - 6:00 PM</p>
         </div>
       </div>

@@ -270,7 +270,7 @@ export default function ContactUs() {
                       <BsLinkedin className="w-5 h-5 text-primary-900" />
                     </a>
                     <a
-                      href="https://www.linkedin.com/company/aplet360/"
+                      href="https://www.instagram.com/aplet360properties?igsh=MWpqZGl4OW9sbTkzYQ%3D%3D&utm_source=qr"
                       target="_blank"
                       rel="noopener noreferrer"
                       className="w-10 h-10 bg-primary-100 rounded-full flex items-center justify-center hover:bg-primary-200 transition-colors"
@@ -302,7 +302,7 @@ export default function ContactUs() {
                       <BsYoutube className="w-5 h-5 text-primary-900" />
                     </a>
                     <a
-                      href="https://wa.me/2349038775464"
+                      href="https://wa.me/2349122842288"
                       target="_blank"
                       rel="noopener noreferrer"
                       className="w-10 h-10 bg-primary-100 rounded-full flex items-center justify-center hover:bg-primary-200 transition-colors"

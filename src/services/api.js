@@ -212,3 +212,48 @@ export const referralService = {
     return response.data;
   },
 };
+
+export const blogService = {
+  getCategories: async () => {
+    const response = await api.get("/blog/categories");
+    return response.data;
+  },
+  createBlog: async (data) => {
+    const response = await api.post("/blog", data);
+    return response.data;
+  },
+  getAllBlogs: async (params = {}) => {
+    const queryParams = new URLSearchParams();
+    Object.entries(params).forEach(([key, value]) => {
+      if (value !== undefined && value !== null && value !== "") {
+        queryParams.append(key, value);
+      }
+    });
+    const response = await api.get(`/blog?${queryParams.toString()}`);
+    return response.data;
+  },
+  getBlog: async (id) => {
+    const response = await api.get(`/blog/${id}`);
+    return response.data;
+  },
+  updateBlog: async (id, data) => {
+    const response = await api.put(`/blog/${id}`, data);
+    return response.data;
+  },
+  getTags: async () => {
+    const response = await api.get("/blog/tags");
+    return response.data;
+  },
+  getStats: async () => {
+    const response = await api.get("/blog/stats");
+    return response.data;
+  },
+  deleteBlog: async (id) => {
+    const response = await api.delete(`/blog/${id}`);
+    return response.data;
+  },
+  getBlogBySlug: async (slug) => {
+    const response = await api.get(`/blog/slug/${slug}`);
+    return response.data;
+  },
+};

@@ -1,20 +1,27 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import adminService from "../../../services/adminService";
+import { uploadService } from "../../../services/api";
 import toast from "react-hot-toast";
 import InteractiveButton from "../../../components/InteractiveButton";
+import { FiUpload, FiX } from "react-icons/fi";
 
 export default function EditProperty() {
   const { id } = useParams();
   const navigate = useNavigate();
+  const fileInputRef = useRef(null);
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
   const [property, setProperty] = useState(null);
+  const [dragActive, setDragActive] = useState(false);
+  const [existingImages, setExistingImages] = useState([]);
+  const [newImages, setNewImages] = useState([]);
   const [formData, setFormData] = useState({
     property_name: "",
     property_description: "",
     property_type: "",
     property_category: "",
+    publication_status: "pending",
     is_active: false,
     location: {
       street_address: "",
@@ -28,6 +35,7 @@ export default function EditProperty() {
     max_guests: 1,
     bedrooms: 1,
     bathrooms: 1,
+    property_images: [],
   });
 
   useEffect(() => {
@@ -44,6 +52,7 @@ export default function EditProperty() {
           property_description: propertyData.property_description || "",
           property_type: propertyData.property_type || "",
           property_category: propertyData.property_category || "",
+          publication_status: propertyData.publication_status || "pending",
           is_active: propertyData.is_active || false,
           location: {
             street_address: propertyData.location?.street_address || "",
@@ -57,7 +66,11 @@ export default function EditProperty() {
           max_guests: propertyData.max_guests || 1,
           bedrooms: propertyData.bedrooms || 1,
           bathrooms: propertyData.bathrooms || 1,
+          property_images: propertyData.property_images || [],
         });
+
+        // Set existing images for management
+        setExistingImages(propertyData.property_images || []);
       } catch (error) {
         console.error(error);
         toast.error("Failed to fetch property details");
@@ -122,16 +135,93 @@ export default function EditProperty() {
     }
   };
 
+  // Image handling functions
+  const handleDrag = (e) => {
+    e.preventDefault();
+    e.stopPropagation();
+    if (e.type === "dragenter" || e.type === "dragover") {
+      setDragActive(true);
+    } else if (e.type === "dragleave") {
+      setDragActive(false);
+    }
+  };
+
+  const handleDrop = (e) => {
+    e.preventDefault();
+    e.stopPropagation();
+    setDragActive(false);
+
+    if (e.dataTransfer.files && e.dataTransfer.files[0]) {
+      handleFiles(e.dataTransfer.files);
+    }
+  };
+
+  const handleFileInputChange = (e) => {
+    e.preventDefault();
+    if (e.target.files && e.target.files[0]) {
+      handleFiles(e.target.files);
+    }
+  };
+
+  const handleFiles = (files) => {
+    const validFiles = Array.from(files).filter((file) =>
+      file.type.startsWith("image/")
+    );
+
+    if (validFiles.length !== files.length) {
+      toast.error("Only image files are allowed");
+    }
+
+    setNewImages((prev) => [...prev, ...validFiles]);
+  };
+
+  const removeExistingImage = (index) => {
+    setExistingImages((prev) => prev.filter((_, i) => i !== index));
+  };
+
+  const removeNewImage = (index) => {
+    setNewImages((prev) => prev.filter((_, i) => i !== index));
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
 
     try {
       setSaving(true);
-      await adminService.updateProperty(id, formData);
+      toast.loading("Updating property...");
+
+      // Handle image uploads
+      let finalImages = [...existingImages];
+
+      // Upload new images if any
+      if (newImages.length > 0) {
+        const imageFormData = new FormData();
+        newImages.forEach((image) => {
+          imageFormData.append("images", image);
+        });
+
+        const response = await uploadService.uploadImages(imageFormData);
+        const newImageObjects = response.urls.map((imageObj) => ({
+          url: imageObj.url,
+          public_id: imageObj.public_id,
+          asset_id: imageObj.asset_id,
+        }));
+        finalImages = [...finalImages, ...newImageObjects];
+      }
+
+      // Create final form data with updated images
+      const finalFormData = {
+        ...formData,
+        property_images: finalImages,
+      };
+
+      await adminService.updateProperty(id, finalFormData);
+      toast.dismiss();
       toast.success("Property updated successfully");
       navigate("/admin/properties");
     } catch (error) {
       console.error(error);
+      toast.dismiss();
       toast.error("Failed to update property");
     } finally {
       setSaving(false);
@@ -328,6 +418,105 @@ export default function EditProperty() {
                 onChange={handleChange}
                 className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-blue-500 focus:border-blue-500"
               />
+            </div>
+          </div>
+        </div>
+
+        {/* Property Images Section */}
+        <div className="space-y-4">
+          <h2 className="text-lg font-semibold text-gray-700 border-b pb-2">
+            Property Images
+          </h2>
+
+          {/* Existing Images */}
+          {existingImages.length > 0 && (
+            <div>
+              <h3 className="text-md font-medium text-gray-600 mb-3">
+                Current Images
+              </h3>
+              <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+                {existingImages.map((image, index) => (
+                  <div key={index} className="relative group">
+                    <img
+                      src={image.url}
+                      alt={`Property ${index + 1}`}
+                      className="w-full h-32 object-cover rounded-lg border border-gray-200"
+                    />
+                    <button
+                      type="button"
+                      onClick={() => removeExistingImage(index)}
+                      className="absolute top-2 right-2 bg-red-500 text-white rounded-full p-1 opacity-0 group-hover:opacity-100 transition-opacity"
+                    >
+                      <FiX size={16} />
+                    </button>
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
+
+          {/* New Images */}
+          {newImages.length > 0 && (
+            <div>
+              <h3 className="text-md font-medium text-gray-600 mb-3">
+                New Images to Upload
+              </h3>
+              <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+                {newImages.map((image, index) => (
+                  <div key={index} className="relative group">
+                    <img
+                      src={URL.createObjectURL(image)}
+                      alt={`New ${index + 1}`}
+                      className="w-full h-32 object-cover rounded-lg border border-gray-200"
+                    />
+                    <button
+                      type="button"
+                      onClick={() => removeNewImage(index)}
+                      className="absolute top-2 right-2 bg-red-500 text-white rounded-full p-1 opacity-0 group-hover:opacity-100 transition-opacity"
+                    >
+                      <FiX size={16} />
+                    </button>
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
+
+          {/* Image Upload Area */}
+          <div
+            className={`border-2 border-dashed rounded-lg p-6 ${
+              dragActive ? "border-blue-500 bg-blue-50" : "border-gray-300"
+            }`}
+            onDragEnter={handleDrag}
+            onDragLeave={handleDrag}
+            onDragOver={handleDrag}
+            onDrop={handleDrop}
+          >
+            <div className="text-center">
+              <FiUpload className="mx-auto h-12 w-12 text-gray-400" />
+              <div className="mt-4">
+                <button
+                  type="button"
+                  onClick={() => fileInputRef.current?.click()}
+                  className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700"
+                >
+                  Select Images
+                </button>
+                <input
+                  ref={fileInputRef}
+                  type="file"
+                  multiple
+                  onChange={handleFileInputChange}
+                  accept="image/*"
+                  className="hidden"
+                />
+              </div>
+              <p className="mt-2 text-sm text-gray-500">
+                or drag and drop your images here
+              </p>
+              <p className="text-xs text-gray-400 mt-1">
+                PNG, JPG, GIF up to 5MB each
+              </p>
             </div>
           </div>
         </div>

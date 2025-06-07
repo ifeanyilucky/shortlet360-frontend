@@ -65,6 +65,10 @@ import EditBooking from "../pages/dashboard/admin/EditBooking";
 import AdminReferrals from "../pages/dashboard/admin/referrals";
 import AdminLogin from "../pages/admin/login";
 import AdminSignup from "../pages/admin/signup";
+import BlogDetail from "../pages/BlogDetail";
+import AdminBlogs from "../pages/dashboard/admin/blogs";
+import CreateBlog from "../pages/dashboard/admin/CreateBlog";
+import EditBlog from "../pages/dashboard/admin/EditBlog";
 export default function Router() {
   const routes = useRoutes([
     {
@@ -76,6 +80,7 @@ export default function Router() {
         { path: "book-now", element: <BookNow /> },
         { path: "faq", element: <FAQ /> },
         { path: "blog", element: <Blog /> },
+        { path: "blog/:slug", element: <BlogDetail /> },
         { path: "contact", element: <ContactUs /> },
         { path: "home-fix", element: <HomeServices /> },
         { path: "career", element: <Career /> },
@@ -166,6 +171,9 @@ export default function Router() {
             { path: "bookings/:id", element: <EditBooking /> },
             { path: "kyc", element: <AdminKyc /> },
             { path: "referrals", element: <AdminReferrals /> },
+            { path: "blogs", element: <AdminBlogs /> },
+            { path: "blogs/create", element: <CreateBlog /> },
+            { path: "blogs/edit/:id", element: <EditBlog /> },
             { path: "settings", element: <AdminSettings /> },
           ],
         },

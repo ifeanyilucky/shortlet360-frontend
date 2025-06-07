@@ -55,7 +55,7 @@ export default function NavLayout() {
     },
     { name: "HomeFix", href: "/home-fix" },
     { name: "FAQ", href: "/faq" },
-    // { name: "Blog", href: "/blog" },
+    { name: "Blog", href: "/blog" },
     { name: "Contact", href: "/contact" },
   ];
 
@@ -519,13 +519,12 @@ export default function NavLayout() {
                 >
                   FAQ
                 </Link>
-                {/* <Link
+                <Link
                   to="/blog"
-
                   className="text-base text-tertiary-500 hover:text-tertiary-900 block"
                 >
                   Blog
-                </Link> */}
+                </Link>
                 <Link
                   to="/privacy-policy"
                   className="text-base text-tertiary-500 hover:text-tertiary-900 block"
@@ -581,7 +580,7 @@ export default function NavLayout() {
                   <BsLinkedin className="w-5 h-5" />
                 </a>
                 <a
-                  href="https://www.linkedin.com/company/aplet360/"
+                  href="https://www.instagram.com/aplet360properties?igsh=MWpqZGl4OW9sbTkzYQ%3D%3D&utm_source=qr"
                   target="_blank"
                   rel="noopener noreferrer"
                   className="w-10 h-10 bg-tertiary-200 rounded-full flex items-center justify-center hover:bg-accent-500 hover:text-white transition-colors"

@@ -95,8 +95,9 @@ export default function BookNow() {
         key !== "category" && !cleanFilters[key] && delete cleanFilters[key]
     );
 
-    // Only show published properties
+    // Only show published and active properties
     cleanFilters.publication_status = "published";
+    cleanFilters.isActive = "true";
 
     getProperties(cleanFilters);
   }, [searchParams, getProperties]); // Run on mount and when searchParams changes
@@ -120,10 +121,11 @@ export default function BookNow() {
       return acc;
     }, {});
 
-    // Always include publication_status filter to only show published properties
+    // Always include publication_status and isActive filters to only show published and active properties
     getProperties({
       ...cleanFilters,
       publication_status: "published",
+      isActive: "true",
     });
   }, [filters, getProperties]);
 

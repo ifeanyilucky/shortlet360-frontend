@@ -187,10 +187,7 @@ export default function PropertyManagementSolutions() {
                   <FiCheckCircle className="w-5 h-5 text-accent-500 mt-0.5 flex-shrink-0" />
                   <span>Professional property photography</span>
                 </li>
-                <li className="flex items-start gap-3">
-                  <FiCheckCircle className="w-5 h-5 text-accent-500 mt-0.5 flex-shrink-0" />
-                  <span>Multi-platform listing distribution</span>
-                </li>
+
                 <li className="flex items-start gap-3">
                   <FiCheckCircle className="w-5 h-5 text-accent-500 mt-0.5 flex-shrink-0" />
                   <span>Market analysis and pricing optimization</span>

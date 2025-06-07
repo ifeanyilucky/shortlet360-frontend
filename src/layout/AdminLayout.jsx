@@ -14,6 +14,7 @@ import {
   FiList,
   FiChevronDown,
   FiChevronRight,
+  FiEdit3,
 } from "react-icons/fi";
 import { MdOutlineAddHome } from "react-icons/md";
 import { HiOutlineDocumentReport } from "react-icons/hi";
@@ -98,6 +99,11 @@ export default function AdminLayout() {
       path: "/admin/referrals",
       icon: <FiUsers size={20} />,
       label: "Referral Management",
+    },
+    {
+      path: "/admin/blogs",
+      icon: <FiEdit3 size={20} />,
+      label: "Blog Management",
     },
     // {
     //   path: "/admin/reports",

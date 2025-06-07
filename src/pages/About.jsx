@@ -375,7 +375,7 @@ export default function About() {
               <BsLinkedin className="w-6 h-6 text-primary-900" />
             </a>
             <a
-              href="https://www.linkedin.com/company/aplet360/"
+              href="https://www.instagram.com/aplet360properties?igsh=MWpqZGl4OW9sbTkzYQ%3D%3D&utm_source=qr"
               target="_blank"
               rel="noopener noreferrer"
               className="w-12 h-12 bg-primary-100 rounded-full flex items-center justify-center hover:bg-primary-200 transition-colors transform hover:scale-110"
