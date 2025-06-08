@@ -7,7 +7,6 @@ import { useAuth } from "../../hooks/useAuth";
 import useKycStore from "../../store/kycStore";
 import InteractiveButton from "../../components/InteractiveButton";
 import { HiCheckCircle, HiIdentification, HiPhone } from "react-icons/hi";
-import toast from "react-hot-toast";
 import PhoneInput from "react-phone-number-input";
 import "react-phone-number-input/style.css";
 
@@ -61,8 +60,8 @@ const tier1Schema = yup.object().shape({
 });
 
 export default function Tier1Verification({ kycStatus }) {
-  const { user } = useAuth();
-  const { initiatePhoneVerification, isLoading } = useKycStore();
+  const { user, setUser } = useAuth();
+  const { submitTier1Verification, isLoading } = useKycStore();
 
   // Tier 1 form
   const {
@@ -87,6 +86,21 @@ export default function Tier1Verification({ kycStatus }) {
 
   const isPhoneVerified = kycStatus?.tier1?.phone_verified;
   const isNinVerified = kycStatus?.tier1?.nin_verified;
+  const isTier1Verified = kycStatus?.tier1?.status === "verified";
+
+  const onSubmit = async (data) => {
+    try {
+      await submitTier1Verification(
+        {
+          phone_number: data.phone_number,
+          nin: data.nin,
+        },
+        setUser
+      );
+    } catch (error) {
+      console.error("Error submitting Tier 1 verification:", error);
+    }
+  };
 
   return (
     <div>
@@ -96,26 +110,34 @@ export default function Tier1Verification({ kycStatus }) {
         Verify your phone number and NIN to complete the basic verification.
       </p>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-        {/* Phone Verification */}
-        <div className="border rounded-lg p-4">
-          <div className="flex items-center mb-4">
-            <HiPhone className="w-6 h-6 text-blue-500 mr-2" />
-            <h3 className="text-lg font-medium">Phone Verification</h3>
+      {isTier1Verified ? (
+        <div className="bg-green-50 text-green-700 p-4 rounded-md">
+          <div className="flex items-center">
+            <HiCheckCircle className="w-6 h-6 mr-2" />
+            <p className="font-medium">
+              Tier 1 verification completed successfully!
+            </p>
           </div>
+          {kycStatus?.tier1?.completed_at && (
+            <p className="mt-1 text-sm">
+              Completed on:{" "}
+              {new Date(kycStatus.tier1.completed_at).toLocaleDateString()}
+            </p>
+          )}
+        </div>
+      ) : (
+        <form onSubmit={handleSubmit(onSubmit)}>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+            {/* Phone Verification */}
+            <div className="border rounded-lg p-4">
+              <div className="flex items-center mb-4">
+                <HiPhone className="w-6 h-6 text-blue-500 mr-2" />
+                <h3 className="text-lg font-medium">Phone Verification</h3>
+                {isPhoneVerified && (
+                  <HiCheckCircle className="w-5 h-5 text-green-600 ml-auto" />
+                )}
+              </div>
 
-          {isPhoneVerified ? (
-            <div className="flex items-center text-green-600">
-              <HiCheckCircle className="w-5 h-5 mr-2" />
-              <span>Phone number verified successfully</span>
-            </div>
-          ) : (
-            <form
-              onSubmit={handleSubmit((data) => {
-                initiatePhoneVerification(data.phone_number);
-                toast.success("Phone verification initiated");
-              })}
-            >
               <div className="mb-4">
                 <label
                   htmlFor="phone_number"
@@ -133,9 +155,12 @@ export default function Tier1Verification({ kycStatus }) {
                       defaultCountry="NG"
                       countries={["NG"]}
                       international={false}
+                      disabled={isPhoneVerified}
                       className={`w-full px-3 py-2 border rounded-md ${
                         errors.phone_number
                           ? "border-red-500"
+                          : isPhoneVerified
+                          ? "border-green-500 bg-green-50"
                           : "border-gray-300"
                       }`}
                       {...field}
@@ -153,37 +178,18 @@ export default function Tier1Verification({ kycStatus }) {
                   number with or without the leading zero.
                 </p>
               </div>
-
-              <InteractiveButton
-                type="submit"
-                isLoading={isLoading}
-                className="w-full"
-              >
-                Verify Phone Number
-              </InteractiveButton>
-            </form>
-          )}
-        </div>
-
-        {/* NIN Verification */}
-        <div className="border rounded-lg p-4">
-          <div className="flex items-center mb-4">
-            <HiIdentification className="w-6 h-6 text-blue-500 mr-2" />
-            <h3 className="text-lg font-medium">NIN Verification</h3>
-          </div>
-
-          {isNinVerified ? (
-            <div className="flex items-center text-green-600">
-              <HiCheckCircle className="w-5 h-5 mr-2" />
-              <span>NIN verified successfully</span>
             </div>
-          ) : (
-            <form
-              onSubmit={handleSubmit(() => {
-                // This would call a new API endpoint to verify NIN
-                toast.success("NIN verification initiated");
-              })}
-            >
+
+            {/* NIN Verification */}
+            <div className="border rounded-lg p-4">
+              <div className="flex items-center mb-4">
+                <HiIdentification className="w-6 h-6 text-blue-500 mr-2" />
+                <h3 className="text-lg font-medium">NIN Verification</h3>
+                {isNinVerified && (
+                  <HiCheckCircle className="w-5 h-5 text-green-600 ml-auto" />
+                )}
+              </div>
+
               <div className="mb-4">
                 <label
                   htmlFor="nin"
@@ -194,8 +200,13 @@ export default function Tier1Verification({ kycStatus }) {
                 <input
                   id="nin"
                   type="text"
+                  disabled={isNinVerified}
                   className={`w-full px-3 py-2 border rounded-md ${
-                    errors.nin ? "border-red-500" : "border-gray-300"
+                    errors.nin
+                      ? "border-red-500"
+                      : isNinVerified
+                      ? "border-green-500 bg-green-50"
+                      : "border-gray-300"
                   }`}
                   {...register("nin")}
                 />
@@ -208,34 +219,22 @@ export default function Tier1Verification({ kycStatus }) {
                   Enter your 11-digit NIN without spaces or special characters
                 </p>
               </div>
-
-              <InteractiveButton
-                type="submit"
-                isLoading={isLoading}
-                className="w-full"
-              >
-                Verify NIN
-              </InteractiveButton>
-            </form>
-          )}
-        </div>
-      </div>
-
-      {isPhoneVerified && isNinVerified && (
-        <div className="mt-6 bg-green-50 text-green-700 p-4 rounded-md">
-          <div className="flex items-center">
-            <HiCheckCircle className="w-6 h-6 mr-2" />
-            <p className="font-medium">
-              Tier 1 verification completed successfully!
-            </p>
+            </div>
           </div>
-          {kycStatus?.tier1?.completed_at && (
-            <p className="mt-1 text-sm">
-              Completed on:{" "}
-              {new Date(kycStatus.tier1.completed_at).toLocaleDateString()}
-            </p>
-          )}
-        </div>
+
+          <div className="flex justify-center mt-6">
+            <InteractiveButton
+              type="submit"
+              isLoading={isLoading}
+              disabled={isPhoneVerified && isNinVerified}
+              className="px-8 py-3"
+            >
+              {isPhoneVerified && isNinVerified
+                ? "Verification Complete"
+                : "Submit Verification"}
+            </InteractiveButton>
+          </div>
+        </form>
       )}
     </div>
   );

@@ -61,7 +61,7 @@ export default function Tier2Verification({ kycStatus }) {
         Tier 2: Address Verification
       </h2>
       <p className="text-gray-600 mb-6">
-        Verify your address to complete Tier 2 verification.
+        Provide your address information to complete Tier 2 verification.
       </p>
 
       {isTier2Verified ? (

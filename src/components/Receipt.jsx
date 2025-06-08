@@ -73,7 +73,10 @@ export default function Receipt() {
         <div className="p-4 sm:p-6">
           <div className="mb-4 sm:mb-6">
             <h3 className="text-sm sm:text-base font-medium mb-2">
-              Dear {booking.payment.customer.name}
+              Dear{" "}
+              {booking.guest?.name ||
+                booking.payment?.customer?.name ||
+                "Guest"}
             </h3>
             <p className="text-xs sm:text-sm text-gray-600">
               Thank you for booking with us, we're looking forward to welcoming
@@ -93,10 +96,16 @@ export default function Receipt() {
               </thead>
               <tbody>
                 <tr>
-                  <td className="py-2">{booking.payment.customer.name}</td>
+                  <td className="py-2">
+                    {booking.guest?.name ||
+                      booking.payment?.customer?.name ||
+                      "Guest"}
+                  </td>
                   <td className="py-2">{booking.guest_count}</td>
                   <td className="py-2">
-                    {booking.payment.customer.phone_number}
+                    {booking.guest?.phone ||
+                      booking.payment?.customer?.phone_number ||
+                      "N/A"}
                   </td>
                 </tr>
               </tbody>
@@ -149,7 +158,12 @@ export default function Receipt() {
             </div>
             <div className="flex justify-between items-center text-xs sm:text-sm font-medium">
               <span>Transaction Reference</span>
-              <span>{booking.payment.tx_ref}</span>
+              <span>
+                {booking.payment?.reference ||
+                  booking.payment?.trxref ||
+                  booking.payment?.tx_ref ||
+                  "N/A"}
+              </span>
             </div>
           </div>
 
@@ -175,13 +189,22 @@ export default function Receipt() {
                   Guest Information
                 </h4>
                 <p className="text-xs sm:text-sm text-gray-600 mb-1">
-                  Name: {booking.payment.customer.name}
+                  Name:{" "}
+                  {booking.guest?.name ||
+                    booking.payment?.customer?.name ||
+                    "Guest"}
                 </p>
                 <p className="text-xs sm:text-sm text-gray-600 mb-1">
-                  Email: {booking.payment.customer.email}
+                  Email:{" "}
+                  {booking.guest?.email ||
+                    booking.payment?.customer?.email ||
+                    "N/A"}
                 </p>
                 <p className="text-xs sm:text-sm text-gray-600">
-                  Phone: {booking.payment.customer.phone_number}
+                  Phone:{" "}
+                  {booking.guest?.phone ||
+                    booking.payment?.customer?.phone_number ||
+                    "N/A"}
                 </p>
               </div>
               <div>

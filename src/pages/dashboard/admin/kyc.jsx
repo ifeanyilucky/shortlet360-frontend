@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { FiCheck, FiX, FiSearch, FiFilter, FiEye } from "react-icons/fi";
+import { FiSearch, FiFilter, FiImage, FiFileText } from "react-icons/fi";
 import adminService from "../../../services/adminService";
 import { format } from "date-fns";
 import toast from "react-hot-toast";
@@ -20,6 +20,8 @@ export default function AdminKyc() {
   const [showFilters, setShowFilters] = useState(false);
   const [selectedUser, setSelectedUser] = useState(null);
   const [showModal, setShowModal] = useState(false);
+  const [showNinImage, setShowNinImage] = useState(false);
+  const [showRawData, setShowRawData] = useState(false);
 
   const fetchPendingKyc = async () => {
     try {
@@ -195,6 +197,12 @@ export default function AdminKyc() {
                       Role
                     </th>
                     <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                      Phone Number
+                    </th>
+                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                      NIN
+                    </th>
+                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                       Tier 1 Status
                     </th>
                     <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
@@ -238,6 +246,17 @@ export default function AdminKyc() {
                         >
                           {user.role}
                         </span>
+                      </td>
+                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                        {user.phone_number || "Not provided"}
+                      </td>
+                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                        {user.kyc?.tier1?.nin
+                          ? `${user.kyc.tier1.nin.substring(
+                              0,
+                              3
+                            )}****${user.kyc.tier1.nin.substring(7)}`
+                          : "Not provided"}
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap">
                         <span
@@ -456,7 +475,7 @@ export default function AdminKyc() {
             >
               &#8203;
             </span>
-            <div className="inline-block align-bottom bg-white rounded-lg text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-lg sm:w-full">
+            <div className="inline-block align-bottom bg-white rounded-lg text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-4xl sm:w-full max-h-screen overflow-y-auto">
               <div className="bg-white px-4 pt-5 pb-4 sm:p-6 sm:pb-4">
                 <div className="sm:flex sm:items-start">
                   <div className="mt-3 text-center sm:mt-0 sm:ml-4 sm:text-left w-full">
@@ -484,20 +503,357 @@ export default function AdminKyc() {
                       <h4 className="text-md font-medium text-gray-900">
                         Tier 1: Basic Verification
                       </h4>
-                      <p className="text-sm text-gray-500">
-                        Status:{" "}
-                        {selectedUser.kyc?.tier1?.status || "Not Started"}
-                      </p>
-                      <p className="text-sm text-gray-500">
-                        Email Verified:{" "}
-                        {selectedUser.kyc?.tier1?.email_verified ? "Yes" : "No"}
-                      </p>
-                      <p className="text-sm text-gray-500">
-                        Phone Verified:{" "}
-                        {selectedUser.kyc?.tier1?.phone_verified ? "Yes" : "No"}
-                      </p>
+                      <div className="bg-gray-50 p-3 rounded-md mt-2">
+                        <p className="text-sm text-gray-700 font-medium">
+                          Status:{" "}
+                          <span
+                            className={`${
+                              selectedUser.kyc?.tier1?.status === "verified"
+                                ? "text-green-600"
+                                : selectedUser.kyc?.tier1?.status === "rejected"
+                                ? "text-red-600"
+                                : "text-yellow-600"
+                            }`}
+                          >
+                            {selectedUser.kyc?.tier1?.status || "Not Started"}
+                          </span>
+                        </p>
+                        <p className="text-sm text-gray-700">
+                          Email Verified:{" "}
+                          <span
+                            className={
+                              selectedUser.kyc?.tier1?.email_verified
+                                ? "text-green-600"
+                                : "text-red-600"
+                            }
+                          >
+                            {selectedUser.kyc?.tier1?.email_verified
+                              ? "Yes"
+                              : "No"}
+                          </span>
+                        </p>
+                        <p className="text-sm text-gray-700">
+                          Phone Verified:{" "}
+                          <span
+                            className={
+                              selectedUser.kyc?.tier1?.phone_verified
+                                ? "text-green-600"
+                                : "text-red-600"
+                            }
+                          >
+                            {selectedUser.kyc?.tier1?.phone_verified
+                              ? "Yes"
+                              : "No"}
+                          </span>
+                        </p>
+                        <p className="text-sm text-gray-700">
+                          NIN Verified:{" "}
+                          <span
+                            className={
+                              selectedUser.kyc?.tier1?.nin_verified
+                                ? "text-green-600"
+                                : "text-red-600"
+                            }
+                          >
+                            {selectedUser.kyc?.tier1?.nin_verified
+                              ? "Yes"
+                              : "No"}
+                          </span>
+                        </p>
+
+                        {/* User Submitted Information */}
+                        {(selectedUser.phone_number ||
+                          selectedUser.kyc?.tier1?.nin) && (
+                          <div className="mt-3 border-t pt-3">
+                            <h5 className="text-sm font-medium text-gray-900 mb-2">
+                              Submitted Information:
+                            </h5>
+                            {selectedUser.phone_number && (
+                              <p className="text-sm text-gray-700">
+                                Phone Number:{" "}
+                                <span className="font-mono">
+                                  {selectedUser.phone_number}
+                                </span>
+                              </p>
+                            )}
+                            {selectedUser.kyc?.tier1?.nin && (
+                              <p className="text-sm text-gray-700">
+                                NIN:{" "}
+                                <span className="font-mono">
+                                  {selectedUser.kyc.tier1.nin}
+                                </span>
+                              </p>
+                            )}
+                          </div>
+                        )}
+
+                        {/* YouVerify Phone Verification Data */}
+                        {selectedUser.kyc?.tier1?.phone_verification_data && (
+                          <div className="mt-3 border-t pt-3">
+                            <h5 className="text-sm font-medium text-gray-900 mb-2">
+                              Phone Verification Details:
+                            </h5>
+                            <p className="text-sm text-gray-700">
+                              Verification ID:{" "}
+                              <span className="font-mono text-xs">
+                                {
+                                  selectedUser.kyc.tier1.phone_verification_data
+                                    .verification_id
+                                }
+                              </span>
+                            </p>
+                            <p className="text-sm text-gray-700">
+                              Status:{" "}
+                              <span className="text-green-600">
+                                {
+                                  selectedUser.kyc.tier1.phone_verification_data
+                                    .status
+                                }
+                              </span>
+                            </p>
+                            {selectedUser.kyc.tier1.phone_verification_data
+                              .verified_at && (
+                              <p className="text-sm text-gray-700">
+                                Verified At:{" "}
+                                {format(
+                                  new Date(
+                                    selectedUser.kyc.tier1.phone_verification_data.verified_at
+                                  ),
+                                  "PPpp"
+                                )}
+                              </p>
+                            )}
+                            {selectedUser.kyc.tier1.phone_verification_data
+                              .phone_details &&
+                              selectedUser.kyc.tier1.phone_verification_data
+                                .phone_details.length > 0 && (
+                                <div className="mt-2">
+                                  <p className="text-sm font-medium text-gray-700">
+                                    Phone Details from YouVerify:
+                                  </p>
+                                  {selectedUser.kyc.tier1.phone_verification_data.phone_details.map(
+                                    (detail, index) => (
+                                      <div
+                                        key={index}
+                                        className="ml-2 mt-1 text-xs text-gray-600"
+                                      >
+                                        <p>Name: {detail.fullName}</p>
+                                        {detail.dateOfBirth && (
+                                          <p>DOB: {detail.dateOfBirth}</p>
+                                        )}
+                                      </div>
+                                    )
+                                  )}
+                                </div>
+                              )}
+                          </div>
+                        )}
+
+                        {/* YouVerify NIN Verification Data */}
+                        {selectedUser.kyc?.tier1?.nin_verification_data && (
+                          <div className="mt-3 border-t pt-3">
+                            <h5 className="text-sm font-medium text-gray-900 mb-2">
+                              NIN Verification Details:
+                            </h5>
+                            <p className="text-sm text-gray-700">
+                              Verification ID:{" "}
+                              <span className="font-mono text-xs">
+                                {
+                                  selectedUser.kyc.tier1.nin_verification_data
+                                    .verification_id
+                                }
+                              </span>
+                            </p>
+                            <p className="text-sm text-gray-700">
+                              Status:{" "}
+                              <span className="text-green-600">
+                                {
+                                  selectedUser.kyc.tier1.nin_verification_data
+                                    .status
+                                }
+                              </span>
+                            </p>
+                            {selectedUser.kyc.tier1.nin_verification_data
+                              .verified_at && (
+                              <p className="text-sm text-gray-700">
+                                Verified At:{" "}
+                                {format(
+                                  new Date(
+                                    selectedUser.kyc.tier1.nin_verification_data.verified_at
+                                  ),
+                                  "PPpp"
+                                )}
+                              </p>
+                            )}
+                            <div className="mt-2 grid grid-cols-2 gap-2 text-xs text-gray-600">
+                              {selectedUser.kyc.tier1.nin_verification_data
+                                .first_name && (
+                                <p>
+                                  First Name:{" "}
+                                  {
+                                    selectedUser.kyc.tier1.nin_verification_data
+                                      .first_name
+                                  }
+                                </p>
+                              )}
+                              {selectedUser.kyc.tier1.nin_verification_data
+                                .middle_name && (
+                                <p>
+                                  Middle Name:{" "}
+                                  {
+                                    selectedUser.kyc.tier1.nin_verification_data
+                                      .middle_name
+                                  }
+                                </p>
+                              )}
+                              {selectedUser.kyc.tier1.nin_verification_data
+                                .last_name && (
+                                <p>
+                                  Last Name:{" "}
+                                  {
+                                    selectedUser.kyc.tier1.nin_verification_data
+                                      .last_name
+                                  }
+                                </p>
+                              )}
+                              {selectedUser.kyc.tier1.nin_verification_data
+                                .date_of_birth && (
+                                <p>
+                                  Date of Birth:{" "}
+                                  {
+                                    selectedUser.kyc.tier1.nin_verification_data
+                                      .date_of_birth
+                                  }
+                                </p>
+                              )}
+                              {selectedUser.kyc.tier1.nin_verification_data
+                                .gender && (
+                                <p>
+                                  Gender:{" "}
+                                  {
+                                    selectedUser.kyc.tier1.nin_verification_data
+                                      .gender
+                                  }
+                                </p>
+                              )}
+                              {selectedUser.kyc.tier1.nin_verification_data
+                                .mobile && (
+                                <p>
+                                  Mobile:{" "}
+                                  {
+                                    selectedUser.kyc.tier1.nin_verification_data
+                                      .mobile
+                                  }
+                                </p>
+                              )}
+                              {selectedUser.kyc.tier1.nin_verification_data
+                                .birth_state && (
+                                <p>
+                                  Birth State:{" "}
+                                  {
+                                    selectedUser.kyc.tier1.nin_verification_data
+                                      .birth_state
+                                  }
+                                </p>
+                              )}
+                              {selectedUser.kyc.tier1.nin_verification_data
+                                .birth_lga && (
+                                <p>
+                                  Birth LGA:{" "}
+                                  {
+                                    selectedUser.kyc.tier1.nin_verification_data
+                                      .birth_lga
+                                  }
+                                </p>
+                              )}
+                              {selectedUser.kyc.tier1.nin_verification_data
+                                .religion && (
+                                <p>
+                                  Religion:{" "}
+                                  {
+                                    selectedUser.kyc.tier1.nin_verification_data
+                                      .religion
+                                  }
+                                </p>
+                              )}
+                            </div>
+                            {selectedUser.kyc.tier1.nin_verification_data
+                              .address && (
+                              <div className="mt-2">
+                                <p className="text-sm font-medium text-gray-700">
+                                  Address:
+                                </p>
+                                <div className="ml-2 text-xs text-gray-600">
+                                  {selectedUser.kyc.tier1.nin_verification_data
+                                    .address.addressLine && (
+                                    <p>
+                                      {
+                                        selectedUser.kyc.tier1
+                                          .nin_verification_data.address
+                                          .addressLine
+                                      }
+                                    </p>
+                                  )}
+                                  {selectedUser.kyc.tier1.nin_verification_data
+                                    .address.town && (
+                                    <p>
+                                      Town:{" "}
+                                      {
+                                        selectedUser.kyc.tier1
+                                          .nin_verification_data.address.town
+                                      }
+                                    </p>
+                                  )}
+                                  {selectedUser.kyc.tier1.nin_verification_data
+                                    .address.lga && (
+                                    <p>
+                                      LGA:{" "}
+                                      {
+                                        selectedUser.kyc.tier1
+                                          .nin_verification_data.address.lga
+                                      }
+                                    </p>
+                                  )}
+                                  {selectedUser.kyc.tier1.nin_verification_data
+                                    .address.state && (
+                                    <p>
+                                      State:{" "}
+                                      {
+                                        selectedUser.kyc.tier1
+                                          .nin_verification_data.address.state
+                                      }
+                                    </p>
+                                  )}
+                                </div>
+                              </div>
+                            )}
+
+                            {/* Action buttons for NIN verification data */}
+                            <div className="mt-3 flex space-x-2">
+                              {selectedUser.kyc.tier1.nin_verification_data
+                                .image && (
+                                <button
+                                  onClick={() => setShowNinImage(true)}
+                                  className="inline-flex items-center px-2 py-1 bg-blue-100 text-blue-600 rounded text-xs hover:bg-blue-200"
+                                >
+                                  <FiImage className="mr-1" />
+                                  View NIN Photo
+                                </button>
+                              )}
+                              <button
+                                onClick={() => setShowRawData(true)}
+                                className="inline-flex items-center px-2 py-1 bg-gray-100 text-gray-600 rounded text-xs hover:bg-gray-200"
+                              >
+                                <FiFileText className="mr-1" />
+                                View Raw Data
+                              </button>
+                            </div>
+                          </div>
+                        )}
+                      </div>
+
                       {selectedUser.kyc?.tier1?.status === "pending" && (
-                        <div className="mt-2 flex space-x-2">
+                        <div className="mt-4 flex space-x-2">
                           <button
                             onClick={() =>
                               handleUpdateTier1(selectedUser._id, "verified")
@@ -615,6 +971,128 @@ export default function AdminKyc() {
                   type="button"
                   className="mt-3 w-full inline-flex justify-center rounded-md border border-gray-300 shadow-sm px-4 py-2 bg-white text-base font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 sm:mt-0 sm:ml-3 sm:w-auto sm:text-sm"
                   onClick={() => setShowModal(false)}
+                >
+                  Close
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* NIN Image Modal */}
+      {showNinImage &&
+        selectedUser?.kyc?.tier1?.nin_verification_data?.image && (
+          <div className="fixed inset-0 z-50 overflow-y-auto">
+            <div className="flex items-center justify-center min-h-screen pt-4 px-4 pb-20 text-center sm:block sm:p-0">
+              <div
+                className="fixed inset-0 transition-opacity"
+                aria-hidden="true"
+              >
+                <div className="absolute inset-0 bg-gray-500 opacity-75"></div>
+              </div>
+              <span
+                className="hidden sm:inline-block sm:align-middle sm:h-screen"
+                aria-hidden="true"
+              >
+                &#8203;
+              </span>
+              <div className="inline-block align-bottom bg-white rounded-lg text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-lg sm:w-full">
+                <div className="bg-white px-4 pt-5 pb-4 sm:p-6 sm:pb-4">
+                  <div className="sm:flex sm:items-start">
+                    <div className="mt-3 text-center sm:mt-0 sm:ml-4 sm:text-left w-full">
+                      <h3 className="text-lg leading-6 font-medium text-gray-900">
+                        NIN Photo from YouVerify
+                      </h3>
+                      <div className="mt-4 text-center">
+                        <img
+                          src={
+                            selectedUser.kyc.tier1.nin_verification_data.image
+                          }
+                          alt="NIN Photo"
+                          className="max-w-full h-auto rounded-lg shadow-md"
+                        />
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div className="bg-gray-50 px-4 py-3 sm:px-6 sm:flex sm:flex-row-reverse">
+                  <button
+                    type="button"
+                    className="mt-3 w-full inline-flex justify-center rounded-md border border-gray-300 shadow-sm px-4 py-2 bg-white text-base font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 sm:mt-0 sm:ml-3 sm:w-auto sm:text-sm"
+                    onClick={() => setShowNinImage(false)}
+                  >
+                    Close
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        )}
+
+      {/* Raw Data Modal */}
+      {showRawData && selectedUser?.kyc?.tier1 && (
+        <div className="fixed inset-0 z-50 overflow-y-auto">
+          <div className="flex items-center justify-center min-h-screen pt-4 px-4 pb-20 text-center sm:block sm:p-0">
+            <div
+              className="fixed inset-0 transition-opacity"
+              aria-hidden="true"
+            >
+              <div className="absolute inset-0 bg-gray-500 opacity-75"></div>
+            </div>
+            <span
+              className="hidden sm:inline-block sm:align-middle sm:h-screen"
+              aria-hidden="true"
+            >
+              &#8203;
+            </span>
+            <div className="inline-block align-bottom bg-white rounded-lg text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-4xl sm:w-full max-h-screen overflow-y-auto">
+              <div className="bg-white px-4 pt-5 pb-4 sm:p-6 sm:pb-4">
+                <div className="sm:flex sm:items-start">
+                  <div className="mt-3 text-center sm:mt-0 sm:ml-4 sm:text-left w-full">
+                    <h3 className="text-lg leading-6 font-medium text-gray-900">
+                      Raw YouVerify Response Data
+                    </h3>
+                    <div className="mt-4">
+                      {selectedUser.kyc.tier1.phone_verification_data && (
+                        <div className="mb-6">
+                          <h4 className="text-md font-medium text-gray-900 mb-2">
+                            Phone Verification Response:
+                          </h4>
+                          <pre className="bg-gray-100 p-4 rounded-lg text-xs overflow-x-auto">
+                            {JSON.stringify(
+                              selectedUser.kyc.tier1.phone_verification_data
+                                .verification_response,
+                              null,
+                              2
+                            )}
+                          </pre>
+                        </div>
+                      )}
+                      {selectedUser.kyc.tier1.nin_verification_data && (
+                        <div className="mb-6">
+                          <h4 className="text-md font-medium text-gray-900 mb-2">
+                            NIN Verification Response:
+                          </h4>
+                          <pre className="bg-gray-100 p-4 rounded-lg text-xs overflow-x-auto">
+                            {JSON.stringify(
+                              selectedUser.kyc.tier1.nin_verification_data
+                                .verification_response,
+                              null,
+                              2
+                            )}
+                          </pre>
+                        </div>
+                      )}
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div className="bg-gray-50 px-4 py-3 sm:px-6 sm:flex sm:flex-row-reverse">
+                <button
+                  type="button"
+                  className="mt-3 w-full inline-flex justify-center rounded-md border border-gray-300 shadow-sm px-4 py-2 bg-white text-base font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 sm:mt-0 sm:ml-3 sm:w-auto sm:text-sm"
+                  onClick={() => setShowRawData(false)}
                 >
                   Close
                 </button>

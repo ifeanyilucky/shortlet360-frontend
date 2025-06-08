@@ -33,7 +33,13 @@ export const kycService = {
     return response.data;
   },
 
-  // Tier 2 verification (address and identity)
+  // Tier 1 verification (phone and NIN)
+  submitTier1Verification: async (data) => {
+    const response = await api.post("/kyc/tier1/submit", data);
+    return response.data;
+  },
+
+  // Tier 2 verification (address only)
   submitTier2Verification: async (data) => {
     const response = await api.post("/kyc/tier2/submit", data);
     return response.data;

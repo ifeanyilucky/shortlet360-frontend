@@ -97,7 +97,38 @@ export const useKycStore = create((set, get) => ({
     }
   },
 
-  // Tier 2 verification (address and identity)
+  // Tier 1 verification (phone and NIN)
+  submitTier1Verification: async (data, setUser) => {
+    try {
+      set({ isLoading: true, error: null });
+      const response = await kycService.submitTier1Verification(data);
+      set((state) => ({
+        kycStatus: response.kyc,
+        isLoading: false,
+      }));
+
+      // Update user in auth context if setUser function is provided and user data is returned
+      if (setUser && response.user) {
+        setUser(response.user);
+      }
+
+      toast.success("Tier 1 verification submitted successfully");
+      return response;
+    } catch (error) {
+      set({
+        error:
+          error.response?.data?.message ||
+          "Failed to submit Tier 1 verification",
+        isLoading: false,
+      });
+      toast.error(
+        error.response?.data?.message || "Failed to submit Tier 1 verification"
+      );
+      throw error;
+    }
+  },
+
+  // Tier 2 verification (address only)
   submitTier2Verification: async (data) => {
     try {
       set({ isLoading: true, error: null });

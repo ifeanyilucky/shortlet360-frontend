@@ -387,7 +387,11 @@ export default function PropertyDetail() {
     };
 
     // Use the hook at the component level and call the function here
-    initializePayment(onSuccess, onClose, paymentConfig);
+    initializePayment({
+      onSuccess,
+      onClose,
+      config: paymentConfig,
+    });
   };
 
   // Function to check if a date is unavailable
@@ -952,8 +956,11 @@ export default function PropertyDetail() {
       toast.error("Payment was not completed");
     };
 
-    // Use the hook at the component level and call the function here
-    initializePayment(onSuccess, onClose, paymentConfig);
+    initializePayment({
+      onSuccess,
+      onClose,
+      config: paymentConfig,
+    });
   };
 
   return (
