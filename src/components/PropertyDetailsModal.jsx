@@ -9,20 +9,41 @@ import {
   BsWhatsapp,
   BsFacebook,
   BsLinkedin,
+  BsChevronLeft,
+  BsChevronRight,
+  BsX,
 } from "react-icons/bs";
 import { fCurrency } from "../utils/formatNumber";
 import LoadingOverlay from "./LoadingOverlay";
 import AvailabilityCalendar from "./AvailabilityCalendar";
 import toast from "react-hot-toast";
+import { Swiper, SwiperSlide } from "swiper/react";
+import { Navigation, Pagination } from "swiper/modules";
+import "swiper/css";
+import "swiper/css/navigation";
+import "swiper/css/pagination";
 
 export default function PropertyDetailsModal({ propertyId }) {
   const { getProperty, property, isLoading } = propertyStore();
+  const [isFullScreen, setIsFullScreen] = useState(false);
+  const [fullScreenIndex, setFullScreenIndex] = useState(0);
 
   useEffect(() => {
     if (propertyId) {
       getProperty(propertyId);
     }
   }, [propertyId]);
+
+  const openFullScreen = (index) => {
+    setFullScreenIndex(index);
+    setIsFullScreen(true);
+    document.body.style.overflow = "hidden";
+  };
+
+  const closeFullScreen = () => {
+    setIsFullScreen(false);
+    document.body.style.overflow = "unset";
+  };
 
   const handleShare = async () => {
     const shareUrl = `${window.location.origin}/property/${propertyId}`;
@@ -49,7 +70,6 @@ export default function PropertyDetailsModal({ propertyId }) {
 
   const handleSocialShare = (platform) => {
     const shareUrl = `${window.location.origin}/property/${propertyId}`;
-    const shareTitle = encodeURIComponent(property?.property_name || "");
     const shareText = encodeURIComponent(
       `Check out this amazing property: ${property?.property_name} in ${property?.location.city}`
     );
@@ -90,13 +110,122 @@ export default function PropertyDetailsModal({ propertyId }) {
 
   return (
     <div className="space-y-6">
-      {/* Main Image */}
-      <div className="aspect-video rounded-2xl overflow-hidden">
-        <img
-          src={property?.property_images[0]?.url || "/images/living-room.jpg"}
-          alt={property?.property_name}
-          className="w-full h-full object-cover"
-        />
+      {/* Media Gallery */}
+      <div className="space-y-4">
+        {(() => {
+          // Combine images and videos into a single media array
+          const allMedia = [
+            ...(property?.property_images || []).map((img) => ({
+              ...img,
+              type: "image",
+            })),
+            ...(property?.property_videos || []).map((vid) => ({
+              ...vid,
+              type: "video",
+            })),
+          ];
+
+          if (allMedia.length === 0) {
+            return (
+              <div className="aspect-video rounded-2xl overflow-hidden bg-gray-200 flex items-center justify-center">
+                <span className="text-gray-500">No media available</span>
+              </div>
+            );
+          }
+
+          return (
+            <>
+              {/* Main Media Item */}
+              <div
+                className="aspect-video rounded-2xl overflow-hidden relative cursor-pointer group"
+                onClick={() => openFullScreen(0)}
+              >
+                {allMedia[0]?.type === "video" ? (
+                  <div className="relative w-full h-full">
+                    <video
+                      src={allMedia[0]?.url}
+                      className="w-full h-full object-cover"
+                      muted
+                      loop
+                      onMouseEnter={(e) => e.target.play()}
+                      onMouseLeave={(e) => e.target.pause()}
+                    />
+                    <div className="absolute inset-0 bg-black/20 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center">
+                      <div className="bg-white/20 backdrop-blur-sm rounded-full p-4">
+                        <svg
+                          className="w-8 h-8 text-white"
+                          fill="currentColor"
+                          viewBox="0 0 24 24"
+                        >
+                          <path d="M8 5v14l11-7z" />
+                        </svg>
+                      </div>
+                    </div>
+                    <div className="absolute top-3 left-3 bg-black/70 text-white text-xs px-2 py-1 rounded-full">
+                      VIDEO
+                    </div>
+                  </div>
+                ) : (
+                  <img
+                    src={allMedia[0]?.url || "/images/living-room.jpg"}
+                    alt={property?.property_name}
+                    className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                  />
+                )}
+              </div>
+
+              {/* Media Thumbnails */}
+              {allMedia.length > 1 && (
+                <div className="grid grid-cols-4 gap-2">
+                  {allMedia.slice(1, 5).map((media, index) => (
+                    <div
+                      key={media._id || index}
+                      className="aspect-square rounded-lg overflow-hidden relative cursor-pointer group"
+                      onClick={() => openFullScreen(index + 1)}
+                    >
+                      {media.type === "video" ? (
+                        <div className="relative w-full h-full">
+                          <video
+                            src={media.url}
+                            className="w-full h-full object-cover"
+                            muted
+                          />
+                          <div className="absolute inset-0 bg-black/20 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center">
+                            <div className="bg-white/20 backdrop-blur-sm rounded-full p-2">
+                              <svg
+                                className="w-4 h-4 text-white"
+                                fill="currentColor"
+                                viewBox="0 0 24 24"
+                              >
+                                <path d="M8 5v14l11-7z" />
+                              </svg>
+                            </div>
+                          </div>
+                          <div className="absolute top-1 left-1 bg-black/70 text-white text-xs px-1 py-0.5 rounded">
+                            VID
+                          </div>
+                        </div>
+                      ) : (
+                        <img
+                          src={media.url}
+                          alt={`Gallery ${index + 1}`}
+                          className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-300"
+                        />
+                      )}
+                      {index === 3 && allMedia.length > 5 && (
+                        <div className="absolute inset-0 bg-black/50 flex items-center justify-center">
+                          <span className="text-white text-sm font-semibold">
+                            +{allMedia.length - 5}
+                          </span>
+                        </div>
+                      )}
+                    </div>
+                  ))}
+                </div>
+              )}
+            </>
+          );
+        })()}
       </div>
 
       {/* Basic Info */}
@@ -287,6 +416,93 @@ export default function PropertyDetailsModal({ propertyId }) {
         </div>
       </div>
       <AvailabilityCalendar propertyId={propertyId} isOwner={true} />
+
+      {/* Full Screen Modal */}
+      {isFullScreen && (
+        <div className="fixed inset-0 bg-black/95 z-50 overflow-hidden">
+          <button
+            onClick={closeFullScreen}
+            className="absolute top-4 right-4 text-white z-[60] p-2 hover:bg-white/10 rounded-full transition-colors"
+          >
+            <BsX className="w-8 h-8" />
+          </button>
+          <div className="w-full h-full flex items-center justify-center">
+            <div className="w-full h-full max-w-[1000px] mx-auto px-4 relative">
+              {/* Custom navigation buttons */}
+              <button className="swiper-button-prev absolute left-2 sm:left-6 top-1/2 -translate-y-1/2 z-[55] bg-white/10 hover:bg-white/20 transition-colors p-2 sm:p-3 rounded-full">
+                <BsChevronLeft className="w-5 h-5 sm:w-6 sm:h-6 text-white" />
+              </button>
+              <button className="swiper-button-next absolute right-2 sm:right-6 top-1/2 -translate-y-1/2 z-[55] bg-white/10 hover:bg-white/20 transition-colors p-2 sm:p-3 rounded-full">
+                <BsChevronRight className="w-5 h-5 sm:w-6 sm:h-6 text-white" />
+              </button>
+
+              <Swiper
+                modules={[Navigation, Pagination]}
+                spaceBetween={0}
+                slidesPerView={1}
+                navigation={{
+                  nextEl: ".swiper-button-next",
+                  prevEl: ".swiper-button-prev",
+                }}
+                pagination={{
+                  clickable: true,
+                  dynamicBullets: true,
+                }}
+                className="w-full h-full"
+                initialSlide={fullScreenIndex}
+              >
+                {(() => {
+                  // Combine all media for fullscreen view
+                  const allMedia = [
+                    ...(property?.property_images || []).map((img) => ({
+                      ...img,
+                      type: "image",
+                    })),
+                    ...(property?.property_videos || []).map((vid) => ({
+                      ...vid,
+                      type: "video",
+                    })),
+                  ];
+
+                  return allMedia.map((media, index) => (
+                    <SwiperSlide
+                      key={media._id || index}
+                      className="flex items-center justify-center h-full"
+                    >
+                      <div className="flex items-center justify-center w-full h-full px-2 sm:px-4">
+                        {media.type === "video" ? (
+                          <div className="relative max-h-[85vh] max-w-full w-auto h-auto">
+                            <video
+                              src={media.url}
+                              className="max-h-[85vh] max-w-full w-auto h-auto object-contain mx-auto shadow-xl"
+                              controls
+                              autoPlay
+                              muted
+                              loop
+                              onError={(e) => {
+                                console.error("Video playback error:", e);
+                              }}
+                            />
+                            <div className="absolute top-4 left-4 bg-black/70 text-white text-sm px-3 py-1 rounded-full">
+                              VIDEO
+                            </div>
+                          </div>
+                        ) : (
+                          <img
+                            src={media.url}
+                            alt={`Gallery ${index + 1}`}
+                            className="max-h-[85vh] max-w-full w-auto h-auto object-contain mx-auto shadow-xl"
+                          />
+                        )}
+                      </div>
+                    </SwiperSlide>
+                  ));
+                })()}
+              </Swiper>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

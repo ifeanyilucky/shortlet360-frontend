@@ -144,6 +144,7 @@ export const bookingService = {
 };
 
 export const uploadService = {
+  // Image upload methods
   uploadImages: async (formData) => {
     const response = await api.post("/upload/multiple", formData, {
       headers: {
@@ -159,6 +160,86 @@ export const uploadService = {
       },
     });
     return response.data;
+  },
+
+  // Video upload methods
+  uploadVideo: async (formData) => {
+    const response = await api.post("/upload/video/single", formData, {
+      headers: {
+        "Content-Type": "multipart/form-data",
+      },
+      timeout: 300000, // 5 minutes timeout for video uploads
+    });
+    return response.data;
+  },
+  uploadVideos: async (formData) => {
+    const response = await api.post("/upload/video/multiple", formData, {
+      headers: {
+        "Content-Type": "multipart/form-data",
+      },
+      timeout: 600000, // 10 minutes timeout for multiple video uploads
+    });
+    return response.data;
+  },
+
+  // Mixed media upload methods
+  uploadMedia: async (formData) => {
+    const response = await api.post("/upload/media/multiple", formData, {
+      headers: {
+        "Content-Type": "multipart/form-data",
+      },
+      timeout: 600000, // 10 minutes timeout for mixed media uploads
+    });
+    return response.data;
+  },
+
+  // Utility method to create FormData for single file
+  createSingleFileFormData: (file, fieldName = "file") => {
+    const formData = new FormData();
+    formData.append(fieldName, file);
+    return formData;
+  },
+
+  // Utility method to create FormData for multiple files
+  createMultipleFilesFormData: (files, fieldName = "files") => {
+    const formData = new FormData();
+    files.forEach((file) => {
+      formData.append(fieldName, file);
+    });
+    return formData;
+  },
+
+  // Helper method to validate file types
+  validateFileType: (file, allowedTypes) => {
+    return allowedTypes.some((type) => file.type.startsWith(type));
+  },
+
+  // Helper method to validate file size
+  validateFileSize: (file, maxSizeInMB) => {
+    const maxSizeInBytes = maxSizeInMB * 1024 * 1024;
+    return file.size <= maxSizeInBytes;
+  },
+
+  // Predefined validation methods
+  isValidImage: (file) => {
+    return (
+      uploadService.validateFileType(file, ["image/"]) &&
+      uploadService.validateFileSize(file, 5)
+    ); // 5MB limit for images
+  },
+
+  isValidVideo: (file) => {
+    return (
+      uploadService.validateFileType(file, ["video/"]) &&
+      uploadService.validateFileSize(file, 100)
+    ); // 100MB limit for videos
+  },
+
+  isValidMedia: (file) => {
+    return (
+      uploadService.validateFileType(file, ["image/", "video/"]) &&
+      uploadService.validateFileSize(file, 100)
+    ); // 100MB limit for mixed media
   },
 };
 

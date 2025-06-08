@@ -1042,68 +1042,206 @@ export default function PropertyDetail() {
           </div>
         </div>
 
-        {/* Image Gallery */}
+        {/* Media Gallery */}
         <div className="mb-8">
           {/* Desktop View */}
           <div className="hidden md:grid grid-cols-4 gap-4">
-            {/* First large image */}
-            <div className="col-span-2 row-span-2 h-[400px] overflow-hidden rounded-3xl">
-              <img
-                src={
-                  property?.property_images[0]?.url || "/images/living-room.jpg"
-                }
-                alt="Main"
-                className="w-full h-full object-cover cursor-pointer hover:scale-105 transition-transform duration-300"
-                onClick={() => openFullScreen(0)}
-              />
-            </div>
-            {/* Grid of smaller images */}
-            {property?.property_images.slice(1, 5).map((image, index) => (
-              <div
-                key={image._id}
-                className="relative overflow-hidden rounded-3xl h-[195px]"
-              >
-                <img
-                  src={image.url}
-                  alt={`Gallery ${index + 1}`}
-                  className="w-full h-full object-cover cursor-pointer hover:scale-110 transition-transform duration-300"
-                  onClick={() => openFullScreen(index + 1)}
-                />
-                {index === 3 && property?.property_images.length > 5 && (
-                  <div
-                    className="absolute inset-0 bg-black/50 flex items-center justify-center cursor-pointer hover:bg-black/60 transition-colors"
-                    onClick={() => openFullScreen(5)}
-                  >
-                    <span className="text-white text-2xl font-semibold">
-                      +{property.property_images.length - 5}
-                    </span>
+            {(() => {
+              // Combine images and videos into a single media array
+              const allMedia = [
+                ...(property?.property_images || []).map((img) => ({
+                  ...img,
+                  type: "image",
+                })),
+                ...(property?.property_videos || []).map((vid) => ({
+                  ...vid,
+                  type: "video",
+                })),
+              ];
+
+              if (allMedia.length === 0) return null;
+
+              return (
+                <>
+                  {/* First large media item */}
+                  <div className="col-span-2 row-span-2 h-[400px] overflow-hidden rounded-3xl relative">
+                    {allMedia[0]?.type === "video" ? (
+                      <div className="relative w-full h-full group">
+                        <video
+                          src={allMedia[0]?.url}
+                          className="w-full h-full object-cover cursor-pointer"
+                          muted
+                          loop
+                          preload="metadata"
+                          onMouseEnter={(e) => e.target.play()}
+                          onMouseLeave={(e) => e.target.pause()}
+                          onClick={() => openFullScreen(0)}
+                          onError={(e) => {
+                            console.error("Video playback error:", e);
+                            e.target.style.display = "none";
+                          }}
+                        />
+                        <div className="absolute inset-0 bg-black/20 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center">
+                          <div className="bg-white/20 backdrop-blur-sm rounded-full p-4">
+                            <svg
+                              className="w-8 h-8 text-white"
+                              fill="currentColor"
+                              viewBox="0 0 24 24"
+                            >
+                              <path d="M8 5v14l11-7z" />
+                            </svg>
+                          </div>
+                        </div>
+                        <div className="absolute top-3 left-3 bg-black/70 text-white text-xs px-2 py-1 rounded-full">
+                          VIDEO
+                        </div>
+                      </div>
+                    ) : (
+                      <img
+                        src={allMedia[0]?.url || "/images/living-room.jpg"}
+                        alt="Main"
+                        className="w-full h-full object-cover cursor-pointer hover:scale-105 transition-transform duration-300"
+                        onClick={() => openFullScreen(0)}
+                      />
+                    )}
                   </div>
-                )}
-              </div>
-            ))}
+
+                  {/* Grid of smaller media items */}
+                  {allMedia.slice(1, 5).map((media, index) => (
+                    <div
+                      key={media._id || index}
+                      className="relative overflow-hidden rounded-3xl h-[195px] group"
+                    >
+                      {media.type === "video" ? (
+                        <div className="relative w-full h-full">
+                          <video
+                            src={media.url}
+                            className="w-full h-full object-cover cursor-pointer"
+                            muted
+                            preload="metadata"
+                            onMouseEnter={(e) => e.target.play()}
+                            onMouseLeave={(e) => e.target.pause()}
+                            onClick={() => openFullScreen(index + 1)}
+                            onError={(e) => {
+                              console.error("Video playback error:", e);
+                              e.target.style.display = "none";
+                            }}
+                          />
+                          <div className="absolute inset-0 bg-black/20 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center">
+                            <div className="bg-white/20 backdrop-blur-sm rounded-full p-3">
+                              <svg
+                                className="w-6 h-6 text-white"
+                                fill="currentColor"
+                                viewBox="0 0 24 24"
+                              >
+                                <path d="M8 5v14l11-7z" />
+                              </svg>
+                            </div>
+                          </div>
+                          <div className="absolute top-2 left-2 bg-black/70 text-white text-xs px-2 py-1 rounded-full">
+                            VIDEO
+                          </div>
+                        </div>
+                      ) : (
+                        <img
+                          src={media.url}
+                          alt={`Gallery ${index + 1}`}
+                          className="w-full h-full object-cover cursor-pointer hover:scale-110 transition-transform duration-300"
+                          onClick={() => openFullScreen(index + 1)}
+                        />
+                      )}
+                      {index === 3 && allMedia.length > 5 && (
+                        <div
+                          className="absolute inset-0 bg-black/50 flex items-center justify-center cursor-pointer hover:bg-black/60 transition-colors"
+                          onClick={() => openFullScreen(5)}
+                        >
+                          <span className="text-white text-2xl font-semibold">
+                            +{allMedia.length - 5}
+                          </span>
+                        </div>
+                      )}
+                    </div>
+                  ))}
+                </>
+              );
+            })()}
           </div>
 
           {/* Mobile View */}
           <div className="md:hidden">
-            <Swiper
-              modules={[Navigation, Pagination]}
-              spaceBetween={0}
-              slidesPerView={1}
-              navigation
-              pagination={{ clickable: true }}
-              className="h-[250px] sm:h-[300px] rounded-3xl"
-            >
-              {property?.property_images.map((image, index) => (
-                <SwiperSlide key={image._id}>
-                  <img
-                    src={image.url}
-                    alt={`Gallery ${index + 1}`}
-                    className="w-full h-full object-cover cursor-pointer"
-                    onClick={() => openFullScreen(index)}
-                  />
-                </SwiperSlide>
-              ))}
-            </Swiper>
+            {(() => {
+              // Combine images and videos for mobile view
+              const allMedia = [
+                ...(property?.property_images || []).map((img) => ({
+                  ...img,
+                  type: "image",
+                })),
+                ...(property?.property_videos || []).map((vid) => ({
+                  ...vid,
+                  type: "video",
+                })),
+              ];
+
+              return (
+                <Swiper
+                  modules={[Navigation, Pagination]}
+                  spaceBetween={0}
+                  slidesPerView={1}
+                  navigation
+                  pagination={{ clickable: true }}
+                  className="h-[250px] sm:h-[300px] rounded-3xl"
+                >
+                  {allMedia.map((media, index) => (
+                    <SwiperSlide key={media._id || index}>
+                      <div className="relative w-full h-full">
+                        {media.type === "video" ? (
+                          <div className="relative w-full h-full group">
+                            <video
+                              src={media.url}
+                              className="w-full h-full object-cover cursor-pointer"
+                              muted
+                              loop
+                              preload="metadata"
+                              controls={false}
+                              onClick={() => openFullScreen(index)}
+                              onTouchStart={(e) => {
+                                // On mobile, play video on touch
+                                e.target.play();
+                              }}
+                              onError={(e) => {
+                                console.error("Video playback error:", e);
+                                e.target.style.display = "none";
+                              }}
+                            />
+                            <div className="absolute inset-0 bg-black/20 flex items-center justify-center">
+                              <div className="bg-white/20 backdrop-blur-sm rounded-full p-4">
+                                <svg
+                                  className="w-8 h-8 text-white"
+                                  fill="currentColor"
+                                  viewBox="0 0 24 24"
+                                >
+                                  <path d="M8 5v14l11-7z" />
+                                </svg>
+                              </div>
+                            </div>
+                            <div className="absolute top-3 left-3 bg-black/70 text-white text-xs px-2 py-1 rounded-full">
+                              VIDEO
+                            </div>
+                          </div>
+                        ) : (
+                          <img
+                            src={media.url}
+                            alt={`Gallery ${index + 1}`}
+                            className="w-full h-full object-cover cursor-pointer"
+                            onClick={() => openFullScreen(index)}
+                          />
+                        )}
+                      </div>
+                    </SwiperSlide>
+                  ))}
+                </Swiper>
+              );
+            })()}
           </div>
         </div>
 
@@ -1141,21 +1279,70 @@ export default function PropertyDetail() {
                   className="w-full h-full gallery-swiper"
                   initialSlide={fullScreenIndex}
                 >
-                  {property?.property_images.map((image, index) => (
-                    <SwiperSlide
-                      key={image._id}
-                      className="flex items-center justify-center h-full"
-                    >
-                      <div className="flex items-center justify-center w-full h-full px-2 sm:px-4">
-                        <img
-                          src={image.url}
-                          alt={`Gallery ${index + 1}`}
-                          className="max-h-[85vh] max-w-full w-auto h-auto object-contain mx-auto shadow-xl"
-                          loading="lazy"
-                        />
-                      </div>
-                    </SwiperSlide>
-                  ))}
+                  {(() => {
+                    // Combine all media for fullscreen view
+                    const allMedia = [
+                      ...(property?.property_images || []).map((img) => ({
+                        ...img,
+                        type: "image",
+                      })),
+                      ...(property?.property_videos || []).map((vid) => ({
+                        ...vid,
+                        type: "video",
+                      })),
+                    ];
+
+                    return allMedia.map((media, index) => (
+                      <SwiperSlide
+                        key={media._id || index}
+                        className="flex items-center justify-center h-full"
+                      >
+                        <div className="flex items-center justify-center w-full h-full px-2 sm:px-4">
+                          {media.type === "video" ? (
+                            <div className="relative max-h-[85vh] max-w-full w-auto h-auto">
+                              <video
+                                src={media.url}
+                                className="max-h-[85vh] max-w-full w-auto h-auto object-contain mx-auto shadow-xl"
+                                controls
+                                autoPlay
+                                muted
+                                loop
+                                preload="metadata"
+                                onError={(e) => {
+                                  console.error("Video playback error:", e);
+                                  // Show error message instead of hiding
+                                  const errorDiv =
+                                    document.createElement("div");
+                                  errorDiv.className =
+                                    "flex items-center justify-center h-64 bg-gray-100 rounded-lg";
+                                  errorDiv.innerHTML =
+                                    '<p class="text-gray-500">Unable to load video</p>';
+                                  e.target.parentNode.replaceChild(
+                                    errorDiv,
+                                    e.target
+                                  );
+                                }}
+                                onLoadStart={() => {
+                                  // Optional: Add loading indicator
+                                  console.log("Video loading started");
+                                }}
+                              />
+                              <div className="absolute top-4 left-4 bg-black/70 text-white text-sm px-3 py-1 rounded-full">
+                                VIDEO
+                              </div>
+                            </div>
+                          ) : (
+                            <img
+                              src={media.url}
+                              alt={`Gallery ${index + 1}`}
+                              className="max-h-[85vh] max-w-full w-auto h-auto object-contain mx-auto shadow-xl"
+                              loading="lazy"
+                            />
+                          )}
+                        </div>
+                      </SwiperSlide>
+                    ));
+                  })()}
                 </Swiper>
               </div>
             </div>

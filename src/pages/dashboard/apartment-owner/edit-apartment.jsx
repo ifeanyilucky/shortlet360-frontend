@@ -70,6 +70,7 @@ export default function EditApartment() {
       },
       unavailable_dates: [],
       property_images: [],
+      property_videos: [],
     },
     mode: "onChange",
   });
@@ -88,7 +89,7 @@ export default function EditApartment() {
       content: <PricingAvailability />,
     },
     {
-      title: "Images",
+      title: "Media",
       content: <ImageUpload />,
     },
     {
@@ -111,15 +112,26 @@ export default function EditApartment() {
           // Reset form with property data
           methods.reset({
             ...property,
-            property_images: property.property_images.map((image) => ({
-              preview: {
-                url: image.url || "",
-                public_id: image.public_id || "",
-                asset_id: image.asset_id || "",
-                _id: image._id || undefined,
-              },
-              isExisting: true,
-            })),
+            property_images:
+              property.property_images?.map((image) => ({
+                preview: {
+                  url: image.url || "",
+                  public_id: image.public_id || "",
+                  asset_id: image.asset_id || "",
+                  _id: image._id || undefined,
+                },
+                isExisting: true,
+              })) || [],
+            property_videos:
+              property.property_videos?.map((video) => ({
+                preview: {
+                  url: video.url || "",
+                  public_id: video.public_id || "",
+                  asset_id: video.asset_id || "",
+                  _id: video._id || undefined,
+                },
+                isExisting: true,
+              })) || [],
           });
         }
       } catch (error) {
@@ -138,8 +150,7 @@ export default function EditApartment() {
     try {
       toast.loading("Updating property...");
 
-      // Handle image uploads
-      // Keep existing images as they are (with their original structure)
+      // Handle existing images
       let finalImages = data.property_images
         .filter((img) => img.isExisting)
         .map((img) => {
@@ -155,6 +166,27 @@ export default function EditApartment() {
           // If it's just a URL string, create the proper structure
           return {
             url: typeof img.preview === "string" ? img.preview : "",
+            public_id: "",
+            asset_id: "",
+          };
+        });
+
+      // Handle existing videos
+      let finalVideos = data.property_videos
+        .filter((vid) => vid.isExisting)
+        .map((vid) => {
+          // If it's already in the correct format with url, public_id, etc.
+          if (typeof vid.preview === "object" && vid.preview.url) {
+            return {
+              url: vid.preview.url,
+              public_id: vid.preview.public_id || "",
+              asset_id: vid.preview.asset_id || "",
+              _id: vid.preview._id || undefined,
+            };
+          }
+          // If it's just a URL string, create the proper structure
+          return {
+            url: typeof vid.preview === "string" ? vid.preview : "",
             public_id: "",
             asset_id: "",
           };
@@ -178,10 +210,29 @@ export default function EditApartment() {
         finalImages = [...finalImages, ...newImageObjects];
       }
 
-      // Create the final form data with properly structured property_images
+      // Handle new videos
+      const newVideos = data.property_videos.filter((vid) => !vid.isExisting);
+      if (newVideos.length > 0) {
+        const videoFormData = new FormData();
+        newVideos.forEach((video) => {
+          videoFormData.append("videos", video);
+        });
+
+        const response = await uploadService.uploadVideos(videoFormData);
+        // Add new videos with proper structure
+        const newVideoObjects = response.urls.map((url) => ({
+          url,
+          public_id: "",
+          asset_id: "",
+        }));
+        finalVideos = [...finalVideos, ...newVideoObjects];
+      }
+
+      // Create the final form data with properly structured media
       const finalFormData = {
         ...data,
         property_images: finalImages,
+        property_videos: finalVideos,
       };
 
       // Submit to API

@@ -49,7 +49,7 @@ export default function AddApartment() {
       per_month: yup.object(),
       rent_per_year: yup.object(),
     }),
-    // Image validation - only validate on the last step
+    // Media validation - only validate on the last step
     property_images: yup.array().when("$isLastStep", (isLastStep, schema) => {
       return isLastStep
         ? schema
@@ -57,6 +57,7 @@ export default function AddApartment() {
             .required("Property images are required")
         : schema;
     }),
+    property_videos: yup.array().max(5, "Maximum 5 videos allowed"),
   });
 
   const methods = useForm({
@@ -111,6 +112,7 @@ export default function AddApartment() {
       },
       unavailable_dates: [],
       property_images: [],
+      property_videos: [],
     },
     resolver: yupResolver(validationSchema),
     context: { isLastStep: current === 3 },
@@ -186,7 +188,7 @@ export default function AddApartment() {
       content: <PricingAvailability />,
     },
     {
-      title: "Images",
+      title: "Media",
       content: <ImageUpload />,
     },
     {
@@ -215,8 +217,8 @@ export default function AddApartment() {
         return ["amenities", "house_rules"];
       case 2: // Pricing
         return ["pricing"];
-      case 3: // Images
-        return ["property_images"];
+      case 3: // Images & Videos
+        return ["property_images", "property_videos"];
       default:
         return [];
     }
@@ -242,22 +244,38 @@ export default function AddApartment() {
   const onSubmit = async (data) => {
     setSubmitLoading(true);
     try {
-      toast.loading("Uploading images...");
+      toast.loading("Uploading media files...");
 
-      // Create FormData object
-      const imageFormData = new FormData();
-      data.property_images.forEach((image) => {
-        imageFormData.append("images", image);
-      });
+      let uploadedImageUrls = [];
+      let uploadedVideoUrls = [];
 
-      // Upload images
-      const response = await uploadService.uploadImages(imageFormData);
-      const uploadedUrls = response.urls;
+      // Upload images if any
+      if (data.property_images && data.property_images.length > 0) {
+        const imageFormData = new FormData();
+        data.property_images.forEach((image) => {
+          imageFormData.append("images", image);
+        });
+
+        const imageResponse = await uploadService.uploadImages(imageFormData);
+        uploadedImageUrls = imageResponse.urls || [];
+      }
+
+      // Upload videos if any
+      if (data.property_videos && data.property_videos.length > 0) {
+        const videoFormData = new FormData();
+        data.property_videos.forEach((video) => {
+          videoFormData.append("videos", video);
+        });
+
+        const videoResponse = await uploadService.uploadVideos(videoFormData);
+        uploadedVideoUrls = videoResponse.urls || [];
+      }
 
       // Create final form data
       const finalFormData = {
         ...data,
-        property_images: uploadedUrls,
+        property_images: uploadedImageUrls,
+        property_videos: uploadedVideoUrls,
       };
 
       await addProperty(finalFormData);
