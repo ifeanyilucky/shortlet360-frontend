@@ -193,6 +193,39 @@ export default function PropertyDetail() {
   const [kycVerified, setKycVerified] = useState(false);
   const { getKycStatus } = useKycStore();
 
+  // Function to get required KYC tiers based on property type and payment period
+  const getRequiredKycTiers = () => {
+    if (
+      property?.property_category === "rent" &&
+      (paymentPeriod === "6months" || paymentPeriod === "12months")
+    ) {
+      return ["tier2", "tier3"];
+    }
+    return ["tier1"];
+  };
+
+  // Function to check KYC verification status based on payment period
+  const checkKycVerification = async () => {
+    if (!user) return false;
+
+    try {
+      const kycResponse = await getKycStatus();
+      const requiredTiers = getRequiredKycTiers();
+
+      // Check if all required tiers are verified
+      const allTiersVerified = requiredTiers.every(
+        (tier) => kycResponse.kyc[tier]?.status === "verified"
+      );
+
+      setKycVerified(allTiersVerified);
+      return allTiersVerified;
+    } catch (error) {
+      console.error("Error checking KYC status:", error);
+      setKycVerified(false);
+      return false;
+    }
+  };
+
   // Inspection request state
   const [showInspectionForm, setShowInspectionForm] = useState(false);
   const [inspectionFormData, setInspectionFormData] = useState({
@@ -202,6 +235,7 @@ export default function PropertyDetail() {
     preferredDate1: "",
     preferredDate2: "",
     preferredDate3: "",
+    owner_email: property?.owner?.email || "",
   });
   const [isSubmittingInspection, setIsSubmittingInspection] = useState(false);
 
@@ -240,6 +274,13 @@ export default function PropertyDetail() {
     fetchData();
   }, [id, getProperty]);
 
+  // Check KYC verification when payment period changes
+  useEffect(() => {
+    if (user && property?.property_category === "rent") {
+      checkKycVerification();
+    }
+  }, [paymentPeriod, user, property?.property_category]);
+
   // Handle inspection form input changes
   const handleInspectionFormChange = (e) => {
     const { name, value } = e.target;
@@ -267,6 +308,7 @@ export default function PropertyDetail() {
         preferredDate1: "",
         preferredDate2: "",
         preferredDate3: "",
+        owner_email: property?.owner?.email || "",
       });
     } catch (error) {
       console.error("Error submitting inspection request:", error);
@@ -312,16 +354,48 @@ export default function PropertyDetail() {
     // Check KYC verification status
     try {
       const kycResponse = await getKycStatus();
-      const requiredTier = paymentPeriod !== "yearly" ? "tier3" : "tier1";
 
-      // Check if the required tier is verified
+      // For rental properties with monthly payments, require Tier 2 AND Tier 3 verification
       if (
-        !kycResponse.kyc[requiredTier] ||
-        kycResponse.kyc[requiredTier].status !== "verified"
+        property?.property_category === "rent" &&
+        (paymentPeriod === "6months" || paymentPeriod === "12months")
       ) {
-        setKycVerified(false);
-        toast.error(`KYC verification required for booking`);
-        return;
+        // Check Tier 2 verification
+        if (
+          !kycResponse.kyc.tier2 ||
+          kycResponse.kyc.tier2.status !== "verified"
+        ) {
+          setKycVerified(false);
+          toast.error(
+            "Tier 2 KYC verification required for monthly rent payments"
+          );
+          navigate("/user/settings/kyc");
+          return;
+        }
+
+        // Check Tier 3 verification
+        if (
+          !kycResponse.kyc.tier3 ||
+          kycResponse.kyc.tier3.status !== "verified"
+        ) {
+          setKycVerified(false);
+          toast.error(
+            "Tier 3 KYC verification required for monthly rent payments"
+          );
+          navigate("/user/settings/kyc");
+          return;
+        }
+      } else {
+        // For shortlet properties or yearly rent payments, only require Tier 1 verification
+        if (
+          !kycResponse.kyc.tier1 ||
+          kycResponse.kyc.tier1.status !== "verified"
+        ) {
+          setKycVerified(false);
+          toast.error("KYC verification required for booking");
+          navigate("/user/settings/kyc");
+          return;
+        }
       }
 
       setKycVerified(true);
@@ -724,8 +798,8 @@ export default function PropertyDetail() {
     }
   };
 
-  // Calculate total rent based on payment period and monthly payment option
-  const calculateTotalRent = () => {
+  // Calculate static yearly total (always the same regardless of payment option)
+  const calculateStaticYearlyTotal = () => {
     if (!property?.pricing?.rent_per_year) return 0;
 
     const {
@@ -740,14 +814,21 @@ export default function PropertyDetail() {
       is_legal_fee_active,
     } = property.pricing.rent_per_year;
 
+    let total = annual_rent;
+    if (is_agency_fee_active) total += agency_fee;
+    if (is_commission_fee_active) total += commission_fee;
+    if (is_caution_fee_active) total += caution_fee;
+    if (is_legal_fee_active) total += legal_fee;
+    return total;
+  };
+
+  // Calculate total rent based on payment period and monthly payment option
+  const calculateTotalRent = () => {
+    if (!property?.pricing?.rent_per_year) return 0;
+
     // For yearly payment, return the total annual amount
     if (paymentPeriod === "yearly") {
-      let total = annual_rent;
-      if (is_agency_fee_active) total += agency_fee;
-      if (is_commission_fee_active) total += commission_fee;
-      if (is_caution_fee_active) total += caution_fee;
-      if (is_legal_fee_active) total += legal_fee;
-      return total;
+      return calculateStaticYearlyTotal();
     }
 
     // For installment payments, calculate based on the selected option
@@ -764,24 +845,8 @@ export default function PropertyDetail() {
   const calculate6MonthsPayment = () => {
     if (!property?.pricing?.rent_per_year) return 0;
 
-    const {
-      annual_rent,
-      agency_fee,
-      commission_fee,
-      caution_fee,
-      legal_fee,
-      is_agency_fee_active,
-      is_commission_fee_active,
-      is_caution_fee_active,
-      is_legal_fee_active,
-    } = property.pricing.rent_per_year;
-
-    // Calculate total base amount (rent + all fees)
-    let totalAmount = annual_rent;
-    if (is_agency_fee_active) totalAmount += agency_fee;
-    if (is_commission_fee_active) totalAmount += commission_fee;
-    if (is_caution_fee_active) totalAmount += caution_fee;
-    if (is_legal_fee_active) totalAmount += legal_fee;
+    // Use the static yearly total as base
+    const totalAmount = calculateStaticYearlyTotal();
 
     // Calculate monthly interest (1.5% of total amount)
     const monthlyInterest = totalAmount * 0.015;
@@ -796,24 +861,8 @@ export default function PropertyDetail() {
   const calculate12MonthsPayment = () => {
     if (!property?.pricing?.rent_per_year) return 0;
 
-    const {
-      annual_rent,
-      agency_fee,
-      commission_fee,
-      caution_fee,
-      legal_fee,
-      is_agency_fee_active,
-      is_commission_fee_active,
-      is_caution_fee_active,
-      is_legal_fee_active,
-    } = property.pricing.rent_per_year;
-
-    // Calculate total base amount (rent + all fees)
-    let totalAmount = annual_rent;
-    if (is_agency_fee_active) totalAmount += agency_fee;
-    if (is_commission_fee_active) totalAmount += commission_fee;
-    if (is_caution_fee_active) totalAmount += caution_fee;
-    if (is_legal_fee_active) totalAmount += legal_fee;
+    // Use the static yearly total as base
+    const totalAmount = calculateStaticYearlyTotal();
 
     // Calculate monthly interest (2% of total amount)
     const monthlyInterest = totalAmount * 0.02;
@@ -887,7 +936,7 @@ export default function PropertyDetail() {
     return 0;
   };
 
-  const handleRentNow = () => {
+  const handleRentNow = async () => {
     // Check if user is logged in
     if (!user) {
       toast.error("Please login to rent this property");
@@ -895,9 +944,51 @@ export default function PropertyDetail() {
       return;
     }
 
-    if (user?.kyc?.tier1?.status !== "verified") {
-      toast.error("KYC verification required for renting properties");
-      navigate("/user/settings/kyc");
+    // Check KYC verification status based on payment period
+    try {
+      const kycResponse = await getKycStatus();
+
+      // For monthly payments (6months or 12months), require Tier 2 AND Tier 3 verification
+      if (paymentPeriod === "6months" || paymentPeriod === "12months") {
+        // Check Tier 2 verification
+        if (
+          !kycResponse.kyc.tier2 ||
+          kycResponse.kyc.tier2.status !== "verified"
+        ) {
+          toast.error(
+            "Tier 2 KYC verification required for monthly rent payments"
+          );
+          navigate("/user/settings/kyc");
+          return;
+        }
+
+        // Check Tier 3 verification
+        if (
+          !kycResponse.kyc.tier3 ||
+          kycResponse.kyc.tier3.status !== "verified"
+        ) {
+          toast.error(
+            "Tier 3 KYC verification required for monthly rent payments"
+          );
+          navigate("/user/settings/kyc");
+          return;
+        }
+      } else {
+        // For yearly payments, only require Tier 1 verification
+        if (
+          !kycResponse.kyc.tier1 ||
+          kycResponse.kyc.tier1.status !== "verified"
+        ) {
+          toast.error(
+            "Tier 1 KYC verification required for renting properties"
+          );
+          navigate("/user/settings/kyc");
+          return;
+        }
+      }
+    } catch (error) {
+      console.error("Error checking KYC status:", error);
+      toast.error("Unable to verify KYC status. Please try again.");
       return;
     }
 
@@ -1421,19 +1512,21 @@ export default function PropertyDetail() {
               </div>
 
               {/* House Rules Section */}
-              <div className="mt-8 border-t pt-6">
-                <h2 className="text-xl font-semibold mb-4">House Rules</h2>
-                <div className="space-y-3">
-                  {property?.house_rules.map((rule, index) => (
-                    <div key={index} className="flex items-start gap-3">
-                      <span className="text-primary-900">•</span>
-                      <p className="text-gray-600 text-sm sm:text-base">
-                        {rule}
-                      </p>
-                    </div>
-                  ))}
+              {property?.house_rules.length > 0 && (
+                <div className="mt-8 border-t pt-6">
+                  <h2 className="text-xl font-semibold mb-4">House Rules</h2>
+                  <div className="space-y-3">
+                    {property?.house_rules.map((rule, index) => (
+                      <div key={index} className="flex items-start gap-3">
+                        <span className="text-primary-900">•</span>
+                        <p className="text-gray-600 text-sm sm:text-base">
+                          {rule}
+                        </p>
+                      </div>
+                    ))}
+                  </div>
                 </div>
-              </div>
+              )}
             </div>
           </div>
 
@@ -2018,8 +2111,7 @@ export default function PropertyDetail() {
                   !kycVerified && (
                     <div className="mt-4 mb-2">
                       <KycVerificationStatus
-                        // requiredTier={paymentPeriod === "monthly" ? "tier2" : "tier1"}
-                        requiredTier={"tier1"}
+                        requiredTier="tier1"
                         actionText="Continue to Payment"
                         onVerified={() => setKycVerified(true)}
                       />
@@ -2059,21 +2151,75 @@ export default function PropertyDetail() {
             {property?.property_category === "rent" && (
               <div className="bg-white rounded-3xl p-6 shadow-lg">
                 <div className="flex flex-col gap-4">
-                  {/* Total Purchase Display */}
+                  {/* Payment Breakdown */}
                   <div className="bg-gray-50 rounded-2xl p-4 mb-4">
-                    <div className="flex justify-between items-center">
-                      <span className="text-gray-600 font-medium">
-                        Total Purchase:
-                      </span>
-                      <span className="text-2xl font-bold text-blue-600">
-                        {fCurrency(calculateTotalRent())}
-                      </span>
+                    <h4 className="font-semibold text-gray-800 mb-3">
+                      Payment Breakdown
+                    </h4>
+                    <div className="space-y-2 text-sm">
+                      <div className="flex justify-between">
+                        <span>Yearly rent:</span>
+                        <span>
+                          {fCurrency(
+                            property?.pricing?.rent_per_year?.annual_rent || 0
+                          )}
+                        </span>
+                      </div>
+                      {property?.pricing?.rent_per_year
+                        ?.is_agency_fee_active && (
+                        <div className="flex justify-between">
+                          <span>Agency fee:</span>
+                          <span>
+                            {fCurrency(
+                              property?.pricing?.rent_per_year?.agency_fee || 0
+                            )}
+                          </span>
+                        </div>
+                      )}
+                      {property?.pricing?.rent_per_year
+                        ?.is_commission_fee_active && (
+                        <div className="flex justify-between">
+                          <span>Agreement fee:</span>
+                          <span>
+                            {fCurrency(
+                              property?.pricing?.rent_per_year
+                                ?.commission_fee || 0
+                            )}
+                          </span>
+                        </div>
+                      )}
+                      {property?.pricing?.rent_per_year
+                        ?.is_caution_fee_active && (
+                        <div className="flex justify-between">
+                          <span>Caution fee:</span>
+                          <span>
+                            {fCurrency(
+                              property?.pricing?.rent_per_year?.caution_fee || 0
+                            )}
+                          </span>
+                        </div>
+                      )}
+                      {property?.pricing?.rent_per_year
+                        ?.is_legal_fee_active && (
+                        <div className="flex justify-between">
+                          <span>Legal fee:</span>
+                          <span>
+                            {fCurrency(
+                              property?.pricing?.rent_per_year?.legal_fee || 0
+                            )}
+                          </span>
+                        </div>
+                      )}
                     </div>
                   </div>
 
                   {/* Payment Options */}
                   <div className="space-y-3">
-                    {/* Yearly Payment Option */}
+                    <h4 className="font-semibold text-gray-800">
+                      Choose Payment Option
+                    </h4>
+
+                    {/* One Year Payment Option */}
                     <div
                       className={`border-2 rounded-2xl p-4 cursor-pointer transition-all ${
                         paymentPeriod === "yearly"
@@ -2082,7 +2228,7 @@ export default function PropertyDetail() {
                       }`}
                       onClick={() => setPaymentPeriod("yearly")}
                     >
-                      <div className="flex items-center justify-between mb-3">
+                      <div className="flex items-center justify-between">
                         <div className="flex items-center gap-3">
                           <div
                             className={`w-5 h-5 rounded-full border-2 flex items-center justify-center ${
@@ -2096,28 +2242,20 @@ export default function PropertyDetail() {
                             )}
                           </div>
                           <div>
-                            <p className="font-bold text-lg">One-off Payment</p>
-                            <p className="text-sm text-gray-600">for 1 Year</p>
+                            <p className="font-bold text-lg">One year</p>
+                            <p className="text-sm text-gray-600">0% interest</p>
                           </div>
                         </div>
-                      </div>
-                      <div className="space-y-2 text-sm">
-                        <div className="flex justify-between">
-                          <span className="text-gray-600">Interest Rate:</span>
-                          <span className="font-medium">0%</span>
-                        </div>
-                        <div className="flex justify-between">
-                          <span className="text-gray-600">Interest Value:</span>
-                          <span className="font-medium">{fCurrency(0)}</span>
-                        </div>
-                        <div className="flex justify-between font-bold text-lg border-t pt-2">
-                          <span>Total:</span>
-                          <span>{fCurrency(calculateTotalRent())}</span>
+                        <div className="text-right">
+                          <p className="font-bold text-lg text-blue-600">
+                            {fCurrency(calculateStaticYearlyTotal())}
+                          </p>
+                          <p className="text-sm text-gray-500">Total amount</p>
                         </div>
                       </div>
                     </div>
 
-                    {/* 6 Months Payment Option */}
+                    {/* Six Months Payment Option */}
                     <div
                       className={`border-2 rounded-2xl p-4 cursor-pointer transition-all ${
                         paymentPeriod === "6months"
@@ -2129,7 +2267,7 @@ export default function PropertyDetail() {
                         setMonthlyPaymentOption("6months");
                       }}
                     >
-                      <div className="flex items-center justify-between mb-3">
+                      <div className="flex items-center justify-between">
                         <div className="flex items-center gap-3">
                           <div
                             className={`w-5 h-5 rounded-full border-2 flex items-center justify-center ${
@@ -2143,31 +2281,19 @@ export default function PropertyDetail() {
                             )}
                           </div>
                           <div>
-                            <p className="font-bold text-lg">
-                              {fCurrency(calculate6MonthsPayment())}/month
-                            </p>
+                            <p className="font-bold text-lg">Six months</p>
                             <p className="text-sm text-gray-600">
-                              for 6 months
+                              1.5% monthly interest
                             </p>
                           </div>
                         </div>
-                      </div>
-                      <div className="space-y-2 text-sm">
-                        <div className="flex justify-between">
-                          <span className="text-gray-600">Interest rate:</span>
-                          <span className="font-medium">1.50%</span>
-                        </div>
-                        <div className="flex justify-between">
-                          <span className="text-gray-600">Interest value:</span>
-                          <span className="font-medium">
-                            {fCurrency(calculateTotalRent() * 0.015)}
-                          </span>
-                        </div>
-                        <div className="flex justify-between font-bold text-lg border-t pt-2">
-                          <span>Total:</span>
-                          <span>
+                        <div className="text-right">
+                          <p className="font-bold text-lg text-blue-600">
                             {fCurrency(calculate6MonthsPayment() * 6)}
-                          </span>
+                          </p>
+                          <p className="text-sm text-gray-500">
+                            {fCurrency(calculate6MonthsPayment())}/month
+                          </p>
                         </div>
                       </div>
                     </div>
@@ -2184,7 +2310,7 @@ export default function PropertyDetail() {
                         setMonthlyPaymentOption("12months");
                       }}
                     >
-                      <div className="flex items-center justify-between mb-3">
+                      <div className="flex items-center justify-between">
                         <div className="flex items-center gap-3">
                           <div
                             className={`w-5 h-5 rounded-full border-2 flex items-center justify-center ${
@@ -2198,99 +2324,19 @@ export default function PropertyDetail() {
                             )}
                           </div>
                           <div>
-                            <p className="font-bold text-lg">
-                              {fCurrency(calculate12MonthsPayment())}/month
-                            </p>
+                            <p className="font-bold text-lg">12 months</p>
                             <p className="text-sm text-gray-600">
-                              for 12 months
+                              2% monthly interest
                             </p>
                           </div>
                         </div>
-                      </div>
-                      <div className="space-y-2 text-sm">
-                        <div className="flex justify-between">
-                          <span className="text-gray-600">Interest rate:</span>
-                          <span className="font-medium">2.00%</span>
-                        </div>
-                        <div className="flex justify-between">
-                          <span className="text-gray-600">Interest value:</span>
-                          <span className="font-medium">
-                            {fCurrency(calculateTotalRent() * 0.02)}
-                          </span>
-                        </div>
-                        <div className="flex justify-between font-bold text-lg border-t pt-2">
-                          <span>Total:</span>
-                          <span>
+                        <div className="text-right">
+                          <p className="font-bold text-lg text-blue-600">
                             {fCurrency(calculate12MonthsPayment() * 12)}
-                          </span>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-
-                  {/* Simple Breakdown */}
-                  <div className="bg-gray-50 rounded-2xl p-4 mt-4">
-                    <h4 className="font-semibold text-gray-800 mb-3">
-                      Pay Now
-                    </h4>
-                    <div className="space-y-2 text-sm">
-                      <div className="flex justify-between">
-                        <span>Yearly Rent:</span>
-                        <span>
-                          {fCurrency(
-                            property?.pricing?.rent_per_year?.annual_rent || 0
-                          )}
-                        </span>
-                      </div>
-                      {property?.pricing?.rent_per_year
-                        ?.is_agency_fee_active && (
-                        <div className="flex justify-between">
-                          <span>Agency Fee:</span>
-                          <span>
-                            {fCurrency(
-                              property?.pricing?.rent_per_year?.agency_fee || 0
-                            )}
-                          </span>
-                        </div>
-                      )}
-                      {property?.pricing?.rent_per_year
-                        ?.is_commission_fee_active && (
-                        <div className="flex justify-between">
-                          <span>Agreement Fee:</span>
-                          <span>
-                            {fCurrency(
-                              property?.pricing?.rent_per_year
-                                ?.commission_fee || 0
-                            )}
-                          </span>
-                        </div>
-                      )}
-                      {property?.pricing?.rent_per_year
-                        ?.is_caution_fee_active && (
-                        <div className="flex justify-between">
-                          <span>Caution Fee:</span>
-                          <span>
-                            {fCurrency(
-                              property?.pricing?.rent_per_year?.caution_fee || 0
-                            )}
-                          </span>
-                        </div>
-                      )}
-                      {property?.pricing?.rent_per_year
-                        ?.is_legal_fee_active && (
-                        <div className="flex justify-between">
-                          <span>Legal Fee:</span>
-                          <span>
-                            {fCurrency(
-                              property?.pricing?.rent_per_year?.legal_fee || 0
-                            )}
-                          </span>
-                        </div>
-                      )}
-                      <div className="border-t pt-2 mt-2">
-                        <div className="flex justify-between font-bold">
-                          <span>Total:</span>
-                          <span>{fCurrency(calculateTotalRent())}</span>
+                          </p>
+                          <p className="text-sm text-gray-500">
+                            {fCurrency(calculate12MonthsPayment())}/month
+                          </p>
                         </div>
                       </div>
                     </div>
@@ -2300,12 +2346,51 @@ export default function PropertyDetail() {
                     user?._id !== property?.owner._id &&
                     !kycVerified && (
                       <div className="mt-4 mb-2">
-                        <KycVerificationStatus
-                          // requiredTier={paymentPeriod === "monthly" ? "tier2" : "tier1"}
-                          requiredTier={"tier1"}
-                          actionText="Continue to Payment"
-                          onVerified={() => setKycVerified(true)}
-                        />
+                        {paymentPeriod === "6months" ||
+                        paymentPeriod === "12months" ? (
+                          <div className="space-y-3">
+                            <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-4">
+                              <div className="flex items-start gap-3">
+                                <div className="flex-shrink-0">
+                                  <svg
+                                    className="w-5 h-5 text-yellow-600 mt-0.5"
+                                    fill="currentColor"
+                                    viewBox="0 0 20 20"
+                                  >
+                                    <path
+                                      fillRule="evenodd"
+                                      d="M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.213 2.98-1.742 2.98H4.42c-1.53 0-2.493-1.646-1.743-2.98l5.58-9.92zM11 13a1 1 0 11-2 0 1 1 0 012 0zm-1-8a1 1 0 00-1 1v3a1 1 0 002 0V6a1 1 0 00-1-1z"
+                                      clipRule="evenodd"
+                                    />
+                                  </svg>
+                                </div>
+                                <div className="flex-1">
+                                  <h4 className="text-sm font-medium text-yellow-800">
+                                    KYC Verification Required
+                                  </h4>
+                                  <p className="text-sm text-yellow-700 mt-1">
+                                    Monthly rent payments require both Tier 2
+                                    and Tier 3 KYC verification to be completed.
+                                  </p>
+                                  <button
+                                    onClick={() =>
+                                      navigate("/user/settings/kyc")
+                                    }
+                                    className="mt-2 text-sm bg-yellow-600 text-white px-3 py-1 rounded hover:bg-yellow-700 transition-colors"
+                                  >
+                                    Complete KYC Verification
+                                  </button>
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                        ) : (
+                          <KycVerificationStatus
+                            requiredTier="tier1"
+                            actionText="Continue to Payment"
+                            onVerified={() => setKycVerified(true)}
+                          />
+                        )}
                       </div>
                     )}
                   {/* Book Now Button */}
@@ -2323,10 +2408,14 @@ export default function PropertyDetail() {
                         className="w-full bg-blue-600 text-white py-3 rounded-xl font-medium hover:bg-blue-700 mt-4"
                       >
                         {paymentPeriod === "yearly"
-                          ? "Pay Yearly Rent"
+                          ? `Pay ${fCurrency(calculateTotalRent())}`
                           : paymentPeriod === "6months"
-                          ? "Pay First Month (6 Months Plan)"
-                          : "Pay First Month (12 Months Plan)"}
+                          ? `Pay ${fCurrency(
+                              calculate6MonthsPayment()
+                            )} (First Month)`
+                          : `Pay ${fCurrency(
+                              calculate12MonthsPayment()
+                            )} (First Month)`}
                       </button>
 
                       {/* Inspection Request Button */}

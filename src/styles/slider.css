@@ -3,8 +3,9 @@
   -webkit-appearance: none;
   appearance: none;
   outline: none;
-  pointer-events: auto;
+  pointer-events: none;
   background: transparent;
+  height: 20px;
 }
 
 .slider-thumb::-webkit-slider-track {
@@ -26,7 +27,6 @@
   border: 3px solid #ffffff;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
   pointer-events: auto;
-  position: relative;
 }
 
 .slider-thumb::-moz-range-track {
@@ -47,29 +47,44 @@
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
   pointer-events: auto;
   -moz-appearance: none;
-  border: none;
 }
 
-/* Lower slider (from) - different color to distinguish */
+/* Lower slider (from) - minimum price slider */
+.slider-thumb-lower {
+  pointer-events: none;
+}
+
 .slider-thumb-lower::-webkit-slider-thumb {
   background: #02164F;
   border: 3px solid #ffffff;
+  pointer-events: auto;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2), inset 0 0 0 2px #ffffff;
 }
 
 .slider-thumb-lower::-moz-range-thumb {
   background: #02164F;
   border: 3px solid #ffffff;
+  pointer-events: auto;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2), inset 0 0 0 2px #ffffff;
 }
 
-/* Upper slider (to) - slightly different styling */
+/* Upper slider (to) - maximum price slider */
+.slider-thumb-upper {
+  pointer-events: none;
+}
+
 .slider-thumb-upper::-webkit-slider-thumb {
   background: #02164F;
   border: 3px solid #ffffff;
+  pointer-events: auto;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2), inset 0 0 0 2px #02164F;
 }
 
 .slider-thumb-upper::-moz-range-thumb {
   background: #02164F;
   border: 3px solid #ffffff;
+  pointer-events: auto;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2), inset 0 0 0 2px #02164F;
 }
 
 .slider-thumb:focus {
@@ -92,6 +107,27 @@
   transform: scale(1.1);
 }
 
+/* Hover effects for better UX */
+.slider-thumb-lower:hover::-webkit-slider-thumb {
+  box-shadow: 0 0 0 2px rgba(2, 22, 79, 0.3), 0 2px 8px rgba(0, 0, 0, 0.2);
+  transform: scale(1.05);
+}
+
+.slider-thumb-lower:hover::-moz-range-thumb {
+  box-shadow: 0 0 0 2px rgba(2, 22, 79, 0.3), 0 2px 8px rgba(0, 0, 0, 0.2);
+  transform: scale(1.05);
+}
+
+.slider-thumb-upper:hover::-webkit-slider-thumb {
+  box-shadow: 0 0 0 2px rgba(2, 22, 79, 0.3), 0 2px 8px rgba(0, 0, 0, 0.2);
+  transform: scale(1.05);
+}
+
+.slider-thumb-upper:hover::-moz-range-thumb {
+  box-shadow: 0 0 0 2px rgba(2, 22, 79, 0.3), 0 2px 8px rgba(0, 0, 0, 0.2);
+  transform: scale(1.05);
+}
+
 /* Firefox specific fixes */
 .slider-thumb::-moz-range-progress {
   background: transparent;
@@ -99,4 +135,70 @@
 
 .slider-thumb::-moz-focus-outer {
   border: 0;
+}
+
+
+
+/* Additional styling for better thumb visibility */
+.slider-thumb-lower::-webkit-slider-thumb {
+  transition: all 0.2s ease;
+}
+
+.slider-thumb-lower::-moz-range-thumb {
+  transition: all 0.2s ease;
+}
+
+.slider-thumb-upper::-webkit-slider-thumb {
+  transition: all 0.2s ease;
+}
+
+.slider-thumb-upper::-moz-range-thumb {
+  transition: all 0.2s ease;
+}
+
+/* Active state styling */
+.slider-thumb-lower:active::-webkit-slider-thumb,
+.slider-thumb-lower:focus::-webkit-slider-thumb {
+  box-shadow: 0 0 0 4px rgba(2, 22, 79, 0.2), 0 2px 12px rgba(0, 0, 0, 0.3);
+  transform: scale(1.1);
+}
+
+.slider-thumb-lower:active::-moz-range-thumb,
+.slider-thumb-lower:focus::-moz-range-thumb {
+  box-shadow: 0 0 0 4px rgba(2, 22, 79, 0.2), 0 2px 12px rgba(0, 0, 0, 0.3);
+  transform: scale(1.1);
+}
+
+.slider-thumb-upper:active::-webkit-slider-thumb,
+.slider-thumb-upper:focus::-webkit-slider-thumb {
+  box-shadow: 0 0 0 4px rgba(2, 22, 79, 0.2), 0 2px 12px rgba(0, 0, 0, 0.3);
+  transform: scale(1.1);
+}
+
+.slider-thumb-upper:active::-moz-range-thumb,
+.slider-thumb-upper:focus::-moz-range-thumb {
+  box-shadow: 0 0 0 4px rgba(2, 22, 79, 0.2), 0 2px 12px rgba(0, 0, 0, 0.3);
+  transform: scale(1.1);
+}
+
+/* Ensure track doesn't interfere with thumb interaction */
+.slider-thumb::-webkit-slider-runnable-track {
+  background: transparent;
+  pointer-events: none;
+}
+
+.slider-thumb::-moz-range-track {
+  background: transparent;
+  pointer-events: none;
+}
+
+/* Make sure thumbs are always on top when active */
+.slider-thumb-lower:active,
+.slider-thumb-lower:focus {
+  z-index: 10 !important;
+}
+
+.slider-thumb-upper:active,
+.slider-thumb-upper:focus {
+  z-index: 10 !important;
 }

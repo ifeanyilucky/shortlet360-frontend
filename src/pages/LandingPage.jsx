@@ -27,7 +27,7 @@ export default function LandingPage() {
   const [showPriceDropdown, setShowPriceDropdown] = useState(false);
 
   // Price range constants
-  const MIN_PRICE = 200000; // 200k
+  const MIN_PRICE = 200; // 200 currency units
   const MAX_PRICE = 10000000; // 10m
 
   const [searchParams, setSearchParams] = useState({
@@ -53,21 +53,30 @@ export default function LandingPage() {
     const newValue = parseInt(value);
     setSearchParams((prev) => {
       const currentRange = prev.priceRange;
+      const minGap = 1000; // Minimum gap between sliders
 
       if (type === "from") {
+        // Ensure from value doesn't exceed to value minus minimum gap
+        const maxFromValue = currentRange.to - minGap;
+        const clampedFromValue = Math.min(Math.max(newValue, MIN_PRICE), maxFromValue);
+        
         return {
           ...prev,
           priceRange: {
             ...currentRange,
-            from: Math.min(newValue, currentRange.to - 10000), // Ensure minimum gap
+            from: clampedFromValue,
           },
         };
       } else {
+        // Ensure to value doesn't go below from value plus minimum gap
+        const minToValue = currentRange.from + minGap;
+        const clampedToValue = Math.max(Math.min(newValue, MAX_PRICE), minToValue);
+        
         return {
           ...prev,
           priceRange: {
             ...currentRange,
-            to: Math.max(newValue, currentRange.from + 10000), // Ensure minimum gap
+            to: clampedToValue,
           },
         };
       }
@@ -217,45 +226,39 @@ export default function LandingPage() {
                       </div>
 
                       {/* Range slider container */}
-                      <div className="relative mt-[-8px]">
-                        {/* From slider */}
+                      <div className="relative mt-[-8px] h-6">
+                        {/* Minimum slider (from) */}
                         <input
                           type="range"
                           min={MIN_PRICE}
                           max={MAX_PRICE}
-                          step="10000"
+                          step="1000"
                           value={searchParams.priceRange.from}
                           onChange={(e) =>
                             handleSliderChange("from", e.target.value)
                           }
                           className="absolute w-full h-2 bg-transparent appearance-none cursor-pointer slider-thumb slider-thumb-lower"
                           style={{
-                            zIndex:
-                              searchParams.priceRange.from >
-                              searchParams.priceRange.to - 50000
-                                ? 5
-                                : 1,
+                            zIndex: searchParams.priceRange.from > searchParams.priceRange.to - 50000 ? 5 : 1
                           }}
+                          title={`Minimum price: ${formatPrice(searchParams.priceRange.from)}`}
                         />
 
-                        {/* To slider */}
+                        {/* Maximum slider (to) */}
                         <input
                           type="range"
                           min={MIN_PRICE}
                           max={MAX_PRICE}
-                          step="10000"
+                          step="1000"
                           value={searchParams.priceRange.to}
                           onChange={(e) =>
                             handleSliderChange("to", e.target.value)
                           }
                           className="absolute w-full h-2 bg-transparent appearance-none cursor-pointer slider-thumb slider-thumb-upper"
                           style={{
-                            zIndex:
-                              searchParams.priceRange.from >
-                              searchParams.priceRange.to - 50000
-                                ? 1
-                                : 5,
+                            zIndex: searchParams.priceRange.from > searchParams.priceRange.to - 50000 ? 1 : 5
                           }}
+                          title={`Maximum price: ${formatPrice(searchParams.priceRange.to)}`}
                         />
                       </div>
 

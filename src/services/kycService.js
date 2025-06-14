@@ -39,13 +39,17 @@ export const kycService = {
     return response.data;
   },
 
-  // Tier 2 verification (address only)
-  submitTier2Verification: async (data) => {
-    const response = await api.post("/kyc/tier2/submit", data);
+  // Tier 2 verification (utility bill upload)
+  submitTier2Verification: async (formData) => {
+    const response = await api.post("/kyc/tier2/submit", formData, {
+      headers: {
+        "Content-Type": "multipart/form-data",
+      },
+    });
     return response.data;
   },
 
-  // Tier 3 verification (employment and bank statement)
+  // Tier 3 verification (BVN, bank account, and business verification)
   submitTier3Verification: async (data) => {
     const response = await api.post("/kyc/tier3/submit", data);
     return response.data;

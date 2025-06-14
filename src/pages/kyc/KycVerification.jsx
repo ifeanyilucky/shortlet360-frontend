@@ -5,13 +5,31 @@ import LoadingOverlay from "../../components/LoadingOverlay";
 import Tier1Verification from "./Tier1Verification";
 import Tier2Verification from "./Tier2Verification";
 import Tier3Verification from "./Tier3Verification";
-import { HiCheckCircle, HiExclamationCircle, HiClock } from "react-icons/hi";
+import {
+  HiCheckCircle,
+  HiExclamationCircle,
+  HiClock,
+  HiPhone,
+  HiDocumentText,
+  HiCreditCard,
+  HiInformationCircle,
+} from "react-icons/hi";
 
 export default function KycVerification() {
   const { user } = useAuth();
-  const { kycStatus, requiredTiers, overallStatus, isLoading, getKycStatus } =
-    useKycStore();
+  const { kycStatus, isLoading, getKycStatus } = useKycStore();
   const [activeTab, setActiveTab] = useState("tier1");
+
+  // Determine required tiers based on user role
+  const getRequiredTiers = () => {
+    if (user?.role === "owner") {
+      return ["tier1", "tier2"]; // Owners need Tier 1 (Phone + NIN) and Tier 2 (Utility Bill)
+    } else {
+      return ["tier1"]; // Users need at least Tier 1, Tier 2 and 3 are optional for monthly payments
+    }
+  };
+
+  const requiredTiers = getRequiredTiers();
 
   useEffect(() => {
     const fetchKycStatus = async () => {
@@ -30,19 +48,16 @@ export default function KycVerification() {
     if (kycStatus) {
       if (!kycStatus.tier1 || kycStatus.tier1.status !== "verified") {
         setActiveTab("tier1");
-      } else if (
-        requiredTiers.includes("tier2") &&
-        (!kycStatus.tier2 || kycStatus.tier2.status !== "verified")
-      ) {
+      } else if (!kycStatus.tier2 || kycStatus.tier2.status !== "verified") {
         setActiveTab("tier2");
       } else if (
-        requiredTiers.includes("tier3") &&
+        user?.role !== "owner" && // Only show tier3 for users
         (!kycStatus.tier3 || kycStatus.tier3.status !== "verified")
       ) {
         setActiveTab("tier3");
       }
     }
-  }, [kycStatus, requiredTiers]);
+  }, [kycStatus, user?.role]);
 
   if (isLoading || !kycStatus) {
     return <LoadingOverlay />;
@@ -99,79 +114,195 @@ export default function KycVerification() {
     }
   };
 
+  // Calculate overall verification status
+  const getOverallStatus = () => {
+    const completedRequired = requiredTiers.every(
+      (tier) => kycStatus[tier]?.status === "verified"
+    );
+
+    if (completedRequired) return "complete";
+
+    const hasPending = requiredTiers.some(
+      (tier) => kycStatus[tier]?.status === "pending"
+    );
+
+    if (hasPending) return "pending";
+    return "incomplete";
+  };
+
+  const overallStatus = getOverallStatus();
+
   return (
-    <div className="p-4 md:p-6 max-w-4xl mx-auto">
+    <div className="p-4 md:p-6 max-w-6xl mx-auto">
       <div className="mb-8">
         <h1 className="text-2xl md:text-3xl font-bold mb-2">
           KYC Verification
         </h1>
-        <p className="text-gray-600">
+        <p className="text-gray-600 mb-4">
           Complete the verification process to access all features of the
           platform.
         </p>
+
+        {/* Role-specific information */}
+        <div className="bg-blue-50 border border-blue-200 rounded-lg p-4 mb-6">
+          <div className="flex items-start">
+            <HiInformationCircle className="w-5 h-5 text-blue-500 mt-0.5 mr-3 flex-shrink-0" />
+            <div>
+              <h3 className="font-medium text-blue-900 mb-1">
+                {user?.role === "owner"
+                  ? "Property Owner Requirements"
+                  : "User Verification Options"}
+              </h3>
+              {user?.role === "owner" ? (
+                <p className="text-sm text-blue-800">
+                  As a property owner, you must complete Tier 1 (Phone + NIN)
+                  and Tier 2 (Utility Bill) verification to list properties.
+                </p>
+              ) : (
+                <div className="text-sm text-blue-800">
+                  <p className="mb-2">
+                    • <strong>Tier 1</strong> (Required): Basic verification to
+                    book properties
+                  </p>
+                  <p className="mb-2">
+                    • <strong>Tier 2</strong> (Optional): Address verification
+                    for enhanced trust
+                  </p>
+                  <p>
+                    • <strong>Tier 3</strong> (Optional): Financial verification
+                    for monthly payment options
+                  </p>
+                </div>
+              )}
+            </div>
+          </div>
+        </div>
+
+        {/* Overall Status */}
+        <div
+          className={`p-4 rounded-lg border-l-4 ${
+            overallStatus === "complete"
+              ? "bg-green-50 border-green-400"
+              : overallStatus === "pending"
+              ? "bg-yellow-50 border-yellow-400"
+              : "bg-gray-50 border-gray-400"
+          }`}
+        >
+          <div className="flex items-center">
+            {overallStatus === "complete" && (
+              <HiCheckCircle className="w-5 h-5 text-green-500 mr-2" />
+            )}
+            {overallStatus === "pending" && (
+              <HiClock className="w-5 h-5 text-yellow-500 mr-2" />
+            )}
+            {overallStatus === "incomplete" && (
+              <HiExclamationCircle className="w-5 h-5 text-gray-500 mr-2" />
+            )}
+            <span className="font-medium">
+              {overallStatus === "complete" && "Verification Complete"}
+              {overallStatus === "pending" && "Verification Pending"}
+              {overallStatus === "incomplete" && "Verification Required"}
+            </span>
+          </div>
+        </div>
       </div>
 
       {/* KYC Progress */}
-      <div className="bg-white rounded-lg shadow-sm p-4 mb-8">
-        <h2 className="text-lg font-semibold mb-4">Verification Progress</h2>
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+      <div className="bg-white rounded-lg shadow-sm p-6 mb-8">
+        <h2 className="text-lg font-semibold mb-6">Verification Tiers</h2>
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+          {/* Tier 1 */}
           <div
-            className={`p-4 rounded-lg border ${
-              activeTab === "tier1" ? "border-blue-500" : "border-gray-200"
-            } cursor-pointer`}
+            className={`p-6 rounded-lg border-2 transition-all cursor-pointer ${
+              activeTab === "tier1"
+                ? "border-blue-500 bg-blue-50"
+                : "border-gray-200 hover:border-gray-300"
+            }`}
             onClick={() => setActiveTab("tier1")}
           >
-            <div className="flex justify-between items-center mb-2">
-              <h3 className="font-medium">Tier 1: Basic Verification</h3>
+            <div className="flex items-center justify-between mb-4">
+              <div className="flex items-center">
+                <HiPhone className="w-6 h-6 text-blue-500 mr-2" />
+                <h3 className="font-semibold">Tier 1</h3>
+              </div>
               {getStatusIcon("tier1")}
             </div>
-            <p className="text-sm text-gray-600 mb-2">
+            <h4 className="font-medium mb-2">Basic Verification</h4>
+            <p className="text-sm text-gray-600 mb-3">
               Phone Number & NIN Verification
             </p>
-            <span
-              className={`text-xs px-2 py-1 rounded-full ${getStatusColor(
-                "tier1"
-              )}`}
-            >
-              {getStatusText("tier1")}
-            </span>
+            <div className="flex items-center justify-between">
+              <span
+                className={`text-xs px-3 py-1 rounded-full font-medium ${getStatusColor(
+                  "tier1"
+                )}`}
+              >
+                {getStatusText("tier1")}
+              </span>
+              {requiredTiers.includes("tier1") && (
+                <span className="text-xs text-red-600 font-medium">
+                  Required
+                </span>
+              )}
+            </div>
           </div>
 
-          {requiredTiers.includes("tier2") && (
-            <div
-              className={`p-4 rounded-lg border ${
-                activeTab === "tier2" ? "border-blue-500" : "border-gray-200"
-              } cursor-pointer ${
-                !kycStatus.tier1 || kycStatus.tier1.status !== "verified"
-                  ? "opacity-50 cursor-not-allowed"
-                  : ""
-              }`}
-              onClick={() => {
-                if (kycStatus.tier1 && kycStatus.tier1.status === "verified") {
-                  setActiveTab("tier2");
-                }
-              }}
-            >
-              <div className="flex justify-between items-center mb-2">
-                <h3 className="font-medium">Tier 2: Identity Verification</h3>
-                {getStatusIcon("tier2")}
+          {/* Tier 2 */}
+          <div
+            className={`p-6 rounded-lg border-2 transition-all cursor-pointer ${
+              activeTab === "tier2"
+                ? "border-blue-500 bg-blue-50"
+                : "border-gray-200 hover:border-gray-300"
+            } ${
+              !kycStatus.tier1 || kycStatus.tier1.status !== "verified"
+                ? "opacity-50 cursor-not-allowed"
+                : ""
+            }`}
+            onClick={() => {
+              if (kycStatus.tier1 && kycStatus.tier1.status === "verified") {
+                setActiveTab("tier2");
+              }
+            }}
+          >
+            <div className="flex items-center justify-between mb-4">
+              <div className="flex items-center">
+                <HiDocumentText className="w-6 h-6 text-green-500 mr-2" />
+                <h3 className="font-semibold">Tier 2</h3>
               </div>
-              <p className="text-sm text-gray-600 mb-2">Address Verification</p>
+              {getStatusIcon("tier2")}
+            </div>
+            <h4 className="font-medium mb-2">Address Verification</h4>
+            <p className="text-sm text-gray-600 mb-3">
+              Utility Bill Upload & Admin Review
+            </p>
+            <div className="flex items-center justify-between">
               <span
-                className={`text-xs px-2 py-1 rounded-full ${getStatusColor(
+                className={`text-xs px-3 py-1 rounded-full font-medium ${getStatusColor(
                   "tier2"
                 )}`}
               >
                 {getStatusText("tier2")}
               </span>
+              {requiredTiers.includes("tier2") ? (
+                <span className="text-xs text-red-600 font-medium">
+                  Required
+                </span>
+              ) : (
+                <span className="text-xs text-blue-600 font-medium">
+                  Optional
+                </span>
+              )}
             </div>
-          )}
+          </div>
 
-          {requiredTiers.includes("tier3") && (
+          {/* Tier 3 - Only show for users */}
+          {user?.role !== "owner" && (
             <div
-              className={`p-4 rounded-lg border ${
-                activeTab === "tier3" ? "border-blue-500" : "border-gray-200"
-              } cursor-pointer ${
+              className={`p-6 rounded-lg border-2 transition-all cursor-pointer ${
+                activeTab === "tier3"
+                  ? "border-blue-500 bg-blue-50"
+                  : "border-gray-200 hover:border-gray-300"
+              } ${
                 !kycStatus.tier2 || kycStatus.tier2.status !== "verified"
                   ? "opacity-50 cursor-not-allowed"
                   : ""
@@ -182,20 +313,29 @@ export default function KycVerification() {
                 }
               }}
             >
-              <div className="flex justify-between items-center mb-2">
-                <h3 className="font-medium">Tier 3: Financial Verification</h3>
+              <div className="flex items-center justify-between mb-4">
+                <div className="flex items-center">
+                  <HiCreditCard className="w-6 h-6 text-purple-500 mr-2" />
+                  <h3 className="font-semibold">Tier 3</h3>
+                </div>
                 {getStatusIcon("tier3")}
               </div>
-              <p className="text-sm text-gray-600 mb-2">
-                Employment Check & Credit History Check
+              <h4 className="font-medium mb-2">Financial Verification</h4>
+              <p className="text-sm text-gray-600 mb-3">
+                BVN, Bank Account & Business Verification
               </p>
-              <span
-                className={`text-xs px-2 py-1 rounded-full ${getStatusColor(
-                  "tier3"
-                )}`}
-              >
-                {getStatusText("tier3")}
-              </span>
+              <div className="flex items-center justify-between">
+                <span
+                  className={`text-xs px-3 py-1 rounded-full font-medium ${getStatusColor(
+                    "tier3"
+                  )}`}
+                >
+                  {getStatusText("tier3")}
+                </span>
+                <span className="text-xs text-blue-600 font-medium">
+                  Optional
+                </span>
+              </div>
             </div>
           )}
         </div>

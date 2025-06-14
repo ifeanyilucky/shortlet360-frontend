@@ -12,6 +12,7 @@ import {
 } from "react-icons/hi";
 import { useNavigate } from "react-router-dom";
 import KycProgressIndicator from "../../../components/KycProgressIndicator";
+import KycStatusCard from "../../../components/KycStatusCard";
 import { useAuth } from "../../../hooks/useAuth";
 import toast from "react-hot-toast";
 export default function UserDashboard() {
@@ -82,8 +83,19 @@ export default function UserDashboard() {
         </div>
       )}
 
-      {/* KYC Progress Indicator */}
-      <KycProgressIndicator />
+      {/* KYC Status Section */}
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+        {/* KYC Status Card */}
+        <div className="lg:col-span-1">
+          <KycStatusCard />
+        </div>
+
+        {/* KYC Progress Indicator (Compact) */}
+        <div className="lg:col-span-2">
+          <KycProgressIndicator />
+        </div>
+      </div>
+
       {/* Statistics Cards */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6">
         <StatCard

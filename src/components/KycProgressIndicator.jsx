@@ -1,17 +1,56 @@
 import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
-import { HiShieldCheck, HiShieldExclamation, HiExclamationCircle } from "react-icons/hi";
+import {
+  HiShieldCheck,
+  HiShieldExclamation,
+  HiExclamationCircle,
+  HiPhone,
+  HiDocumentText,
+  HiCreditCard,
+} from "react-icons/hi";
 import { useAuth } from "../hooks/useAuth";
 import useKycStore from "../store/kycStore";
 
 /**
- * KYC Progress Indicator component for sidebar
- * Shows the current KYC verification status and progress
+ * KYC Progress Indicator component for dashboards
+ * Shows the current KYC verification status and progress based on user role
  */
 export default function KycProgressIndicator() {
   const { user } = useAuth();
-  const { kycStatus, requiredTiers, overallStatus, getKycStatus, isLoading } = useKycStore();
+  const { kycStatus, getKycStatus, isLoading } = useKycStore();
   const [progress, setProgress] = useState(0);
+
+  // Get required tiers based on user role
+  const getRequiredTiers = () => {
+    if (user?.role === "apartment_owner") {
+      return ["tier1", "tier2"]; // Owners must complete Tier 1 + Tier 2
+    } else {
+      return ["tier1"]; // Users only need Tier 1
+    }
+  };
+
+  const requiredTiers = getRequiredTiers();
+
+  // Calculate overall status
+  const getOverallStatus = () => {
+    if (!kycStatus) return "incomplete";
+
+    const allRequiredVerified = requiredTiers.every(
+      (tier) => kycStatus[tier]?.status === "verified"
+    );
+
+    if (allRequiredVerified) return "complete";
+
+    const anyPending = requiredTiers.some(
+      (tier) => kycStatus[tier]?.status === "pending"
+    );
+
+    if (anyPending) return "pending";
+
+    return "incomplete";
+  };
+
+  const overallStatus = getOverallStatus();
 
   useEffect(() => {
     const fetchKycStatus = async () => {
@@ -32,7 +71,7 @@ export default function KycProgressIndicator() {
       if (totalTiers === 0) return;
 
       let completedTiers = 0;
-      requiredTiers.forEach(tier => {
+      requiredTiers.forEach((tier) => {
         if (kycStatus[tier]?.status === "verified") {
           completedTiers++;
         }
@@ -58,10 +97,15 @@ export default function KycProgressIndicator() {
       <div className="px-4 py-3 mb-4 bg-green-50 rounded-lg border border-green-100">
         <div className="flex items-center">
           <HiShieldCheck className="text-green-500 w-5 h-5 mr-2" />
-          <span className="text-sm font-medium text-green-800">KYC Verified</span>
+          <span className="text-sm font-medium text-green-800">
+            KYC Verified
+          </span>
         </div>
         <div className="mt-2 w-full bg-gray-200 rounded-full h-1.5">
-          <div className="bg-green-500 h-1.5 rounded-full" style={{ width: "100%" }}></div>
+          <div
+            className="bg-green-500 h-1.5 rounded-full"
+            style={{ width: "100%" }}
+          ></div>
         </div>
       </div>
     );
@@ -77,9 +121,13 @@ export default function KycProgressIndicator() {
           ) : (
             <HiExclamationCircle className="text-red-500 w-5 h-5 mr-2" />
           )}
-          <span className="text-sm font-medium text-blue-800">KYC Verification</span>
+          <span className="text-sm font-medium text-blue-800">
+            KYC Verification
+          </span>
         </div>
-        <span className="text-xs font-medium text-blue-800">{Math.round(progress)}%</span>
+        <span className="text-xs font-medium text-blue-800">
+          {Math.round(progress)}%
+        </span>
       </div>
 
       <div className="w-full bg-gray-200 rounded-full h-1.5 mb-2">
@@ -88,8 +136,8 @@ export default function KycProgressIndicator() {
             progress === 100
               ? "bg-green-500"
               : progress > 50
-                ? "bg-blue-500"
-                : "bg-yellow-500"
+              ? "bg-blue-500"
+              : "bg-yellow-500"
           }`}
           style={{ width: `${progress}%` }}
         ></div>
@@ -99,74 +147,103 @@ export default function KycProgressIndicator() {
       <div className="mt-2 mb-2">
         {requiredTiers.includes("tier1") && (
           <div className="flex items-center text-xs mb-1">
-            <div className={`w-2 h-2 rounded-full mr-1 ${
-              kycStatus.tier1?.status === "verified"
-                ? "bg-green-500"
-                : kycStatus.tier1?.status === "pending"
-                  ? "bg-yellow-500"
-                  : "bg-red-500"
-            }`}></div>
-            <span className={`${
-              kycStatus.tier1?.status === "verified"
-                ? "text-green-700"
-                : kycStatus.tier1?.status === "pending"
+            <HiPhone
+              className={`w-3 h-3 mr-1 ${
+                kycStatus.tier1?.status === "verified"
+                  ? "text-green-500"
+                  : kycStatus.tier1?.status === "pending"
+                  ? "text-yellow-500"
+                  : "text-red-500"
+              }`}
+            />
+            <span
+              className={`${
+                kycStatus.tier1?.status === "verified"
+                  ? "text-green-700"
+                  : kycStatus.tier1?.status === "pending"
                   ? "text-yellow-700"
                   : "text-red-700"
-            }`}>
-              Tier 1: Basic
+              }`}
+            >
+              Phone & NIN Verification
             </span>
           </div>
         )}
 
         {requiredTiers.includes("tier2") && (
           <div className="flex items-center text-xs mb-1">
-            <div className={`w-2 h-2 rounded-full mr-1 ${
-              kycStatus.tier2?.status === "verified"
-                ? "bg-green-500"
-                : kycStatus.tier2?.status === "pending"
-                  ? "bg-yellow-500"
-                  : "bg-red-500"
-            }`}></div>
-            <span className={`${
-              kycStatus.tier2?.status === "verified"
-                ? "text-green-700"
-                : kycStatus.tier2?.status === "pending"
+            <HiDocumentText
+              className={`w-3 h-3 mr-1 ${
+                kycStatus.tier2?.status === "verified"
+                  ? "text-green-500"
+                  : kycStatus.tier2?.status === "pending"
+                  ? "text-yellow-500"
+                  : "text-red-500"
+              }`}
+            />
+            <span
+              className={`${
+                kycStatus.tier2?.status === "verified"
+                  ? "text-green-700"
+                  : kycStatus.tier2?.status === "pending"
                   ? "text-yellow-700"
                   : "text-red-700"
-            }`}>
-              Tier 2: Identity
+              }`}
+            >
+              Document Verification
             </span>
           </div>
         )}
 
-        {requiredTiers.includes("tier3") && (
+        {/* Show Tier 3 for users as optional */}
+        {user?.role === "user" && (
           <div className="flex items-center text-xs mb-1">
-            <div className={`w-2 h-2 rounded-full mr-1 ${
-              kycStatus.tier3?.status === "verified"
-                ? "bg-green-500"
-                : kycStatus.tier3?.status === "pending"
-                  ? "bg-yellow-500"
-                  : "bg-red-500"
-            }`}></div>
-            <span className={`${
-              kycStatus.tier3?.status === "verified"
-                ? "text-green-700"
-                : kycStatus.tier3?.status === "pending"
+            <HiCreditCard
+              className={`w-3 h-3 mr-1 ${
+                kycStatus.tier3?.status === "verified"
+                  ? "text-green-500"
+                  : kycStatus.tier3?.status === "pending"
+                  ? "text-yellow-500"
+                  : "text-gray-400"
+              }`}
+            />
+            <span
+              className={`${
+                kycStatus.tier3?.status === "verified"
+                  ? "text-green-700"
+                  : kycStatus.tier3?.status === "pending"
                   ? "text-yellow-700"
-                  : "text-red-700"
-            }`}>
-              Tier 3: Financial
+                  : "text-gray-500"
+              }`}
+            >
+              Financial Verification {!kycStatus.tier3?.status && "(Optional)"}
             </span>
           </div>
         )}
       </div>
 
-      <Link
-        to={`/${user.role}/settings/kyc`}
-        className="text-xs text-blue-700 hover:text-blue-800 font-medium flex justify-end"
-      >
-        Complete Verification
-      </Link>
+      {/* Action message based on role and status */}
+      <div className="mt-2">
+        {user?.role === "apartment_owner" && overallStatus !== "complete" && (
+          <p className="text-xs text-orange-700 mb-2">
+            Complete KYC to list properties
+          </p>
+        )}
+        {user?.role === "user" && overallStatus !== "complete" && (
+          <p className="text-xs text-blue-700 mb-2">
+            Complete KYC to book properties
+          </p>
+        )}
+
+        <Link
+          to={`/${user.role}/settings/kyc`}
+          className="text-xs text-blue-700 hover:text-blue-800 font-medium flex justify-end"
+        >
+          {overallStatus === "complete"
+            ? "View Verification"
+            : "Complete Verification"}
+        </Link>
+      </div>
     </div>
   );
 }

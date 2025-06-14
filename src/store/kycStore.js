@@ -128,16 +128,18 @@ export const useKycStore = create((set, get) => ({
     }
   },
 
-  // Tier 2 verification (address only)
-  submitTier2Verification: async (data) => {
+  // Tier 2 verification (utility bill upload)
+  submitTier2Verification: async (formData) => {
     try {
       set({ isLoading: true, error: null });
-      const response = await kycService.submitTier2Verification(data);
+      const response = await kycService.submitTier2Verification(formData);
       set((state) => ({
         kycStatus: response.kyc,
         isLoading: false,
       }));
-      toast.success("Tier 2 verification submitted successfully");
+      toast.success(
+        "Tier 2 verification submitted successfully. Your utility bill is under review."
+      );
       return response;
     } catch (error) {
       set({
@@ -153,16 +155,35 @@ export const useKycStore = create((set, get) => ({
     }
   },
 
-  // Tier 3 verification (employment and bank statement)
+  // Tier 3 verification (BVN, bank account, and business verification)
   submitTier3Verification: async (data) => {
     try {
       set({ isLoading: true, error: null });
       const response = await kycService.submitTier3Verification(data);
+      console.log("response", response);
       set((state) => ({
         kycStatus: response.kyc,
         isLoading: false,
       }));
-      toast.success("Tier 3 verification submitted successfully");
+
+      if (response.verification_results) {
+        const failedVerifications = Object.entries(
+          response.verification_results
+        )
+          .filter(([key, value]) => value === "failed")
+          .map(([key]) => key);
+        console.log("failedVerifications", failedVerifications);
+        if (failedVerifications.length > 0) {
+          toast.error(
+            `Some verifications failed: ${failedVerifications.join(", ")}`
+          );
+        } else {
+          toast.success("Tier 3 verification completed successfully");
+        }
+      } else {
+        toast.success("Tier 3 verification submitted successfully");
+      }
+
       return response;
     } catch (error) {
       set({

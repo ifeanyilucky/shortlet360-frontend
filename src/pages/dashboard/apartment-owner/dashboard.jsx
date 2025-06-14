@@ -11,6 +11,7 @@ import { propertyService } from "../../../services/api";
 import { fCurrency } from "../../../utils/formatNumber";
 import { getGreeting } from "../../../utils/helpers";
 import KycProgressIndicator from "../../../components/KycProgressIndicator";
+import KycStatusCard from "../../../components/KycStatusCard";
 import toast from "react-hot-toast";
 
 export default function ApartmentOwnerDashboard() {
@@ -113,8 +114,19 @@ export default function ApartmentOwnerDashboard() {
         </div>
       )}
 
-      {/* KYC Progress Indicator */}
-      <KycProgressIndicator />
+      {/* KYC Status Section */}
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-6 md:mb-8">
+        {/* KYC Status Card */}
+        <div className="lg:col-span-1">
+          <KycStatusCard />
+        </div>
+
+        {/* KYC Progress Indicator (Compact) */}
+        <div className="lg:col-span-2">
+          <KycProgressIndicator />
+        </div>
+      </div>
+
       {/* Main Stats Grid */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6 mb-6 md:mb-8">
         <div className="bg-white p-4 md:p-6 rounded-lg shadow-sm">
