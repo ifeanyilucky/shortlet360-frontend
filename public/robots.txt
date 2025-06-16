@@ -1,0 +1,15 @@
+User-agent: *
+Allow: /
+
+# Disallow private areas
+Disallow: /auth/
+Disallow: /user/
+Disallow: /owner/
+Disallow: /admin/
+Disallow: /api/
+
+# Sitemap location
+Sitemap: https://shortlet360.com/sitemap.xml
+
+# Crawl delay (optional)
+Crawl-delay: 1

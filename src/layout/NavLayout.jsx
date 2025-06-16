@@ -53,7 +53,16 @@ export default function NavLayout() {
         { name: "Shortlet Apartments", href: "/book-now?category=shortlet" },
       ],
     },
+    // {
+    //   name: "Services",
+    //   href: "#services",
+    //   isDropdown: true,
+    //   dropdownItems: [
     { name: "HomeFix", href: "/home-fix" },
+    { name: "Property Management", href: "/property-management-solutions" },
+    //   ],
+    // },
+
     { name: "FAQ", href: "/faq" },
     { name: "Blog", href: "/blog" },
     { name: "Contact", href: "/contact" },

@@ -61,7 +61,7 @@ export default function Career() {
       <section className="bg-primary-900 text-white py-20">
         <div className="container mx-auto px-4 text-center">
           <h1 className="text-4xl md:text-5xl font-bold mb-6">
-            Careers at Aplet360
+            Aplet360
           </h1>
           <p className="text-xl text-primary-100 max-w-3xl mx-auto">
             Join our team on a mission to transform Africa's property rental

@@ -81,6 +81,10 @@ const adminService = {
     return api.get(`/admin/kyc/pending`, { params });
   },
 
+  getVerifiedKycVerification: (params) => {
+    return api.get(`/admin/kyc/verified`, { params });
+  },
+
   updateTier1Verification: (userId, status) => {
     return api.patch(`/admin/kyc/${userId}/tier1`, { status });
   },

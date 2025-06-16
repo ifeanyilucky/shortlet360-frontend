@@ -5,9 +5,16 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
-    "build": "vite build",
+    "build": "vite build && npm run sitemap:generate",
     "lint": "eslint .",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "sitemap:generate": "node scripts/generateSitemap.js generate",
+    "sitemap:generate-with-api": "node scripts/generateSitemap.js generate-with-api",
+    "sitemap:robots": "node scripts/generateSitemap.js robots",
+    "sitemap:all": "node scripts/generateSitemap.js all",
+    "sitemap:test": "node scripts/testSitemap.js test",
+    "sitemap:benchmark": "node scripts/testSitemap.js benchmark",
+    "prebuild": "npm run sitemap:generate"
   },
   "dependencies": {
     "@cloudinary/react": "^1.13.1",

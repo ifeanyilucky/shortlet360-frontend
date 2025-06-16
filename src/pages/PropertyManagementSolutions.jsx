@@ -1,3 +1,4 @@
+import React, { useState } from "react";
 import {
   FiHome,
   FiUsers,
@@ -10,8 +11,19 @@ import { MdApartment, MdManageAccounts, MdSecurity } from "react-icons/md";
 import { BsBuilding, BsGraphUp, BsCreditCard2Front } from "react-icons/bs";
 import { Link } from "react-router-dom";
 import InteractiveButton from "../components/InteractiveButton";
+import PropertyManagementModal from "../components/PropertyManagementModal";
 
 export default function PropertyManagementSolutions() {
+  const [isModalOpen, setIsModalOpen] = useState(false);
+
+  const handleGetStarted = () => {
+    setIsModalOpen(true);
+  };
+
+  const handleCloseModal = () => {
+    setIsModalOpen(false);
+  };
+
   return (
     <div className="min-h-screen">
       {/* Hero Section */}
@@ -26,11 +38,12 @@ export default function PropertyManagementSolutions() {
             investment returns while ensuring seamless tenant experiences.
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
-            <Link to="/contact">
-              <InteractiveButton variant="accent">
-                Get Started Today
-              </InteractiveButton>
-            </Link>
+            <InteractiveButton
+              variant="accent"
+              onClick={handleGetStarted}
+            >
+              Get Started Today
+            </InteractiveButton>
             <Link to="/book-now">
               <InteractiveButton variant="secondary">
                 View Properties
@@ -406,11 +419,12 @@ export default function PropertyManagementSolutions() {
             you enjoy steady returns and peace of mind.
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
-            <Link to="/contact">
-              <InteractiveButton variant="accent">
-                Get Free Consultation
-              </InteractiveButton>
-            </Link>
+            <InteractiveButton
+              variant="accent"
+              onClick={handleGetStarted}
+            >
+              Get Free Consultation
+            </InteractiveButton>
             <Link to="/auth/register">
               <InteractiveButton variant="secondary">
                 Join as Property Owner
@@ -419,6 +433,12 @@ export default function PropertyManagementSolutions() {
           </div>
         </div>
       </section>
+
+      {/* Property Management Modal */}
+      <PropertyManagementModal
+        isOpen={isModalOpen}
+        onClose={handleCloseModal}
+      />
     </div>
   );
 }

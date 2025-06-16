@@ -121,7 +121,7 @@ export default function LandingPage() {
         <div className="absolute inset-0 bg-[url('/images/pattern.png')] opacity-10"></div>
         <div className="max-w-6xl mx-auto px-4 text-center pt-20 pb-10 relative z-10">
           <h1 className="text-4xl md:text-6xl font-bold mb-6 animate-fade-in">
-            Seamless Apartment Rental & Management Solutions{" "}
+           Seamless Apartment Rental {" "}
             <span className="text-accent-300 bg-clip-text text-transparent bg-gradient-to-r from-accent-300 to-accent-500">
               For Everyone.
             </span>
@@ -745,7 +745,8 @@ export default function LandingPage() {
               </div>
             ) : (
               properties?.slice(0, 3).map((property) => (
-                <div
+                <Link
+                  to={`/property/${property._id}`}
                   key={property._id}
                   className="bg-white rounded-3xl overflow-hidden shadow-md hover:shadow-lg transition-shadow"
                 >
@@ -815,7 +816,7 @@ export default function LandingPage() {
                       </div>
                     </div>
                   </div>
-                </div>
+                </Link>
               ))
             )}
           </div>

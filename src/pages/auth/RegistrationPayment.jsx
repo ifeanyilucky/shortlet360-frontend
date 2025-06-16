@@ -14,6 +14,10 @@ const REGISTRATION_FEE = 20000;
 export default function RegistrationPayment() {
   const { user, setUser } = useAuth();
   const [isLoading, setIsLoading] = useState(false);
+  const [discountCode, setDiscountCode] = useState("");
+  const [discountDetails, setDiscountDetails] = useState(null);
+  const [isValidatingCode, setIsValidatingCode] = useState(false);
+  const [codeValidated, setCodeValidated] = useState(false);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -28,27 +32,69 @@ export default function RegistrationPayment() {
     }
   }, [user, navigate]);
 
+  // Calculate final amount based on discount
+  const finalAmount = discountDetails ? discountDetails.final_amount : REGISTRATION_FEE;
+
   // Configure Paystack
   const paystackPaymentConfig = user
     ? paystackConfig({
         ...user,
-        amount: REGISTRATION_FEE,
+        amount: finalAmount,
       })
     : null;
 
   const initializePayment = usePaystackPayment(paystackPaymentConfig || {});
 
+  // Validate discount code
+  const validateDiscountCode = async () => {
+    if (!discountCode.trim()) {
+      toast.error("Please enter a discount code");
+      return;
+    }
+
+    try {
+      setIsValidatingCode(true);
+      const result = await authService.validateDiscountCode(discountCode.trim(), REGISTRATION_FEE);
+
+      setDiscountDetails(result.discount_details);
+      setCodeValidated(true);
+      toast.success(`Discount code applied! You save ₦${result.discount_details.discount_amount.toLocaleString()}`);
+    } catch (error) {
+      console.error("Discount code validation error:", error);
+      toast.error(error?.response?.data?.message || "Invalid discount code");
+      setDiscountDetails(null);
+      setCodeValidated(false);
+    } finally {
+      setIsValidatingCode(false);
+    }
+  };
+
+  // Remove discount code
+  const removeDiscountCode = () => {
+    setDiscountCode("");
+    setDiscountDetails(null);
+    setCodeValidated(false);
+    toast.success("Discount code removed");
+  };
+
   const handlePaymentSuccess = async (response) => {
     try {
       setIsLoading(true);
 
-      // Call API to complete registration payment
-      const result = await authService.completeRegistrationPayment(response);
+      // Call API to complete registration payment with discount code if applied
+      const result = await authService.completeRegistrationPayment(
+        response,
+        codeValidated ? discountCode.trim() : null
+      );
 
       // Update user in context
       setUser(result.user);
 
-      toast.success("Registration payment completed successfully!");
+      if (result.discount_applied) {
+        toast.success(`Registration payment completed successfully! You saved ₦${result.discount_applied.discount_amount.toLocaleString()} with discount code ${result.discount_applied.code}`);
+      } else {
+        toast.success("Registration payment completed successfully!");
+      }
 
       // Navigate to owner dashboard
       navigate("/owner/dashboard");
@@ -90,9 +136,36 @@ export default function RegistrationPayment() {
                 A one-time fee to activate your Landlord/Property Manager
                 account
               </p>
-              <p className="mt-2 text-xl font-bold text-gray-900">
-                ₦{REGISTRATION_FEE.toLocaleString()}
-              </p>
+
+              {/* Pricing Display */}
+              <div className="mt-3 space-y-2">
+                {discountDetails ? (
+                  <>
+                    <div className="flex justify-between items-center">
+                      <span className="text-sm text-gray-600">Original Price:</span>
+                      <span className="text-sm text-gray-600 line-through">
+                        ₦{REGISTRATION_FEE.toLocaleString()}
+                      </span>
+                    </div>
+                    <div className="flex justify-between items-center">
+                      <span className="text-sm text-green-600">Discount ({discountDetails.discount_percentage}%):</span>
+                      <span className="text-sm text-green-600">
+                        -₦{discountDetails.discount_amount.toLocaleString()}
+                      </span>
+                    </div>
+                    <div className="flex justify-between items-center border-t pt-2">
+                      <span className="text-lg font-medium text-gray-900">Final Amount:</span>
+                      <span className="text-xl font-bold text-green-600">
+                        ₦{discountDetails.final_amount.toLocaleString()}
+                      </span>
+                    </div>
+                  </>
+                ) : (
+                  <p className="text-xl font-bold text-gray-900">
+                    ₦{REGISTRATION_FEE.toLocaleString()}
+                  </p>
+                )}
+              </div>
             </div>
 
             <div className="mt-6 bg-primary-50 p-4 rounded-lg border border-primary-100">
@@ -135,6 +208,53 @@ export default function RegistrationPayment() {
               </div>
             </div>
 
+            {/* Discount Code Section */}
+            <div className="mt-6 bg-gray-50 p-4 rounded-lg border">
+              <h4 className="text-sm font-medium text-gray-900 mb-3">
+                Have a Pre-Launch Discount Code?
+              </h4>
+
+              {!codeValidated ? (
+                <div className="space-y-3">
+                  <div className="flex gap-2">
+                    <input
+                      type="text"
+                      value={discountCode}
+                      onChange={(e) => setDiscountCode(e.target.value.toUpperCase())}
+                      placeholder="Enter discount code"
+                      className="flex-1 px-3 py-2 border border-gray-300 rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500"
+                      disabled={isValidatingCode}
+                    />
+                    <InteractiveButton
+                      onClick={validateDiscountCode}
+                      disabled={!discountCode.trim() || isValidatingCode}
+                      className="!px-4 !py-2 !text-sm"
+                    >
+                      {isValidatingCode ? "Validating..." : "Apply"}
+                    </InteractiveButton>
+                  </div>
+                  <p className="text-xs text-gray-500">
+                    Enter your pre-launch discount code to get 50% off your registration fee
+                  </p>
+                </div>
+              ) : (
+                <div className="flex items-center justify-between bg-green-50 p-3 rounded-md border border-green-200">
+                  <div className="flex items-center gap-2">
+                    <div className="w-2 h-2 bg-green-500 rounded-full"></div>
+                    <span className="text-sm font-medium text-green-800">
+                      Discount code "{discountCode}" applied
+                    </span>
+                  </div>
+                  <button
+                    onClick={removeDiscountCode}
+                    className="text-xs text-red-600 hover:text-red-800 underline"
+                  >
+                    Remove
+                  </button>
+                </div>
+              )}
+            </div>
+
             <div className="mt-6">
               <div className="grid grid-cols-1 gap-3">
                 <InteractiveButton
@@ -158,7 +278,14 @@ export default function RegistrationPayment() {
                   }}
                   className="!flex items-center justify-center gap-2"
                 >
-                  <span>Pay with Paystack</span>
+                  <span>
+                    Pay ₦{finalAmount.toLocaleString()} with Paystack
+                    {discountDetails && (
+                      <span className="text-xs ml-1">
+                        (Save ₦{discountDetails.discount_amount.toLocaleString()})
+                      </span>
+                    )}
+                  </span>
                   <span className="w-4 h-4"></span>
                 </InteractiveButton>
               </div>

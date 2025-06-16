@@ -38,10 +38,23 @@ export const authService = {
     const response = await api.post("/auth/forgot-password", data);
     return response.data;
   },
-  completeRegistrationPayment: async (paymentData) => {
-    const response = await api.post("/auth/complete-registration-payment", {
-      payment: paymentData,
+  validateDiscountCode: async (code, amount) => {
+    const response = await api.post("/auth/validate-discount-code", {
+      code,
+      amount,
     });
+    return response.data;
+  },
+  completeRegistrationPayment: async (paymentData, discountCode = null) => {
+    const requestData = {
+      payment: paymentData,
+    };
+
+    if (discountCode) {
+      requestData.discount_code = discountCode;
+    }
+
+    const response = await api.post("/auth/complete-registration-payment", requestData);
     return response.data;
   },
 };
@@ -262,6 +275,10 @@ export const formService = {
   },
   submitInspectionRequest: async (data) => {
     const response = await api.post("/forms/inspection-request", data);
+    return response.data;
+  },
+  submitPropertyManagementForm: async (data) => {
+    const response = await api.post("/forms/property-management", data);
     return response.data;
   },
 };

@@ -48,8 +48,8 @@ const TermsConditions = () => {
           For monthly rental payments, we offer two options:
         </p>
         <ul className="list-disc pl-6 mb-6">
-          <li>Option 1: 1.5% monthly interest of yearly rent (18% annually)</li>
-          <li>Option 2: 2% monthly interest of yearly rent (24% annually)</li>
+          <li>Option 1: 1.5% monthly interest of yearly rent for 6 months payment plan</li>
+          <li>Option 2: 2% monthly interest of yearly rent for 12 months payment plan</li>
         </ul>
 
         <h2 className="text-2xl font-semibold text-tertiary-800 mt-8 mb-4">

@@ -93,7 +93,12 @@ export default function AdminLayout() {
     {
       path: "/admin/kyc",
       icon: <FiKey size={20} />,
-      label: "KYC Verification",
+      label: "Pending KYC Verification",
+    },
+    {
+      path: "/admin/verified-kyc",
+      icon: <FiKey size={20} />,
+      label: "Verified KYC",
     },
     {
       path: "/admin/referrals",
