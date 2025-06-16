@@ -1,6 +1,6 @@
 # Sitemap Generator Documentation
 
-This document explains how to use the sitemap generation system for the Shortlet360 frontend application.
+This document explains how to use the sitemap generation system for the aplet360 frontend application.
 
 ## Overview
 
@@ -47,20 +47,20 @@ npm run build
 Use the React component for manual generation:
 
 ```jsx
-import SitemapGenerator from './components/SitemapGenerator';
+import SitemapGenerator from "./components/SitemapGenerator";
 
 // Add to your development page
-<SitemapGenerator />
+<SitemapGenerator />;
 ```
 
 Or use browser console commands:
 
 ```javascript
 // Available in development mode
-generateSitemap()     // Download sitemap.xml
-previewSitemap()      // Preview in console
-validateSitemap()     // Validate URLs
-testDynamicRoutes()   // Test API endpoints
+generateSitemap(); // Download sitemap.xml
+previewSitemap(); // Preview in console
+validateSitemap(); // Validate URLs
+testDynamicRoutes(); // Test API endpoints
 ```
 
 ## Configuration
@@ -71,30 +71,30 @@ Edit `src/config/sitemap.js` to customize your sitemap:
 
 ```javascript
 export const sitemapConfig = {
-  baseUrl: 'https://shortlet360.com', // Your domain
-  
+  baseUrl: "https://aplet360.com", // Your domain
+
   staticRoutes: [
     {
-      path: '/',
-      changefreq: 'daily',
+      path: "/",
+      changefreq: "daily",
       priority: 1.0,
     },
     // Add more static routes...
   ],
-  
+
   dynamicRoutes: {
     blog: {
-      endpoint: '/api/blogs',
-      pathTemplate: '/blog/{slug}',
-      changefreq: 'weekly',
+      endpoint: "/api/blogs",
+      pathTemplate: "/blog/{slug}",
+      changefreq: "weekly",
       priority: 0.6,
     },
     // Add more dynamic routes...
   },
-  
+
   excludeRoutes: [
-    '/auth/*',
-    '/user/*',
+    "/auth/*",
+    "/user/*",
     // Add routes to exclude...
   ],
 };
@@ -110,6 +110,7 @@ For dynamic routes, specify:
 - `priority`: Page priority (0.0 to 1.0)
 
 Example:
+
 ```javascript
 properties: {
   endpoint: '/api/properties',
@@ -127,7 +128,7 @@ To integrate with real APIs, modify the `fetchDynamicData` method in `scripts/ge
 
 ```javascript
 // Replace mock implementation with real API calls
-generator.fetchDynamicData = async function(endpoint) {
+generator.fetchDynamicData = async function (endpoint) {
   const response = await fetch(`${API_BASE_URL}${endpoint}`);
   const data = await response.json();
   return data.results || data; // Adjust based on your API response
@@ -142,18 +143,16 @@ Your API should return an array of objects with the required fields:
 // For blog posts
 [
   {
-    slug: 'post-slug',
-    updatedAt: '2024-01-15T10:00:00Z'
-  }
-]
-
-// For properties
-[
+    slug: "post-slug",
+    updatedAt: "2024-01-15T10:00:00Z",
+  },
+][
+  // For properties
   {
-    id: '123',
-    updatedAt: '2024-01-15T10:00:00Z'
+    id: "123",
+    updatedAt: "2024-01-15T10:00:00Z",
   }
-]
+];
 ```
 
 ## File Structure
@@ -186,7 +185,7 @@ public/
 Create a custom sitemap generator:
 
 ```javascript
-import { SitemapGenerator } from './src/utils/sitemapGenerator.js';
+import { SitemapGenerator } from "./src/utils/sitemapGenerator.js";
 
 const generator = new SitemapGenerator(customConfig);
 
@@ -211,10 +210,10 @@ const propertySitemap = new SitemapGenerator(propertyConfig);
 const sitemapIndex = `<?xml version="1.0" encoding="UTF-8"?>
 <sitemapindex xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <sitemap>
-    <loc>https://shortlet360.com/sitemap-blog.xml</loc>
+    <loc>https://aplet360.com/sitemap-blog.xml</loc>
   </sitemap>
   <sitemap>
-    <loc>https://shortlet360.com/sitemap-properties.xml</loc>
+    <loc>https://aplet360.com/sitemap-properties.xml</loc>
   </sitemap>
 </sitemapindex>`;
 ```
@@ -224,11 +223,13 @@ const sitemapIndex = `<?xml version="1.0" encoding="UTF-8"?>
 ### Common Issues
 
 1. **Empty Sitemap**
+
    - Check if routes are properly configured
    - Verify API endpoints are accessible
    - Check console for error messages
 
 2. **Missing Dynamic Routes**
+
    - Verify API endpoints return correct data format
    - Check network connectivity
    - Ensure API authentication if required
@@ -283,6 +284,7 @@ Add to your deployment pipeline:
 ## Support
 
 For issues or questions:
+
 1. Check this documentation
 2. Review console error messages
 3. Test with development tools

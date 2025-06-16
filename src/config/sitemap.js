@@ -1,118 +1,118 @@
 // Sitemap configuration
 export const sitemapConfig = {
   // Base URL of your website
-  baseUrl: 'https://shortlet360.com', // Update this to your actual domain
-  
+  baseUrl: "https://aplet360.com", // Update this to your actual domain
+
   // Default values for sitemap entries
   defaults: {
-    changefreq: 'weekly',
+    changefreq: "weekly",
     priority: 0.5,
   },
-  
+
   // Static routes configuration
   staticRoutes: [
     {
-      path: '/',
-      changefreq: 'daily',
+      path: "/",
+      changefreq: "daily",
       priority: 1.0,
     },
     {
-      path: '/about',
-      changefreq: 'monthly',
+      path: "/about",
+      changefreq: "monthly",
       priority: 0.8,
     },
     {
-      path: '/book-now',
-      changefreq: 'weekly',
+      path: "/book-now",
+      changefreq: "weekly",
       priority: 0.9,
     },
     {
-      path: '/faq',
-      changefreq: 'monthly',
+      path: "/faq",
+      changefreq: "monthly",
       priority: 0.6,
     },
     {
-      path: '/blog',
-      changefreq: 'daily',
+      path: "/blog",
+      changefreq: "daily",
       priority: 0.8,
     },
     {
-      path: '/contact',
-      changefreq: 'monthly',
+      path: "/contact",
+      changefreq: "monthly",
       priority: 0.7,
     },
     {
-      path: '/home-fix',
-      changefreq: 'weekly',
+      path: "/home-fix",
+      changefreq: "weekly",
       priority: 0.7,
     },
     {
-      path: '/career',
-      changefreq: 'monthly',
+      path: "/career",
+      changefreq: "monthly",
       priority: 0.6,
     },
     {
-      path: '/referral-program',
-      changefreq: 'monthly',
+      path: "/referral-program",
+      changefreq: "monthly",
       priority: 0.6,
     },
     {
-      path: '/become-artisan',
-      changefreq: 'monthly',
+      path: "/become-artisan",
+      changefreq: "monthly",
       priority: 0.7,
     },
     {
-      path: '/marketplace',
-      changefreq: 'daily',
+      path: "/marketplace",
+      changefreq: "daily",
       priority: 0.8,
     },
     {
-      path: '/property-management-solutions',
-      changefreq: 'monthly',
+      path: "/property-management-solutions",
+      changefreq: "monthly",
       priority: 0.7,
     },
     {
-      path: '/privacy-policy',
-      changefreq: 'yearly',
+      path: "/privacy-policy",
+      changefreq: "yearly",
       priority: 0.3,
     },
     {
-      path: '/terms-conditions',
-      changefreq: 'yearly',
+      path: "/terms-conditions",
+      changefreq: "yearly",
       priority: 0.3,
     },
   ],
-  
+
   // Dynamic routes configuration
   dynamicRoutes: {
     // Blog posts
     blog: {
-      endpoint: '/api/blogs', // API endpoint to fetch blog posts
-      pathTemplate: '/blog/{slug}',
-      changefreq: 'weekly',
+      endpoint: "/api/blogs", // API endpoint to fetch blog posts
+      pathTemplate: "/blog/{slug}",
+      changefreq: "weekly",
       priority: 0.6,
     },
     // Properties
     properties: {
-      endpoint: '/api/properties',
-      pathTemplate: '/property/{id}',
-      changefreq: 'weekly',
+      endpoint: "/api/properties",
+      pathTemplate: "/property/{id}",
+      changefreq: "weekly",
       priority: 0.7,
     },
   },
-  
+
   // Routes to exclude from sitemap
   excludeRoutes: [
-    '/auth/*',
-    '/user/*',
-    '/owner/*',
-    '/admin/*',
-    '/reset-password/*',
-    '/verify-email/*',
-    '/:property_id/receipt/:booking_id',
-    '/404',
+    "/auth/*",
+    "/user/*",
+    "/owner/*",
+    "/admin/*",
+    "/reset-password/*",
+    "/verify-email/*",
+    "/:property_id/receipt/:booking_id",
+    "/404",
   ],
-  
+
   // Additional sitemap settings
   settings: {
     // Include lastmod timestamp
