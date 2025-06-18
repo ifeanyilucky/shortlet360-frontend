@@ -70,6 +70,7 @@ import AdminBlogs from "../pages/dashboard/admin/blogs";
 import CreateBlog from "../pages/dashboard/admin/CreateBlog";
 import EditBlog from "../pages/dashboard/admin/EditBlog";
 import AdminVerifiedKyc from "../pages/dashboard/admin/verifiedKyc";
+import AdminDiscountCodes from "../pages/admin/DiscountCodes";
 export default function Router() {
   const routes = useRoutes([
     {
@@ -173,6 +174,7 @@ export default function Router() {
             { path: "kyc", element: <AdminKyc /> },
             { path: "verified-kyc", element: <AdminVerifiedKyc /> },
             { path: "referrals", element: <AdminReferrals /> },
+            { path: "discount-codes", element: <AdminDiscountCodes /> },
             { path: "blogs", element: <AdminBlogs /> },
             { path: "blogs/create", element: <CreateBlog /> },
             { path: "blogs/edit/:id", element: <EditBlog /> },

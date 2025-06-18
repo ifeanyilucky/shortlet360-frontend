@@ -1,6 +1,10 @@
-
 {
-    "rewrites": [
-        {"source": "/(.*)", "destination": "/"}
-    ]
+  "rewrites": [{ "source": "/(.*)", "destination": "/" }],
+  "redirects": [
+    {
+      "source": "/(.*)",
+      "destination": "https://www.aplet360.com/$1",
+      "permanent": true
+    }
+  ]
 }

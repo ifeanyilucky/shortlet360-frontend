@@ -15,6 +15,7 @@ import {
   FiChevronDown,
   FiChevronRight,
   FiEdit3,
+  FiPercent,
 } from "react-icons/fi";
 import { MdOutlineAddHome } from "react-icons/md";
 import { HiOutlineDocumentReport } from "react-icons/hi";
@@ -99,6 +100,11 @@ export default function AdminLayout() {
       path: "/admin/verified-kyc",
       icon: <FiKey size={20} />,
       label: "Verified KYC",
+    },
+    {
+      path: "/admin/discount-codes",
+      icon: <FiPercent size={20} />,
+      label: "Discount Codes",
     },
     {
       path: "/admin/referrals",

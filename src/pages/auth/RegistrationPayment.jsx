@@ -33,7 +33,9 @@ export default function RegistrationPayment() {
   }, [user, navigate]);
 
   // Calculate final amount based on discount
-  const finalAmount = discountDetails ? discountDetails.final_amount : REGISTRATION_FEE;
+  const finalAmount = discountDetails
+    ? discountDetails.final_amount
+    : REGISTRATION_FEE;
 
   // Configure Paystack
   const paystackPaymentConfig = user
@@ -54,11 +56,16 @@ export default function RegistrationPayment() {
 
     try {
       setIsValidatingCode(true);
-      const result = await authService.validateDiscountCode(discountCode.trim(), REGISTRATION_FEE);
+      const result = await authService.validateDiscountCode(
+        discountCode.trim(),
+        REGISTRATION_FEE
+      );
 
       setDiscountDetails(result.discount_details);
       setCodeValidated(true);
-      toast.success(`Discount code applied! You save ₦${result.discount_details.discount_amount.toLocaleString()}`);
+      toast.success(
+        `Discount code applied! You save ₦${result.discount_details.discount_amount.toLocaleString()}`
+      );
     } catch (error) {
       console.error("Discount code validation error:", error);
       toast.error(error?.response?.data?.message || "Invalid discount code");
@@ -91,7 +98,11 @@ export default function RegistrationPayment() {
       setUser(result.user);
 
       if (result.discount_applied) {
-        toast.success(`Registration payment completed successfully! You saved ₦${result.discount_applied.discount_amount.toLocaleString()} with discount code ${result.discount_applied.code}`);
+        toast.success(
+          `Registration payment completed successfully! You saved ₦${result.discount_applied.discount_amount.toLocaleString()} with discount code ${
+            result.discount_applied.code
+          }`
+        );
       } else {
         toast.success("Registration payment completed successfully!");
       }
@@ -138,32 +149,68 @@ export default function RegistrationPayment() {
               </p>
 
               {/* Pricing Display */}
-              <div className="mt-3 space-y-2">
+              <div className="mt-4">
                 {discountDetails ? (
-                  <>
+                  <div className="bg-gradient-to-r from-green-50 to-blue-50 p-4 rounded-lg border border-green-200">
+                    <div className="space-y-3">
+                      <div className="flex justify-between items-center">
+                        <span className="text-sm text-gray-600">
+                          Original Price:
+                        </span>
+                        <span className="text-lg text-gray-500 line-through">
+                          ₦{REGISTRATION_FEE.toLocaleString()}
+                        </span>
+                      </div>
+
+                      <div className="flex justify-between items-center">
+                        <div className="flex items-center gap-2">
+                          <span className="text-sm text-green-700 font-medium">
+                            Discount Applied:
+                          </span>
+                          <span className="bg-green-100 text-green-800 text-xs px-2 py-1 rounded-full font-medium">
+                            {discountDetails.discount_percentage
+                              ? `${discountDetails.discount_percentage}% OFF`
+                              : "FIXED DISCOUNT"}
+                          </span>
+                        </div>
+                        <span className="text-lg text-green-600 font-semibold">
+                          -₦{discountDetails.discount_amount.toLocaleString()}
+                        </span>
+                      </div>
+
+                      <div className="border-t border-green-200 pt-3">
+                        <div className="flex justify-between items-center">
+                          <span className="text-lg font-semibold text-gray-900">
+                            You Pay:
+                          </span>
+                          <div className="text-right">
+                            <span className="text-2xl font-bold text-green-600">
+                              ₦{discountDetails.final_amount.toLocaleString()}
+                            </span>
+                            <p className="text-xs text-green-600 mt-1">
+                              You save ₦
+                              {discountDetails.discount_amount.toLocaleString()}
+                              !
+                            </p>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                ) : (
+                  <div className="bg-gray-50 p-4 rounded-lg border">
                     <div className="flex justify-between items-center">
-                      <span className="text-sm text-gray-600">Original Price:</span>
-                      <span className="text-sm text-gray-600 line-through">
+                      <span className="text-lg font-medium text-gray-900">
+                        Registration Fee:
+                      </span>
+                      <span className="text-2xl font-bold text-gray-900">
                         ₦{REGISTRATION_FEE.toLocaleString()}
                       </span>
                     </div>
-                    <div className="flex justify-between items-center">
-                      <span className="text-sm text-green-600">Discount ({discountDetails.discount_percentage}%):</span>
-                      <span className="text-sm text-green-600">
-                        -₦{discountDetails.discount_amount.toLocaleString()}
-                      </span>
-                    </div>
-                    <div className="flex justify-between items-center border-t pt-2">
-                      <span className="text-lg font-medium text-gray-900">Final Amount:</span>
-                      <span className="text-xl font-bold text-green-600">
-                        ₦{discountDetails.final_amount.toLocaleString()}
-                      </span>
-                    </div>
-                  </>
-                ) : (
-                  <p className="text-xl font-bold text-gray-900">
-                    ₦{REGISTRATION_FEE.toLocaleString()}
-                  </p>
+                    <p className="text-sm text-gray-600 mt-2">
+                      One-time payment to activate your account
+                    </p>
+                  </div>
                 )}
               </div>
             </div>
@@ -209,48 +256,102 @@ export default function RegistrationPayment() {
             </div>
 
             {/* Discount Code Section */}
-            <div className="mt-6 bg-gray-50 p-4 rounded-lg border">
-              <h4 className="text-sm font-medium text-gray-900 mb-3">
-                Have a Pre-Launch Discount Code?
-              </h4>
+            <div className="mt-6 bg-gradient-to-r from-blue-50 to-purple-50 p-6 rounded-lg border border-blue-200">
+              <div className="flex items-center gap-2 mb-3">
+                <div className="w-8 h-8 bg-blue-100 rounded-full flex items-center justify-center">
+                  <span className="text-blue-600 font-bold text-sm">%</span>
+                </div>
+                <h4 className="text-lg font-semibold text-gray-900">
+                  Have a Discount Code?
+                </h4>
+              </div>
+
+              <p className="text-sm text-gray-600 mb-4">
+                Apply your discount code to save on your registration fee and
+                unlock exclusive benefits!
+              </p>
 
               {!codeValidated ? (
-                <div className="space-y-3">
-                  <div className="flex gap-2">
-                    <input
-                      type="text"
-                      value={discountCode}
-                      onChange={(e) => setDiscountCode(e.target.value.toUpperCase())}
-                      placeholder="Enter discount code"
-                      className="flex-1 px-3 py-2 border border-gray-300 rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500"
-                      disabled={isValidatingCode}
-                    />
+                <div className="space-y-4">
+                  <div className="flex gap-3">
+                    <div className="flex-1 relative">
+                      <input
+                        type="text"
+                        value={discountCode}
+                        onChange={(e) =>
+                          setDiscountCode(e.target.value.toUpperCase())
+                        }
+                        placeholder="Enter your discount code"
+                        className="w-full px-4 py-3 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 bg-white shadow-sm"
+                        disabled={isValidatingCode}
+                      />
+                      {discountCode && (
+                        <div className="absolute right-3 top-1/2 transform -translate-y-1/2">
+                          <div className="w-2 h-2 bg-blue-500 rounded-full animate-pulse"></div>
+                        </div>
+                      )}
+                    </div>
                     <InteractiveButton
                       onClick={validateDiscountCode}
                       disabled={!discountCode.trim() || isValidatingCode}
-                      className="!px-4 !py-2 !text-sm"
+                      className="!px-6 !py-3 !text-sm !bg-blue-600 !hover:bg-blue-700 !shadow-md"
                     >
-                      {isValidatingCode ? "Validating..." : "Apply"}
+                      {isValidatingCode ? (
+                        <div className="flex items-center gap-2">
+                          <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
+                          Validating...
+                        </div>
+                      ) : (
+                        "Apply Code"
+                      )}
                     </InteractiveButton>
                   </div>
-                  <p className="text-xs text-gray-500">
-                    Enter your pre-launch discount code to get 50% off your registration fee
-                  </p>
                 </div>
               ) : (
-                <div className="flex items-center justify-between bg-green-50 p-3 rounded-md border border-green-200">
-                  <div className="flex items-center gap-2">
-                    <div className="w-2 h-2 bg-green-500 rounded-full"></div>
-                    <span className="text-sm font-medium text-green-800">
-                      Discount code "{discountCode}" applied
-                    </span>
+                <div className="bg-green-50 p-4 rounded-lg border border-green-200">
+                  <div className="flex items-center justify-between">
+                    <div className="flex items-center gap-3">
+                      <div className="w-8 h-8 bg-green-100 rounded-full flex items-center justify-center">
+                        <span className="text-green-600 text-lg">✓</span>
+                      </div>
+                      <div>
+                        <p className="text-sm font-semibold text-green-800">
+                          Discount Code Applied Successfully!
+                        </p>
+                        <p className="text-xs text-green-600">
+                          Code:{" "}
+                          <span className="font-mono font-bold">
+                            {discountCode}
+                          </span>
+                          {discountDetails && (
+                            <span className="ml-2">
+                              • You save ₦
+                              {discountDetails.discount_amount.toLocaleString()}
+                              {discountDetails.discount_percentage &&
+                                ` (${discountDetails.discount_percentage}%)`}
+                            </span>
+                          )}
+                        </p>
+                      </div>
+                    </div>
+                    <button
+                      onClick={removeDiscountCode}
+                      className="text-xs text-red-600 hover:text-red-800 underline font-medium"
+                    >
+                      Remove
+                    </button>
                   </div>
-                  <button
-                    onClick={removeDiscountCode}
-                    className="text-xs text-red-600 hover:text-red-800 underline"
-                  >
-                    Remove
-                  </button>
+
+                  {discountDetails?.description && (
+                    <div className="mt-3 p-2 bg-white/50 rounded border border-green-100">
+                      <p className="text-xs text-green-700">
+                        <span className="font-medium">
+                          About this discount:
+                        </span>{" "}
+                        {discountDetails.description}
+                      </p>
+                    </div>
+                  )}
                 </div>
               )}
             </div>
@@ -282,7 +383,8 @@ export default function RegistrationPayment() {
                     Pay ₦{finalAmount.toLocaleString()} with Paystack
                     {discountDetails && (
                       <span className="text-xs ml-1">
-                        (Save ₦{discountDetails.discount_amount.toLocaleString()})
+                        (Save ₦
+                        {discountDetails.discount_amount.toLocaleString()})
                       </span>
                     )}
                   </span>

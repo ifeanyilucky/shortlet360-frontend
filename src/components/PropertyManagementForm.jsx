@@ -1,31 +1,45 @@
-import React, { useState } from 'react';
-import { useForm } from 'react-hook-form';
-import { yupResolver } from '@hookform/resolvers/yup';
-import * as yup from 'yup';
-import toast from 'react-hot-toast';
-import { formService } from '../services/api';
-import CustomInput from './CustomInput';
-import InteractiveButton from './InteractiveButton';
-import PropertyManagementSuccess from './PropertyManagementSuccess';
-import { FiHome, FiUser, FiPhone, FiMail, FiMapPin, FiDollarSign, FiCheckCircle } from 'react-icons/fi';
+import React, { useState } from "react";
+import { useForm } from "react-hook-form";
+import { yupResolver } from "@hookform/resolvers/yup";
+import * as yup from "yup";
+import toast from "react-hot-toast";
+import { formService } from "../services/api";
+import CustomInput from "./CustomInput";
+import InteractiveButton from "./InteractiveButton";
+import PropertyManagementSuccess from "./PropertyManagementSuccess";
+import {
+  FiHome,
+  FiUser,
+  FiPhone,
+  FiMail,
+  FiMapPin,
+  FiDollarSign,
+} from "react-icons/fi";
 
 // Validation schema
 const schema = yup.object().shape({
-  fullName: yup.string().required('Full name is required'),
-  email: yup.string().email('Invalid email').required('Email is required'),
-  phoneNumber: yup.string().required('Phone number is required'),
-  propertyType: yup.string().required('Property type is required'),
-  numberOfProperties: yup.number()
-    .positive('Number must be positive')
-    .integer('Number must be a whole number')
-    .required('Number of properties is required'),
+  fullName: yup.string().required("Full name is required"),
+  email: yup.string().email("Invalid email").required("Email is required"),
+  phoneNumber: yup.string().required("Phone number is required"),
+  propertyType: yup.string().required("Property type is required"),
+  numberOfProperties: yup
+    .number()
+    .transform((_, originalValue) => {
+      // Handle empty string and convert to number
+      return originalValue === "" ? undefined : Number(originalValue);
+    })
+    .positive("Number must be positive")
+    .integer("Number must be a whole number")
+    .required("Number of properties is required"),
   address: yup.object().shape({
-    street: yup.string().required('Street address is required'),
-    area: yup.string().required('Area is required'),
-    localGovernment: yup.string().required('Local Government is required'),
-    state: yup.string().required('State is required'),
+    street: yup.string().required("Street address is required"),
+    area: yup.string().required("Area is required"),
+    localGovernment: yup.string().required("Local Government is required"),
+    state: yup.string().required("State is required"),
   }),
-  agreeToFee: yup.boolean().oneOf([true], 'You must agree to the 5% management fee'),
+  agreeToFee: yup
+    .boolean()
+    .oneOf([true], "You must agree to the 5% management fee"),
 });
 
 const PropertyManagementForm = ({ onClose }) => {
@@ -43,24 +57,56 @@ const PropertyManagementForm = ({ onClose }) => {
   });
 
   const propertyTypes = [
-    'Apartment',
-    'House',
-    'Duplex',
-    'Bungalow',
-    'Flat',
-    'Studio',
-    'Penthouse',
-    'Townhouse',
-    'Villa',
-    'Other',
+    "Apartment",
+    "House",
+    "Duplex",
+    "Bungalow",
+    "Flat",
+    "Studio",
+    "Penthouse",
+    "Townhouse",
+    "Villa",
+    "Other",
   ];
 
   const nigerianStates = [
-    'Abia', 'Adamawa', 'Akwa Ibom', 'Anambra', 'Bauchi', 'Bayelsa', 'Benue',
-    'Borno', 'Cross River', 'Delta', 'Ebonyi', 'Edo', 'Ekiti', 'Enugu',
-    'FCT - Abuja', 'Gombe', 'Imo', 'Jigawa', 'Kaduna', 'Kano', 'Katsina',
-    'Kebbi', 'Kogi', 'Kwara', 'Lagos', 'Nasarawa', 'Niger', 'Ogun', 'Ondo',
-    'Osun', 'Oyo', 'Plateau', 'Rivers', 'Sokoto', 'Taraba', 'Yobe', 'Zamfara'
+    "Abia",
+    "Adamawa",
+    "Akwa Ibom",
+    "Anambra",
+    "Bauchi",
+    "Bayelsa",
+    "Benue",
+    "Borno",
+    "Cross River",
+    "Delta",
+    "Ebonyi",
+    "Edo",
+    "Ekiti",
+    "Enugu",
+    "FCT - Abuja",
+    "Gombe",
+    "Imo",
+    "Jigawa",
+    "Kaduna",
+    "Kano",
+    "Katsina",
+    "Kebbi",
+    "Kogi",
+    "Kwara",
+    "Lagos",
+    "Nasarawa",
+    "Niger",
+    "Ogun",
+    "Ondo",
+    "Osun",
+    "Oyo",
+    "Plateau",
+    "Rivers",
+    "Sokoto",
+    "Taraba",
+    "Yobe",
+    "Zamfara",
   ];
 
   const onSubmit = async (data) => {
@@ -69,11 +115,13 @@ const PropertyManagementForm = ({ onClose }) => {
       const response = await formService.submitPropertyManagementForm(data);
       setApplicationData(response.data);
       setIsSubmitted(true);
-      toast.success('Property management application submitted successfully!');
+      toast.success("Property management application submitted successfully!");
       reset();
     } catch (error) {
-      console.error('Error submitting form:', error);
-      toast.error(error.response?.data?.message || 'Failed to submit application');
+      console.error("Error submitting form:", error);
+      toast.error(
+        error.response?.data?.message || "Failed to submit application"
+      );
     } finally {
       setIsSubmitting(false);
     }
@@ -95,8 +143,8 @@ const PropertyManagementForm = ({ onClose }) => {
           Property Management Application
         </h2>
         <p className="text-gray-600 max-w-2xl mx-auto">
-          Join our property management program and let Aplet360 handle your properties 
-          with professional care while you enjoy steady returns.
+          Join our property management program and let Aplet360 handle your
+          properties with professional care while you enjoy steady returns.
         </p>
       </div>
 
@@ -107,31 +155,31 @@ const PropertyManagementForm = ({ onClose }) => {
             <FiUser className="text-primary-600" />
             Personal Information
           </h3>
-          
+
           <div className="grid md:grid-cols-2 gap-6">
             <CustomInput
               label="Full Name"
               type="text"
               placeholder="Enter your full name"
-              {...register('fullName')}
+              {...register("fullName")}
               error={errors.fullName?.message}
               icon={<FiUser />}
             />
-            
+
             <CustomInput
               label="Email Address"
               type="email"
               placeholder="Enter your email"
-              {...register('email')}
+              {...register("email")}
               error={errors.email?.message}
               icon={<FiMail />}
             />
-            
+
             <CustomInput
               label="Phone Number"
               type="tel"
               placeholder="Enter your phone number"
-              {...register('phoneNumber')}
+              {...register("phoneNumber")}
               error={errors.phoneNumber?.message}
               icon={<FiPhone />}
             />
@@ -151,7 +199,7 @@ const PropertyManagementForm = ({ onClose }) => {
                 Property Type
               </label>
               <select
-                {...register('propertyType')}
+                {...register("propertyType")}
                 className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent"
               >
                 <option value="">Select property type</option>
@@ -162,7 +210,9 @@ const PropertyManagementForm = ({ onClose }) => {
                 ))}
               </select>
               {errors.propertyType && (
-                <p className="text-red-500 text-sm mt-1">{errors.propertyType.message}</p>
+                <p className="text-red-500 text-sm mt-1">
+                  {errors.propertyType.message}
+                </p>
               )}
             </div>
 
@@ -170,7 +220,7 @@ const PropertyManagementForm = ({ onClose }) => {
               label="Number of Properties"
               type="number"
               placeholder="How many properties?"
-              {...register('numberOfProperties')}
+              {...register("numberOfProperties")}
               error={errors.numberOfProperties?.message}
               icon={<FiHome />}
               min="1"
@@ -190,7 +240,7 @@ const PropertyManagementForm = ({ onClose }) => {
               label="Street Address"
               type="text"
               placeholder="Enter street address"
-              {...register('address.street')}
+              {...register("address.street")}
               error={errors.address?.street?.message}
               icon={<FiMapPin />}
             />
@@ -199,7 +249,7 @@ const PropertyManagementForm = ({ onClose }) => {
               label="Area"
               type="text"
               placeholder="Enter area/district"
-              {...register('address.area')}
+              {...register("address.area")}
               error={errors.address?.area?.message}
               icon={<FiMapPin />}
             />
@@ -208,7 +258,7 @@ const PropertyManagementForm = ({ onClose }) => {
               label="Local Government"
               type="text"
               placeholder="Enter local government"
-              {...register('address.localGovernment')}
+              {...register("address.localGovernment")}
               error={errors.address?.localGovernment?.message}
               icon={<FiMapPin />}
             />
@@ -218,7 +268,7 @@ const PropertyManagementForm = ({ onClose }) => {
                 State
               </label>
               <select
-                {...register('address.state')}
+                {...register("address.state")}
                 className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent"
               >
                 <option value="">Select state</option>
@@ -229,7 +279,9 @@ const PropertyManagementForm = ({ onClose }) => {
                 ))}
               </select>
               {errors.address?.state && (
-                <p className="text-red-500 text-sm mt-1">{errors.address.state.message}</p>
+                <p className="text-red-500 text-sm mt-1">
+                  {errors.address.state.message}
+                </p>
               )}
             </div>
           </div>
@@ -244,10 +296,12 @@ const PropertyManagementForm = ({ onClose }) => {
 
           <div className="mb-6">
             <div className="bg-white p-4 rounded-lg border border-yellow-200">
-              <h4 className="font-semibold text-gray-900 mb-2">5% Management Fee</h4>
+              <h4 className="font-semibold text-gray-900 mb-2">
+                5% Management Fee
+              </h4>
               <p className="text-gray-700 text-sm mb-4">
-                Aplet360 charges a competitive 5% management fee on all rental income generated
-                from your properties. This fee covers:
+                Aplet360 charges a competitive 5% management fee on all rental
+                income generated from your properties. This fee covers:
               </p>
               <ul className="text-sm text-gray-600 space-y-1">
                 <li>• Tenant screening and management</li>
@@ -263,17 +317,20 @@ const PropertyManagementForm = ({ onClose }) => {
           <div className="flex items-start gap-3">
             <input
               type="checkbox"
-              {...register('agreeToFee')}
+              {...register("agreeToFee")}
               className="mt-1 h-4 w-4 text-primary-600 focus:ring-primary-500 border-gray-300 rounded"
             />
             <label className="text-sm text-gray-700">
-              I agree to the 5% management fee on all rental income generated from my properties
-              under Aplet360's management. I understand this fee will be automatically deducted
-              from rental payments before disbursement.
+              I agree to the 5% management fee on all rental income generated
+              from my properties under Aplet360's management. I understand this
+              fee will be automatically deducted from rental payments before
+              disbursement.
             </label>
           </div>
           {errors.agreeToFee && (
-            <p className="text-red-500 text-sm mt-2">{errors.agreeToFee.message}</p>
+            <p className="text-red-500 text-sm mt-2">
+              {errors.agreeToFee.message}
+            </p>
           )}
         </div>
 
@@ -285,7 +342,7 @@ const PropertyManagementForm = ({ onClose }) => {
             variant="primary"
             className="px-8 py-3"
           >
-            {isSubmitting ? 'Submitting Application...' : 'Submit Application'}
+            {isSubmitting ? "Submitting Application..." : "Submit Application"}
           </InteractiveButton>
         </div>
       </form>

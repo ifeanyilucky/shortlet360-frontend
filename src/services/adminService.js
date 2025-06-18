@@ -76,6 +76,35 @@ const adminService = {
     });
   },
 
+  // Discount Code Management
+  getAllDiscountCodes: (params) => {
+    return api.get(`/discount-codes`, { params });
+  },
+
+  getDiscountCodeById: (id) => {
+    return api.get(`/discount-codes/${id}`);
+  },
+
+  createDiscountCode: (data) => {
+    return api.post(`/discount-codes`, data);
+  },
+
+  updateDiscountCode: (id, data) => {
+    return api.put(`/discount-codes/${id}`, data);
+  },
+
+  deleteDiscountCode: (id) => {
+    return api.delete(`/discount-codes/${id}`);
+  },
+
+  toggleDiscountCodeStatus: (id) => {
+    return api.patch(`/discount-codes/${id}/toggle`);
+  },
+
+  getDiscountCodeStats: () => {
+    return api.get(`/discount-codes/stats`);
+  },
+
   // KYC Verification Management
   getPendingKycVerifications: (params) => {
     return api.get(`/admin/kyc/pending`, { params });

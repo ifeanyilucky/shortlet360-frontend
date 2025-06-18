@@ -212,6 +212,9 @@ export default function AdminKyc() {
                       Tier 3 Status
                     </th>
                     <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                      Bank Account
+                    </th>
+                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                       Actions
                     </th>
                   </tr>
@@ -300,6 +303,40 @@ export default function AdminKyc() {
                         >
                           {user.kyc?.tier3?.status || "Not Started"}
                         </span>
+                      </td>
+                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                        {user.kyc?.tier3?.bank_account ? (
+                          <div>
+                            <div className="text-xs">
+                              {user.kyc.tier3.bank_account.bank_name ||
+                                "Unknown Bank"}
+                            </div>
+                            <div className="text-xs text-gray-400 font-mono">
+                              {user.kyc.tier3.bank_account.account_number
+                                ? `****${user.kyc.tier3.bank_account.account_number.substring(
+                                    6
+                                  )}`
+                                : "No account"}
+                            </div>
+                            <div className="text-xs">
+                              <span
+                                className={`${
+                                  user.kyc.tier3.bank_account
+                                    .verification_status === "verified"
+                                    ? "text-green-600"
+                                    : "text-red-600"
+                                }`}
+                              >
+                                {
+                                  user.kyc.tier3.bank_account
+                                    .verification_status
+                                }
+                              </span>
+                            </div>
+                          </div>
+                        ) : (
+                          "Not provided"
+                        )}
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
                         <div className="flex flex-wrap gap-2">
@@ -923,22 +960,222 @@ export default function AdminKyc() {
                         <h4 className="text-md font-medium text-gray-900">
                           Tier 3: Financial Verification
                         </h4>
-                        <p className="text-sm text-gray-500">
-                          Status:{" "}
-                          {selectedUser.kyc?.tier3?.status || "Not Started"}
-                        </p>
-                        <p className="text-sm text-gray-500">
-                          Employment:{" "}
-                          {selectedUser.kyc?.tier3?.employment
-                            ?.verification_status || "Not Submitted"}
-                        </p>
-                        <p className="text-sm text-gray-500">
-                          Bank Statement:{" "}
-                          {selectedUser.kyc?.tier3?.bank_statement
-                            ?.verification_status || "Not Submitted"}
-                        </p>
+                        <div className="bg-gray-50 p-3 rounded-md mt-2">
+                          <p className="text-sm text-gray-700 font-medium">
+                            Status:{" "}
+                            <span
+                              className={`${
+                                selectedUser.kyc?.tier3?.status === "verified"
+                                  ? "text-green-600"
+                                  : selectedUser.kyc?.tier3?.status ===
+                                    "rejected"
+                                  ? "text-red-600"
+                                  : "text-yellow-600"
+                              }`}
+                            >
+                              {selectedUser.kyc?.tier3?.status || "Not Started"}
+                            </span>
+                          </p>
+
+                          {/* BVN Verification Details */}
+                          {selectedUser.kyc?.tier3?.bvn && (
+                            <div className="mt-3 border-t pt-3">
+                              <h5 className="text-sm font-medium text-gray-900 mb-2">
+                                BVN Verification:
+                              </h5>
+                              <p className="text-sm text-gray-700">
+                                BVN:{" "}
+                                <span className="font-mono">
+                                  {selectedUser.kyc.tier3.bvn.bvn_number
+                                    ? `${selectedUser.kyc.tier3.bvn.bvn_number.substring(
+                                        0,
+                                        3
+                                      )}****${selectedUser.kyc.tier3.bvn.bvn_number.substring(
+                                        7
+                                      )}`
+                                    : "Not provided"}
+                                </span>
+                              </p>
+                              <p className="text-sm text-gray-700">
+                                Status:{" "}
+                                <span
+                                  className={
+                                    selectedUser.kyc.tier3.bvn
+                                      .verification_status === "verified"
+                                      ? "text-green-600"
+                                      : "text-red-600"
+                                  }
+                                >
+                                  {
+                                    selectedUser.kyc.tier3.bvn
+                                      .verification_status
+                                  }
+                                </span>
+                              </p>
+                            </div>
+                          )}
+
+                          {/* Bank Account Verification Details */}
+                          {selectedUser.kyc?.tier3?.bank_account && (
+                            <div className="mt-3 border-t pt-3">
+                              <h5 className="text-sm font-medium text-gray-900 mb-2">
+                                Bank Account Verification:
+                              </h5>
+                              <p className="text-sm text-gray-700">
+                                Account Number:{" "}
+                                <span className="font-mono">
+                                  {selectedUser.kyc.tier3.bank_account
+                                    .account_number || "Not provided"}
+                                </span>
+                              </p>
+                              <p className="text-sm text-gray-700">
+                                Bank Name:{" "}
+                                <span className="font-medium">
+                                  {selectedUser.kyc.tier3.bank_account
+                                    .bank_name || "Not provided"}
+                                </span>
+                              </p>
+                              <p className="text-sm text-gray-700">
+                                Account Name:{" "}
+                                <span className="font-medium">
+                                  {selectedUser.kyc.tier3.bank_account
+                                    .account_name || "Not provided"}
+                                </span>
+                              </p>
+                              <p className="text-sm text-gray-700">
+                                Status:{" "}
+                                <span
+                                  className={
+                                    selectedUser.kyc.tier3.bank_account
+                                      .verification_status === "verified"
+                                      ? "text-green-600"
+                                      : "text-red-600"
+                                  }
+                                >
+                                  {
+                                    selectedUser.kyc.tier3.bank_account
+                                      .verification_status
+                                  }
+                                </span>
+                              </p>
+
+                              {/* YouVerify Bank Account Verification Data */}
+                              {selectedUser.kyc.tier3.bank_account
+                                .verification_data && (
+                                <div className="mt-2">
+                                  <p className="text-sm text-gray-700">
+                                    Verification ID:{" "}
+                                    <span className="font-mono text-xs">
+                                      {
+                                        selectedUser.kyc.tier3.bank_account
+                                          .verification_data.verification_id
+                                      }
+                                    </span>
+                                  </p>
+                                  {selectedUser.kyc.tier3.bank_account
+                                    .verification_data.verified_at && (
+                                    <p className="text-sm text-gray-700">
+                                      Verified At:{" "}
+                                      {format(
+                                        new Date(
+                                          selectedUser.kyc.tier3.bank_account.verification_data.verified_at
+                                        ),
+                                        "PPpp"
+                                      )}
+                                    </p>
+                                  )}
+                                  {selectedUser.kyc.tier3.bank_account
+                                    .verification_data.country && (
+                                    <p className="text-sm text-gray-700">
+                                      Country:{" "}
+                                      {
+                                        selectedUser.kyc.tier3.bank_account
+                                          .verification_data.country
+                                      }
+                                    </p>
+                                  )}
+                                  {selectedUser.kyc.tier3.bank_account
+                                    .verification_data.type && (
+                                    <p className="text-sm text-gray-700">
+                                      Verification Type:{" "}
+                                      {
+                                        selectedUser.kyc.tier3.bank_account
+                                          .verification_data.type
+                                      }
+                                    </p>
+                                  )}
+                                </div>
+                              )}
+                            </div>
+                          )}
+
+                          {/* Business Verification Details */}
+                          {selectedUser.kyc?.tier3?.business && (
+                            <div className="mt-3 border-t pt-3">
+                              <h5 className="text-sm font-medium text-gray-900 mb-2">
+                                Business Verification:
+                              </h5>
+                              <p className="text-sm text-gray-700">
+                                Business Name:{" "}
+                                <span className="font-medium">
+                                  {selectedUser.kyc.tier3.business
+                                    .business_name || "Not provided"}
+                                </span>
+                              </p>
+                              <p className="text-sm text-gray-700">
+                                Business Type:{" "}
+                                <span className="font-medium">
+                                  {selectedUser.kyc.tier3.business
+                                    .business_type || "Not provided"}
+                                </span>
+                              </p>
+                              {selectedUser.kyc.tier3.business.rc_number && (
+                                <p className="text-sm text-gray-700">
+                                  RC Number:{" "}
+                                  <span className="font-mono">
+                                    {selectedUser.kyc.tier3.business.rc_number}
+                                  </span>
+                                </p>
+                              )}
+                              <p className="text-sm text-gray-700">
+                                Status:{" "}
+                                <span
+                                  className={
+                                    selectedUser.kyc.tier3.business
+                                      .verification_status === "verified"
+                                      ? "text-green-600"
+                                      : "text-red-600"
+                                  }
+                                >
+                                  {
+                                    selectedUser.kyc.tier3.business
+                                      .verification_status
+                                  }
+                                </span>
+                              </p>
+                            </div>
+                          )}
+
+                          {/* Action buttons for Tier 3 verification data */}
+                          {(selectedUser.kyc?.tier3?.bvn?.verification_data ||
+                            selectedUser.kyc?.tier3?.bank_account
+                              ?.verification_data ||
+                            selectedUser.kyc?.tier3?.business
+                              ?.verification_data) && (
+                            <div className="mt-3 border-t pt-3">
+                              <button
+                                onClick={() => setShowRawData(true)}
+                                className="inline-flex items-center px-2 py-1 bg-gray-100 text-gray-600 rounded text-xs hover:bg-gray-200"
+                              >
+                                <FiFileText className="mr-1" />
+                                View Tier 3 Raw Data
+                              </button>
+                            </div>
+                          )}
+                        </div>
+
                         {selectedUser.kyc?.tier3?.status === "pending" && (
-                          <div className="mt-2 flex space-x-2">
+                          <div className="mt-4 flex space-x-2">
                             <button
                               onClick={() =>
                                 handleUpdateTier3(selectedUser._id, {
@@ -1031,7 +1268,7 @@ export default function AdminKyc() {
         )}
 
       {/* Raw Data Modal */}
-      {showRawData && selectedUser?.kyc?.tier1 && (
+      {showRawData && selectedUser?.kyc && (
         <div className="fixed inset-0 z-50 overflow-y-auto">
           <div className="flex items-center justify-center min-h-screen pt-4 px-4 pb-20 text-center sm:block sm:p-0">
             <div
@@ -1054,7 +1291,8 @@ export default function AdminKyc() {
                       Raw YouVerify Response Data
                     </h3>
                     <div className="mt-4">
-                      {selectedUser.kyc.tier1.phone_verification_data && (
+                      {/* Tier 1 Data */}
+                      {selectedUser.kyc.tier1?.phone_verification_data && (
                         <div className="mb-6">
                           <h4 className="text-md font-medium text-gray-900 mb-2">
                             Phone Verification Response:
@@ -1069,7 +1307,7 @@ export default function AdminKyc() {
                           </pre>
                         </div>
                       )}
-                      {selectedUser.kyc.tier1.nin_verification_data && (
+                      {selectedUser.kyc.tier1?.nin_verification_data && (
                         <div className="mb-6">
                           <h4 className="text-md font-medium text-gray-900 mb-2">
                             NIN Verification Response:
@@ -1077,6 +1315,54 @@ export default function AdminKyc() {
                           <pre className="bg-gray-100 p-4 rounded-lg text-xs overflow-x-auto">
                             {JSON.stringify(
                               selectedUser.kyc.tier1.nin_verification_data
+                                .verification_response,
+                              null,
+                              2
+                            )}
+                          </pre>
+                        </div>
+                      )}
+
+                      {/* Tier 3 Data */}
+                      {selectedUser.kyc.tier3?.bvn?.verification_data && (
+                        <div className="mb-6">
+                          <h4 className="text-md font-medium text-gray-900 mb-2">
+                            BVN Verification Response:
+                          </h4>
+                          <pre className="bg-gray-100 p-4 rounded-lg text-xs overflow-x-auto">
+                            {JSON.stringify(
+                              selectedUser.kyc.tier3.bvn.verification_data
+                                .verification_response,
+                              null,
+                              2
+                            )}
+                          </pre>
+                        </div>
+                      )}
+                      {selectedUser.kyc.tier3?.bank_account
+                        ?.verification_data && (
+                        <div className="mb-6">
+                          <h4 className="text-md font-medium text-gray-900 mb-2">
+                            Bank Account Verification Response:
+                          </h4>
+                          <pre className="bg-gray-100 p-4 rounded-lg text-xs overflow-x-auto">
+                            {JSON.stringify(
+                              selectedUser.kyc.tier3.bank_account
+                                .verification_data.verification_response,
+                              null,
+                              2
+                            )}
+                          </pre>
+                        </div>
+                      )}
+                      {selectedUser.kyc.tier3?.business?.verification_data && (
+                        <div className="mb-6">
+                          <h4 className="text-md font-medium text-gray-900 mb-2">
+                            Business Verification Response:
+                          </h4>
+                          <pre className="bg-gray-100 p-4 rounded-lg text-xs overflow-x-auto">
+                            {JSON.stringify(
+                              selectedUser.kyc.tier3.business.verification_data
                                 .verification_response,
                               null,
                               2

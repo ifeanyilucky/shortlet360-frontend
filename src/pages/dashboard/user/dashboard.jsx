@@ -83,19 +83,6 @@ export default function UserDashboard() {
         </div>
       )}
 
-      {/* KYC Status Section */}
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-        {/* KYC Status Card */}
-        <div className="lg:col-span-1">
-          <KycStatusCard />
-        </div>
-
-        {/* KYC Progress Indicator (Compact) */}
-        <div className="lg:col-span-2">
-          <KycProgressIndicator />
-        </div>
-      </div>
-
       {/* Statistics Cards */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6">
         <StatCard
@@ -192,7 +179,7 @@ export default function UserDashboard() {
       </div>
 
       {/* Favorite Cities */}
-      <div className="bg-white rounded-xl shadow p-4 md:p-6">
+      {/* <div className="bg-white rounded-xl shadow p-4 md:p-6">
         <h2 className="text-lg font-semibold mb-4">Favorite Cities</h2>
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-3 md:gap-4">
           {statistics?.favorite_cities?.length === 0 ? (
@@ -214,6 +201,14 @@ export default function UserDashboard() {
               </div>
             ))
           )}
+        </div>
+      </div> */}
+
+      {/* KYC Status Section */}
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+        {/* KYC Status Card */}
+        <div className="lg:col-span-1">
+          <KycStatusCard />
         </div>
       </div>
     </div>
