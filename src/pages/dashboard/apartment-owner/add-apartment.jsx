@@ -143,6 +143,30 @@ export default function AddApartment() {
           is_active: true,
         },
       });
+    } else if (propertyCategory === "office") {
+      // Reset to office pricing structure (similar to rent but with monthly options)
+      methods.setValue("pricing", {
+        per_day: { is_active: false },
+        per_week: { is_active: false },
+        per_month: {
+          base_price: 0,
+          cleaning_fee: 0,
+          security_deposit: 0,
+          is_active: true,
+        },
+        rent_per_year: {
+          annual_rent: 0,
+          agency_fee: 0,
+          commission_fee: 0,
+          caution_fee: 0,
+          legal_fee: 0,
+          is_agency_fee_active: true,
+          is_commission_fee_active: true,
+          is_caution_fee_active: true,
+          is_legal_fee_active: true,
+          is_active: true,
+        },
+      });
     } else {
       // Reset to shortlet pricing structure
       methods.setValue("pricing", {

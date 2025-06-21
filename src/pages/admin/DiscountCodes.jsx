@@ -1,5 +1,4 @@
 import { useState, useEffect } from "react";
-import { Link } from "react-router-dom";
 import {
   FiPlus,
   FiEdit,
@@ -7,12 +6,10 @@ import {
   FiToggleLeft,
   FiToggleRight,
   FiSearch,
-  FiFilter,
   FiEye,
   FiRefreshCw,
   FiPercent,
   FiDollarSign,
-  FiCalendar,
   FiUsers,
 } from "react-icons/fi";
 import adminService from "../../services/adminService";
@@ -293,7 +290,7 @@ export default function DiscountCodes() {
   return (
     <div className="space-y-6">
       {/* Header */}
-      <div className="flex justify-between items-center">
+      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
         <div>
           <h1 className="text-2xl font-bold text-gray-900">Discount Codes</h1>
           <p className="text-gray-600">Manage registration discount codes</p>
@@ -303,10 +300,10 @@ export default function DiscountCodes() {
             resetForm();
             setShowCreateModal(true);
           }}
-          className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg flex items-center gap-2 transition-colors"
+          className="w-full sm:w-auto bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg flex items-center justify-center gap-2 transition-colors"
         >
           <FiPlus size={20} />
-          Create Discount Code
+          <span className="whitespace-nowrap">Create Discount Code</span>
         </button>
       </div>
 
@@ -376,9 +373,9 @@ export default function DiscountCodes() {
       )}
 
       {/* Filters */}
-      <div className="bg-white p-6 rounded-lg shadow-sm border">
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-          <div className="relative">
+      <div className="bg-white p-4 sm:p-6 rounded-lg shadow-sm border">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+          <div className="relative sm:col-span-2 lg:col-span-1">
             <FiSearch className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" />
             <input
               type="text"
@@ -416,7 +413,7 @@ export default function DiscountCodes() {
               setFilters({ search: "", is_active: "", discount_type: "" });
               setPagination((prev) => ({ ...prev, page: 1 }));
             }}
-            className="px-4 py-2 bg-gray-100 hover:bg-gray-200 text-gray-700 rounded-lg flex items-center gap-2 transition-colors"
+            className="px-4 py-2 bg-gray-100 hover:bg-gray-200 text-gray-700 rounded-lg flex items-center justify-center gap-2 transition-colors"
           >
             <FiRefreshCw size={16} />
             Reset
@@ -648,8 +645,8 @@ export default function DiscountCodes() {
         }}
         title={selectedCode ? "Edit Discount Code" : "Create Discount Code"}
       >
-        <form onSubmit={handleSubmit} className="space-y-4">
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <form onSubmit={handleSubmit} className="space-y-6">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
             <CustomInput
               label="Discount Code"
               name="code"
@@ -699,7 +696,7 @@ export default function DiscountCodes() {
             required
           />
 
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
             <CustomInput
               label={`Discount Value ${
                 formData.discount_type === "percentage" ? "(%)" : "(₦)"
@@ -758,7 +755,7 @@ export default function DiscountCodes() {
             </select>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
             <CustomInput
               label="Valid From (Optional)"
               name="valid_from"
@@ -784,26 +781,33 @@ export default function DiscountCodes() {
             />
           </div>
 
-          <div className="flex justify-end space-x-3 pt-4">
-            <button
-              type="button"
-              onClick={() => {
-                setShowCreateModal(false);
-                setShowEditModal(false);
-                resetForm();
-                setSelectedCode(null);
-              }}
-              className="px-4 py-2 border border-gray-300 rounded-lg text-gray-700 hover:bg-gray-50 transition-colors"
-            >
-              Cancel
-            </button>
-            <button
-              type="submit"
-              disabled={isSubmitting}
-              className="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
-            >
-              {isSubmitting ? "Saving..." : selectedCode ? "Update" : "Create"}
-            </button>
+          {/* Sticky button container for mobile */}
+          <div className="sticky bottom-0 bg-white pt-6 pb-2 border-t border-gray-200 -mx-4 sm:-mx-6 px-4 sm:px-6 mt-6">
+            <div className="flex flex-col sm:flex-row justify-end space-y-3 sm:space-y-0 sm:space-x-3">
+              <button
+                type="button"
+                onClick={() => {
+                  setShowCreateModal(false);
+                  setShowEditModal(false);
+                  resetForm();
+                  setSelectedCode(null);
+                }}
+                className="w-full sm:w-auto px-4 py-2 border border-gray-300 rounded-lg text-gray-700 hover:bg-gray-50 transition-colors"
+              >
+                Cancel
+              </button>
+              <button
+                type="submit"
+                disabled={isSubmitting}
+                className="w-full sm:w-auto px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+              >
+                {isSubmitting
+                  ? "Saving..."
+                  : selectedCode
+                  ? "Update"
+                  : "Create"}
+              </button>
+            </div>
           </div>
         </form>
       </Modal>
@@ -833,19 +837,19 @@ export default function DiscountCodes() {
             </div>
           )}
 
-          <div className="flex justify-end space-x-3 pt-4">
+          <div className="flex flex-col sm:flex-row justify-end space-y-3 sm:space-y-0 sm:space-x-3 pt-4">
             <button
               onClick={() => {
                 setShowDeleteModal(false);
                 setSelectedCode(null);
               }}
-              className="px-4 py-2 border border-gray-300 rounded-lg text-gray-700 hover:bg-gray-50 transition-colors"
+              className="w-full sm:w-auto px-4 py-2 border border-gray-300 rounded-lg text-gray-700 hover:bg-gray-50 transition-colors"
             >
               Cancel
             </button>
             <button
               onClick={handleDelete}
-              className="px-4 py-2 bg-red-600 hover:bg-red-700 text-white rounded-lg transition-colors"
+              className="w-full sm:w-auto px-4 py-2 bg-red-600 hover:bg-red-700 text-white rounded-lg transition-colors"
             >
               Delete
             </button>

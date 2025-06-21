@@ -71,6 +71,13 @@ import CreateBlog from "../pages/dashboard/admin/CreateBlog";
 import EditBlog from "../pages/dashboard/admin/EditBlog";
 import AdminVerifiedKyc from "../pages/dashboard/admin/verifiedKyc";
 import AdminDiscountCodes from "../pages/admin/DiscountCodes";
+import FormSubmissions from "../pages/admin/FormSubmissions";
+import HomeServiceRequests from "../pages/admin/forms/HomeServiceRequests";
+import ContactForms from "../pages/admin/forms/ContactForms";
+import ArtisanApplications from "../pages/admin/forms/ArtisanApplications";
+import DisputeResolution from "../pages/admin/forms/DisputeResolution";
+import InspectionRequests from "../pages/admin/forms/InspectionRequests";
+import PropertyManagement from "../pages/admin/forms/PropertyManagement";
 export default function Router() {
   const routes = useRoutes([
     {
@@ -175,6 +182,25 @@ export default function Router() {
             { path: "verified-kyc", element: <AdminVerifiedKyc /> },
             { path: "referrals", element: <AdminReferrals /> },
             { path: "discount-codes", element: <AdminDiscountCodes /> },
+            { path: "form-submissions", element: <FormSubmissions /> },
+            { path: "forms/home-service", element: <HomeServiceRequests /> },
+            { path: "forms/contact", element: <ContactForms /> },
+            {
+              path: "forms/artisan-applications",
+              element: <ArtisanApplications />,
+            },
+            {
+              path: "forms/dispute-resolution",
+              element: <DisputeResolution />,
+            },
+            {
+              path: "forms/inspection-requests",
+              element: <InspectionRequests />,
+            },
+            {
+              path: "forms/property-management",
+              element: <PropertyManagement />,
+            },
             { path: "blogs", element: <AdminBlogs /> },
             { path: "blogs/create", element: <CreateBlog /> },
             { path: "blogs/edit/:id", element: <EditBlog /> },

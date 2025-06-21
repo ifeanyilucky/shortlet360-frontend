@@ -1,0 +1,283 @@
+================================================================================
+                    YOUVERIFY SANDBOX TESTING DATA SUMMARY
+                         Aplet360 KYC Verification
+================================================================================
+
+ENVIRONMENT CONFIGURATION:
+- Sandbox URL: https://api.sandbox.youverify.co
+- Production URL: https://api.youverify.co
+- API Endpoint: GET /api/kyc/sandbox-data
+- Environment: Use NODE_ENV=development for sandbox access
+
+================================================================================
+                           KYC REQUIREMENTS BY ROLE
+================================================================================
+
+┌─────────────────────────────────────────────────────────────────────────────┐
+│                                USER ROLE                                   │
+│ Purpose: Basic platform access                                             │
+│ Required Tiers: TIER 1 ONLY                                                │
+└─────────────────────────────────────────────────────────────────────────────┘
+
+TIER 1 - PHONE NUMBER + NIN VERIFICATION
+----------------------------------------
+✅ VALID TEST DATA (Returns "found" status):
+
+Phone Numbers:
+- 08000000000  (Primary sandbox phone)
+- 08111111111  (Alternative valid phone)
+- 08222222222  (Additional valid phone)
+- 07000000000  (MTN test number)
+- 09000000000  (9mobile test number)
+
+National Identification Numbers (NIN):
+- 11111111111  (Primary sandbox NIN)
+- 22222222222  (Alternative valid NIN)
+- 33333333333  (Additional valid NIN)
+
+❌ INVALID TEST DATA (Returns "not_found" status):
+
+Phone Numbers:
+- 08000000001  (Invalid phone - not found)
+- 00000000000  (Invalid format)
+
+NIMs:
+- 00000000000  (Invalid NIN - not found)
+- 99999999999  (Another invalid NIN)
+
+TESTING SCENARIOS FOR USER ROLE:
+1. Successful Verification:
+   Phone: 08000000000, NIN: 11111111111
+   Expected: "verified" status
+
+2. Phone Verification Failure:
+   Phone: 08000000001, NIN: 11111111111
+   Expected: "phone_verification_failed"
+
+3. NIN Verification Failure:
+   Phone: 08000000000, NIN: 00000000000
+   Expected: "nin_verification_failed"
+
+┌─────────────────────────────────────────────────────────────────────────────┐
+│                               OWNER ROLE                                   │
+│ Purpose: Property listing capability                                       │
+│ Required Tiers: TIER 1 + TIER 2                                            │
+└─────────────────────────────────────────────────────────────────────────────┘
+
+TIER 1 - PHONE NUMBER + NIN VERIFICATION
+----------------------------------------
+(Same as USER ROLE above)
+
+TIER 2 - UTILITY BILL VERIFICATION
+----------------------------------
+Document Types Accepted:
+- electricity  (NEPA/PHCN bill)
+- water        (Water corporation bill)
+- gas          (Gas company bill)
+- internet     (Internet service provider bill)
+- cable_tv     (Cable TV subscription)
+- phone        (Phone/telecom bill)
+
+⚠️  NOTE: Tier 2 requires MANUAL DOCUMENT REVIEW by admin
+⚠️  No automated verification through YouVerify API
+⚠️  Status will be "pending" until admin approval
+
+TESTING SCENARIOS FOR OWNER ROLE:
+1. Complete Tier 1 (use USER scenarios above)
+2. Upload utility bill document
+3. Wait for admin manual review and approval
+
+┌─────────────────────────────────────────────────────────────────────────────┐
+│                               ADMIN ROLE                                   │
+│ Purpose: Platform administration                                           │
+│ Required Tiers: NONE                                                       │
+└─────────────────────────────────────────────────────────────────────────────┘
+
+NO KYC VERIFICATION REQUIRED
+Admin users bypass all KYC requirements.
+
+┌─────────────────────────────────────────────────────────────────────────────┐
+│                          TIER 3 (ADVANCED USERS)                           │
+│ Purpose: Monthly rent payments, advanced features                          │
+│ Required: BVN + Bank Account + Business Verification                       │
+└─────────────────────────────────────────────────────────────────────────────┘
+
+TIER 3 - BVN + BANK ACCOUNT + BUSINESS VERIFICATION
+--------------------------------------------------
+✅ VALID TEST DATA:
+
+Bank Verification Numbers (BVN):
+- 11111111111  (Primary sandbox BVN)
+- 22222222222  (Alternative valid BVN)
+
+Bank Accounts:
+Account Number: 1000000000
+Bank Code: 058
+Bank Name: Guaranty Trust Bank
+Account Name: JOHN ADEBAYO DOE
+
+Account Number: 2000000000
+Bank Code: 011
+Bank Name: First Bank of Nigeria
+Account Name: JANE ADEBAYO SMITH
+
+Account Number: 3000000000
+Bank Code: 033
+Bank Name: United Bank for Africa
+Account Name: MICHAEL ADEBAYO JOHNSON
+
+Business Registration:
+RC Number: RC0000000
+Business Name: Test Company Limited
+Business Type: company
+Country Code: NG
+
+RC Number: BN0000000
+Business Name: Test Business Enterprise
+Business Type: business
+Country Code: NG
+
+❌ INVALID TEST DATA:
+
+BVNs:
+- 00000000000  (Invalid BVN - not found)
+
+Bank Accounts:
+Account Number: 1111111111
+Bank Code: 058
+Bank Name: Guaranty Trust Bank
+
+Business Registration:
+RC Number: RC11111111
+Business Name: Invalid Company
+Business Type: company
+
+TESTING SCENARIOS FOR TIER 3:
+1. Successful Verification:
+   BVN: 11111111111
+   Account: 1000000000, Bank: 058
+   Business: RC0000000, Test Company Limited
+   Expected: "verified" status
+
+2. BVN Verification Failure:
+   BVN: 00000000000
+   Account: 1000000000, Bank: 058
+   Expected: "bvn_verification_failed"
+
+3. Bank Account Verification Failure:
+   BVN: 11111111111
+   Account: 1111111111, Bank: 058
+   Expected: "bank_verification_failed"
+
+================================================================================
+                           ADDITIONAL SERVICES
+                        (Available for Future Implementation)
+================================================================================
+
+DRIVER'S LICENSE VERIFICATION:
+Valid: AAA00000AA00
+Invalid: AAA11111AA11
+
+INTERNATIONAL PASSPORT VERIFICATION:
+Valid: A11111111
+Invalid: A00000000
+
+PERMANENT VOTER'S CARD (PVC):
+Valid: 00A0A0A000000000000
+Invalid: 11A1A1A111111111111
+
+VIRTUAL NIN (vNIN):
+Valid: YV111111111111FY
+Invalid: YV000000000000FY
+
+TAX IDENTIFICATION NUMBER (TIN):
+Valid: 00000000-0000
+Invalid: 11111111-1111
+
+================================================================================
+                              BANK CODES REFERENCE
+================================================================================
+
+058 - Guaranty Trust Bank (GTBank)
+011 - First Bank of Nigeria
+033 - United Bank for Africa (UBA)
+044 - Access Bank
+057 - Zenith Bank
+070 - Fidelity Bank
+221 - Stanbic IBTC Bank
+214 - First City Monument Bank
+232 - Sterling Bank
+082 - Keystone Bank
+
+================================================================================
+                                API USAGE EXAMPLES
+================================================================================
+
+GET SANDBOX DATA:
+curl http://localhost:5000/api/kyc/sandbox-data
+
+TIER 1 VERIFICATION (Success):
+curl -X POST http://localhost:5000/api/kyc/tier1/submit \
+  -H "Authorization: Bearer TOKEN" \
+  -H "Content-Type: application/json" \
+  -d '{"phone_number": "08000000000", "nin": "11111111111"}'
+
+TIER 1 VERIFICATION (Phone Failure):
+curl -X POST http://localhost:5000/api/kyc/tier1/submit \
+  -H "Authorization: Bearer TOKEN" \
+  -H "Content-Type: application/json" \
+  -d '{"phone_number": "08000000001", "nin": "11111111111"}'
+
+TIER 3 VERIFICATION (Success):
+curl -X POST http://localhost:5000/api/kyc/tier3/submit \
+  -H "Authorization: Bearer TOKEN" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "bvn_number": "11111111111",
+    "account_number": "1000000000",
+    "bank_code": "058",
+    "business_name": "Test Company Limited",
+    "business_type": "company",
+    "rc_number": "RC0000000"
+  }'
+
+================================================================================
+                              IMPORTANT NOTES
+================================================================================
+
+⚠️  ENVIRONMENT RESTRICTIONS:
+- Sandbox data ONLY works in sandbox environment
+- Switch to production data when going live
+- Use correct API keys for each environment
+
+⚠️  MANUAL PROCESSES:
+- Tier 2 utility bills require manual admin review
+- No automated verification for document uploads
+
+⚠️  TESTING RECOMMENDATIONS:
+- Test both success and failure scenarios
+- Verify error messages are user-friendly
+- Test role-based access controls
+- Validate tier progression logic
+
+⚠️  PRODUCTION READINESS:
+- Update environment variables for production
+- Replace sandbox API keys with production keys
+- Remove or disable sandbox data endpoints
+- Test with real user data before launch
+
+================================================================================
+                                 SUPPORT
+================================================================================
+
+Documentation: docs/YOUVERIFY_SANDBOX_DATA.md
+Testing Guide: docs/KYC_TESTING_GUIDE.md
+Implementation: docs/KYC_IMPLEMENTATION_SUMMARY.md
+Automated Tests: examples/kyc-testing-examples.js
+
+YouVerify Documentation: https://doc.youverify.co
+API Endpoint: GET /api/kyc/sandbox-data
+
+================================================================================
+                              END OF DOCUMENT
+================================================================================

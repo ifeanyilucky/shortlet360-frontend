@@ -28,7 +28,7 @@ export default function LandingPage() {
 
   // Price range constants
   const MIN_PRICE = 200; // 200 currency units
-  const MAX_PRICE = 10000000; // 10m
+  const MAX_PRICE = 30000000; // 10m
 
   const [searchParams, setSearchParams] = useState({
     location: "",
@@ -58,8 +58,11 @@ export default function LandingPage() {
       if (type === "from") {
         // Ensure from value doesn't exceed to value minus minimum gap
         const maxFromValue = currentRange.to - minGap;
-        const clampedFromValue = Math.min(Math.max(newValue, MIN_PRICE), maxFromValue);
-        
+        const clampedFromValue = Math.min(
+          Math.max(newValue, MIN_PRICE),
+          maxFromValue
+        );
+
         return {
           ...prev,
           priceRange: {
@@ -70,8 +73,11 @@ export default function LandingPage() {
       } else {
         // Ensure to value doesn't go below from value plus minimum gap
         const minToValue = currentRange.from + minGap;
-        const clampedToValue = Math.max(Math.min(newValue, MAX_PRICE), minToValue);
-        
+        const clampedToValue = Math.max(
+          Math.min(newValue, MAX_PRICE),
+          minToValue
+        );
+
         return {
           ...prev,
           priceRange: {
@@ -121,21 +127,21 @@ export default function LandingPage() {
         <div className="absolute inset-0 bg-[url('/images/pattern.png')] opacity-10"></div>
         <div className="max-w-6xl mx-auto px-4 text-center pt-20 pb-10 relative z-10">
           <h1 className="text-4xl md:text-6xl font-bold mb-6 animate-fade-in">
-           Seamless Apartment Rental {" "}
+            Seamless Apartment Rental{" "}
             <span className="text-accent-300 bg-clip-text text-transparent bg-gradient-to-r from-accent-300 to-accent-500">
               For Everyone.
             </span>
           </h1>
 
           <p className="text-primary-100 max-w-3xl mx-auto mb-12 text-base md:text-lg px-4 animate-slide-up">
-            Aplet360 is Africa&apos;s premier apartment rental and shortlet
-            solutions company, offering individuals, families, travelers, and
-            corporate clients seamless access to quality, verified, and
-            affordable property options across major cities in Nigeria and
-            Africa while providing 360 degree seamless home services designed to
-            elevate everyday living for Africans. We&apos;re not just providing
-            homes, we&apos;re providing lifestyles built on trust, comfort, and
-            excellence.
+            Aplet360 is Africa&apos;s premium proptech apartment rental and
+            shortlet solutions company, offering individuals, families,
+            travelers, and corporate clients seamless access to quality,
+            verified, and affordable property options across major cities in
+            Nigeria and Africa while providing 360 degree seamless home services
+            designed to elevate everyday living for Africans. We&apos;re not
+            just providing homes, we&apos;re providing lifestyles built on
+            trust, comfort, and excellence.
           </p>
 
           {/* Search Section */}
@@ -239,9 +245,15 @@ export default function LandingPage() {
                           }
                           className="absolute w-full h-2 bg-transparent appearance-none cursor-pointer slider-thumb slider-thumb-lower"
                           style={{
-                            zIndex: searchParams.priceRange.from > searchParams.priceRange.to - 50000 ? 5 : 1
+                            zIndex:
+                              searchParams.priceRange.from >
+                              searchParams.priceRange.to - 50000
+                                ? 5
+                                : 1,
                           }}
-                          title={`Minimum price: ${formatPrice(searchParams.priceRange.from)}`}
+                          title={`Minimum price: ${formatPrice(
+                            searchParams.priceRange.from
+                          )}`}
                         />
 
                         {/* Maximum slider (to) */}
@@ -256,9 +268,15 @@ export default function LandingPage() {
                           }
                           className="absolute w-full h-2 bg-transparent appearance-none cursor-pointer slider-thumb slider-thumb-upper"
                           style={{
-                            zIndex: searchParams.priceRange.from > searchParams.priceRange.to - 50000 ? 1 : 5
+                            zIndex:
+                              searchParams.priceRange.from >
+                              searchParams.priceRange.to - 50000
+                                ? 1
+                                : 5,
                           }}
-                          title={`Maximum price: ${formatPrice(searchParams.priceRange.to)}`}
+                          title={`Maximum price: ${formatPrice(
+                            searchParams.priceRange.to
+                          )}`}
                         />
                       </div>
 
@@ -332,6 +350,7 @@ export default function LandingPage() {
               >
                 <option value="rent">Rent</option>
                 <option value="shortlet">Shortlet</option>
+                <option value="office">Office</option>
               </select>
             </div>
 
@@ -366,8 +385,8 @@ export default function LandingPage() {
             </h2>
             <p className="text-tertiary-600 max-w-3xl mx-auto text-lg">
               Our streamlined process makes finding and securing your ideal
-              apartment quick and hassle-free, whether for long-term rentals or
-              short-term stays.
+              space quick and hassle-free, whether for long-term rentals,
+              short-term stays, or office spaces.
             </p>
           </div>
 
@@ -380,8 +399,8 @@ export default function LandingPage() {
                 Search
               </h3>
               <p className="text-tertiary-600 text-sm text-center">
-                Find your ideal space by location, price, and amenities for rent
-                or shortlet
+                Find your ideal space by location, price, and amenities for
+                rent, shortlet, or office
               </p>
             </div>
 

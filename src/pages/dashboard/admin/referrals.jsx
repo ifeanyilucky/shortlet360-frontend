@@ -11,6 +11,7 @@ import {
 } from "react-icons/fi";
 import { referralService } from "../../../services/api";
 import toast from "react-hot-toast";
+import ReferralDetailModal from "../../../components/ReferralDetailModal";
 
 export default function AdminReferrals() {
   const [referrals, setReferrals] = useState([]);
@@ -25,6 +26,8 @@ export default function AdminReferrals() {
     limit: 10,
   });
   const [pagination, setPagination] = useState({});
+  const [selectedReferralId, setSelectedReferralId] = useState(null);
+  const [isModalOpen, setIsModalOpen] = useState(false);
 
   useEffect(() => {
     fetchReferrals();
@@ -59,7 +62,7 @@ export default function AdminReferrals() {
   };
 
   const handleFilterChange = (key, value) => {
-    setFilters(prev => ({
+    setFilters((prev) => ({
       ...prev,
       [key]: value,
       page: 1, // Reset to first page when filtering
@@ -67,7 +70,7 @@ export default function AdminReferrals() {
   };
 
   const handlePageChange = (newPage) => {
-    setFilters(prev => ({
+    setFilters((prev) => ({
       ...prev,
       page: newPage,
     }));
@@ -76,6 +79,16 @@ export default function AdminReferrals() {
   const refreshData = () => {
     fetchReferrals();
     fetchAnalytics();
+  };
+
+  const handleViewReferral = (referralId) => {
+    setSelectedReferralId(referralId);
+    setIsModalOpen(true);
+  };
+
+  const handleCloseModal = () => {
+    setIsModalOpen(false);
+    setSelectedReferralId(null);
   };
 
   if (analyticsLoading) {
@@ -91,8 +104,12 @@ export default function AdminReferrals() {
       {/* Header */}
       <div className="flex justify-between items-center">
         <div>
-          <h1 className="text-2xl font-bold text-gray-800">Referral Management</h1>
-          <p className="text-gray-600">Monitor and manage the referral program</p>
+          <h1 className="text-2xl font-bold text-gray-800">
+            Referral Management
+          </h1>
+          <p className="text-gray-600">
+            Monitor and manage the referral program
+          </p>
         </div>
         <button
           onClick={refreshData}
@@ -113,7 +130,9 @@ export default function AdminReferrals() {
               </div>
               <div>
                 <p className="text-sm text-gray-500">Total Referrals</p>
-                <h3 className="text-2xl font-bold">{analytics.overview.totalReferrals}</h3>
+                <h3 className="text-2xl font-bold">
+                  {analytics.overview.totalReferrals}
+                </h3>
               </div>
             </div>
           </div>
@@ -125,7 +144,9 @@ export default function AdminReferrals() {
               </div>
               <div>
                 <p className="text-sm text-gray-500">Verified Referrals</p>
-                <h3 className="text-2xl font-bold">{analytics.overview.verifiedReferrals}</h3>
+                <h3 className="text-2xl font-bold">
+                  {analytics.overview.verifiedReferrals}
+                </h3>
               </div>
             </div>
           </div>
@@ -137,7 +158,9 @@ export default function AdminReferrals() {
               </div>
               <div>
                 <p className="text-sm text-gray-500">Conversion Rate</p>
-                <h3 className="text-2xl font-bold">{analytics.overview.conversionRate}%</h3>
+                <h3 className="text-2xl font-bold">
+                  {analytics.overview.conversionRate}%
+                </h3>
               </div>
             </div>
           </div>
@@ -149,7 +172,9 @@ export default function AdminReferrals() {
               </div>
               <div>
                 <p className="text-sm text-gray-500">Pending</p>
-                <h3 className="text-2xl font-bold">{analytics.overview.pendingReferrals}</h3>
+                <h3 className="text-2xl font-bold">
+                  {analytics.overview.pendingReferrals}
+                </h3>
               </div>
             </div>
           </div>
@@ -164,11 +189,15 @@ export default function AdminReferrals() {
             <div className="space-y-3">
               <div className="flex justify-between items-center">
                 <span className="text-gray-600">Property Owners</span>
-                <span className="font-semibold">{analytics.roleBreakdown.ownerReferrals}</span>
+                <span className="font-semibold">
+                  {analytics.roleBreakdown.ownerReferrals}
+                </span>
               </div>
               <div className="flex justify-between items-center">
                 <span className="text-gray-600">Regular Users</span>
-                <span className="font-semibold">{analytics.roleBreakdown.userReferrals}</span>
+                <span className="font-semibold">
+                  {analytics.roleBreakdown.userReferrals}
+                </span>
               </div>
             </div>
           </div>
@@ -176,15 +205,22 @@ export default function AdminReferrals() {
           <div className="bg-white rounded-lg shadow-sm p-6">
             <h3 className="text-lg font-semibold mb-4">Top Referrers</h3>
             <div className="space-y-3">
-              {analytics.topReferrers.slice(0, 5).map((referrer, index) => (
-                <div key={referrer._id} className="flex justify-between items-center">
+              {analytics.topReferrers.slice(0, 5).map((referrer) => (
+                <div
+                  key={referrer._id}
+                  className="flex justify-between items-center"
+                >
                   <div>
                     <span className="text-sm font-medium">
                       {referrer.user.first_name} {referrer.user.last_name}
                     </span>
-                    <p className="text-xs text-gray-500">{referrer.user.email}</p>
+                    <p className="text-xs text-gray-500">
+                      {referrer.user.email}
+                    </p>
                   </div>
-                  <span className="font-semibold">{referrer.totalReferrals}</span>
+                  <span className="font-semibold">
+                    {referrer.totalReferrals}
+                  </span>
                 </div>
               ))}
             </div>
@@ -199,7 +235,7 @@ export default function AdminReferrals() {
             <FiSearch className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" />
             <input
               type="text"
-              placeholder="Search referrals..."
+              placeholder="Search by name, email, or referral code..."
               value={filters.search}
               onChange={(e) => handleFilterChange("search", e.target.value)}
               className="pl-10 pr-4 py-2 w-full border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500"
@@ -228,7 +264,15 @@ export default function AdminReferrals() {
           </select>
 
           <button
-            onClick={() => setFilters({ search: "", status: "", role: "", page: 1, limit: 10 })}
+            onClick={() =>
+              setFilters({
+                search: "",
+                status: "",
+                role: "",
+                page: 1,
+                limit: 10,
+              })
+            }
             className="px-4 py-2 border border-gray-300 rounded-md text-gray-700 hover:bg-gray-50"
           >
             Clear Filters
@@ -282,44 +326,61 @@ export default function AdminReferrals() {
                       <td className="px-6 py-4 whitespace-nowrap">
                         <div>
                           <p className="text-sm font-medium text-gray-900">
-                            {referral.referrer?.first_name} {referral.referrer?.last_name}
+                            {referral.referrer?.first_name}{" "}
+                            {referral.referrer?.last_name}
                           </p>
-                          <p className="text-sm text-gray-500">{referral.referrer?.email}</p>
+                          <p className="text-sm text-gray-500">
+                            {referral.referrer?.email}
+                          </p>
                         </div>
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap">
                         <div>
                           <p className="text-sm font-medium text-gray-900">
-                            {referral.referred_user?.first_name} {referral.referred_user?.last_name}
+                            {referral.referred_user?.first_name}{" "}
+                            {referral.referred_user?.last_name}
                           </p>
-                          <p className="text-sm text-gray-500">{referral.referred_user?.email}</p>
+                          <p className="text-sm text-gray-500">
+                            {referral.referred_user?.email}
+                          </p>
                         </div>
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap">
-                        <span className={`inline-flex px-2 py-1 text-xs font-semibold rounded-full ${
-                          referral.referred_user_role === 'owner' 
-                            ? 'bg-blue-100 text-blue-800' 
-                            : 'bg-green-100 text-green-800'
-                        }`}>
-                          {referral.referred_user_role === 'owner' ? 'Property Owner' : 'User'}
+                        <span
+                          className={`inline-flex px-2 py-1 text-xs font-semibold rounded-full ${
+                            referral.referred_user_role === "owner"
+                              ? "bg-blue-100 text-blue-800"
+                              : "bg-green-100 text-green-800"
+                          }`}
+                        >
+                          {referral.referred_user_role === "owner"
+                            ? "Property Owner"
+                            : "User"}
                         </span>
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap">
-                        <span className={`inline-flex px-2 py-1 text-xs font-semibold rounded-full ${
-                          referral.status === 'verified' 
-                            ? 'bg-green-100 text-green-800' 
-                            : referral.status === 'rewarded'
-                            ? 'bg-purple-100 text-purple-800'
-                            : 'bg-yellow-100 text-yellow-800'
-                        }`}>
-                          {referral.status.charAt(0).toUpperCase() + referral.status.slice(1)}
+                        <span
+                          className={`inline-flex px-2 py-1 text-xs font-semibold rounded-full ${
+                            referral.status === "verified"
+                              ? "bg-green-100 text-green-800"
+                              : referral.status === "rewarded"
+                              ? "bg-purple-100 text-purple-800"
+                              : "bg-yellow-100 text-yellow-800"
+                          }`}
+                        >
+                          {referral.status.charAt(0).toUpperCase() +
+                            referral.status.slice(1)}
                         </span>
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
                         {new Date(referral.createdAt).toLocaleDateString()}
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
-                        <button className="text-blue-600 hover:text-blue-900">
+                        <button
+                          onClick={() => handleViewReferral(referral._id)}
+                          className="text-blue-600 hover:text-blue-900 transition-colors"
+                          title="View referral details"
+                        >
                           <FiEye />
                         </button>
                       </td>
@@ -333,7 +394,12 @@ export default function AdminReferrals() {
             {pagination.totalPages > 1 && (
               <div className="px-6 py-4 border-t border-gray-200 flex justify-between items-center">
                 <div className="text-sm text-gray-500">
-                  Showing {((pagination.currentPage - 1) * filters.limit) + 1} to {Math.min(pagination.currentPage * filters.limit, pagination.totalReferrals)} of {pagination.totalReferrals} results
+                  Showing {(pagination.currentPage - 1) * filters.limit + 1} to{" "}
+                  {Math.min(
+                    pagination.currentPage * filters.limit,
+                    pagination.totalReferrals
+                  )}{" "}
+                  of {pagination.totalReferrals} results
                 </div>
                 <div className="flex space-x-2">
                   <button
@@ -356,6 +422,13 @@ export default function AdminReferrals() {
           </>
         )}
       </div>
+
+      {/* Referral Detail Modal */}
+      <ReferralDetailModal
+        referralId={selectedReferralId}
+        isOpen={isModalOpen}
+        onClose={handleCloseModal}
+      />
     </div>
   );
 }

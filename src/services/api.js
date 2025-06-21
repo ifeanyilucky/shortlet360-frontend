@@ -54,7 +54,10 @@ export const authService = {
       requestData.discount_code = discountCode;
     }
 
-    const response = await api.post("/auth/complete-registration-payment", requestData);
+    const response = await api.post(
+      "/auth/complete-registration-payment",
+      requestData
+    );
     return response.data;
   },
 };
@@ -305,6 +308,10 @@ export const referralService = {
     );
     return response.data;
   },
+  getReferralById: async (id) => {
+    const response = await api.get(`/referral/admin/${id}`);
+    return response.data;
+  },
   getReferralAnalytics: async () => {
     const response = await api.get("/referral/admin/analytics");
     return response.data;
@@ -352,6 +359,31 @@ export const blogService = {
   },
   getBlogBySlug: async (slug) => {
     const response = await api.get(`/blog/slug/${slug}`);
+    return response.data;
+  },
+};
+
+export const adminFormService = {
+  getAllFormSubmissions: async (params = {}) => {
+    const queryParams = new URLSearchParams();
+    Object.entries(params).forEach(([key, value]) => {
+      if (value !== undefined && value !== null && value !== "") {
+        queryParams.append(key, value);
+      }
+    });
+    const response = await api.get(`/admin/forms?${queryParams.toString()}`);
+    return response.data;
+  },
+  getFormSubmissionStats: async () => {
+    const response = await api.get("/admin/forms/stats");
+    return response.data;
+  },
+  getFormSubmissionById: async (id) => {
+    const response = await api.get(`/admin/forms/${id}`);
+    return response.data;
+  },
+  updateFormSubmissionStatus: async (id, data) => {
+    const response = await api.put(`/admin/forms/${id}`, data);
     return response.data;
   },
 };

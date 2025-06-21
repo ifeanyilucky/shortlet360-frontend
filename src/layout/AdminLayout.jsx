@@ -1,39 +1,65 @@
 import { useState, useEffect } from "react";
-import { Outlet, useNavigate, Link, useLocation } from "react-router-dom";
+import { Outlet, Link, useLocation, useNavigate } from "react-router-dom";
 import { useAuth } from "../hooks/useAuth";
 import {
   FiMenu,
   FiX,
   FiLogOut,
-  FiUser,
   FiHome,
   FiUsers,
   FiKey,
   FiSettings,
   FiCalendar,
-  FiList,
   FiChevronDown,
   FiChevronRight,
   FiEdit3,
   FiPercent,
 } from "react-icons/fi";
 import { MdOutlineAddHome } from "react-icons/md";
-import { HiOutlineDocumentReport } from "react-icons/hi";
-import { BsClockHistory } from "react-icons/bs";
 import { RiAdminLine } from "react-icons/ri";
 
 export default function AdminLayout() {
-  const [isSidebarOpen, setIsSidebarOpen] = useState(true);
+  const [isSidebarOpen, setIsSidebarOpen] = useState(false); // Start closed on mobile
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [expandedMenus, setExpandedMenus] = useState({
     users: false,
   });
   const { user, logout } = useAuth();
-  const navigate = useNavigate();
   const location = useLocation();
 
   const toggleSidebar = () => {
     setIsSidebarOpen(!isSidebarOpen);
   };
+
+  const toggleMobileMenu = () => {
+    setIsMobileMenuOpen(!isMobileMenuOpen);
+  };
+
+  // Close mobile menu when route changes
+  useEffect(() => {
+    setIsMobileMenuOpen(false);
+  }, [location.pathname]);
+
+  // Initialize sidebar state based on screen size
+  useEffect(() => {
+    const handleResize = () => {
+      if (window.innerWidth >= 768) {
+        // Desktop: sidebar open by default
+        setIsSidebarOpen(true);
+        setIsMobileMenuOpen(false);
+      } else {
+        // Mobile: sidebar closed by default
+        setIsSidebarOpen(false);
+      }
+    };
+
+    // Set initial state
+    handleResize();
+
+    // Listen for window resize
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
+  }, []);
 
   const toggleSubmenu = (menu) => {
     setExpandedMenus((prev) => ({
@@ -107,6 +133,42 @@ export default function AdminLayout() {
       label: "Discount Codes",
     },
     {
+      id: "form-submissions",
+      label: "Form Submissions",
+      icon: <FiEdit3 size={20} />,
+      hasSubmenu: true,
+      submenu: [
+        {
+          path: "/admin/form-submissions",
+          label: "All Submissions",
+        },
+        {
+          path: "/admin/forms/home-service",
+          label: "Home Service Requests",
+        },
+        {
+          path: "/admin/forms/contact",
+          label: "Contact Forms",
+        },
+        {
+          path: "/admin/forms/artisan-applications",
+          label: "Artisan Applications",
+        },
+        {
+          path: "/admin/forms/dispute-resolution",
+          label: "Dispute Resolution",
+        },
+        {
+          path: "/admin/forms/inspection-requests",
+          label: "Inspection Requests",
+        },
+        {
+          path: "/admin/forms/property-management",
+          label: "Property Management",
+        },
+      ],
+    },
+    {
       path: "/admin/referrals",
       icon: <FiUsers size={20} />,
       label: "Referral Management",
@@ -133,75 +195,133 @@ export default function AdminLayout() {
   };
 
   return (
-    <div className="flex h-screen bg-gray-100">
+    <div className="flex h-screen bg-gray-100 relative">
+      {/* Mobile Menu Button */}
+      <button
+        onClick={toggleMobileMenu}
+        className="md:hidden fixed top-4 left-4 z-[9999] p-2 rounded-lg bg-white shadow-md hover:bg-gray-50"
+      >
+        {isMobileMenuOpen ? (
+          <FiX size={24} className="text-gray-700" />
+        ) : (
+          <FiMenu size={24} className="text-gray-700" />
+        )}
+      </button>
+
+      {/* Mobile Menu Overlay */}
+      {isMobileMenuOpen && (
+        <div
+          className="fixed inset-0 bg-black bg-opacity-50 z-40 md:hidden"
+          onClick={() => setIsMobileMenuOpen(false)}
+        />
+      )}
+
       {/* Sidebar */}
       <div
-        className={`${
-          isSidebarOpen ? "w-64" : "w-20"
-        } bg-white shadow-md transition-all duration-300 ease-in-out fixed h-full z-10`}
+        className={`fixed md:static bg-white shadow-lg h-full z-50 transition-all duration-300 ease-in-out flex flex-col ${
+          // Mobile behavior - always full width (w-64) on mobile
+          isMobileMenuOpen ? "translate-x-0 w-64" : "-translate-x-full w-64"
+        } md:translate-x-0 ${
+          // Desktop behavior
+          isSidebarOpen ? "md:w-64" : "md:w-20"
+        } ${
+          // Ensure proper positioning
+          "top-0 left-0"
+        }`}
       >
-        <div className="flex items-center justify-between p-4 border-b">
-          {isSidebarOpen ? (
+        <div className="flex items-center justify-between p-4 border-b bg-white">
+          {/* Always show full logo on mobile, responsive on desktop */}
+          <div className="md:hidden flex-1">
             <Link to="/" className="flex items-center">
               <img src="/logo.png" alt="Logo" className="h-8" />
               <span className="ml-2 text-xl font-semibold text-blue-600">
                 Admin
               </span>
             </Link>
-          ) : (
-            <div className="mx-auto">
-              <RiAdminLine size={24} className="text-blue-600" />
-            </div>
-          )}
+          </div>
+
+          {/* Desktop logo - responsive to sidebar state */}
+          <div className="hidden md:flex md:flex-1 md:justify-center">
+            {isSidebarOpen ? (
+              <Link to="/" className="flex items-center">
+                <img src="/logo.png" alt="Logo" className="h-8" />
+                <span className="ml-2 text-xl font-semibold text-blue-600">
+                  Admin
+                </span>
+              </Link>
+            ) : (
+              <div className="flex justify-center">
+                <RiAdminLine size={24} className="text-blue-600" />
+              </div>
+            )}
+          </div>
+
+          {/* Desktop toggle button */}
           <button
             onClick={toggleSidebar}
-            className="text-gray-500 hover:text-blue-600 focus:outline-none"
+            className="hidden md:block text-gray-500 hover:text-blue-600 focus:outline-none p-2 rounded-md hover:bg-gray-100 transition-colors"
           >
-            {isSidebarOpen ? <FiX size={24} /> : <FiMenu size={24} />}
+            {isSidebarOpen ? <FiX size={20} /> : <FiMenu size={20} />}
           </button>
         </div>
 
-        <nav className="mt-6">
-          <ul>
+        <nav className="mt-6 flex-1 overflow-y-auto px-2">
+          <ul className="space-y-1">
             {menuItems.map((item, index) => (
-              <li key={index} className="px-4 py-2">
+              <li key={index}>
                 {item.hasSubmenu ? (
                   <div>
                     <button
                       onClick={() => toggleSubmenu(item.id)}
-                      className={`flex items-center justify-between w-full p-2 rounded-md transition-colors ${
+                      className={`flex items-center justify-between w-full p-3 rounded-md transition-colors text-left ${
                         isActive(item.submenu[0].path)
                           ? "text-blue-600 bg-blue-50"
                           : "text-gray-700 hover:text-blue-600 hover:bg-blue-50"
                       }`}
                     >
-                      <div className="flex items-center">
-                        <span className="mr-4">{item.icon}</span>
-                        {isSidebarOpen && <span>{item.label}</span>}
-                      </div>
-                      {isSidebarOpen && (
-                        <span>
-                          {expandedMenus[item.id] ? (
-                            <FiChevronDown size={16} />
-                          ) : (
-                            <FiChevronRight size={16} />
-                          )}
+                      <div className="flex items-center min-w-0 flex-1">
+                        <span className="flex-shrink-0 mr-3">{item.icon}</span>
+                        {/* Show label based on context */}
+                        <span
+                          className={`truncate ${
+                            isSidebarOpen ? "md:block" : "md:hidden"
+                          }`}
+                        >
+                          {item.label}
                         </span>
-                      )}
+                      </div>
+                      {/* Show chevron when label is visible */}
+                      <span
+                        className={`flex-shrink-0 ml-2 ${
+                          isSidebarOpen ? "md:block" : "md:hidden"
+                        }`}
+                      >
+                        {expandedMenus[item.id] ? (
+                          <FiChevronDown size={16} />
+                        ) : (
+                          <FiChevronRight size={16} />
+                        )}
+                      </span>
                     </button>
-                    {expandedMenus[item.id] && isSidebarOpen && (
-                      <ul className="pl-10 mt-2 space-y-2">
+                    {/* Submenu - only show when expanded and labels are visible */}
+                    {expandedMenus[item.id] && (
+                      <ul
+                        className={`mt-2 space-y-1 ${
+                          isSidebarOpen ? "md:block" : "md:hidden"
+                        }`}
+                      >
                         {item.submenu.map((subItem, subIndex) => (
                           <li key={subIndex}>
                             <Link
                               to={subItem.path}
-                              className={`block p-2 rounded-md transition-colors ${
+                              onClick={() => setIsMobileMenuOpen(false)}
+                              className={`block p-2 pl-12 rounded-md transition-colors text-sm ${
                                 isActive(subItem.path)
                                   ? "text-blue-600 bg-blue-50"
                                   : "text-gray-700 hover:text-blue-600 hover:bg-blue-50"
                               }`}
                             >
-                              {subItem.label}
+                              <span className="truncate">{subItem.label}</span>
                             </Link>
                           </li>
                         ))}
@@ -211,14 +331,29 @@ export default function AdminLayout() {
                 ) : (
                   <Link
                     to={item.path}
-                    className={`flex items-center p-2 rounded-md transition-colors ${
+                    onClick={() => setIsMobileMenuOpen(false)}
+                    className={`flex items-center p-3 rounded-md transition-colors group ${
                       isActive(item.path)
                         ? "text-blue-600 bg-blue-50"
                         : "text-gray-700 hover:text-blue-600 hover:bg-blue-50"
                     }`}
+                    title={!isSidebarOpen ? item.label : undefined}
                   >
-                    <span className="mr-4">{item.icon}</span>
-                    {isSidebarOpen && <span>{item.label}</span>}
+                    <span className="flex-shrink-0 mr-3">{item.icon}</span>
+                    {/* Show label based on sidebar state */}
+                    <span
+                      className={`truncate ${
+                        isSidebarOpen ? "md:block" : "md:hidden"
+                      }`}
+                    >
+                      {item.label}
+                    </span>
+                    {/* Tooltip for collapsed state */}
+                    {!isSidebarOpen && (
+                      <div className="hidden md:group-hover:block absolute left-full ml-2 px-2 py-1 bg-gray-900 text-white text-sm rounded whitespace-nowrap z-50">
+                        {item.label}
+                      </div>
+                    )}
                   </Link>
                 )}
               </li>
@@ -226,42 +361,61 @@ export default function AdminLayout() {
           </ul>
         </nav>
 
-        <div className="absolute bottom-0 w-full border-t p-4">
-          <div className="flex items-center mb-4">
-            {isSidebarOpen && (
-              <div className="ml-4">
-                <p className="text-sm font-medium text-gray-900">
-                  {user?.first_name} {user?.last_name}
-                </p>
-                <p className="text-xs text-gray-500">{user?.email}</p>
+        <div className="border-t p-4 mt-auto">
+          {/* User info - show when sidebar is expanded */}
+          {isSidebarOpen && (
+            <div className="mb-4 px-2">
+              <div className="flex items-center">
+                <div className="min-w-0 flex-1">
+                  <p className="text-sm font-medium text-gray-900 truncate">
+                    {user?.first_name} {user?.last_name}
+                  </p>
+                  <p className="text-xs text-gray-500 truncate">
+                    {user?.email}
+                  </p>
+                </div>
               </div>
-            )}
+            </div>
+          )}
+
+          <div className="px-2">
+            <button
+              onClick={handleLogout}
+              className={`flex items-center w-full text-gray-700 hover:text-red-600 hover:bg-red-50 p-3 rounded-md transition-colors group ${
+                isSidebarOpen ? "justify-start" : "justify-center"
+              }`}
+              title={!isSidebarOpen ? "Logout" : undefined}
+            >
+              <FiLogOut size={20} className="flex-shrink-0" />
+              {/* Show text when sidebar is expanded */}
+              {isSidebarOpen && <span className="ml-3 truncate">Logout</span>}
+
+              {/* Tooltip for collapsed state */}
+              {!isSidebarOpen && (
+                <div className="hidden md:group-hover:block absolute left-full ml-2 px-2 py-1 bg-gray-900 text-white text-sm rounded whitespace-nowrap z-50">
+                  Logout
+                </div>
+              )}
+            </button>
           </div>
-          <button
-            onClick={handleLogout}
-            className={`flex items-center ${
-              isSidebarOpen ? "justify-start w-full" : "justify-center mx-auto"
-            } text-gray-700 hover:text-red-600 hover:bg-red-50 p-2 rounded-md transition-colors`}
-          >
-            <FiLogOut size={20} />
-            {isSidebarOpen && <span className="ml-4">Logout</span>}
-          </button>
         </div>
       </div>
 
       {/* Main Content */}
       <div
-        className={`${
-          isSidebarOpen ? "ml-64" : "ml-20"
-        } flex-1 transition-all duration-300 ease-in-out overflow-auto`}
+        className={`flex-1 transition-all duration-300 ease-in-out overflow-auto ${
+          // No margin on mobile, responsive margin on desktop
+          isSidebarOpen ? "" : "md:ml-20"
+        }`}
       >
         <header className="bg-white shadow-sm">
-          <div className="flex items-center justify-between px-6 py-4">
-            <h1 className="text-2xl font-semibold text-gray-800">
+          <div className="flex items-center justify-between px-4 sm:px-6 py-4">
+            {/* Mobile: Add left padding for menu button */}
+            <h1 className="text-xl sm:text-2xl font-semibold text-gray-800 ml-12 md:ml-0">
               Admin Portal
             </h1>
             <div className="flex items-center space-x-4">
-              <div className="relative">
+              <div className="relative hidden sm:block">
                 <span className="text-sm font-medium text-gray-900">
                   {user?.first_name} {user?.last_name}
                 </span>
@@ -270,7 +424,7 @@ export default function AdminLayout() {
           </div>
         </header>
 
-        <main className="p-6">
+        <main className="p-4 sm:p-6">
           <Outlet />
         </main>
       </div>

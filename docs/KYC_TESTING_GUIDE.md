@@ -1,4 +1,4 @@
-# KYC Testing Guide for Shortlet360
+# KYC Testing Guide for aplet360
 
 ## Overview
 
@@ -26,12 +26,13 @@ This returns all available test data organized by tiers and roles.
 ### 2. Test User Registration and KYC Flow
 
 #### Step 1: Register a Test User
+
 ```bash
 curl -X POST http://localhost:5000/api/auth/register \
   -H "Content-Type: application/json" \
   -d '{
     "first_name": "John",
-    "last_name": "Doe", 
+    "last_name": "Doe",
     "email": "john.doe@test.com",
     "password": "password123",
     "role": "user"
@@ -39,6 +40,7 @@ curl -X POST http://localhost:5000/api/auth/register \
 ```
 
 #### Step 2: Login and Get Token
+
 ```bash
 curl -X POST http://localhost:5000/api/auth/login \
   -H "Content-Type: application/json" \
@@ -51,6 +53,7 @@ curl -X POST http://localhost:5000/api/auth/login \
 Save the returned JWT token for subsequent requests.
 
 #### Step 3: Check Initial KYC Status
+
 ```bash
 curl -X GET http://localhost:5000/api/kyc/status \
   -H "Authorization: Bearer YOUR_JWT_TOKEN"
@@ -63,6 +66,7 @@ curl -X GET http://localhost:5000/api/kyc/status \
 Users only need **Tier 1** verification (Phone + NIN).
 
 #### Successful Tier 1 Verification
+
 ```bash
 curl -X POST http://localhost:5000/api/kyc/tier1/submit \
   -H "Authorization: Bearer YOUR_JWT_TOKEN" \
@@ -76,6 +80,7 @@ curl -X POST http://localhost:5000/api/kyc/tier1/submit \
 **Expected Result**: Both phone and NIN verification succeed, Tier 1 status becomes "verified".
 
 #### Failed Phone Verification Test
+
 ```bash
 curl -X POST http://localhost:5000/api/kyc/tier1/submit \
   -H "Authorization: Bearer YOUR_JWT_TOKEN" \
@@ -89,6 +94,7 @@ curl -X POST http://localhost:5000/api/kyc/tier1/submit \
 **Expected Result**: Phone verification fails, error message returned.
 
 #### Failed NIN Verification Test
+
 ```bash
 curl -X POST http://localhost:5000/api/kyc/tier1/submit \
   -H "Authorization: Bearer YOUR_JWT_TOKEN" \
@@ -106,9 +112,11 @@ curl -X POST http://localhost:5000/api/kyc/tier1/submit \
 Owners need **Tier 1 + Tier 2** verification (Phone + NIN + Utility Bill).
 
 #### Step 1: Complete Tier 1 (same as User)
+
 Use the successful Tier 1 verification from above.
 
 #### Step 2: Submit Tier 2 (Utility Bill)
+
 ```bash
 curl -X POST http://localhost:5000/api/kyc/tier2/submit \
   -H "Authorization: Bearer YOUR_JWT_TOKEN" \
@@ -119,6 +127,7 @@ curl -X POST http://localhost:5000/api/kyc/tier2/submit \
 **Expected Result**: Document uploaded successfully, Tier 2 status becomes "pending" (requires manual admin review).
 
 #### Step 3: Admin Review (Manual Process)
+
 Admin users can review and approve/reject Tier 2 submissions through the admin dashboard.
 
 ### Advanced Testing (Tier 3)
@@ -126,6 +135,7 @@ Admin users can review and approve/reject Tier 2 submissions through the admin d
 For users who need monthly rent payment capabilities.
 
 #### Successful Tier 3 Verification
+
 ```bash
 curl -X POST http://localhost:5000/api/kyc/tier3/submit \
   -H "Authorization: Bearer YOUR_JWT_TOKEN" \
@@ -143,6 +153,7 @@ curl -X POST http://localhost:5000/api/kyc/tier3/submit \
 **Expected Result**: All verifications (BVN, Bank Account, Business) succeed.
 
 #### Failed BVN Verification Test
+
 ```bash
 curl -X POST http://localhost:5000/api/kyc/tier3/submit \
   -H "Authorization: Bearer YOUR_JWT_TOKEN" \
@@ -160,6 +171,7 @@ curl -X POST http://localhost:5000/api/kyc/tier3/submit \
 **Expected Result**: BVN verification fails, other verifications may succeed.
 
 #### Failed Bank Account Verification Test
+
 ```bash
 curl -X POST http://localhost:5000/api/kyc/tier3/submit \
   -H "Authorization: Bearer YOUR_JWT_TOKEN" \
@@ -179,6 +191,7 @@ curl -X POST http://localhost:5000/api/kyc/tier3/submit \
 ## Test Data Quick Reference
 
 ### Valid Test Data
+
 - **Phone**: `08000000000`, `08111111111`, `08222222222`
 - **NIN**: `11111111111`, `22222222222`, `33333333333`
 - **BVN**: `11111111111`, `22222222222`
@@ -186,6 +199,7 @@ curl -X POST http://localhost:5000/api/kyc/tier3/submit \
 - **RC Number**: `RC0000000`, `BN0000000`
 
 ### Invalid Test Data (for failure testing)
+
 - **Phone**: `08000000001`, `00000000000`
 - **NIN**: `00000000000`, `99999999999`
 - **BVN**: `00000000000`
@@ -197,64 +211,64 @@ curl -X POST http://localhost:5000/api/kyc/tier3/submit \
 ### Example Test Suite
 
 ```javascript
-describe('KYC Verification Tests', () => {
+describe("KYC Verification Tests", () => {
   let userToken;
-  
+
   beforeAll(async () => {
     // Register and login test user
-    const loginResponse = await request(app)
-      .post('/api/auth/login')
-      .send({
-        email: 'test@example.com',
-        password: 'password123'
-      });
+    const loginResponse = await request(app).post("/api/auth/login").send({
+      email: "test@example.com",
+      password: "password123",
+    });
     userToken = loginResponse.body.token;
   });
 
-  describe('Tier 1 Verification', () => {
-    test('should succeed with valid phone and NIN', async () => {
+  describe("Tier 1 Verification", () => {
+    test("should succeed with valid phone and NIN", async () => {
       const response = await request(app)
-        .post('/api/kyc/tier1/submit')
-        .set('Authorization', `Bearer ${userToken}`)
+        .post("/api/kyc/tier1/submit")
+        .set("Authorization", `Bearer ${userToken}`)
         .send({
-          phone_number: '08000000000',
-          nin: '11111111111'
+          phone_number: "08000000000",
+          nin: "11111111111",
         });
-      
+
       expect(response.status).toBe(200);
-      expect(response.body.kyc.tier1.status).toBe('verified');
+      expect(response.body.kyc.tier1.status).toBe("verified");
     });
 
-    test('should fail with invalid phone number', async () => {
+    test("should fail with invalid phone number", async () => {
       const response = await request(app)
-        .post('/api/kyc/tier1/submit')
-        .set('Authorization', `Bearer ${userToken}`)
+        .post("/api/kyc/tier1/submit")
+        .set("Authorization", `Bearer ${userToken}`)
         .send({
-          phone_number: '08000000001',
-          nin: '11111111111'
+          phone_number: "08000000001",
+          nin: "11111111111",
         });
-      
+
       expect(response.status).toBe(400);
-      expect(response.body.message).toContain('Phone number verification failed');
+      expect(response.body.message).toContain(
+        "Phone number verification failed"
+      );
     });
   });
 
-  describe('Tier 3 Verification', () => {
-    test('should succeed with valid BVN and bank account', async () => {
+  describe("Tier 3 Verification", () => {
+    test("should succeed with valid BVN and bank account", async () => {
       const response = await request(app)
-        .post('/api/kyc/tier3/submit')
-        .set('Authorization', `Bearer ${userToken}`)
+        .post("/api/kyc/tier3/submit")
+        .set("Authorization", `Bearer ${userToken}`)
         .send({
-          bvn_number: '11111111111',
-          account_number: '1000000000',
-          bank_code: '058',
-          business_name: 'Test Company Limited',
-          business_type: 'company',
-          rc_number: 'RC0000000'
+          bvn_number: "11111111111",
+          account_number: "1000000000",
+          bank_code: "058",
+          business_name: "Test Company Limited",
+          business_type: "company",
+          rc_number: "RC0000000",
         });
-      
+
       expect(response.status).toBe(200);
-      expect(response.body.kyc.tier3.status).toBe('verified');
+      expect(response.body.kyc.tier3.status).toBe("verified");
     });
   });
 });
@@ -263,22 +277,27 @@ describe('KYC Verification Tests', () => {
 ## Common Issues and Troubleshooting
 
 ### 1. "Sandbox data not available in production"
+
 - **Cause**: Trying to access sandbox endpoint in production
 - **Solution**: Ensure `NODE_ENV` is set to `development` or `sandbox`
 
 ### 2. "Phone number verification failed"
+
 - **Cause**: Using invalid test phone number
 - **Solution**: Use valid sandbox phone numbers: `08000000000`, `08111111111`, etc.
 
 ### 3. "NIN verification failed"
+
 - **Cause**: Using invalid test NIN
 - **Solution**: Use valid sandbox NIMs: `11111111111`, `22222222222`, etc.
 
 ### 4. "YouVerify API token missing"
+
 - **Cause**: Missing or incorrect API token
 - **Solution**: Ensure `YOUVERIFY_API_TOKEN` environment variable is set with sandbox token
 
 ### 5. "Bank account verification failed"
+
 - **Cause**: Using invalid test bank account
 - **Solution**: Use valid sandbox accounts: `1000000000`, `2000000000`, `3000000000`
 
@@ -294,7 +313,7 @@ NODE_ENV=development
 FRONTEND_URL=http://localhost:3000
 
 # Database (use test database)
-MONGODB_URI=mongodb://localhost:27017/shortlet360_test
+MONGODB_URI=mongodb://localhost:27017/aplet360_test
 ```
 
 ## Next Steps

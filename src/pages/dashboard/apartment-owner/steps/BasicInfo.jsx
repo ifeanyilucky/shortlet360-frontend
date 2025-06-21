@@ -36,6 +36,15 @@ export default function BasicInfo() {
             />
             <span className="ml-2 text-sm text-gray-700">Rent</span>
           </label>
+          <label className="flex items-center">
+            <input
+              type="radio"
+              value="office"
+              {...register("property_category")}
+              className="h-4 w-4 text-primary-900 focus:ring-primary-900 border-gray-300"
+            />
+            <span className="ml-2 text-sm text-gray-700">Office</span>
+          </label>
         </div>
       </div>
 

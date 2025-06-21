@@ -11,7 +11,7 @@ import {
   FiPlus,
   FiMinus,
 } from "react-icons/fi";
-import { MdApartment } from "react-icons/md";
+import { MdApartment, MdBusiness } from "react-icons/md";
 import { AiOutlineHeart, AiFillHeart } from "react-icons/ai";
 import { fCurrency } from "@utils/formatNumber";
 import { Link, useSearchParams } from "react-router-dom";
@@ -32,6 +32,7 @@ export default function BookNow() {
   const [searchParams, setSearchParams] = useSearchParams();
   const [filters, setFilters] = useState({
     search: "",
+    propertyId: "",
     propertyType: "All Types",
     minPrice: "",
     maxPrice: "",
@@ -55,6 +56,7 @@ export default function BookNow() {
   useEffect(() => {
     // Get search parameters from URL and update filters
     const search = searchParams.get("search") || "";
+    const propertyId = searchParams.get("propertyId") || "";
     const minPrice = searchParams.get("minPrice") || "";
     const maxPrice = searchParams.get("maxPrice") || "";
     const bedrooms = searchParams.get("bedrooms") || "";
@@ -74,6 +76,7 @@ export default function BookNow() {
     setFilters((prev) => ({
       ...prev,
       search,
+      propertyId,
       minPrice,
       maxPrice,
       bedrooms,
@@ -83,6 +86,7 @@ export default function BookNow() {
     // Trigger search with URL parameters
     const cleanFilters = {
       search,
+      propertyId,
       minPrice,
       maxPrice,
       bedrooms,
@@ -135,6 +139,21 @@ export default function BookNow() {
       [key]: value,
       page: 1, // Reset to first page when filter changes
     }));
+
+    // Update URL parameters for property ID searches to make them shareable
+    if (key === "propertyId") {
+      const newSearchParams = new URLSearchParams(searchParams);
+      if (value) {
+        newSearchParams.set("propertyId", value);
+      } else {
+        newSearchParams.delete("propertyId");
+      }
+      window.history.pushState(
+        {},
+        "",
+        `${window.location.pathname}?${newSearchParams.toString()}`
+      );
+    }
   };
 
   const handleFilterSubmit = (e) => {
@@ -184,7 +203,7 @@ export default function BookNow() {
       property?.pricing || {};
 
     // For rent properties
-    if (rent_per_year?.is_active) {
+    if (rent_per_year?.is_active && property.property_category === "rent") {
       return {
         price: rent_per_year.annual_rent,
         period: "year",
@@ -203,6 +222,44 @@ export default function BookNow() {
             : 0,
         },
       };
+    }
+
+    // For office properties - prioritize monthly and yearly pricing
+    if (property.property_category === "office") {
+      if (per_month?.is_active) {
+        return {
+          type: "office",
+          price: per_month.base_price,
+          period: "month",
+          cleaning_fee: per_month.cleaning_fee,
+          security_deposit: per_month.security_deposit,
+          total:
+            per_month.base_price +
+            per_month.cleaning_fee +
+            per_month.security_deposit,
+        };
+      }
+      if (rent_per_year?.is_active) {
+        return {
+          type: "office",
+          price: rent_per_year.annual_rent,
+          period: "year",
+          fees: {
+            agency_fee: rent_per_year.is_agency_fee_active
+              ? rent_per_year.agency_fee
+              : 0,
+            commission_fee: rent_per_year.is_commission_fee_active
+              ? rent_per_year.commission_fee
+              : 0,
+            caution_fee: rent_per_year.is_caution_fee_active
+              ? rent_per_year.caution_fee
+              : 0,
+            legal_fee: rent_per_year.is_legal_fee_active
+              ? rent_per_year.legal_fee
+              : 0,
+          },
+        };
+      }
     }
 
     // For shortlet properties - return all available pricing options
@@ -304,6 +361,17 @@ export default function BookNow() {
               <MdApartment className="w-4 h-4" />
               <span>Shortlet</span>
             </button>
+            <button
+              onClick={() => switchCategory("office")}
+              className={`flex items-center gap-2 px-6 py-3 text-sm font-medium ${
+                filters.category === "office"
+                  ? "bg-accent-500 text-white"
+                  : "bg-white text-gray-700 hover:bg-accent-50"
+              }`}
+            >
+              <MdBusiness className="w-4 h-4" />
+              <span>Office</span>
+            </button>
           </div>
         </div>
 
@@ -313,7 +381,7 @@ export default function BookNow() {
           className="bg-white rounded-2xl shadow-sm p-6 mb-8"
         >
           {/* Main Filters - Always Visible */}
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6">
+          <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-6">
             {/* Search Field */}
             <div className="relative">
               <label className="block text-sm font-medium text-gray-700 mb-2">
@@ -331,6 +399,47 @@ export default function BookNow() {
                   onChange={(e) => handleFilter("search", e.target.value)}
                 />
               </div>
+            </div>
+
+            {/* Property ID Field */}
+            <div className="relative">
+              <label className="block text-sm font-medium text-gray-700 mb-2">
+                Property ID
+                {filters.propertyId && (
+                  <span className="ml-2 text-xs bg-blue-100 text-blue-600 px-2 py-1 rounded-full">
+                    Active
+                  </span>
+                )}
+              </label>
+              <div className="relative">
+                <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                  <FiHome className="h-5 w-5 text-gray-400" />
+                </div>
+                <input
+                  type="text"
+                  placeholder="Enter property ID..."
+                  className={`w-full pl-10 pr-10 py-3 text-sm text-gray-900 border rounded-lg bg-white focus:ring-2 focus:ring-accent-500 focus:border-accent-500 focus:outline-none ${
+                    filters.propertyId
+                      ? "border-blue-300 bg-blue-50"
+                      : "border-gray-300"
+                  }`}
+                  value={filters.propertyId}
+                  onChange={(e) => handleFilter("propertyId", e.target.value)}
+                />
+                {filters.propertyId && (
+                  <button
+                    type="button"
+                    onClick={() => handleFilter("propertyId", "")}
+                    className="absolute inset-y-0 right-0 pr-3 flex items-center text-gray-400 hover:text-gray-600"
+                  >
+                    <FiMinus className="h-4 w-4" />
+                  </button>
+                )}
+              </div>
+              <p className="text-xs text-gray-500 mt-1">
+                Search by unique property ID (e.g., SL123456) or click on any
+                property ID badge
+              </p>
             </div>
 
             {/* Bedrooms Field */}
@@ -527,6 +636,7 @@ export default function BookNow() {
                 const currentCategory = filters.category;
                 setFilters({
                   search: "",
+                  propertyId: "",
                   propertyType: "All Types",
                   minPrice: "",
                   maxPrice: "",
@@ -571,14 +681,54 @@ export default function BookNow() {
           </div>
         </form>
 
+        {/* Property ID Search Status */}
+        {filters.propertyId && (
+          <div className="bg-blue-50 border border-blue-200 rounded-lg p-4 mb-6">
+            <div className="flex items-center justify-between">
+              <div className="flex items-center">
+                <FiHome className="h-5 w-5 text-blue-600 mr-2" />
+                <span className="text-sm font-medium text-blue-800">
+                  Searching for Property ID:{" "}
+                  <span className="font-bold">{filters.propertyId}</span>
+                </span>
+              </div>
+              <button
+                onClick={() => handleFilter("propertyId", "")}
+                className="text-blue-600 hover:text-blue-800 text-sm font-medium"
+              >
+                Clear Search
+              </button>
+            </div>
+          </div>
+        )}
+
         {/* Property List */}
         {isLoading ? (
           <div className="text-center py-12">Loading...</div>
         ) : properties?.length === 0 ? (
           <div className="text-center py-12">
-            <p className="text-gray-500">
-              No properties found matching your criteria.
-            </p>
+            {filters.propertyId ? (
+              <div>
+                <p className="text-gray-500 mb-2">
+                  No property found with ID:{" "}
+                  <span className="font-semibold">{filters.propertyId}</span>
+                </p>
+                <p className="text-sm text-gray-400">
+                  Please check the property ID and try again, or browse all
+                  properties.
+                </p>
+                <button
+                  onClick={() => handleFilter("propertyId", "")}
+                  className="mt-3 text-blue-600 hover:text-blue-800 text-sm font-medium"
+                >
+                  Browse All Properties
+                </button>
+              </div>
+            ) : (
+              <p className="text-gray-500">
+                No properties found matching your criteria.
+              </p>
+            )}
           </div>
         ) : (
           <>
@@ -595,11 +745,15 @@ export default function BookNow() {
                       className={`absolute top-4 left-4 z-10 px-3 py-1 rounded-full text-xs font-medium ${
                         property.property_category === "shortlet"
                           ? "bg-blue-500 text-white"
+                          : property.property_category === "office"
+                          ? "bg-purple-500 text-white"
                           : "bg-green-500 text-white"
                       }`}
                     >
                       {property.property_category === "shortlet"
                         ? "Shortlet"
+                        : property.property_category === "office"
+                        ? "Office"
                         : "Rent"}
                     </div>
 
@@ -624,10 +778,27 @@ export default function BookNow() {
                       <h3 className="font-semibold text-xl text-gray-800 line-clamp-1">
                         {property.property_name}
                       </h3>
-                      {/* <div className="flex items-center gap-1 bg-gray-100 px-2 py-1 rounded-full">
-                        <span className="text-sm font-semibold">4.5</span>
-                        <span className="text-xs text-yellow-500">★</span>
-                      </div> */}
+                      {/* Property ID Badge */}
+                      <div
+                        className="flex items-center gap-1 bg-blue-50 px-2 py-1 rounded-full cursor-pointer hover:bg-blue-100 transition-colors"
+                        onClick={(e) => {
+                          e.preventDefault();
+                          e.stopPropagation();
+                          // Copy to clipboard and show in search
+                          navigator.clipboard.writeText(property.short_id);
+                          setFilters((prev) => ({
+                            ...prev,
+                            propertyId: property.short_id,
+                            search: "",
+                          }));
+                          handleSearch();
+                        }}
+                        title="Click to search by this Property ID"
+                      >
+                        <span className="text-xs font-medium text-blue-600">
+                          ID: {property.short_id}
+                        </span>
+                      </div>
                     </div>
 
                     <div className="flex items-center text-gray-600 mb-3">
@@ -678,6 +849,33 @@ export default function BookNow() {
                               <div className="text-xs text-gray-500 mt-1">
                                 + Agency & Legal fees
                               </div>
+                            </div>
+                          );
+                        }
+
+                        // For Office Properties
+                        if (pricing.type === "office") {
+                          return (
+                            <div className="mb-4">
+                              <div className="flex items-baseline">
+                                <span className="text-lg font-bold text-gray-900">
+                                  {fCurrency(pricing.price)}
+                                </span>
+                                <span className="text-sm text-gray-500 ml-1">
+                                  /{pricing.period}
+                                </span>
+                              </div>
+                              {pricing.period === "month" && (
+                                <div className="text-xs text-gray-500 mt-1">
+                                  Total: {fCurrency(pricing.total)} (includes
+                                  fees)
+                                </div>
+                              )}
+                              {pricing.period === "year" && (
+                                <div className="text-xs text-gray-500 mt-1">
+                                  + Agency & Legal fees
+                                </div>
+                              )}
                             </div>
                           );
                         }
