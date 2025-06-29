@@ -361,10 +361,10 @@ export default function ContactUs() {
                 What payment options are available?
               </h3>
               <p className="text-gray-600">
-                We offer two monthly payment options: Option 1 with 1.5% monthly
-                interest of yearly rent paid monthly (18% annually) or Option 2
-                with 2% monthly interest of yearly rent paid monthly (24%
-                annually).
+                We offer flexible monthly payment options designed to make
+                quality housing accessible. Our partners provide competitive
+                rates and terms that work for different income patterns and
+                financial situations.
               </p>
             </div>
 

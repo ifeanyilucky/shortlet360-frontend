@@ -17,6 +17,7 @@ import {
   BsChevronRight,
   BsCalendar,
 } from "react-icons/bs";
+import { FiCreditCard } from "react-icons/fi";
 import { fCurrency } from "@utils/formatNumber";
 import { useAuth } from "../hooks/useAuth";
 import DatePicker from "react-datepicker";
@@ -2416,6 +2417,15 @@ export default function PropertyDetail() {
                           : `Pay ${fCurrency(
                               calculate12MonthsPayment()
                             )} (First Month)`}
+                      </button>
+
+                      {/* Pay Monthly Button */}
+                      <button
+                        onClick={() => navigate("/rent-now-pay-later")}
+                        className="w-full bg-primary-900 text-white py-3 rounded-xl font-medium hover:bg-primary-800 mt-3 flex items-center justify-center gap-2"
+                      >
+                        <FiCreditCard className="w-4 h-4" />
+                        Pay Monthly
                       </button>
 
                       {/* Inspection Request Button */}

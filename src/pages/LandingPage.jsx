@@ -469,9 +469,8 @@ export default function LandingPage() {
           </p>
           <p className="max-w-3xl mx-auto mb-10 text-primary-100">
             Enjoy the flexibility of renting your perfect apartment today with
-            our two convenient monthly payment options: Option 1 with 1.5%
-            monthly interest on rent (upfront fees) or Option 2 with 2% monthly
-            interest (all costs divided into monthly payments).
+            our convenient monthly payment options designed to make quality
+            housing accessible for everyone.
           </p>
           <Link
             to="/book-now"

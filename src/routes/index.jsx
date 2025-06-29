@@ -78,6 +78,7 @@ import ArtisanApplications from "../pages/admin/forms/ArtisanApplications";
 import DisputeResolution from "../pages/admin/forms/DisputeResolution";
 import InspectionRequests from "../pages/admin/forms/InspectionRequests";
 import PropertyManagement from "../pages/admin/forms/PropertyManagement";
+import RentNowPayLater from "../pages/RentNowPayLater";
 export default function Router() {
   const routes = useRoutes([
     {
@@ -96,6 +97,7 @@ export default function Router() {
         { path: "referral-program", element: <ReferralProgram /> },
         { path: "become-artisan", element: <BecomeArtisan /> },
         { path: "marketplace", element: <Marketplace /> },
+        { path: "rent-now-pay-later", element: <RentNowPayLater /> },
         {
           path: "property-management-solutions",
           element: <PropertyManagementSolutions />,

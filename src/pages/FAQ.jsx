@@ -157,12 +157,12 @@ export default function FAQ() {
       {
         question: "What payment options are available?",
         answer:
-          "We offer two monthly payment options for apartment rentals: Option 1 with 2% monthly interest on rent (upfront fees) or Option 2 with 3% monthly interest (all costs divided into monthly payments). For shortlets, payment is typically made in full at the time of booking.",
+          "We offer flexible monthly payment options for apartment rentals designed to make quality housing accessible. Our partners provide competitive rates and terms. For shortlets, payment is typically made in full at the time of booking.",
       },
       {
         question: "Can you explain the two monthly payment options in detail?",
         answer:
-          "Option 1 (2% monthly interest): You pay all upfront fees (agency fee, legal fee, caution fee) at the beginning, and then pay monthly rent with a 2% interest rate. Option 2 (3% monthly interest): All costs, including rent and fees, are divided into monthly payments with a 3% interest rate. This option requires no large upfront payment.",
+          "We're partnering with leading financial institutions to offer the most competitive monthly payment solutions. Details about specific plans, rates, and terms will be available soon. Our goal is to provide flexible options that work for different income patterns and financial situations.",
       },
       {
         question: "What payment methods do you accept?",

@@ -44,13 +44,12 @@ const TermsConditions = () => {
           confirmation. Payment terms vary depending on the type of booking
           (rental or shortlet) and the payment option selected.
         </p>
-        <p className="mb-4">
-          For monthly rental payments, we offer two options:
+        <p className="mb-6">
+          For monthly rental payments, we partner with leading financial
+          institutions to offer flexible payment solutions with competitive
+          rates and terms designed to make quality housing accessible for
+          everyone.
         </p>
-        <ul className="list-disc pl-6 mb-6">
-          <li>Option 1: 1.5% monthly interest of yearly rent for 6 months payment plan</li>
-          <li>Option 2: 2% monthly interest of yearly rent for 12 months payment plan</li>
-        </ul>
 
         <h2 className="text-2xl font-semibold text-tertiary-800 mt-8 mb-4">
           4. Property Listings
