@@ -81,6 +81,42 @@ export const sitemapConfig = {
       changefreq: "yearly",
       priority: 0.3,
     },
+    // Location-specific landing pages for SEO
+    {
+      path: "/apartments-for-rent-lagos",
+      changefreq: "daily",
+      priority: 0.9,
+    },
+    {
+      path: "/apartments-for-rent-lagos-nigeria",
+      changefreq: "daily",
+      priority: 0.9,
+    },
+    {
+      path: "/houses-for-rent-lagos",
+      changefreq: "daily",
+      priority: 0.8,
+    },
+    {
+      path: "/flats-for-rent-nigeria",
+      changefreq: "daily",
+      priority: 0.9,
+    },
+    {
+      path: "/cheap-shortlets-lagos",
+      changefreq: "daily",
+      priority: 0.8,
+    },
+    {
+      path: "/apartments-for-rent-nigeria",
+      changefreq: "daily",
+      priority: 0.9,
+    },
+    {
+      path: "/apartments-for-rent-africa",
+      changefreq: "weekly",
+      priority: 0.8,
+    },
   ],
 
   // Dynamic routes configuration

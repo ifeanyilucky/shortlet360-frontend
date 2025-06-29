@@ -3,21 +3,6 @@
   <head>
     <meta charset="UTF-8" />
 
-    <!-- Google tag (gtag.js) -->
-    <script
-      async
-      src="https://www.googletagmanager.com/gtag/js?id=G-L0V24KFH48"
-    ></script>
-    <script>
-      window.dataLayer = window.dataLayer || [];
-      function gtag() {
-        dataLayer.push(arguments);
-      }
-      gtag("js", new Date());
-
-      gtag("config", "G-L0V24KFH48");
-    </script>
-
     <!-- Favicon with AP text -->
     <link
       rel="icon"
@@ -33,11 +18,11 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta
       name="description"
-      content="Find the best apartment for rent in Lagos Nigeria. Aplet360 offers cheap shortlets apartment in Lagos, flats for rent in Nigeria, and premium rental solutions across Africa. Quality verified apartments with flexible payment options."
+      content="Aplet360 - Africa's premium apartment rental and shortlet platform. Find quality verified apartments, flexible payment options, property management solutions, and home services across Nigeria and Africa."
     />
     <meta
       name="keywords"
-      content="apartment for rent in lagos, apartment for rent in lagos nigeria, house for rent in Lagos, flats for rent in Nigeria, cheap shortlets apartment in Lagos, flat and apartment for rent in Nigeria, find the best flat and apartment for rent in Nigeria, flat and apartment for rent in Africa, apartment rental Nigeria, shortlet apartments Africa, property management, home services, rental apartments Lagos, Abuja apartments, flexible payment, verified properties, property rental platform"
+      content="apartment rental Nigeria, shortlet apartments Africa, property management, home services, rental apartments Lagos, Abuja apartments, flexible payment, verified properties, property rental platform"
     />
     <meta name="author" content="Aplet360" />
     <meta name="robots" content="index, follow" />
@@ -46,8 +31,8 @@
 
     <!-- Title -->
     <title>
-      Apartment for Rent in Lagos Nigeria | Find the Best Flats for Rent in
-      Nigeria | Aplet360
+      Aplet360 - Premier Apartment Rental & Property Management Solutions in
+      Africa
     </title>
 
     <!-- Open Graph / Facebook -->
@@ -55,11 +40,11 @@
     <meta property="og:url" content="https://aplet360.com/" />
     <meta
       property="og:title"
-      content="Apartment for Rent in Lagos Nigeria | Find the Best Flats for Rent in Nigeria | Aplet360"
+      content="Aplet360 - Premier Apartment Rental & Property Management Solutions in Africa"
     />
     <meta
       property="og:description"
-      content="Find the best apartment for rent in Lagos Nigeria. Cheap shortlets apartment in Lagos, flats for rent in Nigeria. Quality verified apartments with flexible payment options across Africa."
+      content="Discover quality verified apartments with flexible payment options. Africa's leading platform for rental apartments, shortlets, property management, and home services."
     />
     <meta
       property="og:image"
@@ -75,11 +60,11 @@
     <meta property="twitter:url" content="https://aplet360.com/" />
     <meta
       property="twitter:title"
-      content="Apartment for Rent in Lagos Nigeria | Find the Best Flats for Rent in Nigeria | Aplet360"
+      content="Aplet360 - Premier Apartment Rental & Property Management Solutions in Africa"
     />
     <meta
       property="twitter:description"
-      content="Find the best apartment for rent in Lagos Nigeria. Cheap shortlets apartment in Lagos, flats for rent in Nigeria. Quality verified apartments with flexible payment options across Africa."
+      content="Discover quality verified apartments with flexible payment options. Africa's leading platform for rental apartments, shortlets, property management, and home services."
     />
     <meta
       property="twitter:image"
@@ -113,7 +98,7 @@
         "alternateName": "Aplet 360",
         "url": "https://aplet360.com",
         "logo": "https://aplet360.com/logo.png",
-        "description": "Find the best apartment for rent in Lagos Nigeria. Africa's premium platform for cheap shortlets apartment in Lagos, flats for rent in Nigeria, and quality verified apartments with flexible payment options.",
+        "description": "Africa's premium apartment rental and shortlet platform offering quality verified apartments, flexible payment options, property management solutions, and home services.",
         "foundingDate": "2023",
         "contactPoint": {
           "@type": "ContactPoint",

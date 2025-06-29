@@ -120,4 +120,47 @@
     <changefreq>weekly</changefreq>
     <priority>0.7</priority>
   </url>
+  <!-- Location-specific SEO pages -->
+  <url>
+    <loc>https://aplet360.com/apartments-for-rent-lagos</loc>
+    <lastmod>2025-06-29T00:00:00.000Z</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.9</priority>
+  </url>
+  <url>
+    <loc>https://aplet360.com/apartments-for-rent-lagos-nigeria</loc>
+    <lastmod>2025-06-29T00:00:00.000Z</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.9</priority>
+  </url>
+  <url>
+    <loc>https://aplet360.com/houses-for-rent-lagos</loc>
+    <lastmod>2025-06-29T00:00:00.000Z</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://aplet360.com/flats-for-rent-nigeria</loc>
+    <lastmod>2025-06-29T00:00:00.000Z</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.9</priority>
+  </url>
+  <url>
+    <loc>https://aplet360.com/cheap-shortlets-lagos</loc>
+    <lastmod>2025-06-29T00:00:00.000Z</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://aplet360.com/apartments-for-rent-nigeria</loc>
+    <lastmod>2025-06-29T00:00:00.000Z</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.9</priority>
+  </url>
+  <url>
+    <loc>https://aplet360.com/apartments-for-rent-africa</loc>
+    <lastmod>2025-06-29T00:00:00.000Z</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
 </urlset>
