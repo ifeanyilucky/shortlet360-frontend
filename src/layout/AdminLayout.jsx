@@ -118,14 +118,9 @@ export default function AdminLayout() {
       label: "Bookings",
     },
     {
-      path: "/admin/kyc",
+      path: "/admin/kyc-management",
       icon: <FiKey size={20} />,
-      label: "Pending KYC Verification",
-    },
-    {
-      path: "/admin/verified-kyc",
-      icon: <FiKey size={20} />,
-      label: "Verified KYC",
+      label: "KYC Management",
     },
     {
       path: "/admin/discount-codes",

@@ -4,7 +4,7 @@ import adminService from "../../../services/adminService";
 import { format } from "date-fns";
 import toast from "react-hot-toast";
 
-export default function AdminVerifiedKyc() {
+export default function AdminKycManagement() {
   const [users, setUsers] = useState([]);
   const [loading, setLoading] = useState(true);
   const [pagination, setPagination] = useState({
@@ -16,6 +16,7 @@ export default function AdminVerifiedKyc() {
   const [filters, setFilters] = useState({
     tier: "",
     search: "",
+    status: "all", // New status filter: "all", "pending", "verified"
   });
   const [showFilters, setShowFilters] = useState(false);
   const [selectedUser, setSelectedUser] = useState(null);
@@ -23,14 +24,36 @@ export default function AdminVerifiedKyc() {
   const [showNinImage, setShowNinImage] = useState(false);
   const [showRawData, setShowRawData] = useState(false);
 
-  const fetchPendingKyc = async () => {
+  const fetchKycData = async () => {
     try {
       setLoading(true);
-      const res = await adminService.getVerifiedKycVerification({
-        page: pagination.page,
-        limit: pagination.limit,
-        ...filters,
-      });
+      let res;
+
+      // Choose API endpoint based on status filter
+      if (filters.status === "pending") {
+        res = await adminService.getPendingKycVerifications({
+          page: pagination.page,
+          limit: pagination.limit,
+          tier: filters.tier,
+          search: filters.search,
+        });
+      } else if (filters.status === "verified") {
+        res = await adminService.getVerifiedKycVerification({
+          page: pagination.page,
+          limit: pagination.limit,
+          tier: filters.tier,
+          search: filters.search,
+        });
+      } else {
+        // For "all" status, use the verified endpoint which returns all records
+        res = await adminService.getVerifiedKycVerification({
+          page: pagination.page,
+          limit: pagination.limit,
+          tier: filters.tier,
+          search: filters.search,
+        });
+      }
+
       setUsers(res.data.users);
       setPagination(res.data.pagination);
     } catch (error) {
@@ -42,7 +65,7 @@ export default function AdminVerifiedKyc() {
   };
 
   useEffect(() => {
-    fetchPendingKyc();
+    fetchKycData();
   }, [pagination.page, pagination.limit, filters]);
 
   const handlePageChange = (newPage) => {
@@ -57,7 +80,7 @@ export default function AdminVerifiedKyc() {
 
   const handleSearch = (e) => {
     e.preventDefault();
-    fetchPendingKyc();
+    fetchKycData();
   };
 
   const handleViewDetails = (user) => {
@@ -69,7 +92,7 @@ export default function AdminVerifiedKyc() {
     try {
       await adminService.updateTier1Verification(userId, status);
       toast.success(`Tier 1 verification ${status}`);
-      fetchPendingKyc();
+      fetchKycData();
       if (selectedUser && selectedUser._id === userId) {
         setShowModal(false);
       }
@@ -83,7 +106,7 @@ export default function AdminVerifiedKyc() {
     try {
       await adminService.updateTier2Verification(userId, data);
       toast.success("Tier 2 verification updated");
-      fetchPendingKyc();
+      fetchKycData();
       if (selectedUser && selectedUser._id === userId) {
         setShowModal(false);
       }
@@ -97,7 +120,7 @@ export default function AdminVerifiedKyc() {
     try {
       await adminService.updateTier3Verification(userId, data);
       toast.success("Tier 3 verification updated");
-      fetchPendingKyc();
+      fetchKycData();
       if (selectedUser && selectedUser._id === userId) {
         setShowModal(false);
       }
@@ -107,12 +130,22 @@ export default function AdminVerifiedKyc() {
     }
   };
 
+  // Get the current page title based on status filter
+  const getPageTitle = () => {
+    switch (filters.status) {
+      case "pending":
+        return "Pending KYC Verifications";
+      case "verified":
+        return "Verified KYC Records";
+      default:
+        return "KYC Verification Management";
+    }
+  };
+
   return (
     <div>
       <div className="flex justify-between items-center mb-6">
-        <h1 className="text-2xl font-bold text-gray-800">
-          KYC Verification Management
-        </h1>
+        <h1 className="text-2xl font-bold text-gray-800">{getPageTitle()}</h1>
         <div className="flex space-x-2">
           <button
             onClick={() => setShowFilters(!showFilters)}
@@ -129,8 +162,23 @@ export default function AdminVerifiedKyc() {
         <div className="bg-white rounded-lg shadow-sm p-4 mb-6">
           <form
             onSubmit={handleSearch}
-            className="grid grid-cols-1 md:grid-cols-3 gap-4"
+            className="grid grid-cols-1 md:grid-cols-4 gap-4"
           >
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1">
+                Status
+              </label>
+              <select
+                name="status"
+                value={filters.status}
+                onChange={handleFilterChange}
+                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-blue-500 focus:border-blue-500"
+              >
+                <option value="all">All Records</option>
+                <option value="pending">Pending KYC</option>
+                <option value="verified">Verified KYC</option>
+              </select>
+            </div>
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-1">
                 Tier
@@ -211,6 +259,11 @@ export default function AdminVerifiedKyc() {
                     <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                       Tier 3 Status
                     </th>
+                    {filters.status === "pending" && (
+                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                        Bank Account
+                      </th>
+                    )}
                     <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                       Actions
                     </th>
@@ -301,6 +354,42 @@ export default function AdminVerifiedKyc() {
                           {user.kyc?.tier3?.status || "Not Started"}
                         </span>
                       </td>
+                      {filters.status === "pending" && (
+                        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                          {user.kyc?.tier3?.bank_account ? (
+                            <div>
+                              <div className="text-xs">
+                                {user.kyc.tier3.bank_account.bank_name ||
+                                  "Unknown Bank"}
+                              </div>
+                              <div className="text-xs text-gray-400 font-mono">
+                                {user.kyc.tier3.bank_account.account_number
+                                  ? `****${user.kyc.tier3.bank_account.account_number.substring(
+                                      6
+                                    )}`
+                                  : "No account"}
+                              </div>
+                              <div className="text-xs">
+                                <span
+                                  className={`${
+                                    user.kyc.tier3.bank_account
+                                      .verification_status === "verified"
+                                      ? "text-green-600"
+                                      : "text-red-600"
+                                  }`}
+                                >
+                                  {
+                                    user.kyc.tier3.bank_account
+                                      .verification_status
+                                  }
+                                </span>
+                              </div>
+                            </div>
+                          ) : (
+                            "Not provided"
+                          )}
+                        </td>
+                      )}
                       <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
                         <div className="flex flex-wrap gap-2">
                           <button
@@ -827,27 +916,29 @@ export default function AdminVerifiedKyc() {
                                 </div>
                               </div>
                             )}
+                          </div>
+                        )}
 
-                            {/* Action buttons for NIN verification data */}
-                            <div className="mt-3 flex space-x-2">
-                              {selectedUser.kyc.tier1.nin_verification_data
-                                .image && (
-                                <button
-                                  onClick={() => setShowNinImage(true)}
-                                  className="inline-flex items-center px-2 py-1 bg-blue-100 text-blue-600 rounded text-xs hover:bg-blue-200"
-                                >
-                                  <FiImage className="mr-1" />
-                                  View NIN Photo
-                                </button>
-                              )}
+                        {/* Action buttons for NIN verification data */}
+                        {selectedUser.kyc?.tier1?.nin_verification_data && (
+                          <div className="mt-3 flex space-x-2">
+                            {selectedUser.kyc.tier1.nin_verification_data
+                              .image && (
                               <button
-                                onClick={() => setShowRawData(true)}
-                                className="inline-flex items-center px-2 py-1 bg-gray-100 text-gray-600 rounded text-xs hover:bg-gray-200"
+                                onClick={() => setShowNinImage(true)}
+                                className="inline-flex items-center px-2 py-1 bg-blue-100 text-blue-600 rounded text-xs hover:bg-blue-200"
                               >
-                                <FiFileText className="mr-1" />
-                                View Raw Data
+                                <FiImage className="mr-1" />
+                                View NIN Photo
                               </button>
-                            </div>
+                            )}
+                            <button
+                              onClick={() => setShowRawData(true)}
+                              className="inline-flex items-center px-2 py-1 bg-gray-100 text-gray-600 rounded text-xs hover:bg-gray-200"
+                            >
+                              <FiFileText className="mr-1" />
+                              View Raw Data
+                            </button>
                           </div>
                         )}
                       </div>
@@ -873,25 +964,40 @@ export default function AdminVerifiedKyc() {
                         </div>
                       )}
                     </div>
+
+                    {/* Tier 2 Section */}
                     {selectedUser.kyc?.tier2 && (
                       <div className="mt-4">
                         <h4 className="text-md font-medium text-gray-900">
                           Tier 2: Identity Verification
                         </h4>
-                        <p className="text-sm text-gray-500">
-                          Status:{" "}
-                          {selectedUser.kyc?.tier2?.status || "Not Started"}
-                        </p>
-                        <p className="text-sm text-gray-500">
-                          Address:{" "}
-                          {selectedUser.kyc?.tier2?.address
-                            ?.verification_status || "Not Submitted"}
-                        </p>
-                        <p className="text-sm text-gray-500">
-                          Identity:{" "}
-                          {selectedUser.kyc?.tier2?.identity
-                            ?.verification_status || "Not Submitted"}
-                        </p>
+                        <div className="bg-gray-50 p-3 rounded-md mt-2">
+                          <p className="text-sm text-gray-700 font-medium">
+                            Status:{" "}
+                            <span
+                              className={`${
+                                selectedUser.kyc?.tier2?.status === "verified"
+                                  ? "text-green-600"
+                                  : selectedUser.kyc?.tier2?.status ===
+                                    "rejected"
+                                  ? "text-red-600"
+                                  : "text-yellow-600"
+                              }`}
+                            >
+                              {selectedUser.kyc?.tier2?.status || "Not Started"}
+                            </span>
+                          </p>
+                          <p className="text-sm text-gray-700">
+                            Address:{" "}
+                            {selectedUser.kyc?.tier2?.address
+                              ?.verification_status || "Not Submitted"}
+                          </p>
+                          <p className="text-sm text-gray-700">
+                            Identity:{" "}
+                            {selectedUser.kyc?.tier2?.identity
+                              ?.verification_status || "Not Submitted"}
+                          </p>
+                        </div>
                         {selectedUser.kyc?.tier2?.status === "pending" && (
                           <div className="mt-2 flex space-x-2">
                             <button
@@ -918,25 +1024,114 @@ export default function AdminVerifiedKyc() {
                         )}
                       </div>
                     )}
+
+                    {/* Tier 3 Section */}
                     {selectedUser.kyc?.tier3 && (
                       <div className="mt-4">
                         <h4 className="text-md font-medium text-gray-900">
                           Tier 3: Financial Verification
                         </h4>
-                        <p className="text-sm text-gray-500">
-                          Status:{" "}
-                          {selectedUser.kyc?.tier3?.status || "Not Started"}
-                        </p>
-                        <p className="text-sm text-gray-500">
-                          Employment:{" "}
-                          {selectedUser.kyc?.tier3?.employment
-                            ?.verification_status || "Not Submitted"}
-                        </p>
-                        <p className="text-sm text-gray-500">
-                          Bank Statement:{" "}
-                          {selectedUser.kyc?.tier3?.bank_statement
-                            ?.verification_status || "Not Submitted"}
-                        </p>
+                        <div className="bg-gray-50 p-3 rounded-md mt-2">
+                          <p className="text-sm text-gray-700 font-medium">
+                            Status:{" "}
+                            <span
+                              className={`${
+                                selectedUser.kyc?.tier3?.status === "verified"
+                                  ? "text-green-600"
+                                  : selectedUser.kyc?.tier3?.status ===
+                                    "rejected"
+                                  ? "text-red-600"
+                                  : "text-yellow-600"
+                              }`}
+                            >
+                              {selectedUser.kyc?.tier3?.status || "Not Started"}
+                            </span>
+                          </p>
+
+                          {/* BVN Verification Details */}
+                          {selectedUser.kyc?.tier3?.bvn && (
+                            <div className="mt-3 border-t pt-3">
+                              <h5 className="text-sm font-medium text-gray-900 mb-2">
+                                BVN Verification:
+                              </h5>
+                              <p className="text-sm text-gray-700">
+                                BVN:{" "}
+                                <span className="font-mono">
+                                  {selectedUser.kyc.tier3.bvn.bvn_number
+                                    ? `${selectedUser.kyc.tier3.bvn.bvn_number.substring(
+                                        0,
+                                        3
+                                      )}****${selectedUser.kyc.tier3.bvn.bvn_number.substring(
+                                        7
+                                      )}`
+                                    : "Not provided"}
+                                </span>
+                              </p>
+                              <p className="text-sm text-gray-700">
+                                Status:{" "}
+                                <span
+                                  className={
+                                    selectedUser.kyc.tier3.bvn
+                                      .verification_status === "verified"
+                                      ? "text-green-600"
+                                      : "text-red-600"
+                                  }
+                                >
+                                  {
+                                    selectedUser.kyc.tier3.bvn
+                                      .verification_status
+                                  }
+                                </span>
+                              </p>
+                            </div>
+                          )}
+
+                          {/* Bank Account Verification Details */}
+                          {selectedUser.kyc?.tier3?.bank_account && (
+                            <div className="mt-3 border-t pt-3">
+                              <h5 className="text-sm font-medium text-gray-900 mb-2">
+                                Bank Account Verification:
+                              </h5>
+                              <p className="text-sm text-gray-700">
+                                Account Number:{" "}
+                                <span className="font-mono">
+                                  {selectedUser.kyc.tier3.bank_account
+                                    .account_number || "Not provided"}
+                                </span>
+                              </p>
+                              <p className="text-sm text-gray-700">
+                                Bank Name:{" "}
+                                <span className="font-medium">
+                                  {selectedUser.kyc.tier3.bank_account
+                                    .bank_name || "Not provided"}
+                                </span>
+                              </p>
+                              <p className="text-sm text-gray-700">
+                                Account Name:{" "}
+                                <span className="font-medium">
+                                  {selectedUser.kyc.tier3.bank_account
+                                    .account_name || "Not provided"}
+                                </span>
+                              </p>
+                              <p className="text-sm text-gray-700">
+                                Status:{" "}
+                                <span
+                                  className={
+                                    selectedUser.kyc.tier3.bank_account
+                                      .verification_status === "verified"
+                                      ? "text-green-600"
+                                      : "text-red-600"
+                                  }
+                                >
+                                  {
+                                    selectedUser.kyc.tier3.bank_account
+                                      .verification_status
+                                  }
+                                </span>
+                              </p>
+                            </div>
+                          )}
+                        </div>
                         {selectedUser.kyc?.tier3?.status === "pending" && (
                           <div className="mt-2 flex space-x-2">
                             <button
@@ -1051,39 +1246,12 @@ export default function AdminVerifiedKyc() {
                 <div className="sm:flex sm:items-start">
                   <div className="mt-3 text-center sm:mt-0 sm:ml-4 sm:text-left w-full">
                     <h3 className="text-lg leading-6 font-medium text-gray-900">
-                      Raw YouVerify Response Data
+                      Raw KYC Data
                     </h3>
                     <div className="mt-4">
-                      {selectedUser.kyc.tier1.phone_verification_data && (
-                        <div className="mb-6">
-                          <h4 className="text-md font-medium text-gray-900 mb-2">
-                            Phone Verification Response:
-                          </h4>
-                          <pre className="bg-gray-100 p-4 rounded-lg text-xs overflow-x-auto">
-                            {JSON.stringify(
-                              selectedUser.kyc.tier1.phone_verification_data
-                                .verification_response,
-                              null,
-                              2
-                            )}
-                          </pre>
-                        </div>
-                      )}
-                      {selectedUser.kyc.tier1.nin_verification_data && (
-                        <div className="mb-6">
-                          <h4 className="text-md font-medium text-gray-900 mb-2">
-                            NIN Verification Response:
-                          </h4>
-                          <pre className="bg-gray-100 p-4 rounded-lg text-xs overflow-x-auto">
-                            {JSON.stringify(
-                              selectedUser.kyc.tier1.nin_verification_data
-                                .verification_response,
-                              null,
-                              2
-                            )}
-                          </pre>
-                        </div>
-                      )}
+                      <pre className="bg-gray-100 p-4 rounded-md text-xs overflow-auto max-h-96">
+                        {JSON.stringify(selectedUser.kyc, null, 2)}
+                      </pre>
                     </div>
                   </div>
                 </div>

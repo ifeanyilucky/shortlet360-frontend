@@ -57,7 +57,7 @@ import AdminRegularUsers from "../pages/dashboard/admin/regularUsers";
 import AdminOwners from "../pages/dashboard/admin/owners";
 import AdminProperties from "../pages/dashboard/admin/properties";
 import AdminBookings from "../pages/dashboard/admin/bookings";
-import AdminKyc from "../pages/dashboard/admin/kyc";
+import AdminKycManagement from "../pages/dashboard/admin/kycManagement";
 import AdminSettings from "../pages/dashboard/admin/settings";
 import UserProfile from "../pages/dashboard/admin/userProfile";
 import EditProperty from "../pages/dashboard/admin/EditProperty";
@@ -69,7 +69,6 @@ import BlogDetail from "../pages/BlogDetail";
 import AdminBlogs from "../pages/dashboard/admin/blogs";
 import CreateBlog from "../pages/dashboard/admin/CreateBlog";
 import EditBlog from "../pages/dashboard/admin/EditBlog";
-import AdminVerifiedKyc from "../pages/dashboard/admin/verifiedKyc";
 import AdminDiscountCodes from "../pages/admin/DiscountCodes";
 import FormSubmissions from "../pages/admin/FormSubmissions";
 import HomeServiceRequests from "../pages/admin/forms/HomeServiceRequests";
@@ -180,8 +179,7 @@ export default function Router() {
             { path: "properties/:id", element: <EditProperty /> },
             { path: "bookings", element: <AdminBookings /> },
             { path: "bookings/:id", element: <EditBooking /> },
-            { path: "kyc", element: <AdminKyc /> },
-            { path: "verified-kyc", element: <AdminVerifiedKyc /> },
+            { path: "kyc-management", element: <AdminKycManagement /> },
             { path: "referrals", element: <AdminReferrals /> },
             { path: "discount-codes", element: <AdminDiscountCodes /> },
             { path: "form-submissions", element: <FormSubmissions /> },

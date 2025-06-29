@@ -170,10 +170,47 @@ export default function BlogDetail() {
           </header>
 
           {/* Content */}
-          <div
-            className="prose prose-lg max-w-none mb-8"
-            dangerouslySetInnerHTML={{ __html: blog.content }}
-          />
+          <div className="prose prose-lg max-w-none mb-8">
+            <div dangerouslySetInnerHTML={{ __html: blog.content }} />
+
+            {/* Call to Action Section */}
+            <div className="mt-12 p-6 bg-gradient-to-r from-blue-50 to-indigo-50 rounded-lg border border-blue-100">
+              <h3 className="text-xl font-semibold text-gray-900 mb-4">
+                Ready to Experience Premium Shortlets?
+              </h3>
+              <p className="text-gray-600 mb-6">
+                Discover verified, premium shortlet apartments across Nigeria.
+                From luxury stays to budget-friendly options, find your perfect
+                home away from home.
+              </p>
+              <div className="flex flex-col sm:flex-row gap-4">
+                <Link
+                  to="/properties"
+                  className="inline-flex items-center justify-center px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors font-medium"
+                >
+                  Browse Verified Shortlets
+                </Link>
+                <Link
+                  to="/contact"
+                  className="inline-flex items-center justify-center px-6 py-3 border border-blue-600 text-blue-600 rounded-lg hover:bg-blue-50 transition-colors font-medium"
+                >
+                  Contact Customer Support
+                </Link>
+              </div>
+              <div className="mt-4 text-sm text-gray-500">
+                <p>
+                  📧 Subscribe to our property alerts and never miss out on the
+                  best deals.{" "}
+                  <Link
+                    to="/newsletter"
+                    className="text-blue-600 hover:underline"
+                  >
+                    Subscribe now
+                  </Link>
+                </p>
+              </div>
+            </div>
+          </div>
 
           {/* Tags */}
           {blog.tags && blog.tags.length > 0 && (
