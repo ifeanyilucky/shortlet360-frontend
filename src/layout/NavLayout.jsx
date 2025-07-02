@@ -45,7 +45,7 @@ export default function NavLayout() {
     { name: "Home", href: "/" },
     { name: "About", href: "/about" },
     {
-      name: "Let Now",
+      name: "Rent Now",
       href: "#",
       isDropdown: true,
       dropdownItems: [
@@ -58,7 +58,7 @@ export default function NavLayout() {
     //   href: "#services",
     //   isDropdown: true,
     //   dropdownItems: [
-    { name: "HomeFix", href: "/home-fix" },
+    { name: "ApletFix", href: "/aplet-fix" },
     { name: "Property Management", href: "/property-management-solutions" },
     //   ],
     // },
@@ -479,10 +479,10 @@ export default function NavLayout() {
                   Shortlet Apartments
                 </Link>
                 <Link
-                  to="/home-fix"
+                  to="/aplet-fix"
                   className="text-base text-tertiary-500 hover:text-tertiary-900 block"
                 >
-                  HomeFix
+                  ApletFix
                 </Link>
                 <Link
                   to="/property-management-solutions"

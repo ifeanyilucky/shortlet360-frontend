@@ -19,6 +19,7 @@ import { useState, useEffect, useCallback } from "react";
 import { propertyStore } from "../store/propertyStore";
 import { Link, useNavigate } from "react-router-dom";
 import { fCurrency } from "@utils/formatNumber";
+import NewsletterSubscription from "../components/NewsletterSubscription";
 import "../styles/testimonials.css";
 import "../styles/slider.css";
 
@@ -127,21 +128,17 @@ export default function LandingPage() {
         <div className="absolute inset-0 bg-[url('/images/pattern.png')] opacity-10"></div>
         <div className="max-w-6xl mx-auto px-4 text-center pt-20 pb-10 relative z-10">
           <h1 className="text-4xl md:text-6xl font-bold mb-6 animate-fade-in">
-            Seamless Apartment Rental{" "}
+            Affordable Apartments{" "}
             <span className="text-accent-300 bg-clip-text text-transparent bg-gradient-to-r from-accent-300 to-accent-500">
               For Everyone.
             </span>
           </h1>
 
           <p className="text-primary-100 max-w-3xl mx-auto mb-12 text-base md:text-lg px-4 animate-slide-up">
-            Aplet360 is Africa&apos;s premium proptech apartment rental and
-            shortlet solutions company, offering individuals, families,
-            travelers, and corporate clients seamless access to quality,
-            verified, and affordable property options across major cities in
-            Nigeria and Africa while providing 360 degree seamless home services
-            designed to elevate everyday living for Africans. We&apos;re not
-            just providing homes, we&apos;re providing lifestyles built on
-            trust, comfort, and excellence.
+            Aplet360 makes it easy to find the best apartment for rent in Lagos,
+            Nigeria. Home that fits your lifestyle, flexible payment & budget
+            friendly. Our platform is built for you, tenants, home owners and
+            Agents all in one place.
           </p>
 
           {/* Search Section */}
@@ -384,9 +381,7 @@ export default function LandingPage() {
               </span>
             </h2>
             <p className="text-tertiary-600 max-w-3xl mx-auto text-lg">
-              Our streamlined process makes finding and securing your ideal
-              space quick and hassle-free, whether for long-term rentals,
-              short-term stays, or office spaces.
+              It's easy to rent an apartment with us, fast and stress free.
             </p>
           </div>
 
@@ -489,19 +484,17 @@ export default function LandingPage() {
           <div className="flex flex-col md:flex-row gap-8 md:gap-20 mb-16">
             <div className="flex-1">
               <h2 className="text-3xl md:text-5xl font-bold text-tertiary-900">
-                Benefits for everyone
+                One platform.
                 <br />
-                in the property
-                <br />
-                ecosystem.
+                All the benefits.
               </h2>
             </div>
             <div className="flex-1">
               <p className="text-tertiary-600 text-lg">
-                Whether you&apos;re a tenant, landlord, agent, or property
-                manager, Aplet360 offers tailored benefits to meet your needs.
-                Our platform is designed to streamline the entire property
-                ecosystem, providing value at every step.
+                Whether you're renting, managing, or listing a home, Aplet360 is
+                built for you. We make life easier for tenants, landlords,
+                agents, and property managers, with helpful tools and benefit
+                every step of the way.
               </p>
             </div>
           </div>
@@ -657,11 +650,11 @@ export default function LandingPage() {
         </div>
       </section>
 
-      {/* HomeFix  Section */}
+      {/* ApletFix  Section */}
       <section className="py-16 bg-gradient-to-b from-tertiary-50 to-white">
         <div className="max-w-6xl mx-auto px-4">
           <div className="text-center mb-16">
-            <p className="text-accent-500 font-semibold mb-4">HomeFix</p>
+            <p className="text-accent-500 font-semibold mb-4">ApletFix</p>
             <h2 className="text-3xl md:text-5xl font-bold mb-6">
               Complete home services
               <br />
@@ -714,7 +707,7 @@ export default function LandingPage() {
                 pricing.
               </p>
               <Link
-                to="/home-fix"
+                to="/aplet-fix"
                 className="bg-accent-500 hover:bg-accent-600 text-white px-8 py-4 rounded-full inline-flex items-center gap-2 transition-all duration-300 shadow-lg hover:shadow-xl transform hover:-translate-y-0.5 font-medium"
               >
                 <span>Request a Service</span>
@@ -732,20 +725,15 @@ export default function LandingPage() {
           <div className="flex flex-col md:flex-row gap-8 md:gap-20 mb-12">
             <div className="flex-1">
               <h2 className="text-3xl md:text-4xl font-bold">
-                Explore amazing apartments
-                <br />
-                on Aplet360 with flexible
-                <br />
-                payment options.
+                Find your next home on Aplet360
               </h2>
             </div>
             <div className="flex-1">
               <p className="text-gray-600 text-sm md:text-base">
-                Aplet360 ensures all listed apartments meet our high standards
-                of quality and comfort. We carefully vet each property to
-                guarantee a premium living experience for our clients, focusing
-                on cleanliness, safety, and modern amenities that cater to your
-                lifestyle needs.
+                Explore amazing apartments on Aplet360 with flexible payment
+                options. All listed apartments are of high quality and comfort.
+                We carefully vet each property to guarantee you a premium living
+                experience.
               </p>
             </div>
           </div>
@@ -851,7 +839,7 @@ export default function LandingPage() {
       </section>
 
       {/* Gateway to affordable living section */}
-      <section className="py-16 bg-gray-50">
+      {/* <section className="py-16 bg-gray-50">
         <div className="max-w-6xl mx-auto px-4">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-12 items-center">
             <div>
@@ -932,7 +920,7 @@ export default function LandingPage() {
             </div>
           </div>
         </div>
-      </section>
+      </section> */}
 
       {/* Property Management section */}
       <section className="py-16 bg-white">
@@ -950,10 +938,11 @@ export default function LandingPage() {
 
             <div className="lg:pl-12">
               <p className="text-gray-500 uppercase font-medium mb-2">
-                PROPERTY MANAGEMENT SOLUTIONS
+                SMART PROPERTY MANAGEMENT, MADE SIMPLE
               </p>
               <h2 className="text-3xl md:text-5xl font-bold text-primary-900 mb-6">
-                Get the most Reliable Property Management Solution in Nigeria
+                Discover Nigeria's most trusted way to manage, rent, and earn,
+                all in one place.
               </h2>
 
               <div className="space-y-4 mt-8">
@@ -981,7 +970,7 @@ export default function LandingPage() {
                   to="/auth/login?property-management=true"
                   className="bg-primary-900 text-white px-8 py-3 rounded-full inline-flex items-center gap-2 hover:bg-primary-900 transition-colors"
                 >
-                  <span>Sign Up Now</span>
+                  <span>Let's Get You In.</span>
                 </Link>
               </div>
             </div>
@@ -1138,6 +1127,59 @@ export default function LandingPage() {
                   &quot;I trust Aplet360 100%. Every apartment is exactly as
                   promised, and they respond immediately when needed.&quot;
                 </p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Newsletter CTA Section */}
+      <section className="py-16 bg-gradient-to-br from-primary-50 to-accent-50">
+        <div className="max-w-6xl mx-auto px-4">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+            {/* Illustration */}
+            <div className="order-2 lg:order-1">
+              <div className="relative">
+                <img
+                  src="/images/newsletter-illustration.svg"
+                  alt="Newsletter Subscription"
+                  className="w-full h-auto max-w-md mx-auto"
+                  onError={(e) => {
+                    // Fallback to a placeholder if the illustration doesn't exist
+                    e.target.src = "/images/people-holding-key.webp";
+                  }}
+                />
+                {/* Decorative elements */}
+                <div className="absolute -top-4 -right-4 w-20 h-20 bg-accent-200 rounded-full opacity-20"></div>
+                <div className="absolute -bottom-6 -left-6 w-16 h-16 bg-primary-200 rounded-full opacity-30"></div>
+              </div>
+            </div>
+
+            {/* Newsletter Subscription */}
+            <div className="order-1 lg:order-2">
+              <NewsletterSubscription
+                source="landing_page"
+                title="Never Miss a Great Deal!"
+                description="Join thousands of property seekers who get exclusive access to new listings, market insights, and special offers before anyone else."
+                placeholder="Your email address"
+                buttonText="Get Updates"
+                className="text-left lg:text-left"
+              />
+
+              {/* Trust indicators */}
+              <div className="mt-8 flex flex-wrap items-center gap-6 text-sm text-gray-600">
+                <div className="flex items-center gap-2">
+                  <BsShieldCheck className="w-4 h-4 text-green-600" />
+                  <span>No spam, ever</span>
+                </div>
+                <div className="flex items-center gap-2">
+                  <FiStar className="w-4 h-4 text-yellow-500" />
+                  <span>5,000+ subscribers</span>
+                </div>
+                <div className="flex items-center gap-2">
+                  <RiHandHeartLine className="w-4 h-4 text-accent-600" />
+                  <span>Unsubscribe anytime</span>
+                </div>
               </div>
             </div>
           </div>

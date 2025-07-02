@@ -118,7 +118,7 @@ export default function BecomeArtisan() {
       icon: <FiDollarSign className="h-8 w-8 text-primary-900" />,
       title: "Zero Deduction",
       description:
-        "Earn 100% of your service charge for every job that you complete with HomeFix.",
+        "Earn 100% of your service charge for every job that you complete with ApletFix.",
     },
     {
       icon: <FiClock className="h-8 w-8 text-primary-900" />,
@@ -168,7 +168,7 @@ export default function BecomeArtisan() {
             </div>
             <div className="lg:order-1">
               <h2 className="text-3xl md:text-4xl font-bold mb-6 text-primary-900">
-                Join Aplet360&apos;s HomeFix Network - Earn More, Work Freely
+                Join Aplet360&apos;s ApletFix Network - Earn More, Work Freely
               </h2>
               <p className="text-lg text-tertiary-700 mb-8 leading-relaxed">
                 Are you a skilled artisan or technician looking to expand beyond

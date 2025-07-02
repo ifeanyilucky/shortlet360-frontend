@@ -3,6 +3,7 @@ import { Link, useSearchParams } from "react-router-dom";
 import { FiSearch, FiCalendar, FiUser, FiEye, FiClock } from "react-icons/fi";
 import { format } from "date-fns";
 import { blogService } from "../services/api";
+import NewsletterSubscription from "../components/NewsletterSubscription";
 
 export default function Blog() {
   const [blogs, setBlogs] = useState([]);
@@ -365,6 +366,18 @@ export default function Blog() {
           </div>
         </div>
       </div>
+
+      {/* Newsletter Subscription Section */}
+      <section className="py-16 bg-gray-50">
+        <div className="max-w-4xl mx-auto px-4">
+          <NewsletterSubscription
+            source="blog"
+            title="Stay Updated with Our Latest Posts"
+            description="Subscribe to our newsletter and never miss our latest property insights, tips, and market updates."
+            className="text-center"
+          />
+        </div>
+      </section>
     </div>
   );
 }

@@ -42,7 +42,7 @@ export const sitemapConfig = {
       priority: 0.7,
     },
     {
-      path: "/home-fix",
+      path: "/aplet-fix",
       changefreq: "weekly",
       priority: 0.7,
     },

@@ -459,7 +459,7 @@ export default function ReferralProgram() {
               </li>
               <li>
                 Home Fix services are subject to availability and must be
-                scheduled through Aplet360&apos;s HomeFix platform.
+                scheduled through Aplet360&apos;s ApletFix platform.
               </li>
               <li>
                 Aplet360 reserves the right to modify or terminate the referral

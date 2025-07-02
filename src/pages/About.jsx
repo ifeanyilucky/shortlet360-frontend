@@ -42,25 +42,17 @@ export default function About() {
             </div>
             <div className="md:w-1/2">
               <h2 className="text-3xl md:text-4xl font-bold mb-6 text-tertiary-900">
-                About Us
+                We believe everyone deserves a place to call home.
               </h2>
               <p className="text-tertiary-600 mb-6 text-lg">
-                Aplet360 is Africa&apos;s premier apartment rental and shortlet
-                solutions company, offering individuals, families, travelers,
-                and corporate clients seamless access to quality, verified, and
-                affordable property options across major cities in Nigeria and
-                Africa while providing 360 degree seamless home services
-                designed to elevate everyday living for Africans. We&apos;re not
-                just providing homes, we&apos;re providing lifestyles built on
-                trust, comfort, and excellence.
-              </p>
-              <p className="text-tertiary-600 text-lg">
-                We are redefining the property rental experience by eliminating
-                trust barriers, promoting transparency, and providing a premium,
-                customer-first service that guarantees peace of mind. Our
-                portfolio spans rental apartments, luxury apartments, affordable
-                shortlets, serviced homes, meticulously vetted to meet the
-                highest standards of comfort, security, and style.
+                Aplet360 is Africa’s trusted platform for verified apartment
+                rentals and shortlets. We connect individuals, families, and
+                businesses to quality, affordable homes across Nigeria and
+                beyond with flexible rent options and smart home services that
+                make everyday living easier. More than just homes, we offer
+                lifestyle and peace of mind. Every space is vetted for comfort,
+                security, and style. At Aplet360, we’re redefining renting with
+                trust, transparency, and simplicity.
               </p>
             </div>
           </div>
@@ -171,11 +163,12 @@ export default function About() {
               trusted partner for living smarter, better, and safer.
             </p>
             <h2 className="text-3xl md:text-4xl font-bold mb-4 text-tertiary-900">
-              Unique Value Proposition (UVP)
+              {/* Unique Value Proposition (UVP) */}
+              What sets Aplet360 apart from the rest?
             </h2>
-            <p className="text-tertiary-600 max-w-3xl mx-auto text-lg">
+            {/* <p className="text-tertiary-600 max-w-3xl mx-auto text-lg">
               What sets Aplet360 apart from the rest
-            </p>
+            </p> */}
           </div>
 
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
@@ -414,16 +407,16 @@ export default function About() {
       <section className="py-20 bg-tertiary-50">
         <div className="container mx-auto px-4 text-center">
           <h2 className="text-3xl md:text-4xl font-bold mb-6 text-tertiary-900">
-            Ready to Experience Seamless Living?
+            Ready for Stress Free Renting?
           </h2>
           <p className="text-tertiary-600 max-w-3xl mx-auto mb-8 text-lg">
-            Browse our selection of quality apartments and shortlets with
-            flexible payment options designed to suit your lifestyle needs.
+            Explore quality apartments and shortlets with payment plans made
+            just for you.
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
             <Link to="/book-now">
               <InteractiveButton variant="accent">
-                Browse Properties
+                Find your space
               </InteractiveButton>
             </Link>
             <Link to="/contact">

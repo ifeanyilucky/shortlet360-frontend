@@ -58,7 +58,7 @@ const OwnerLayout = () => {
     {
       path: "/owner/service-request",
       icon: <FiTool size={20} />,
-      label: "HomeFix",
+      label: "ApletFix",
     },
     {
       path: "/owner/dispute-resolution",

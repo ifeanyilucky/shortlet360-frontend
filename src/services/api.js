@@ -387,3 +387,49 @@ export const adminFormService = {
     return response.data;
   },
 };
+
+export const newsletterService = {
+  subscribe: async (data) => {
+    const response = await api.post("/newsletter/subscribe", data);
+    return response.data;
+  },
+  unsubscribe: async (token) => {
+    const response = await api.get(`/newsletter/unsubscribe?token=${token}`);
+    return response.data;
+  },
+  getAllSubscribers: async (params = {}) => {
+    const queryParams = new URLSearchParams();
+    Object.entries(params).forEach(([key, value]) => {
+      if (value !== undefined && value !== null && value !== "") {
+        queryParams.append(key, value);
+      }
+    });
+    const response = await api.get(
+      `/newsletter/subscribers?${queryParams.toString()}`
+    );
+    return response.data;
+  },
+  getStats: async () => {
+    const response = await api.get("/newsletter/stats");
+    return response.data;
+  },
+  sendNewsletter: async (data) => {
+    const response = await api.post("/newsletter/send", data);
+    return response.data;
+  },
+  exportSubscribers: async (params = {}) => {
+    const queryParams = new URLSearchParams();
+    Object.entries(params).forEach(([key, value]) => {
+      if (value !== undefined && value !== null && value !== "") {
+        queryParams.append(key, value);
+      }
+    });
+    const response = await api.get(
+      `/newsletter/subscribers/export?${queryParams.toString()}`,
+      {
+        responseType: "blob",
+      }
+    );
+    return response.data;
+  },
+};

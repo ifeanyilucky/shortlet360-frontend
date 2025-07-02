@@ -57,7 +57,7 @@ const UserLayout = () => {
     {
       path: "/user/service-request",
       icon: <FiTool size={20} />,
-      label: "HomeFix",
+      label: "ApletFix",
     },
     {
       path: "/user/dispute-resolution",

@@ -13,6 +13,7 @@ import {
   FiChevronDown,
   FiChevronRight,
   FiEdit3,
+  FiMail,
   FiPercent,
 } from "react-icons/fi";
 import { MdOutlineAddHome } from "react-icons/md";
@@ -172,6 +173,11 @@ export default function AdminLayout() {
       path: "/admin/blogs",
       icon: <FiEdit3 size={20} />,
       label: "Blog Management",
+    },
+    {
+      path: "/admin/newsletter",
+      icon: <FiMail size={20} />,
+      label: "Newsletter",
     },
     // {
     //   path: "/admin/reports",

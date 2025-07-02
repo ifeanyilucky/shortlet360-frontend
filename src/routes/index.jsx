@@ -78,6 +78,8 @@ import DisputeResolution from "../pages/admin/forms/DisputeResolution";
 import InspectionRequests from "../pages/admin/forms/InspectionRequests";
 import PropertyManagement from "../pages/admin/forms/PropertyManagement";
 import RentNowPayLater from "../pages/RentNowPayLater";
+import AdminNewsletter from "../pages/dashboard/admin/Newsletter";
+import NewsletterUnsubscribe from "../pages/NewsletterUnsubscribe";
 export default function Router() {
   const routes = useRoutes([
     {
@@ -91,7 +93,7 @@ export default function Router() {
         { path: "blog", element: <Blog /> },
         { path: "blog/:slug", element: <BlogDetail /> },
         { path: "contact", element: <ContactUs /> },
-        { path: "home-fix", element: <HomeServices /> },
+        { path: "aplet-fix", element: <HomeServices /> },
         { path: "career", element: <Career /> },
         { path: "referral-program", element: <ReferralProgram /> },
         { path: "become-artisan", element: <BecomeArtisan /> },
@@ -105,6 +107,7 @@ export default function Router() {
         { path: "terms-conditions", element: <TermsConditions /> },
         { path: "property/:id", element: <PropertyDetail /> },
         { path: "verify-email/:token", element: <VerifyEmail /> },
+        { path: "newsletter/unsubscribe", element: <NewsletterUnsubscribe /> },
       ],
     },
     { path: "/:property_id/receipt/:booking_id", element: <Receipt /> },
@@ -204,6 +207,7 @@ export default function Router() {
             { path: "blogs", element: <AdminBlogs /> },
             { path: "blogs/create", element: <CreateBlog /> },
             { path: "blogs/edit/:id", element: <EditBlog /> },
+            { path: "newsletter", element: <AdminNewsletter /> },
             { path: "settings", element: <AdminSettings /> },
           ],
         },

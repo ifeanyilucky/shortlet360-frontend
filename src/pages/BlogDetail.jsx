@@ -10,6 +10,7 @@ import {
 } from "react-icons/fi";
 import { format } from "date-fns";
 import { blogService } from "../services/api";
+import NewsletterSubscription from "../components/NewsletterSubscription";
 
 export default function BlogDetail() {
   const { slug } = useParams();
@@ -299,6 +300,18 @@ export default function BlogDetail() {
           </div>
         </aside>
       </div>
+
+      {/* Newsletter Subscription Section */}
+      <section className="py-16 bg-gray-50">
+        <div className="max-w-4xl mx-auto px-4">
+          <NewsletterSubscription
+            source="blog"
+            title="Enjoyed This Article?"
+            description="Subscribe to our newsletter for more property insights, market updates, and exclusive tips delivered to your inbox."
+            className="text-center"
+          />
+        </div>
+      </section>
     </div>
   );
 }

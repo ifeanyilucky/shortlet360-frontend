@@ -124,29 +124,33 @@ export default function HomeServices() {
 
   return (
     <div className="min-h-screen">
-      {/* Hero Section - HomeFix */}
+      {/* Hero Section - ApletFix */}
       <section className="bg-primary-900 text-white py-20">
         <div className="container mx-auto px-4">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
             <div>
               <h1 className="text-4xl md:text-5xl font-bold mb-6">
-                HomeFix
+                ApletFix
                 {/* Your trusted solution for Hassle-free Home Repairs */}
               </h1>
               <p className="text-xl text-primary-100 mb-8 leading-relaxed">
-                With HomeFix, we connect you with vetted professional artisans
-                at the click of a button. Whether it's plumbing, electrical
-                work, carpentry, appliance repairs or name it, we ensure fast,
-                cost affordable, and reliable service from experienced hands.
-                Say goodbye to unverified technicians and hidden charges. With
-                Aplet360, you enjoy seamless service booking, impeccable
-                deliver, and transparent pricing, all from the comfort of your
-                home.
+                Need a plumber, electrician, or appliance repair? With ApletFix,
+                get connected to vetted, reliable artisans across Nigeria, fast,
+                affordable, and stress-free. No hidden charges, no unverified
+                technicians. Just trusted home services you can book with a
+                click.
               </p>
               <p className="text-lg text-primary-100 font-semibold">
-                HomeFix is your go-to service on Aplet360 for getting things
-                done right, every time. One click, and we fix it!
+                Book a service today, and get it fixed the right way.
               </p>
+              <div className="mt-8">
+                <a href="#aplet-fix">
+                  <button className="bg-white text-primary-900 px-8 py-4 rounded-full inline-flex items-center gap-2 transition-all duration-300 shadow-lg hover:shadow-xl transform hover:-translate-y-0.5 font-medium">
+                    <span>Request a Service</span>
+                    <FiSend className="w-5 h-5" />
+                  </button>
+                </a>
+              </div>
             </div>
             <div className="flex justify-center">
               <img
@@ -160,11 +164,11 @@ export default function HomeServices() {
       </section>
 
       {/* Service Request Form */}
-      <section className="py-16 bg-white">
+      <section className="py-16 bg-white" id="aplet-fix">
         <div className="container mx-auto px-4 max-w-4xl">
           <div className="bg-white p-8 rounded-lg shadow-lg">
             <h2 className="text-2xl font-bold mb-6 text-center">
-              Request a Service
+              Get Expert Help
             </h2>
             <p className="text-tertiary-600 mb-8 text-center">
               Fill out the form below to request a home service. Our team of
