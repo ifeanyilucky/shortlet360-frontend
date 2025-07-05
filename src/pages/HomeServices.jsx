@@ -152,12 +152,16 @@ export default function HomeServices() {
                 </a>
               </div>
             </div>
-            <div className="flex justify-center">
+            <div className="flex flex-col items-center">
               <img
                 src="/images/professional-technician.jpg"
                 alt="Professional technician ready to fix home"
                 className="rounded-lg shadow-lg max-w-full h-auto"
               />
+              <p className="text-lg text-primary-100 font-semibold mt-4 text-center">
+                Say goodbye to unprofessional fixes and unattended/overdue
+                repairs
+              </p>
             </div>
           </div>
         </div>

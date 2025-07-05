@@ -34,26 +34,23 @@ export default function About() {
         <div className="container mx-auto px-4">
           <div className="flex flex-col md:flex-row gap-12 items-center">
             <div className="md:w-1/2">
+              <h2 className="text-3xl md:text-4xl font-bold mb-6 text-tertiary-900">
+                We believe everyone deserves a place to call home.
+              </h2>
+              <p className="text-tertiary-600 mb-6 text-lg">
+                Aplet360 is Africa's trusted proptech solutions platform that
+                provides property management, apartment rental, rent financing,
+                and Seamless home maintenance access that makes life easier,
+                while bridging the trust issues that exists within the Africa
+                apartment rental value chain of tge real estate industry.
+              </p>
+            </div>
+            <div className="md:w-1/2">
               <img
                 src="/images/living-room.jpg"
                 alt="Modern Apartment"
                 className="rounded-2xl shadow-elevated w-full h-auto object-cover transform hover:scale-[1.02] transition-transform duration-300"
               />
-            </div>
-            <div className="md:w-1/2">
-              <h2 className="text-3xl md:text-4xl font-bold mb-6 text-tertiary-900">
-                We believe everyone deserves a place to call home.
-              </h2>
-              <p className="text-tertiary-600 mb-6 text-lg">
-                Aplet360 is Africa’s trusted platform for verified apartment
-                rentals and shortlets. We connect individuals, families, and
-                businesses to quality, affordable homes across Nigeria and
-                beyond with flexible rent options and smart home services that
-                make everyday living easier. More than just homes, we offer
-                lifestyle and peace of mind. Every space is vetted for comfort,
-                security, and style. At Aplet360, we’re redefining renting with
-                trust, transparency, and simplicity.
-              </p>
             </div>
           </div>
         </div>
@@ -109,38 +106,23 @@ export default function About() {
               <ul className="text-tertiary-600 text-left space-y-3">
                 <li className="flex items-start gap-3">
                   <div className="w-2 h-2 bg-accent-500 rounded-full mt-2 flex-shrink-0"></div>
-                  <span>
-                    Trust & Transparency: Uncompromised authenticity in
-                    everything we do.
-                  </span>
+                  <span>Trust</span>
                 </li>
                 <li className="flex items-start gap-3">
                   <div className="w-2 h-2 bg-accent-500 rounded-full mt-2 flex-shrink-0"></div>
-                  <span>
-                    Excellence: Setting industry benchmarks for property and
-                    home service solutions.
-                  </span>
+                  <span>Professionalism</span>
                 </li>
                 <li className="flex items-start gap-3">
                   <div className="w-2 h-2 bg-accent-500 rounded-full mt-2 flex-shrink-0"></div>
-                  <span>
-                    Customer First: Every decision revolves around improving
-                    customer experience.
-                  </span>
+                  <span>Excellence</span>
                 </li>
                 <li className="flex items-start gap-3">
                   <div className="w-2 h-2 bg-accent-500 rounded-full mt-2 flex-shrink-0"></div>
-                  <span>
-                    Innovation: Creating smarter ways to live, rent, and manage
-                    properties.
-                  </span>
+                  <span>Customer-Centric</span>
                 </li>
                 <li className="flex items-start gap-3">
                   <div className="w-2 h-2 bg-accent-500 rounded-full mt-2 flex-shrink-0"></div>
-                  <span>
-                    Commitment: Consistent support and dependable service across
-                    all touchpoints.
-                  </span>
+                  <span>Innovation</span>
                 </li>
               </ul>
             </div>
@@ -158,9 +140,9 @@ export default function About() {
               of Africa&apos;s property rental industry. We combine trusted
               property solutions with comprehensive home management services,
               giving residents and guests the ultimate peace of mind. Whether
-              it&apos;s finding the perfect rental property, shortlet
-              apartments, or managing your home services — Aplet360 is your
-              trusted partner for living smarter, better, and safer.
+              it&apos;s finding the perfect rental property, or managing your
+              home services — Aplet360 is your trusted partner for living
+              smarter, better, and safer.
             </p>
             <h2 className="text-3xl md:text-4xl font-bold mb-4 text-tertiary-900">
               {/* Unique Value Proposition (UVP) */}
@@ -233,8 +215,7 @@ export default function About() {
               </h3>
               <p className="text-tertiary-600">
                 Options for monthly and yearly leasing for rental apartments
-                while then daily to monthly lease for shortlet apartments across
-                Nigeria and expanding into African cities.
+                across Nigeria and expanding into African cities.
               </p>
             </div>
 
@@ -255,7 +236,7 @@ export default function About() {
       </section>
 
       {/* What We Offer */}
-      <section className="py-20 bg-tertiary-50">
+      {/* <section className="py-20 bg-tertiary-50">
         <div className="container mx-auto px-4">
           <div className="text-center mb-16">
             <h2 className="text-3xl md:text-4xl font-bold mb-4 text-tertiary-900">
@@ -321,7 +302,7 @@ export default function About() {
             </div>
           </div>
         </div>
-      </section>
+      </section> */}
 
       {/* Stats Section */}
       <section className="py-20 bg-gradient-to-b from-primary-900 to-primary-900 text-white relative overflow-hidden">
@@ -410,8 +391,7 @@ export default function About() {
             Ready for Stress Free Renting?
           </h2>
           <p className="text-tertiary-600 max-w-3xl mx-auto mb-8 text-lg">
-            Explore quality apartments and shortlets with payment plans made
-            just for you.
+            Explore quality apartments with payment plans made just for you.
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
             <Link to="/book-now">

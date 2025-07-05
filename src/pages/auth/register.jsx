@@ -197,7 +197,7 @@ export default function Register() {
                 <FiHome size={24} />
               </div>
               <span className="font-medium text-base mb-1">
-                Rental/Shortlet
+                Tenants/Home Seekers
               </span>
               <p className="text-xs text-gray-500 text-center">
                 I want to rent or book properties
@@ -223,7 +223,7 @@ export default function Register() {
                 <MdApartment size={24} />
               </div>
               <span className="font-medium text-base mb-1">
-                Landlord/Property Manager
+                Landlords/Home Owners
               </span>
               <p className="text-xs text-gray-500 text-center">
                 I want to list my properties/Get them Managed by Aplet360

@@ -124,17 +124,36 @@ export default function LandingPage() {
 
   return (
     <div>
-      <section className="min-h-screen bg-gradient-to-b from-primary-900 to-primary-900 text-white h-full mt-0 relative overflow-hidden">
-        <div className="absolute inset-0 bg-[url('/images/pattern.png')] opacity-10"></div>
+      <section className="min-h-screen text-white h-full mt-0 relative overflow-hidden">
+        {/* Video Background */}
+        <div className="absolute inset-0 w-full h-full">
+          <video
+            autoPlay
+            loop
+            muted
+            playsInline
+            className="w-full h-full object-cover"
+            style={{ objectPosition: "center 20%" }}
+          >
+            <source
+              src="/videos/Cinematic Real estate video tour 4K _ Laowa 12mm & Sony A7III.mp4"
+              type="video/mp4"
+            />
+            Your browser does not support the video tag.
+          </video>
+          {/* Dark overlay for better text readability */}
+          <div className="absolute inset-0 bg-black/40"></div>
+        </div>
+
         <div className="max-w-6xl mx-auto px-4 text-center pt-20 pb-10 relative z-10">
           <h1 className="text-4xl md:text-6xl font-bold mb-6 animate-fade-in">
-            Affordable Apartments{" "}
+            Seamless Apartment Rental <br /> Solutions{" "}
             <span className="text-accent-300 bg-clip-text text-transparent bg-gradient-to-r from-accent-300 to-accent-500">
-              For Everyone.
+              for All
             </span>
           </h1>
 
-          <p className="text-primary-100 max-w-3xl mx-auto mb-12 text-base md:text-lg px-4 animate-slide-up">
+          <p className="text-white max-w-3xl mx-auto mb-12 text-base md:text-lg px-4 animate-slide-up">
             Aplet360 makes it easy to find the best apartment for rent in Lagos,
             Nigeria. Home that fits your lifestyle, flexible payment & budget
             friendly. Our platform is built for you, tenants, home owners and
@@ -162,6 +181,24 @@ export default function LandingPage() {
                   }))
                 }
               />
+            </div>
+
+            <div className="flex-1 text-left md:border-x border-tertiary-200 md:px-4">
+              <p className="text-xs text-primary-900 font-medium mb-1">TYPE</p>
+              <select
+                className="w-full bg-transparent outline-none text-sm text-tertiary-700 hover:text-primary-900 transition-colors"
+                value={searchParams.category}
+                onChange={(e) =>
+                  setSearchParams((prev) => ({
+                    ...prev,
+                    category: e.target.value,
+                  }))
+                }
+              >
+                <option value="rent">Rent</option>
+                {/* <option value="shortlet">Shortlet</option> */}
+                <option value="office">Office</option>
+              </select>
             </div>
 
             <div className="flex-1 text-left md:border-x border-tertiary-200 md:px-4 relative">
@@ -311,45 +348,29 @@ export default function LandingPage() {
               )}
             </div>
 
-            <div className="flex-1 text-left">
-              <p className="text-xs text-primary-900 font-medium mb-1">
-                BEDROOMS
-              </p>
-              <select
-                className="w-full bg-transparent outline-none text-sm text-tertiary-700 hover:text-primary-900 transition-colors"
-                value={searchParams.bedrooms}
-                onChange={(e) =>
-                  setSearchParams((prev) => ({
-                    ...prev,
-                    bedrooms: e.target.value,
-                  }))
-                }
-              >
-                <option value="1">1</option>
-                <option value="2">2</option>
-                <option value="3">3</option>
-                <option value="4">4</option>
-                <option value="5">5</option>
-              </select>
-            </div>
-
-            <div className="flex-1 text-left md:border-x border-tertiary-200 md:px-4">
-              <p className="text-xs text-primary-900 font-medium mb-1">TYPE</p>
-              <select
-                className="w-full bg-transparent outline-none text-sm text-tertiary-700 hover:text-primary-900 transition-colors"
-                value={searchParams.category}
-                onChange={(e) =>
-                  setSearchParams((prev) => ({
-                    ...prev,
-                    category: e.target.value,
-                  }))
-                }
-              >
-                <option value="rent">Rent</option>
-                <option value="shortlet">Shortlet</option>
-                <option value="office">Office</option>
-              </select>
-            </div>
+            {searchParams.category !== "office" && (
+              <div className="flex-1 text-left md:border-x border-tertiary-200 md:px-4">
+                <p className="text-xs text-primary-900 font-medium mb-1">
+                  BEDROOMS
+                </p>
+                <select
+                  className="w-full bg-transparent outline-none text-sm text-tertiary-700 hover:text-primary-900 transition-colors"
+                  value={searchParams.bedrooms}
+                  onChange={(e) =>
+                    setSearchParams((prev) => ({
+                      ...prev,
+                      bedrooms: e.target.value,
+                    }))
+                  }
+                >
+                  <option value="1">1</option>
+                  <option value="2">2</option>
+                  <option value="3">3</option>
+                  <option value="4">4</option>
+                  <option value="5">5</option>
+                </select>
+              </div>
+            )}
 
             <button
               type="submit"
@@ -359,30 +380,32 @@ export default function LandingPage() {
             </button>
           </form>
         </div>
-
-        <div className="w-full h-[300px] md:h-[500px] overflow-hidden relative">
-          <div className="absolute bg-gradient-to-t from-primary-900/50 to-transparent z-10"></div>
-          <img
-            src={"/images/siting-room.jpeg"}
-            alt="Hero"
-            className="w-full h-full object-cover object-bottom transform scale-110"
-          />
-        </div>
       </section>
 
-      {/* Book in 4 minutes section */}
+      {/* Rent in 4 simple steps section */}
       <section className="py-20 bg-gradient-to-b from-white to-tertiary-50">
         <div className="max-w-6xl mx-auto px-4">
           <div className="text-center mb-16">
             <h2 className="text-3xl md:text-5xl font-bold mb-6">
-              Find your perfect apartment in{" "}
+              Rent your perfect apartment in{" "}
               <span className="text-primary-900 bg-clip-text text-transparent bg-gradient-to-r from-primary-900 to-primary-900">
                 4 simple steps
               </span>
             </h2>
             <p className="text-tertiary-600 max-w-3xl mx-auto text-lg">
-              It's easy to rent an apartment with us, fast and stress free.
+              Finding and renting your dream apartment has never been easier.
+              Our streamlined process gets you from search to move-in day
+              quickly and hassle-free.
             </p>
+          </div>
+
+          {/* Process Flow Image */}
+          <div className="mb-12 text-center">
+            <img
+              src="/images/rental-process-flow.png"
+              alt="4-step rental process: Search apartments, Select your choice, Pay securely, Move in to your new home"
+              className="w-full max-w-4xl mx-auto rounded-2xl shadow-lg"
+            />
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
@@ -394,8 +417,8 @@ export default function LandingPage() {
                 Search
               </h3>
               <p className="text-tertiary-600 text-sm text-center">
-                Find your ideal space by location, price, and amenities for
-                rent, shortlet, or office
+                Browse through our curated selection of quality apartments by
+                location, price range, and bedroom count
               </p>
             </div>
 
@@ -407,8 +430,8 @@ export default function LandingPage() {
                 Select
               </h3>
               <p className="text-tertiary-600 text-sm text-center">
-                Choose your preferred property and rental duration that fits
-                your needs
+                Choose your preferred apartment and rental terms that match your
+                lifestyle and budget
               </p>
             </div>
 
@@ -420,8 +443,8 @@ export default function LandingPage() {
                 Pay
               </h3>
               <p className="text-tertiary-600 text-sm text-center">
-                Choose from flexible payment options for both rentals and
-                shortlets
+                Complete your rental with our flexible monthly payment options -
+                no yearly rent required
               </p>
             </div>
 
@@ -433,8 +456,8 @@ export default function LandingPage() {
                 Move In
               </h3>
               <p className="text-tertiary-600 text-sm text-center">
-                Get your keys and enjoy your new space with all amenities ready
-                for you
+                Get your keys and start enjoying your new home with all
+                amenities and services included
               </p>
             </div>
           </div>
@@ -444,7 +467,7 @@ export default function LandingPage() {
               to="/book-now"
               className="bg-primary-900 text-white px-8 py-4 rounded-full inline-flex items-center gap-2 hover:bg-primary-900 transition-all duration-300 shadow-lg hover:shadow-xl transform hover:-translate-y-0.5"
             >
-              <span className="font-medium">Book Now</span>
+              <span className="font-medium">Start Your Search</span>
               <BsArrowRight className="w-5 h-5" />
             </Link>
           </div>
@@ -455,23 +478,27 @@ export default function LandingPage() {
       <section className="py-16 bg-primary-900 text-white">
         <div className="max-w-6xl mx-auto px-4 text-center">
           <h2 className="text-3xl md:text-4xl font-bold mb-6">
-            Rent that apartment now and pay monthly
+            Rent Now Pay Later (RNPL).
           </h2>
           <p className="max-w-3xl mx-auto mb-6 text-primary-100">
-            We know you earn either daily, weekly, or monthly. We understand the
-            struggle behind paying yearly rent, that&apos;s why we are here for
-            you.
+            Pre-qualify for our RNPL solution while you wait for the service
+            launch so you can use it whenever you need to pay your rent.
           </p>
-          <p className="max-w-3xl mx-auto mb-10 text-primary-100">
-            Enjoy the flexibility of renting your perfect apartment today with
-            our convenient monthly payment options designed to make quality
-            housing accessible for everyone.
-          </p>
+
+          {/* RNPL Benefits Image */}
+          <div className="mb-8">
+            <img
+              src="/images/rnpl-benefits.png"
+              alt="Rent Now Pay Later benefits: Flexible payment options, No yearly rent required, Monthly payment plans, Financial freedom for tenants"
+              className="w-full max-w-2xl mx-auto rounded-2xl"
+            />
+          </div>
+
           <Link
             to="/book-now"
             className="bg-white text-primary-900 px-8 py-3 rounded-full inline-flex items-center gap-2 hover:bg-primary-50 transition-colors font-medium"
           >
-            <span>Explore Payment Options</span>
+            <span>Join our waitlist</span>
             <BsArrowRight />
           </Link>
         </div>
@@ -499,22 +526,47 @@ export default function LandingPage() {
             </div>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-            {/* Landlords/Agents/Property Managers Benefits */}
+          {/* Platform Overview Image */}
+          <div className="mb-12 text-center">
+            <img
+              src="/images/platform-overview.png"
+              alt="Aplet360 platform overview: Unified dashboard showing tenant portal, landlord management, agent tools, and property manager features all in one integrated platform"
+              className="w-full max-w-4xl mx-auto rounded-2xl shadow-lg"
+            />
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+            {/* Landlords Benefits */}
             <div className="bg-white p-8 rounded-2xl shadow-card hover:shadow-elevated transition-all duration-300 transform hover:-translate-y-1 border border-tertiary-100">
               <div className="w-14 h-14 bg-primary-100 rounded-2xl flex items-center justify-center mb-6">
                 <IoHomeOutline className="w-7 h-7 text-primary-900" />
               </div>
               <h3 className="font-semibold text-xl mb-6 text-tertiary-900">
-                For Landlords, Agents & Property Managers
+                For Landlords
               </h3>
 
-              <div className="space-y-4">
-                <div className="flex items-start gap-4">
-                  <div className="w-8 h-8 bg-primary-50 rounded-xl flex items-center justify-center mt-0.5 flex-shrink-0">
-                    <RiMoneyDollarCircleLine className="w-4 h-4 text-primary-900" />
+              <div className="space-y-3">
+                <div className="flex items-start gap-3">
+                  <div className="w-6 h-6 bg-primary-50 rounded-full flex items-center justify-center mt-0.5 flex-shrink-0">
+                    <span className="text-primary-900 text-xs font-bold">
+                      1
+                    </span>
                   </div>
-                  <p className="text-tertiary-600">
+                  <p className="text-tertiary-600 text-sm">
+                    <span className="font-medium text-tertiary-900">
+                      Rent Collection & Accounting
+                    </span>{" "}
+                    - Receipt issuing and rental remittance
+                  </p>
+                </div>
+
+                <div className="flex items-start gap-3">
+                  <div className="w-6 h-6 bg-primary-50 rounded-full flex items-center justify-center mt-0.5 flex-shrink-0">
+                    <span className="text-primary-900 text-xs font-bold">
+                      2
+                    </span>
+                  </div>
+                  <p className="text-tertiary-600 text-sm">
                     <span className="font-medium text-tertiary-900">
                       Rental Income Guarantee
                     </span>{" "}
@@ -522,27 +574,107 @@ export default function LandingPage() {
                   </p>
                 </div>
 
-                <div className="flex items-start gap-4">
-                  <div className="w-8 h-8 bg-primary-50 rounded-xl flex items-center justify-center mt-0.5 flex-shrink-0">
-                    <BsShieldCheck className="w-4 h-4 text-primary-900" />
+                <div className="flex items-start gap-3">
+                  <div className="w-6 h-6 bg-primary-50 rounded-full flex items-center justify-center mt-0.5 flex-shrink-0">
+                    <span className="text-primary-900 text-xs font-bold">
+                      3
+                    </span>
                   </div>
-                  <p className="text-tertiary-600">
+                  <p className="text-tertiary-600 text-sm">
                     <span className="font-medium text-tertiary-900">
-                      Comprehensive Management
+                      Rental Administration
                     </span>{" "}
-                    - From rent collection to legal support
+                    - Lease payment, renewal, termination, and replacement
                   </p>
                 </div>
 
-                <div className="flex items-start gap-4">
-                  <div className="w-8 h-8 bg-primary-50 rounded-xl flex items-center justify-center mt-0.5 flex-shrink-0">
-                    <BsCalendarCheck className="w-4 h-4 text-primary-900" />
+                <div className="flex items-start gap-3">
+                  <div className="w-6 h-6 bg-primary-50 rounded-full flex items-center justify-center mt-0.5 flex-shrink-0">
+                    <span className="text-primary-900 text-xs font-bold">
+                      4
+                    </span>
                   </div>
-                  <p className="text-tertiary-600">
+                  <p className="text-tertiary-600 text-sm">
                     <span className="font-medium text-tertiary-900">
-                      Unlimited Listings
+                      Quick Apartment Placement
                     </span>{" "}
-                    - One-time registration fee for unlimited property listings
+                    - Fast tenant placement and property occupancy
+                  </p>
+                </div>
+
+                <div className="flex items-start gap-3">
+                  <div className="w-6 h-6 bg-primary-50 rounded-full flex items-center justify-center mt-0.5 flex-shrink-0">
+                    <span className="text-primary-900 text-xs font-bold">
+                      5
+                    </span>
+                  </div>
+                  <p className="text-tertiary-600 text-sm">
+                    <span className="font-medium text-tertiary-900">
+                      Tenant Verification
+                    </span>{" "}
+                    - Comprehensive background checks and verification
+                  </p>
+                </div>
+
+                <div className="flex items-start gap-3">
+                  <div className="w-6 h-6 bg-primary-50 rounded-full flex items-center justify-center mt-0.5 flex-shrink-0">
+                    <span className="text-primary-900 text-xs font-bold">
+                      6
+                    </span>
+                  </div>
+                  <p className="text-tertiary-600 text-sm">
+                    <span className="font-medium text-tertiary-900">
+                      Property Valuation/Rent Review
+                    </span>{" "}
+                    - Market analysis and competitive pricing
+                  </p>
+                </div>
+
+                <div className="flex items-start gap-3">
+                  <div className="w-6 h-6 bg-primary-50 rounded-full flex items-center justify-center mt-0.5 flex-shrink-0">
+                    <span className="text-primary-900 text-xs font-bold">
+                      7
+                    </span>
+                  </div>
+                  <p className="text-tertiary-600 text-sm">
+                    <span className="font-medium text-tertiary-900">
+                      Legal Support & Dispute Resolution
+                    </span>{" "}
+                    - Professional legal assistance when needed
+                  </p>
+                </div>
+
+                <div className="flex items-start gap-3">
+                  <div className="w-6 h-6 bg-primary-50 rounded-full flex items-center justify-center mt-0.5 flex-shrink-0">
+                    <span className="text-primary-900 text-xs font-bold">
+                      8
+                    </span>
+                  </div>
+                  <p className="text-tertiary-600 text-sm">
+                    <span className="font-medium text-tertiary-900">
+                      Property Advertising
+                    </span>{" "}
+                    - Professional marketing and listing promotion
+                  </p>
+                </div>
+
+                <div className="flex items-start gap-3">
+                  <div className="w-6 h-6 bg-primary-50 rounded-full flex items-center justify-center mt-0.5 flex-shrink-0">
+                    <span className="text-primary-900 text-xs font-bold">
+                      9
+                    </span>
+                  </div>
+                  <p className="text-tertiary-600 text-sm">
+                    <span className="font-medium text-tertiary-900">
+                      Maintenance & Renovation
+                    </span>{" "}
+                    - Quality and affordable property services
+                  </p>
+                </div>
+
+                <div className="mt-4 p-3 bg-primary-50 rounded-lg">
+                  <p className="text-sm text-primary-900 font-medium">
+                    Service Fee: 5% to 10% of annual rent
                   </p>
                 </div>
               </div>
@@ -557,91 +689,118 @@ export default function LandingPage() {
                 For Tenants
               </h3>
 
-              <div className="space-y-4">
-                <div className="flex items-start gap-4">
-                  <div className="w-8 h-8 bg-accent-50 rounded-xl flex items-center justify-center mt-0.5 flex-shrink-0">
-                    <RiHandHeartLine className="w-4 h-4 text-accent-600" />
+              <div className="space-y-3">
+                <div className="flex items-start gap-3">
+                  <div className="w-6 h-6 bg-accent-50 rounded-full flex items-center justify-center mt-0.5 flex-shrink-0">
+                    <span className="text-accent-600 text-xs font-bold">1</span>
                   </div>
-                  <p className="text-tertiary-600">
+                  <p className="text-tertiary-600 text-sm">
                     <span className="font-medium text-tertiary-900">
-                      Rental Assistance
+                      Curated Apartment Selection
                     </span>{" "}
-                    - We handle all the stress of sourcing and vetting
-                    apartments for you to easily make a choice and move in
+                    - Pre-vetted, quality apartments that meet your standards
                   </p>
                 </div>
 
-                <div className="flex items-start gap-4">
-                  <div className="w-8 h-8 bg-accent-50 rounded-xl flex items-center justify-center mt-0.5 flex-shrink-0">
-                    <BsCreditCard2Front className="w-4 h-4 text-accent-600" />
+                <div className="flex items-start gap-3">
+                  <div className="w-6 h-6 bg-accent-50 rounded-full flex items-center justify-center mt-0.5 flex-shrink-0">
+                    <span className="text-accent-600 text-xs font-bold">2</span>
                   </div>
-                  <p className="text-tertiary-600">
+                  <p className="text-tertiary-600 text-sm">
                     <span className="font-medium text-tertiary-900">
-                      Monthly Payment Option
+                      Monthly Payment Plans
                     </span>{" "}
-                    - Flexible monthly payment plan to move in with just the
-                    payment of the first month
+                    - No yearly rent required, pay monthly as you earn
                   </p>
                 </div>
 
-                <div className="flex items-start gap-4">
-                  <div className="w-8 h-8 bg-accent-50 rounded-xl flex items-center justify-center mt-0.5 flex-shrink-0">
-                    <FiShield className="w-4 h-4 text-accent-600" />
+                <div className="flex items-start gap-3">
+                  <div className="w-6 h-6 bg-accent-50 rounded-full flex items-center justify-center mt-0.5 flex-shrink-0">
+                    <span className="text-accent-600 text-xs font-bold">3</span>
                   </div>
-                  <p className="text-tertiary-600">
+                  <p className="text-tertiary-600 text-sm">
                     <span className="font-medium text-tertiary-900">
-                      Tenant Protection
+                      Rent Now Pay Later (RNPL)
                     </span>{" "}
-                    - Legal support to protect tenants&apos; rights via dispute
-                    resolution and no sudden evictions
-                  </p>
-                </div>
-              </div>
-            </div>
-
-            {/* Shortlet Apartment Owners Benefits */}
-            <div className="bg-white p-8 rounded-2xl shadow-card hover:shadow-elevated transition-all duration-300 transform hover:-translate-y-1 border border-tertiary-100">
-              <div className="w-14 h-14 bg-primary-100 rounded-2xl flex items-center justify-center mb-6">
-                <BsArrowRight className="w-7 h-7 text-primary-900" />
-              </div>
-              <h3 className="font-semibold text-xl mb-6 text-tertiary-900">
-                For Shortlet Apartment Owners
-              </h3>
-
-              <div className="space-y-4">
-                <div className="flex items-start gap-4">
-                  <div className="w-8 h-8 bg-primary-50 rounded-xl flex items-center justify-center mt-0.5 flex-shrink-0">
-                    <FiStar className="w-4 h-4 text-primary-900" />
-                  </div>
-                  <p className="text-tertiary-600">
-                    <span className="font-medium text-tertiary-900">
-                      Efficient Administration
-                    </span>{" "}
-                    - Streamlined bookings and payments management
+                    - Pre-qualify for flexible payment solutions
                   </p>
                 </div>
 
-                <div className="flex items-start gap-4">
-                  <div className="w-8 h-8 bg-primary-50 rounded-xl flex items-center justify-center mt-0.5 flex-shrink-0">
-                    <HiUsers className="w-4 h-4 text-primary-900" />
+                <div className="flex items-start gap-3">
+                  <div className="w-6 h-6 bg-accent-50 rounded-full flex items-center justify-center mt-0.5 flex-shrink-0">
+                    <span className="text-accent-600 text-xs font-bold">4</span>
                   </div>
-                  <p className="text-tertiary-600">
+                  <p className="text-tertiary-600 text-sm">
                     <span className="font-medium text-tertiary-900">
-                      Property Advertising
+                      Tenant Rights Protection
                     </span>{" "}
-                    - Reach a wider audience with our platform
+                    - Legal support and dispute resolution services
                   </p>
                 </div>
 
-                <div className="flex items-start gap-4">
-                  <div className="w-8 h-8 bg-primary-50 rounded-xl flex items-center justify-center mt-0.5 flex-shrink-0">
-                    <BsCreditCard2Front className="w-4 h-4 text-primary-900" />
+                <div className="flex items-start gap-3">
+                  <div className="w-6 h-6 bg-accent-50 rounded-full flex items-center justify-center mt-0.5 flex-shrink-0">
+                    <span className="text-accent-600 text-xs font-bold">5</span>
                   </div>
-                  <p className="text-tertiary-600">
+                  <p className="text-tertiary-600 text-sm">
                     <span className="font-medium text-tertiary-900">
-                      Maintenance Support
+                      No Sudden Evictions
                     </span>{" "}
-                    - Access to quality and affordable property services
+                    - Protected tenancy with proper notice periods
+                  </p>
+                </div>
+
+                <div className="flex items-start gap-3">
+                  <div className="w-6 h-6 bg-accent-50 rounded-full flex items-center justify-center mt-0.5 flex-shrink-0">
+                    <span className="text-accent-600 text-xs font-bold">6</span>
+                  </div>
+                  <p className="text-tertiary-600 text-sm">
+                    <span className="font-medium text-tertiary-900">
+                      Move-in Ready Apartments
+                    </span>{" "}
+                    - Fully furnished and equipped living spaces
+                  </p>
+                </div>
+
+                <div className="flex items-start gap-3">
+                  <div className="w-6 h-6 bg-accent-50 rounded-full flex items-center justify-center mt-0.5 flex-shrink-0">
+                    <span className="text-accent-600 text-xs font-bold">7</span>
+                  </div>
+                  <p className="text-tertiary-600 text-sm">
+                    <span className="font-medium text-tertiary-900">
+                      Home Services Access
+                    </span>{" "}
+                    - Cleaning, maintenance, and repair services
+                  </p>
+                </div>
+
+                <div className="flex items-start gap-3">
+                  <div className="w-6 h-6 bg-accent-50 rounded-full flex items-center justify-center mt-0.5 flex-shrink-0">
+                    <span className="text-accent-600 text-xs font-bold">8</span>
+                  </div>
+                  <p className="text-tertiary-600 text-sm">
+                    <span className="font-medium text-tertiary-900">
+                      24/7 Support
+                    </span>{" "}
+                    - Round-the-clock customer service and assistance
+                  </p>
+                </div>
+
+                <div className="flex items-start gap-3">
+                  <div className="w-6 h-6 bg-accent-50 rounded-full flex items-center justify-center mt-0.5 flex-shrink-0">
+                    <span className="text-accent-600 text-xs font-bold">9</span>
+                  </div>
+                  <p className="text-tertiary-600 text-sm">
+                    <span className="font-medium text-tertiary-900">
+                      Transparent Pricing
+                    </span>{" "}
+                    - No hidden fees, clear and upfront costs
+                  </p>
+                </div>
+
+                <div className="mt-4 p-3 bg-accent-50 rounded-lg">
+                  <p className="text-sm text-accent-600 font-medium">
+                    Join our waitlist for RNPL and exclusive tenant benefits
                   </p>
                 </div>
               </div>
@@ -665,6 +824,15 @@ export default function LandingPage() {
               handle all your home service needs. Quality work, affordable
               prices, and reliable service guaranteed.
             </p>
+          </div>
+
+          {/* Home Services Hero Image */}
+          <div className="mb-12 text-center">
+            <img
+              src="/images/home-services-hero.png"
+              alt="Professional home services: Cleaners, plumbers, electricians, painters, carpenters, and other skilled artisans working in modern homes"
+              className="w-full max-w-4xl mx-auto rounded-2xl shadow-lg"
+            />
           </div>
 
           {/* Services Grid */}
@@ -736,6 +904,15 @@ export default function LandingPage() {
                 experience.
               </p>
             </div>
+          </div>
+
+          {/* Property Listings Showcase */}
+          <div className="mb-12 text-center">
+            <img
+              src="/images/property-listings-showcase.png"
+              alt="Curated apartment listings: Modern apartments with amenities, flexible payment options, quality assurance, and premium living spaces available for rent"
+              className="w-full max-w-4xl mx-auto rounded-2xl shadow-lg"
+            />
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
@@ -838,90 +1015,6 @@ export default function LandingPage() {
         </div>
       </section>
 
-      {/* Gateway to affordable living section */}
-      {/* <section className="py-16 bg-gray-50">
-        <div className="max-w-6xl mx-auto px-4">
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-12 items-center">
-            <div>
-              <p className="text-primary-900 font-medium mb-4">YOUR GATEWAY</p>
-              <h2 className="text-3xl md:text-4xl font-bold mb-6">
-                To more <span className="text-accent-500">affordable</span>{" "}
-                living
-              </h2>
-              <p className="text-gray-600 mb-8">
-                Experience premium living without the premium price tag. Our
-                apartments offer all the comforts of home at prices that make
-                sense for your budget and lifestyle, with flexible monthly
-                payment options designed for your convenience.
-              </p>
-              <div className="space-y-4">
-                <div className="flex items-start gap-3">
-                  <div className="w-10 h-10 bg-primary-100 rounded-full flex items-center justify-center mt-1">
-                    <RiMoneyDollarCircleLine className="w-5 h-5 text-primary-900" />
-                  </div>
-                  <div>
-                    <h3 className="font-semibold mb-1">Competitive Pricing</h3>
-                    <p className="text-gray-600 text-sm">
-                      Our rates are transparent and competitive, with no hidden
-                      fees or surprise charges.
-                    </p>
-                  </div>
-                </div>
-                <div className="flex items-start gap-3">
-                  <div className="w-10 h-10 bg-primary-100 rounded-full flex items-center justify-center mt-1">
-                    <BsShieldCheck className="w-5 h-5 text-primary-900" />
-                  </div>
-                  <div>
-                    <h3 className="font-semibold mb-1">Secure Transactions</h3>
-                    <p className="text-gray-600 text-sm">
-                      Book with confidence knowing your payment and personal
-                      information are protected.
-                    </p>
-                  </div>
-                </div>
-                <div className="flex items-start gap-3">
-                  <div className="w-10 h-10 bg-primary-100 rounded-full flex items-center justify-center mt-1">
-                    <MdApartment className="w-5 h-5 text-primary-900" />
-                  </div>
-                  <div>
-                    <h3 className="font-semibold mb-1">
-                      Seamless Apartment Letting Management
-                    </h3>
-                    <p className="text-gray-600 text-sm">
-                      Our expert team handles every aspect of property
-                      management, ensuring a hassle-free experience for both
-                      tenants and landlords.
-                    </p>
-                  </div>
-                </div>
-                <div className="flex items-start gap-3">
-                  <div className="w-10 h-10 bg-primary-100 rounded-full flex items-center justify-center mt-1">
-                    <BiSupport className="w-5 h-5 text-primary-900" />
-                  </div>
-                  <div>
-                    <h3 className="font-semibold mb-1">
-                      Exclusive Home Services
-                    </h3>
-                    <p className="text-gray-600 text-sm">
-                      Elevate your lifestyle with our curated selection of home
-                      services, from cleaning to maintenance, all designed to
-                      enhance your living experience.
-                    </p>
-                  </div>
-                </div>
-              </div>
-            </div>
-            <div className="rounded-2xl overflow-hidden shadow-lg">
-              <img
-                src="/images/people-holding-key.webp"
-                alt="Affordable Living"
-                className="w-full h-full object-cover"
-              />
-            </div>
-          </div>
-        </div>
-      </section> */}
-
       {/* Property Management section */}
       <section className="py-16 bg-white">
         <div className="max-w-6xl mx-auto px-4">
@@ -940,10 +1033,20 @@ export default function LandingPage() {
               <p className="text-gray-500 uppercase font-medium mb-2">
                 SMART PROPERTY MANAGEMENT, MADE SIMPLE
               </p>
-              <h2 className="text-3xl md:text-5xl font-bold text-primary-900 mb-6">
-                Discover Nigeria's most trusted way to manage, rent, and earn,
-                all in one place.
+              <h2 className="text-2xl md:text-3xl  text-primary-900 mb-6">
+                Join other happy landlords who enjoys seamless property
+                management plan at Aplet360 thar guarantees their peace of mind
+                and all year round rental income.
               </h2>
+
+              {/* Property Management Dashboard Preview */}
+              <div className="mb-8">
+                <img
+                  src="/images/property-management-dashboard.png"
+                  alt="Property management dashboard: Landlord portal showing rental income tracking, tenant management, maintenance requests, and property analytics for seamless property management"
+                  className="w-full rounded-lg shadow-md"
+                />
+              </div>
 
               <div className="space-y-4 mt-8">
                 {[
@@ -991,144 +1094,14 @@ export default function LandingPage() {
               customers have to say about their Aplet360 experience.
             </p>
           </div>
-        </div>
-        <div>
-          <div className="relative overflow-hidden">
-            <div
-              className="flex gap-8 pb-4 auto-scroll-testimonials"
-              style={{
-                width: "max-content",
-              }}
-            >
-              <div className="bg-white p-6 rounded-xl shadow-lg hover:shadow-xl transition-shadow border border-gray-100 w-80">
-                <div className="flex items-center gap-4 mb-6">
-                  <div className="w-16 h-16 bg-primary-100 rounded-full flex items-center justify-center">
-                    <span className="text-primary-900 font-semibold text-xl">
-                      TA
-                    </span>
-                  </div>
-                  <div>
-                    <h3 className="font-semibold text-lg">Tolu A.</h3>
-                    <p className="text-gray-500 text-sm">Lagos, Nigeria</p>
-                  </div>
-                </div>
-                <div className="flex text-yellow-400 mb-4">
-                  <FiStar className="fill-current" />
-                  <FiStar className="fill-current" />
-                  <FiStar className="fill-current" />
-                  <FiStar className="fill-current" />
-                  <FiStar className="fill-current" />
-                </div>
-                <p className="text-gray-600 italic">
-                  &quot;Aplet360 didn&apos;t just find me a home, they made it
-                  livable instantly with their 360° services. Cleaning, setup,
-                  everything was handled. Brilliant!&quot;
-                </p>
-              </div>
 
-              <div className="bg-white p-6 rounded-xl shadow-lg hover:shadow-xl transition-shadow border border-gray-100 w-80">
-                <div className="flex items-center gap-4 mb-6">
-                  <div className="w-16 h-16 bg-primary-100 rounded-full flex items-center justify-center">
-                    <span className="text-primary-900 font-semibold text-xl">
-                      JK
-                    </span>
-                  </div>
-                  <div>
-                    <h3 className="font-semibold text-lg">James K.</h3>
-                    <p className="text-gray-500 text-sm">Lagos, Nigeria</p>
-                  </div>
-                </div>
-                <div className="flex text-yellow-400 mb-4">
-                  <FiStar className="fill-current" />
-                  <FiStar className="fill-current" />
-                  <FiStar className="fill-current" />
-                  <FiStar className="fill-current" />
-                  <FiStar className="fill-current" />
-                </div>
-                <p className="text-gray-600 italic">
-                  &quot;I trust Aplet360 100%. Every apartment is exactly as
-                  promised, and they respond immediately when needed.&quot;
-                </p>
-              </div>
-
-              <div className="bg-white p-6 rounded-xl shadow-lg hover:shadow-xl transition-shadow border border-gray-100 w-80">
-                <div className="flex items-center gap-4 mb-6">
-                  <div className="w-16 h-16 bg-primary-100 rounded-full flex items-center justify-center">
-                    <span className="text-primary-900 font-semibold text-xl">
-                      HR
-                    </span>
-                  </div>
-                  <div>
-                    <h3 className="font-semibold text-lg">HR Manager</h3>
-                    <p className="text-gray-500 text-sm">Tech Firm, Abuja</p>
-                  </div>
-                </div>
-                <div className="flex text-yellow-400 mb-4">
-                  <FiStar className="fill-current" />
-                  <FiStar className="fill-current" />
-                  <FiStar className="fill-current" />
-                  <FiStar className="fill-current" />
-                  <FiStar className="fill-current" />
-                </div>
-                <p className="text-gray-600 italic">
-                  &quot;They helped our company secure serviced apartments and
-                  handled all maintenance professionally. True one-stop
-                  shop!&quot;
-                </p>
-              </div>
-
-              {/* Duplicate testimonials to create continuous scrolling effect */}
-              <div className="bg-white p-6 rounded-xl shadow-lg hover:shadow-xl transition-shadow border border-gray-100 w-80">
-                <div className="flex items-center gap-4 mb-6">
-                  <div className="w-16 h-16 bg-primary-100 rounded-full flex items-center justify-center">
-                    <span className="text-primary-900 font-semibold text-xl">
-                      TA
-                    </span>
-                  </div>
-                  <div>
-                    <h3 className="font-semibold text-lg">Tolu A.</h3>
-                    <p className="text-gray-500 text-sm">Lagos, Nigeria</p>
-                  </div>
-                </div>
-                <div className="flex text-yellow-400 mb-4">
-                  <FiStar className="fill-current" />
-                  <FiStar className="fill-current" />
-                  <FiStar className="fill-current" />
-                  <FiStar className="fill-current" />
-                  <FiStar className="fill-current" />
-                </div>
-                <p className="text-gray-600 italic">
-                  &quot;Aplet360 didn&apos;t just find me a home, they made it
-                  livable instantly with their 360° services. Cleaning, setup,
-                  everything was handled. Brilliant!&quot;
-                </p>
-              </div>
-
-              <div className="bg-white p-6 rounded-xl shadow-lg hover:shadow-xl transition-shadow border border-gray-100 w-80">
-                <div className="flex items-center gap-4 mb-6">
-                  <div className="w-16 h-16 bg-primary-100 rounded-full flex items-center justify-center">
-                    <span className="text-primary-900 font-semibold text-xl">
-                      JK
-                    </span>
-                  </div>
-                  <div>
-                    <h3 className="font-semibold text-lg">James K.</h3>
-                    <p className="text-gray-500 text-sm">Lagos, Nigeria</p>
-                  </div>
-                </div>
-                <div className="flex text-yellow-400 mb-4">
-                  <FiStar className="fill-current" />
-                  <FiStar className="fill-current" />
-                  <FiStar className="fill-current" />
-                  <FiStar className="fill-current" />
-                  <FiStar className="fill-current" />
-                </div>
-                <p className="text-gray-600 italic">
-                  &quot;I trust Aplet360 100%. Every apartment is exactly as
-                  promised, and they respond immediately when needed.&quot;
-                </p>
-              </div>
-            </div>
+          {/* Customer Satisfaction Image */}
+          <div className="mb-12 text-center">
+            <img
+              src="/images/customer-satisfaction.png"
+              alt="Happy customers and satisfied tenants: People smiling and giving positive feedback about their Aplet360 experience, showing trust and satisfaction with the platform"
+              className="w-full max-w-3xl mx-auto rounded-2xl shadow-lg"
+            />
           </div>
         </div>
       </section>

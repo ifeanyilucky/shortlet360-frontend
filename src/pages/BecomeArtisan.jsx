@@ -168,17 +168,11 @@ export default function BecomeArtisan() {
             </div>
             <div className="lg:order-1">
               <h2 className="text-3xl md:text-4xl font-bold mb-6 text-primary-900">
-                Join Aplet360&apos;s ApletFix Network - Earn More, Work Freely
+                Join ApletFix Network - Earn More, Work Freely
               </h2>
               <p className="text-lg text-tertiary-700 mb-8 leading-relaxed">
-                Are you a skilled artisan or technician looking to expand beyond
-                where you are currently and increase your income? Becoming an
-                Artisan for Aplet360 is the best option for you. You can
-                register to receive verified job requests directly with zero
-                commission cuts. Just pay an affordable monthly fee to stay
-                active and visible on our dashboard while you keep 100% of what
-                you earn. No hidden charges, no middlemen, just real work from
-                real customers (Users of Aplet360).
+                Are you a skilled artisan or technician looking to expand your
+                service network for more quality Jobs to increase your income?
               </p>
               <p className="text-lg text-tertiary-700 mb-8 leading-relaxed">
                 Whether you are a plumber, electrician, painter, or tiler or

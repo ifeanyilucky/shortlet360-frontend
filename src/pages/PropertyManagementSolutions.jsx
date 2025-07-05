@@ -38,17 +38,14 @@ export default function PropertyManagementSolutions() {
             investment returns while ensuring seamless tenant experiences.
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
-            <InteractiveButton
-              variant="accent"
-              onClick={handleGetStarted}
-            >
+            <InteractiveButton variant="accent" onClick={handleGetStarted}>
               Get Started Today
             </InteractiveButton>
-            <Link to="/book-now">
+            {/* <Link to="/book-now">
               <InteractiveButton variant="secondary">
                 View Properties
               </InteractiveButton>
-            </Link>
+            </Link> */}
           </div>
         </div>
       </section>
@@ -79,12 +76,6 @@ export default function PropertyManagementSolutions() {
                 our experienced team handles everything from tenant screening
                 and rent collection to maintenance and legal compliance,
                 ensuring your properties are well-maintained and profitable.
-              </p>
-              <p className="text-tertiary-600 text-lg">
-                With our technology-driven approach and deep market knowledge,
-                we provide transparent, efficient, and reliable property
-                management services that give you peace of mind and steady
-                returns on your investment.
               </p>
             </div>
           </div>
@@ -419,15 +410,9 @@ export default function PropertyManagementSolutions() {
             you enjoy steady returns and peace of mind.
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
-            <InteractiveButton
-              variant="accent"
-              onClick={handleGetStarted}
-            >
-              Get Free Consultation
-            </InteractiveButton>
             <Link to="/auth/register">
               <InteractiveButton variant="secondary">
-                Join as Property Owner
+                Manage My Property
               </InteractiveButton>
             </Link>
           </div>

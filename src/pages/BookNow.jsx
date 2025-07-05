@@ -338,7 +338,7 @@ export default function BookNow() {
           <h1 className="text-3xl font-bold">Find Properties in Nigeria</h1>
 
           {/* Category Tabs */}
-          <div className="flex bg-white rounded-lg shadow-sm overflow-hidden">
+          {/* <div className="flex bg-white rounded-lg shadow-sm overflow-hidden">
             <button
               onClick={() => switchCategory("rent")}
               className={`flex items-center gap-2 px-6 py-3 text-sm font-medium ${
@@ -372,7 +372,7 @@ export default function BookNow() {
               <MdBusiness className="w-4 h-4" />
               <span>Office</span>
             </button>
-          </div>
+          </div> */}
         </div>
 
         {/* Filters */}
