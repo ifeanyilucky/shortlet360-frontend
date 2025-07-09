@@ -401,15 +401,6 @@ export default function LandingPage() {
             </p>
           </div>
 
-          {/* Process Flow Image */}
-          <div className="mb-12 text-center">
-            <img
-              src="/images/rental-process-flow.png"
-              alt="4-step rental process: Search apartments, Select your choice, Pay securely, Move in to your new home"
-              className="w-full max-w-4xl mx-auto rounded-2xl shadow-lg"
-            />
-          </div>
-
           <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
             <div className="bg-white p-8 rounded-2xl shadow-card hover:shadow-elevated transition-all duration-300 transform hover:-translate-y-1">
               <div className="w-14 h-14 bg-primary-100 rounded-2xl flex items-center justify-center mx-auto mb-6">
@@ -526,15 +517,6 @@ export default function LandingPage() {
                 every step of the way.
               </p>
             </div>
-          </div>
-
-          {/* Platform Overview Image */}
-          <div className="mb-12 text-center">
-            <img
-              src="/images/platform-overview.png"
-              alt="Aplet360 platform overview: Unified dashboard showing tenant portal, landlord management, agent tools, and property manager features all in one integrated platform"
-              className="w-full max-w-4xl mx-auto rounded-2xl shadow-lg"
-            />
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
@@ -828,15 +810,6 @@ export default function LandingPage() {
             </p>
           </div>
 
-          {/* Home Services Hero Image */}
-          <div className="mb-12 text-center">
-            <img
-              src="/images/home-services-hero.png"
-              alt="Professional home services: Cleaners, plumbers, electricians, painters, carpenters, and other skilled artisans working in modern homes"
-              className="w-full max-w-4xl mx-auto rounded-2xl shadow-lg"
-            />
-          </div>
-
           {/* Services Grid */}
           <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-6 mb-12">
             {[
@@ -906,15 +879,6 @@ export default function LandingPage() {
                 experience.
               </p>
             </div>
-          </div>
-
-          {/* Property Listings Showcase */}
-          <div className="mb-12 text-center">
-            <img
-              src="/images/property-listings-showcase.png"
-              alt="Curated apartment listings: Modern apartments with amenities, flexible payment options, quality assurance, and premium living spaces available for rent"
-              className="w-full max-w-4xl mx-auto rounded-2xl shadow-lg"
-            />
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
@@ -1041,15 +1005,6 @@ export default function LandingPage() {
                 and all year round rental income.
               </h2>
 
-              {/* Property Management Dashboard Preview */}
-              <div className="mb-8">
-                <img
-                  src="/images/property-management-dashboard.png"
-                  alt="Property management dashboard: Landlord portal showing rental income tracking, tenant management, maintenance requests, and property analytics for seamless property management"
-                  className="w-full rounded-lg shadow-md"
-                />
-              </div>
-
               <div className="space-y-4 mt-8">
                 {[
                   "Listing Creation & Management",
@@ -1084,7 +1039,7 @@ export default function LandingPage() {
       </section>
 
       {/* Testimonials section */}
-      <section className="py-16 bg-white">
+      <section className="py-16 bg-gradient-to-br from-gray-50 to-white overflow-hidden">
         <div className="max-w-6xl mx-auto px-4">
           <div className="text-center mb-12">
             <p className="text-primary-900 font-medium mb-2">TESTIMONIALS</p>
@@ -1097,14 +1052,293 @@ export default function LandingPage() {
             </p>
           </div>
 
-          {/* Customer Satisfaction Image */}
-          <div className="mb-12 text-center">
-            <img
-              src="/images/customer-satisfaction.png"
-              alt="Happy customers and satisfied tenants: People smiling and giving positive feedback about their Aplet360 experience, showing trust and satisfaction with the platform"
-              className="w-full max-w-3xl mx-auto rounded-2xl shadow-lg"
-            />
+          {/* Testimonials Slider */}
+          <div className="relative">
+            <div className="overflow-hidden">
+              <div
+                className="auto-scroll-testimonials flex gap-6"
+                style={{ width: "200%" }}
+              >
+                {/* First set of testimonials */}
+                <div className="flex gap-6 min-w-full pb-10">
+                  {/* Testimonial 1 */}
+                  <div className="testimonial-card bg-white rounded-2xl p-6 md:p-8 shadow-lg hover:shadow-xl min-w-[280px] md:min-w-[350px] border border-gray-100">
+                    <div className="flex items-center mb-4">
+                      {[...Array(5)].map((_, i) => (
+                        <FiStar
+                          key={i}
+                          className="w-5 h-5 text-yellow-400 fill-current"
+                        />
+                      ))}
+                    </div>
+                    <p className="text-gray-700 mb-6 leading-relaxed text-sm md:text-base">
+                      "Finding my dream apartment was so easy with Aplet360. The
+                      platform is user-friendly, and the customer service is
+                      exceptional. I got my keys within 48 hours!"
+                    </p>
+                    <div className="flex items-center">
+                      <div className="w-10 h-10 md:w-12 md:h-12 bg-gradient-to-br from-primary-400 to-primary-600 rounded-full flex items-center justify-center text-white font-semibold mr-3 md:mr-4 text-sm">
+                        SA
+                      </div>
+                      <div>
+                        <h4 className="font-semibold text-gray-900 text-sm md:text-base">
+                          Sarah Adebayo
+                        </h4>
+                        <p className="text-gray-500 text-xs md:text-sm">
+                          Marketing Executive, Lagos
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Testimonial 2 */}
+                  <div className="testimonial-card bg-white rounded-2xl p-6 md:p-8 shadow-lg hover:shadow-xl min-w-[280px] md:min-w-[350px] border border-gray-100">
+                    <div className="flex items-center mb-4">
+                      {[...Array(5)].map((_, i) => (
+                        <FiStar
+                          key={i}
+                          className="w-5 h-5 text-yellow-400 fill-current"
+                        />
+                      ))}
+                    </div>
+                    <p className="text-gray-700 mb-6 leading-relaxed text-sm md:text-base">
+                      "The shortlet options are amazing! Perfect for my business
+                      trips. Clean, affordable, and always available when I need
+                      them. Highly recommended!"
+                    </p>
+                    <div className="flex items-center">
+                      <div className="w-10 h-10 md:w-12 md:h-12 bg-gradient-to-br from-accent-400 to-accent-600 rounded-full flex items-center justify-center text-white font-semibold mr-3 md:mr-4 text-sm">
+                        JO
+                      </div>
+                      <div>
+                        <h4 className="font-semibold text-gray-900 text-sm md:text-base">
+                          James Okafor
+                        </h4>
+                        <p className="text-gray-500 text-xs md:text-sm">
+                          Business Consultant, Abuja
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Testimonial 3 */}
+                  <div className="testimonial-card bg-white rounded-2xl p-6 md:p-8 shadow-lg hover:shadow-xl min-w-[280px] md:min-w-[350px] border border-gray-100">
+                    <div className="flex items-center mb-4">
+                      {[...Array(5)].map((_, i) => (
+                        <FiStar
+                          key={i}
+                          className="w-5 h-5 text-yellow-400 fill-current"
+                        />
+                      ))}
+                    </div>
+                    <p className="text-gray-700 mb-6 leading-relaxed text-sm md:text-base">
+                      "As a property owner, listing on Aplet360 has been
+                      fantastic. Great exposure, reliable tenants, and excellent
+                      support from the team."
+                    </p>
+                    <div className="flex items-center">
+                      <div className="w-10 h-10 md:w-12 md:h-12 bg-gradient-to-br from-green-400 to-green-600 rounded-full flex items-center justify-center text-white font-semibold mr-3 md:mr-4 text-sm">
+                        MK
+                      </div>
+                      <div>
+                        <h4 className="font-semibold text-gray-900 text-sm md:text-base">
+                          Mrs. Kemi Adeyemi
+                        </h4>
+                        <p className="text-gray-500 text-xs md:text-sm">
+                          Property Owner, Ikeja
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Testimonial 4 */}
+                  <div className="testimonial-card bg-white rounded-2xl p-6 md:p-8 shadow-lg hover:shadow-xl min-w-[280px] md:min-w-[350px] border border-gray-100">
+                    <div className="flex items-center mb-4">
+                      {[...Array(5)].map((_, i) => (
+                        <FiStar
+                          key={i}
+                          className="w-5 h-5 text-yellow-400 fill-current"
+                        />
+                      ))}
+                    </div>
+                    <p className="text-gray-700 mb-6 leading-relaxed text-sm md:text-base">
+                      "The office spaces available are top-notch! Found the
+                      perfect location for my startup. The booking process was
+                      seamless and transparent."
+                    </p>
+                    <div className="flex items-center">
+                      <div className="w-10 h-10 md:w-12 md:h-12 bg-gradient-to-br from-purple-400 to-purple-600 rounded-full flex items-center justify-center text-white font-semibold mr-3 md:mr-4 text-sm">
+                        DA
+                      </div>
+                      <div>
+                        <h4 className="font-semibold text-gray-900 text-sm md:text-base">
+                          David Akinola
+                        </h4>
+                        <p className="text-gray-500 text-xs md:text-sm">
+                          Tech Entrepreneur, Victoria Island
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Duplicate set for seamless loop */}
+                <div className="flex gap-6 min-w-full">
+                  {/* Testimonial 1 - Duplicate */}
+                  <div className="testimonial-card bg-white rounded-2xl p-6 md:p-8 shadow-lg hover:shadow-xl min-w-[280px] md:min-w-[350px] border border-gray-100">
+                    <div className="flex items-center mb-4">
+                      {[...Array(5)].map((_, i) => (
+                        <FiStar
+                          key={i}
+                          className="w-5 h-5 text-yellow-400 fill-current"
+                        />
+                      ))}
+                    </div>
+                    <p className="text-gray-700 mb-6 leading-relaxed text-sm md:text-base">
+                      "Finding my dream apartment was so easy with Aplet360. The
+                      platform is user-friendly, and the customer service is
+                      exceptional. I got my keys within 48 hours!"
+                    </p>
+                    <div className="flex items-center">
+                      <div className="w-10 h-10 md:w-12 md:h-12 bg-gradient-to-br from-primary-400 to-primary-600 rounded-full flex items-center justify-center text-white font-semibold mr-3 md:mr-4 text-sm">
+                        SA
+                      </div>
+                      <div>
+                        <h4 className="font-semibold text-gray-900 text-sm md:text-base">
+                          Sarah Adebayo
+                        </h4>
+                        <p className="text-gray-500 text-xs md:text-sm">
+                          Marketing Executive, Lagos
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Testimonial 2 - Duplicate */}
+                  <div className="testimonial-card bg-white rounded-2xl p-6 md:p-8 shadow-lg hover:shadow-xl min-w-[280px] md:min-w-[350px] border border-gray-100">
+                    <div className="flex items-center mb-4">
+                      {[...Array(5)].map((_, i) => (
+                        <FiStar
+                          key={i}
+                          className="w-5 h-5 text-yellow-400 fill-current"
+                        />
+                      ))}
+                    </div>
+                    <p className="text-gray-700 mb-6 leading-relaxed text-sm md:text-base">
+                      "The shortlet options are amazing! Perfect for my business
+                      trips. Clean, affordable, and always available when I need
+                      them. Highly recommended!"
+                    </p>
+                    <div className="flex items-center">
+                      <div className="w-10 h-10 md:w-12 md:h-12 bg-gradient-to-br from-accent-400 to-accent-600 rounded-full flex items-center justify-center text-white font-semibold mr-3 md:mr-4 text-sm">
+                        JO
+                      </div>
+                      <div>
+                        <h4 className="font-semibold text-gray-900 text-sm md:text-base">
+                          James Okafor
+                        </h4>
+                        <p className="text-gray-500 text-xs md:text-sm">
+                          Business Consultant, Abuja
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Testimonial 3 - Duplicate */}
+                  <div className="testimonial-card bg-white rounded-2xl p-6 md:p-8 shadow-lg hover:shadow-xl min-w-[280px] md:min-w-[350px] border border-gray-100">
+                    <div className="flex items-center mb-4">
+                      {[...Array(5)].map((_, i) => (
+                        <FiStar
+                          key={i}
+                          className="w-5 h-5 text-yellow-400 fill-current"
+                        />
+                      ))}
+                    </div>
+                    <p className="text-gray-700 mb-6 leading-relaxed text-sm md:text-base">
+                      "As a property owner, listing on Aplet360 has been
+                      fantastic. Great exposure, reliable tenants, and excellent
+                      support from the team."
+                    </p>
+                    <div className="flex items-center">
+                      <div className="w-10 h-10 md:w-12 md:h-12 bg-gradient-to-br from-green-400 to-green-600 rounded-full flex items-center justify-center text-white font-semibold mr-3 md:mr-4 text-sm">
+                        MK
+                      </div>
+                      <div>
+                        <h4 className="font-semibold text-gray-900 text-sm md:text-base">
+                          Mrs. Kemi Adeyemi
+                        </h4>
+                        <p className="text-gray-500 text-xs md:text-sm">
+                          Property Owner, Ikeja
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Testimonial 4 - Duplicate */}
+                  <div className="testimonial-card bg-white rounded-2xl p-6 md:p-8 shadow-lg hover:shadow-xl min-w-[280px] md:min-w-[350px] border border-gray-100">
+                    <div className="flex items-center mb-4">
+                      {[...Array(5)].map((_, i) => (
+                        <FiStar
+                          key={i}
+                          className="w-5 h-5 text-yellow-400 fill-current"
+                        />
+                      ))}
+                    </div>
+                    <p className="text-gray-700 mb-6 leading-relaxed text-sm md:text-base">
+                      "The office spaces available are top-notch! Found the
+                      perfect location for my startup. The booking process was
+                      seamless and transparent."
+                    </p>
+                    <div className="flex items-center">
+                      <div className="w-10 h-10 md:w-12 md:h-12 bg-gradient-to-br from-purple-400 to-purple-600 rounded-full flex items-center justify-center text-white font-semibold mr-3 md:mr-4 text-sm">
+                        DA
+                      </div>
+                      <div>
+                        <h4 className="font-semibold text-gray-900 text-sm md:text-base">
+                          David Akinola
+                        </h4>
+                        <p className="text-gray-500 text-xs md:text-sm">
+                          Tech Entrepreneur, Victoria Island
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            {/* Gradient overlays for smooth edges */}
+            <div className="absolute top-0 left-0 w-16 md:w-20 h-full testimonial-gradient-left pointer-events-none z-10"></div>
+            <div className="absolute top-0 right-0 w-16 md:w-20 h-full testimonial-gradient-right pointer-events-none z-10"></div>
           </div>
+
+          {/* Stats section */}
+          {/* <div className="mt-16 grid grid-cols-2 md:grid-cols-4 gap-8 text-center">
+            <div className="bg-white rounded-xl p-6 shadow-sm border border-gray-100">
+              <div className="text-3xl font-bold text-primary-900 mb-2">
+                5,000+
+              </div>
+              <div className="text-gray-600 text-sm">Happy Customers</div>
+            </div>
+            <div className="bg-white rounded-xl p-6 shadow-sm border border-gray-100">
+              <div className="text-3xl font-bold text-primary-900 mb-2">
+                10,000+
+              </div>
+              <div className="text-gray-600 text-sm">Properties Listed</div>
+            </div>
+            <div className="bg-white rounded-xl p-6 shadow-sm border border-gray-100">
+              <div className="text-3xl font-bold text-primary-900 mb-2">
+                98%
+              </div>
+              <div className="text-gray-600 text-sm">Satisfaction Rate</div>
+            </div>
+            <div className="bg-white rounded-xl p-6 shadow-sm border border-gray-100">
+              <div className="text-3xl font-bold text-primary-900 mb-2">
+                24/7
+              </div>
+              <div className="text-gray-600 text-sm">Customer Support</div>
+            </div>
+          </div> */}
         </div>
       </section>
 
