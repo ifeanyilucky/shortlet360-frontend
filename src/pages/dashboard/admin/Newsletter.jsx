@@ -5,9 +5,7 @@ import {
   FiTrendingUp,
   FiSend,
   FiSearch,
-  FiFilter,
   FiDownload,
-  FiTrash2,
 } from "react-icons/fi";
 import { format } from "date-fns";
 import { newsletterService } from "../../../services/api";
@@ -33,6 +31,17 @@ export default function AdminNewsletter() {
     use_template: true,
   });
   const [sendingNewsletter, setSendingNewsletter] = useState(false);
+
+  // Helper function to format source names
+  const formatSourceName = (source) => {
+    const sourceMap = {
+      landing_page: "Landing Page",
+      blog: "Blog",
+      admin: "Admin",
+      rnpl_waitlist: "RNPL Waitlist",
+    };
+    return sourceMap[source] || source.replace("_", " ");
+  };
 
   const fetchStats = async () => {
     try {
@@ -228,8 +237,8 @@ export default function AdminNewsletter() {
                       key={item._id}
                       className="flex justify-between items-center"
                     >
-                      <span className="capitalize text-gray-700">
-                        {item._id.replace("_", " ")}
+                      <span className="text-gray-700">
+                        {formatSourceName(item._id)}
                       </span>
                       <span className="font-semibold text-gray-900">
                         {item.count}
@@ -284,6 +293,7 @@ export default function AdminNewsletter() {
                   <option value="landing_page">Landing Page</option>
                   <option value="blog">Blog</option>
                   <option value="admin">Admin</option>
+                  <option value="rnpl_waitlist">RNPL Waitlist</option>
                 </select>
 
                 <button
@@ -371,8 +381,8 @@ export default function AdminNewsletter() {
                             {subscriber.status}
                           </span>
                         </td>
-                        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900 capitalize">
-                          {subscriber.source.replace("_", " ")}
+                        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                          {formatSourceName(subscriber.source)}
                         </td>
                         <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
                           {format(

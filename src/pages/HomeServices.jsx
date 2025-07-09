@@ -125,22 +125,41 @@ export default function HomeServices() {
   return (
     <div className="min-h-screen">
       {/* Hero Section - ApletFix */}
-      <section className="bg-primary-900 text-white py-20">
-        <div className="container mx-auto px-4">
+      <section className="relative text-white py-20 overflow-hidden">
+        {/* Video Background */}
+        <video
+          autoPlay
+          loop
+          muted
+          playsInline
+          className="absolute inset-0 w-full h-full object-cover z-0"
+        >
+          <source
+            src="/videos/8488109-uhd_3840_2160_30fps.mp4"
+            type="video/mp4"
+          />
+          Your browser does not support the video tag.
+        </video>
+
+        {/* Dark overlay for better text readability */}
+        <div className="absolute inset-0 bg-black bg-opacity-50 z-10"></div>
+
+        {/* Content */}
+        <div className="container mx-auto px-4 relative z-20">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
             <div>
               <h1 className="text-4xl md:text-5xl font-bold mb-6">
                 ApletFix
                 {/* Your trusted solution for Hassle-free Home Repairs */}
               </h1>
-              <p className="text-xl text-primary-100 mb-8 leading-relaxed">
+              <p className="text-xl text-gray-100 mb-8 leading-relaxed">
                 Need a plumber, electrician, or appliance repair? With ApletFix,
                 get connected to vetted, reliable artisans across Nigeria, fast,
                 affordable, and stress-free. No hidden charges, no unverified
                 technicians. Just trusted home services you can book with a
                 click.
               </p>
-              <p className="text-lg text-primary-100 font-semibold">
+              <p className="text-lg text-gray-100 font-semibold">
                 Book a service today, and get it fixed the right way.
               </p>
               <div className="mt-8">
@@ -158,7 +177,7 @@ export default function HomeServices() {
                 alt="Professional technician ready to fix home"
                 className="rounded-lg shadow-lg max-w-full h-auto"
               />
-              <p className="text-lg text-primary-100 font-semibold mt-4 text-center">
+              <p className="text-lg text-gray-100 font-semibold mt-4 text-center">
                 Say goodbye to unprofessional fixes and unattended/overdue
                 repairs
               </p>

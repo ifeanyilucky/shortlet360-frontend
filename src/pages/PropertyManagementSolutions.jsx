@@ -27,15 +27,25 @@ export default function PropertyManagementSolutions() {
   return (
     <div className="min-h-screen">
       {/* Hero Section */}
-      <section className="bg-gradient-to-b from-primary-900 to-primary-900 text-white py-24 relative overflow-hidden">
-        <div className="absolute inset-0 bg-[url('/images/pattern.png')] opacity-10"></div>
+
+      <section
+        className="bg-gradient-to-b from-primary-900 to-primary-900 text-white py-24 relative overflow-hidden"
+        style={{
+          backgroundImage: "url(/images/properties-image.avif)",
+          backgroundSize: "cover",
+          backgroundPosition: "center",
+          backgroundRepeat: "no-repeat",
+        }}
+      >
+        <div className="absolute inset-0 bg-primary-900 bg-opacity-70"></div>
         <div className="container mx-auto px-4 text-center relative z-10">
           <h1 className="text-4xl md:text-6xl font-bold mb-6 animate-fade-in">
             Property Management Solutions
           </h1>
           <p className="text-xl text-primary-100 max-w-3xl mx-auto mb-8 animate-slide-up">
-            Comprehensive property management services designed to maximize your
-            investment returns while ensuring seamless tenant experiences.
+            Join other happy landlords who enjoys seamless property management
+            plan at Aplet360 thar guarantees their peace of mind and all year
+            round rental income.
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
             <InteractiveButton variant="accent" onClick={handleGetStarted}>

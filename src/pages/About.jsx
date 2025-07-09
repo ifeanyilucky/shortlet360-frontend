@@ -17,8 +17,17 @@ export default function About() {
   return (
     <div className="min-h-screen">
       {/* Hero Section */}
-      <section className="bg-gradient-to-b from-primary-900 to-primary-900 text-white py-24 relative overflow-hidden">
-        <div className="absolute inset-0 bg-[url('/images/pattern.png')] opacity-10"></div>
+      {/*  */}
+      <section
+        className="bg-gradient-to-b from-primary-900 to-primary-900 text-white py-24 relative overflow-hidden"
+        style={{
+          backgroundImage: "url(/images/building-property.avif)",
+          backgroundSize: "cover",
+          backgroundPosition: "center",
+          backgroundRepeat: "no-repeat",
+        }}
+      >
+        <div className="absolute inset-0 bg-primary-900 bg-opacity-70"></div>
         <div className="container mx-auto px-4 text-center relative z-10">
           <h1 className="text-4xl md:text-6xl font-bold mb-6 animate-fade-in">
             About Aplet360

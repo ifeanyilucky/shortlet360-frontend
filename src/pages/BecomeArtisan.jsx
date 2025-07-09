@@ -144,14 +144,27 @@ export default function BecomeArtisan() {
     <div className="min-h-screen">
       {/* Hero Section */}
       <section className="bg-primary-900 text-white py-20">
-        <div className="container mx-auto px-4 text-center">
-          <h1 className="text-4xl md:text-5xl font-bold mb-6">
-            Become an Artisan
-          </h1>
-          <p className="text-xl text-primary-100 max-w-3xl mx-auto">
-            Join our network of skilled professionals and grow your business
-            with Aplet360
-          </p>
+        <div className="container mx-auto px-4">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+            <div className="text-center lg:text-left">
+              <h1 className="text-4xl md:text-5xl font-bold mb-6">
+                Become an Artisan
+              </h1>
+              <p className="text-xl text-primary-100 max-w-3xl">
+                Join our network of skilled professionals and grow your business
+                with Aplet360
+              </p>
+            </div>
+            <div className="flex justify-center">
+              <div className="w-full max-w-md h-64 bg-primary-800 rounded-lg flex items-center justify-center">
+                <img
+                  src="/images/plumber1.jpg"
+                  alt="Professional artisan tools and equipment arranged on a workbench, representing skilled craftsmanship and expertise"
+                  className="w-full h-full object-cover rounded-lg opacity-75"
+                />
+              </div>
+            </div>
+          </div>
         </div>
       </section>
 
@@ -197,9 +210,18 @@ export default function BecomeArtisan() {
       {/* Benefits Section */}
       <section className="py-16 bg-white">
         <div className="container mx-auto px-4 max-w-6xl">
-          <h2 className="text-3xl font-bold mb-12 text-center">
-            Why Join Aplet360
-          </h2>
+          <div className="text-center mb-12">
+            <div className="flex justify-center mb-6">
+              <div className="w-full max-w-lg h-48 bg-tertiary-100 rounded-lg flex items-center justify-center">
+                <img
+                  src="/api/placeholder/500/200"
+                  alt="Happy artisans celebrating success with thumbs up, representing the benefits and opportunities of joining the Aplet360 network"
+                  className="w-full h-full object-cover rounded-lg"
+                />
+              </div>
+            </div>
+            <h2 className="text-3xl font-bold">Why Join Aplet360</h2>
+          </div>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
             {benefits.map((benefit, index) => (
               <div
@@ -219,13 +241,24 @@ export default function BecomeArtisan() {
       <section className="py-16 bg-tertiary-50" id="apply">
         <div className="container mx-auto px-4 max-w-4xl">
           <div className="bg-white p-8 rounded-lg shadow-lg">
-            <h2 className="text-2xl font-bold mb-6 text-center">
-              Apply to Join Our Artisan Network
-            </h2>
-            <p className="text-tertiary-600 mb-8 text-center">
-              Fill out the form below to apply as an artisan. Our team will
-              review your application and get back to you within 48 hours.
-            </p>
+            <div className="text-center mb-8">
+              <div className="flex justify-center mb-6">
+                {/* <div className="w-full max-w-sm h-40 bg-tertiary-100 rounded-lg flex items-center justify-center">
+                  <img
+                    src="/api/placeholder/300/160"
+                    alt="Person filling out application form on laptop with documents nearby, representing the application process to join the artisan network"
+                    className="w-full h-full object-cover rounded-lg"
+                  />
+                </div> */}
+              </div>
+              <h2 className="text-2xl font-bold mb-4">
+                Apply to Join Our Artisan Network
+              </h2>
+              <p className="text-tertiary-600">
+                Fill out the form below to apply as an artisan. Our team will
+                review your application and get back to you within 48 hours.
+              </p>
+            </div>
 
             <form onSubmit={handleSubmit} className="space-y-6">
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">

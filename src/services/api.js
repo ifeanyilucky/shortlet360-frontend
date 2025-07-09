@@ -284,6 +284,10 @@ export const formService = {
     const response = await api.post("/forms/property-management", data);
     return response.data;
   },
+  submitRNPLWaitlistForm: async (data) => {
+    const response = await api.post("/forms/rnpl-waitlist", data);
+    return response.data;
+  },
 };
 
 export const referralService = {

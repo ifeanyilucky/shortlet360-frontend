@@ -20,12 +20,14 @@ import { propertyStore } from "../store/propertyStore";
 import { Link, useNavigate } from "react-router-dom";
 import { fCurrency } from "@utils/formatNumber";
 import NewsletterSubscription from "../components/NewsletterSubscription";
+import RNPLWaitlistForm from "../components/RNPLWaitlistForm";
 import "../styles/testimonials.css";
 import "../styles/slider.css";
 
 export default function LandingPage() {
   const navigate = useNavigate();
   const [showPriceDropdown, setShowPriceDropdown] = useState(false);
+  const [showRNPLForm, setShowRNPLForm] = useState(false);
 
   // Price range constants
   const MIN_PRICE = 200; // 200 currency units
@@ -154,10 +156,10 @@ export default function LandingPage() {
           </h1>
 
           <p className="text-white max-w-3xl mx-auto mb-12 text-base md:text-lg px-4 animate-slide-up">
-            Aplet360 makes it easy to find the best apartment for rent in Lagos,
-            Nigeria. Home that fits your lifestyle, flexible payment & budget
-            friendly. Our platform is built for you, tenants, home owners and
-            Agents all in one place.
+            Aplet360 is more than just a platform. We make it easier to find
+            apartments that suits your lifestyle, budget and comfort with peace
+            of mind. Aplet360 is built for home seekers, tenants, landlords,
+            agents and artisans, all in one place
           </p>
 
           {/* Search Section */}
@@ -494,13 +496,13 @@ export default function LandingPage() {
             />
           </div>
 
-          <Link
-            to="/book-now"
+          <button
+            onClick={() => setShowRNPLForm(true)}
             className="bg-white text-primary-900 px-8 py-3 rounded-full inline-flex items-center gap-2 hover:bg-primary-50 transition-colors font-medium"
           >
-            <span>Join our waitlist</span>
+            <span>Join our Waitlist</span>
             <BsArrowRight />
-          </Link>
+          </button>
         </div>
       </section>
 
@@ -696,9 +698,9 @@ export default function LandingPage() {
                   </div>
                   <p className="text-tertiary-600 text-sm">
                     <span className="font-medium text-tertiary-900">
-                      Curated Apartment Selection
+                      Rental Assistance
                     </span>{" "}
-                    - Pre-vetted, quality apartments that meet your standards
+                    - Get help finding and securing your perfect rental
                   </p>
                 </div>
 
@@ -708,9 +710,9 @@ export default function LandingPage() {
                   </div>
                   <p className="text-tertiary-600 text-sm">
                     <span className="font-medium text-tertiary-900">
-                      Monthly Payment Plans
+                      Monthly Rental Payment Option
                     </span>{" "}
-                    - No yearly rent required, pay monthly as you earn
+                    - Pay monthly instead of yearly rent upfront
                   </p>
                 </div>
 
@@ -720,9 +722,9 @@ export default function LandingPage() {
                   </div>
                   <p className="text-tertiary-600 text-sm">
                     <span className="font-medium text-tertiary-900">
-                      Rent Now Pay Later (RNPL)
+                      Tenant Protection (No Sudden Eviction)
                     </span>{" "}
-                    - Pre-qualify for flexible payment solutions
+                    - Protected tenancy with proper notice periods
                   </p>
                 </div>
 
@@ -732,9 +734,9 @@ export default function LandingPage() {
                   </div>
                   <p className="text-tertiary-600 text-sm">
                     <span className="font-medium text-tertiary-900">
-                      Tenant Rights Protection
+                      Verified Apartments and Landlords
                     </span>{" "}
-                    - Legal support and dispute resolution services
+                    - Pre-vetted, quality properties and trusted landlords
                   </p>
                 </div>
 
@@ -744,9 +746,9 @@ export default function LandingPage() {
                   </div>
                   <p className="text-tertiary-600 text-sm">
                     <span className="font-medium text-tertiary-900">
-                      No Sudden Evictions
+                      Access to Aplet360 Marketplace
                     </span>{" "}
-                    - Protected tenancy with proper notice periods
+                    - Shop for home essentials and utilities
                   </p>
                 </div>
 
@@ -756,9 +758,9 @@ export default function LandingPage() {
                   </div>
                   <p className="text-tertiary-600 text-sm">
                     <span className="font-medium text-tertiary-900">
-                      Move-in Ready Apartments
+                      Affordable Home Maintenance Services
                     </span>{" "}
-                    - Fully furnished and equipped living spaces
+                    - Professional cleaning, repairs, and maintenance
                   </p>
                 </div>
 
@@ -768,9 +770,9 @@ export default function LandingPage() {
                   </div>
                   <p className="text-tertiary-600 text-sm">
                     <span className="font-medium text-tertiary-900">
-                      Home Services Access
+                      Mortgage/NHIS Access and Support
                     </span>{" "}
-                    - Cleaning, maintenance, and repair services
+                    - Financial assistance and housing support programs
                   </p>
                 </div>
 
@@ -780,9 +782,9 @@ export default function LandingPage() {
                   </div>
                   <p className="text-tertiary-600 text-sm">
                     <span className="font-medium text-tertiary-900">
-                      24/7 Support
+                      No Over-charged Property Rentals
                     </span>{" "}
-                    - Round-the-clock customer service and assistance
+                    - Fair and transparent pricing on all properties
                   </p>
                 </div>
 
@@ -792,9 +794,9 @@ export default function LandingPage() {
                   </div>
                   <p className="text-tertiary-600 text-sm">
                     <span className="font-medium text-tertiary-900">
-                      Transparent Pricing
+                      Dispute Resolution
                     </span>{" "}
-                    - No hidden fees, clear and upfront costs
+                    - Landlord and tenant dispute management services
                   </p>
                 </div>
 
@@ -1158,6 +1160,12 @@ export default function LandingPage() {
           </div>
         </div>
       </section>
+
+      {/* RNPL Waitlist Form Modal */}
+      <RNPLWaitlistForm
+        isOpen={showRNPLForm}
+        onClose={() => setShowRNPLForm(false)}
+      />
     </div>
   );
 }

@@ -4,8 +4,17 @@ export default function Marketplace() {
   return (
     <div className="min-h-screen bg-gray-50">
       {/* Hero Section */}
-      <section className="bg-primary-900 text-white py-20">
-        <div className="container mx-auto px-4 text-center">
+      <section
+        className="relative bg-primary-900 text-white py-20"
+        style={{
+          backgroundImage: "url(/images/marketplace.avif)",
+          backgroundSize: "cover",
+          backgroundPosition: "center",
+          backgroundRepeat: "no-repeat",
+        }}
+      >
+        <div className="absolute inset-0 bg-primary-900 bg-opacity-70"></div>
+        <div className="container mx-auto px-4 text-center relative z-10">
           <h1 className="text-4xl md:text-5xl font-bold mb-6">
             Aplet360 Marketplace
           </h1>
