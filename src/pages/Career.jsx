@@ -60,9 +60,7 @@ export default function Career() {
       {/* Hero Section */}
       <section className="bg-primary-900 text-white py-20">
         <div className="container mx-auto px-4 text-center">
-          <h1 className="text-4xl md:text-5xl font-bold mb-6">
-            Aplet360
-          </h1>
+          <h1 className="text-4xl md:text-5xl font-bold mb-6">Aplet360</h1>
           <p className="text-xl text-primary-100 max-w-3xl mx-auto">
             Join our team on a mission to transform Africa's property rental
             experience.
@@ -73,6 +71,15 @@ export default function Career() {
       {/* About Working at Aplet360 */}
       <section className="py-16 bg-white">
         <div className="container mx-auto px-4 max-w-5xl">
+          {/* Image before the section */}
+          <div className="mb-12 text-center">
+            <img
+              src="/images/why-work-with-us.jpeg"
+              alt="Why Work With Us"
+              className="w-full max-w-4xl mx-auto rounded-2xl shadow-lg"
+            />
+          </div>
+
           <div className="text-center mb-12">
             <h2 className="text-3xl font-bold mb-4">Why Work With Us</h2>
             <p className="text-lg text-tertiary-600 max-w-3xl mx-auto">
@@ -120,6 +127,15 @@ export default function Career() {
       {/* Our Values */}
       <section className="py-16 bg-tertiary-50">
         <div className="container mx-auto px-4 max-w-6xl">
+          {/* Image before the section */}
+          <div className="mb-12 text-center">
+            <img
+              src="/images/core-values.jpeg"
+              alt="Our Core Values"
+              className="w-full max-w-4xl mx-auto rounded-2xl shadow-lg"
+            />
+          </div>
+
           <h2 className="text-3xl font-bold mb-12 text-center">Our Values</h2>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
             {values.map((value, index) => (

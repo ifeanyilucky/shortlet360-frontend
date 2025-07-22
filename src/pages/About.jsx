@@ -153,6 +153,15 @@ export default function About() {
               home services — Aplet360 is your trusted partner for living
               smarter, better, and safer.
             </p>
+            {/* Image before the section */}
+            <div className="mb-12 text-center">
+              <img
+                src="/images/what-set-aplets-apart.jpeg"
+                alt="What sets Aplet360 apart from the rest"
+                className="w-full max-w-4xl mx-auto rounded-2xl shadow-lg"
+              />
+            </div>
+
             <h2 className="text-3xl md:text-4xl font-bold mb-4 text-tertiary-900">
               {/* Unique Value Proposition (UVP) */}
               What sets Aplet360 apart from the rest?
@@ -317,6 +326,15 @@ export default function About() {
       <section className="py-20 bg-gradient-to-b from-primary-900 to-primary-900 text-white relative overflow-hidden">
         <div className="absolute inset-0 bg-[url('/images/pattern.png')] opacity-10"></div>
         <div className="container mx-auto px-4 relative z-10">
+          {/* Image before the section */}
+          <div className="mb-12 text-center">
+            <img
+              src="/images/statistics.jpeg"
+              alt="Aplet360 Statistics"
+              className="w-full max-w-4xl mx-auto rounded-2xl shadow-lg"
+            />
+          </div>
+
           <div className="grid grid-cols-2 md:grid-cols-4 gap-8 text-center">
             <div className="p-6 bg-white/10 rounded-2xl backdrop-blur-sm">
               <div className="text-4xl font-bold mb-2">5000+</div>

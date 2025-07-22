@@ -387,6 +387,15 @@ export default function LandingPage() {
       {/* Rent in 4 simple steps section */}
       <section className="py-20 bg-gradient-to-b from-white to-tertiary-50">
         <div className="max-w-6xl mx-auto px-4">
+          {/* Image before the section */}
+          <div className="mb-12 text-center">
+            <img
+              src="/images/rent-apartment-4-simple-steps.jpeg"
+              alt="Rent your perfect apartment in 4 simple steps"
+              className="w-full max-w-4xl mx-auto rounded-2xl shadow-lg"
+            />
+          </div>
+
           <div className="text-center mb-16">
             <h2 className="text-3xl md:text-5xl font-bold mb-6">
               Rent your perfect apartment in{" "}
@@ -470,6 +479,15 @@ export default function LandingPage() {
       {/* Rent now, pay later section */}
       <section className="py-16 bg-primary-900 text-white">
         <div className="max-w-6xl mx-auto px-4 text-center">
+          {/* Image before the section */}
+          <div className="mb-8 text-center">
+            <img
+              src="/images/rnpl.jpeg"
+              alt="Rent Now Pay Later (RNPL)"
+              className="w-full max-w-3xl mx-auto rounded-2xl shadow-lg"
+            />
+          </div>
+
           <h2 className="text-3xl md:text-4xl font-bold mb-6">
             Rent Now Pay Later (RNPL).
           </h2>
@@ -796,6 +814,15 @@ export default function LandingPage() {
       {/* ApletFix  Section */}
       <section className="py-16 bg-gradient-to-b from-tertiary-50 to-white">
         <div className="max-w-6xl mx-auto px-4">
+          {/* Image before the section */}
+          <div className="mb-12 text-center">
+            <img
+              src="/images/apletfix-home.jpeg"
+              alt="ApletFix - Complete home services at your fingertips"
+              className="w-full max-w-4xl mx-auto rounded-2xl shadow-lg"
+            />
+          </div>
+
           <div className="text-center mb-16">
             <p className="text-accent-500 font-semibold mb-4">ApletFix</p>
             <h2 className="text-3xl md:text-5xl font-bold mb-6">
@@ -863,6 +890,15 @@ export default function LandingPage() {
 
       <section className="px-4 md:px-10 mx-auto">
         <div className="py-12 md:py-20">
+          {/* Image before the section */}
+          <div className="mb-12 text-center">
+            <img
+              src="/images/listing-seciton.jpeg"
+              alt="Find your next home on Aplet360"
+              className="w-full max-w-4xl mx-auto rounded-2xl shadow-lg"
+            />
+          </div>
+
           <p className="text-accent-600 font-medium mb-4">LISTINGS</p>
 
           <div className="flex flex-col md:flex-row gap-8 md:gap-20 mb-12">
@@ -984,6 +1020,15 @@ export default function LandingPage() {
       {/* Property Management section */}
       <section className="py-16 bg-white">
         <div className="max-w-6xl mx-auto px-4">
+          {/* Image before the section */}
+          <div className="mb-12 text-center">
+            <img
+              src="/images/property-management.jpg"
+              alt="Property Management Solutions"
+              className="w-full max-w-4xl mx-auto rounded-2xl shadow-lg"
+            />
+          </div>
+
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 items-center">
             <div>
               <div className="w-full h-96">
@@ -997,7 +1042,7 @@ export default function LandingPage() {
 
             <div className="lg:pl-12">
               <p className="text-gray-500 uppercase font-medium mb-2">
-                SMART PROPERTY MANAGEMENT, MADE SIMPLE
+                Property Management Solutions
               </p>
               <h2 className="text-2xl md:text-3xl  text-primary-900 mb-6">
                 Join other happy landlords who enjoys seamless property

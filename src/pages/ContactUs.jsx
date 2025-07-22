@@ -192,6 +192,15 @@ export default function ContactUs() {
 
             {/* Contact Information */}
             <div>
+              {/* Image before the section */}
+              <div className="mb-8 text-center">
+                <img
+                  src="/images/contact-us.jpeg"
+                  alt="Contact Information"
+                  className="w-full max-w-2xl mx-auto rounded-2xl shadow-lg"
+                />
+              </div>
+
               <h2 className="text-2xl font-bold mb-6">Contact Information</h2>
 
               <div className="space-y-8">

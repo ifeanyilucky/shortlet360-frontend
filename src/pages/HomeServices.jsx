@@ -454,6 +454,15 @@ export default function HomeServices() {
       {/* Services Overview */}
       <section className="py-16 bg-tertiary-50">
         <div className="container mx-auto px-4">
+          {/* Image before the section */}
+          <div className="mb-12 text-center">
+            <img
+              src="/images/home-services-apletfix.jpeg"
+              alt="Our Home Services"
+              className="w-full max-w-4xl mx-auto rounded-2xl shadow-lg"
+            />
+          </div>
+
           <h2 className="text-3xl font-bold mb-12 text-center">
             Our Home Services
           </h2>
