@@ -11,13 +11,14 @@ import {
   HiOutlineClipboardCopy,
 } from "react-icons/hi";
 import { useNavigate } from "react-router-dom";
-import KycProgressIndicator from "../../../components/KycProgressIndicator";
 import KycStatusCard from "../../../components/KycStatusCard";
 import { useAuth } from "../../../hooks/useAuth";
+import { useKycStore } from "../../../store/kycStore";
 import toast from "react-hot-toast";
 export default function UserDashboard() {
   const { statistics, isLoading, getUserStatistics } = userStore();
   const { user } = useAuth();
+  const { kycStatus, getKycStatus } = useKycStore();
   const [timeframe, setTimeframe] = useState("30");
   const navigate = useNavigate();
 
@@ -25,9 +26,27 @@ export default function UserDashboard() {
     getUserStatistics(timeframe);
   }, [timeframe, getUserStatistics]);
 
+  useEffect(() => {
+    getKycStatus();
+  }, [getKycStatus]);
+
   const copyToClipboard = (text) => {
     navigator.clipboard.writeText(text);
     toast.success("User ID copied to clipboard!");
+  };
+
+  // Helper function to determine if KYC is complete
+  const getRequiredTiers = () => {
+    // For users, only tier1 is required (NIN and phone verification)
+    return ["tier1"];
+  };
+
+  const isKycComplete = () => {
+    if (!kycStatus) return false;
+    const requiredTiers = getRequiredTiers();
+    return requiredTiers.every(
+      (tier) => kycStatus[tier]?.status === "verified"
+    );
   };
 
   if (isLoading) return <LoadingOverlay />;
@@ -204,13 +223,15 @@ export default function UserDashboard() {
         </div>
       </div> */}
 
-      {/* KYC Status Section */}
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-        {/* KYC Status Card */}
-        <div className="lg:col-span-1">
-          <KycStatusCard />
+      {/* KYC Status Section - Only show if KYC is not complete */}
+      {!isKycComplete() && (
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+          {/* KYC Status Card */}
+          <div className="lg:col-span-1">
+            <KycStatusCard />
+          </div>
         </div>
-      </div>
+      )}
     </div>
   );
 }

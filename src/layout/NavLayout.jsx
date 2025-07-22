@@ -53,7 +53,7 @@ export default function NavLayout() {
     //     { name: "Shortlet Apartments", href: "/book-now?category=shortlet" },
     //   ],
     // },
-    { name: "Rental Now", href: "/book-now?category=rent" },
+    { name: "Rent Now", href: "/book-now?category=rent" },
     { name: "Property Management", href: "/property-management-solutions" },
     // {
     //   name: "Services",

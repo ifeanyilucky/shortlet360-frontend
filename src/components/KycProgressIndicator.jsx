@@ -22,7 +22,7 @@ export default function KycProgressIndicator() {
 
   // Get required tiers based on user role
   const getRequiredTiers = () => {
-    if (user?.role === "apartment_owner") {
+    if (user?.role === "owner") {
       return ["tier1", "tier2"]; // Owners must complete Tier 1 + Tier 2
     } else {
       return ["tier1"]; // Users only need Tier 1
@@ -224,14 +224,14 @@ export default function KycProgressIndicator() {
 
       {/* Action message based on role and status */}
       <div className="mt-2">
-        {user?.role === "apartment_owner" && overallStatus !== "complete" && (
+        {user?.role === "owner" && overallStatus !== "complete" && (
           <p className="text-xs text-orange-700 mb-2">
-            Complete KYC to list properties
+            Complete KYC to add properties and start earning
           </p>
         )}
         {user?.role === "user" && overallStatus !== "complete" && (
           <p className="text-xs text-blue-700 mb-2">
-            Complete KYC to book properties
+            Complete KYC to rent apartments and book shortlets
           </p>
         )}
 

@@ -15,9 +15,9 @@ export default function RegistrationPaymentGuard({ children }) {
     return <Navigate to="/" />;
   }
 
-  // If owner is already active or has paid, redirect to home
+  // If owner is already active or has paid, redirect to owner dashboard
   if (user?.is_active || user?.registration_payment_status === "paid") {
-    return <Navigate to="/" />;
+    return <Navigate to="/owner/dashboard" />;
   }
 
   // If owner requires payment, allow access to the payment page

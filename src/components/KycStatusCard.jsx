@@ -1,15 +1,15 @@
 import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
-import { 
-  HiShieldCheck, 
-  HiShieldExclamation, 
+import {
+  HiShieldCheck,
+  HiShieldExclamation,
   HiExclamationCircle,
   HiPhone,
   HiDocumentText,
   HiCreditCard,
   HiCheckCircle,
   HiClock,
-  HiXCircle
+  HiXCircle,
 } from "react-icons/hi";
 import { useAuth } from "../hooks/useAuth";
 import useKycStore from "../store/kycStore";
@@ -24,7 +24,7 @@ export default function KycStatusCard() {
 
   // Get required tiers based on user role
   const getRequiredTiers = () => {
-    if (user?.role === "apartment_owner") {
+    if (user?.role === "owner") {
       return ["tier1", "tier2"]; // Owners must complete Tier 1 + Tier 2
     } else {
       return ["tier1"]; // Users only need Tier 1
@@ -36,19 +36,19 @@ export default function KycStatusCard() {
   // Calculate overall status
   const getOverallStatus = () => {
     if (!kycStatus) return "incomplete";
-    
-    const allRequiredVerified = requiredTiers.every(tier => 
-      kycStatus[tier]?.status === "verified"
+
+    const allRequiredVerified = requiredTiers.every(
+      (tier) => kycStatus[tier]?.status === "verified"
     );
-    
+
     if (allRequiredVerified) return "complete";
-    
-    const anyPending = requiredTiers.some(tier => 
-      kycStatus[tier]?.status === "pending"
+
+    const anyPending = requiredTiers.some(
+      (tier) => kycStatus[tier]?.status === "pending"
     );
-    
+
     if (anyPending) return "pending";
-    
+
     return "incomplete";
   };
 
@@ -57,14 +57,14 @@ export default function KycStatusCard() {
   // Calculate progress percentage
   const getProgress = () => {
     if (!kycStatus || requiredTiers.length === 0) return 0;
-    
+
     let completedTiers = 0;
-    requiredTiers.forEach(tier => {
+    requiredTiers.forEach((tier) => {
       if (kycStatus[tier]?.status === "verified") {
         completedTiers++;
       }
     });
-    
+
     return (completedTiers / requiredTiers.length) * 100;
   };
 
@@ -105,27 +105,29 @@ export default function KycStatusCard() {
         description: "Verify your phone number and NIN",
         icon: <HiPhone className="w-5 h-5" />,
         required: requiredTiers.includes("tier1"),
-        status: kycStatus?.tier1?.status || "not_started"
+        status: kycStatus?.tier1?.status || "not_started",
       },
-      {
-        id: "tier2", 
-        name: "Document Verification",
-        description: "Upload utility bill for address verification",
-        icon: <HiDocumentText className="w-5 h-5" />,
-        required: requiredTiers.includes("tier2"),
-        status: kycStatus?.tier2?.status || "not_started"
-      },
-      {
-        id: "tier3",
-        name: "Financial Verification", 
-        description: "BVN, bank account & business verification",
-        icon: <HiCreditCard className="w-5 h-5" />,
-        required: false, // Optional for users
-        status: kycStatus?.tier3?.status || "not_started"
-      }
+      // {
+      //   id: "tier2",
+      //   name: "Document Verification",
+      //   description: "Upload utility bill for address verification",
+      //   icon: <HiDocumentText className="w-5 h-5" />,
+      //   required: requiredTiers.includes("tier2"),
+      //   status: kycStatus?.tier2?.status || "not_started",
+      // },
+      // {
+      //   id: "tier3",
+      //   name: "Financial Verification",
+      //   description: "BVN, bank account & business verification",
+      //   icon: <HiCreditCard className="w-5 h-5" />,
+      //   required: false, // Optional for users
+      //   status: kycStatus?.tier3?.status || "not_started",
+      // },
     ];
 
-    return tiers.filter(tier => tier.required || (user?.role === "user" && tier.id === "tier3"));
+    return tiers.filter(
+      (tier) => tier.required || (user?.role === "user" && tier.id === "tier3")
+    );
   };
 
   if (isLoading) {
@@ -145,7 +147,9 @@ export default function KycStatusCard() {
     <div className="bg-white rounded-xl shadow p-6">
       {/* Header */}
       <div className="flex items-center justify-between mb-4">
-        <h2 className="text-lg font-semibold text-gray-800">KYC Verification</h2>
+        <h2 className="text-lg font-semibold text-gray-800">
+          KYC Verification
+        </h2>
         <div className="flex items-center">
           {overallStatus === "complete" ? (
             <HiShieldCheck className="text-green-500 w-6 h-6 mr-2" />
@@ -154,15 +158,20 @@ export default function KycStatusCard() {
           ) : (
             <HiExclamationCircle className="text-red-500 w-6 h-6 mr-2" />
           )}
-          <span className={`text-sm font-medium ${
-            overallStatus === "complete" 
-              ? "text-green-700" 
+          <span
+            className={`text-sm font-medium ${
+              overallStatus === "complete"
+                ? "text-green-700"
+                : overallStatus === "pending"
+                ? "text-yellow-700"
+                : "text-red-700"
+            }`}
+          >
+            {overallStatus === "complete"
+              ? "Verified"
               : overallStatus === "pending"
-              ? "text-yellow-700"
-              : "text-red-700"
-          }`}>
-            {overallStatus === "complete" ? "Verified" : 
-             overallStatus === "pending" ? "Pending" : "Incomplete"}
+              ? "Pending"
+              : "Incomplete"}
           </span>
         </div>
       </div>
@@ -190,23 +199,32 @@ export default function KycStatusCard() {
       {/* Tier Status */}
       <div className="space-y-3 mb-4">
         {getTierDetails().map((tier) => (
-          <div key={tier.id} className="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
+          <div
+            key={tier.id}
+            className="flex items-center justify-between p-3 bg-gray-50 rounded-lg"
+          >
             <div className="flex items-center">
-              <div className={`p-2 rounded-full mr-3 ${
-                tier.status === "verified" 
-                  ? "bg-green-100 text-green-600"
-                  : tier.status === "pending"
-                  ? "bg-yellow-100 text-yellow-600"
-                  : tier.status === "rejected"
-                  ? "bg-red-100 text-red-600"
-                  : "bg-gray-100 text-gray-400"
-              }`}>
+              <div
+                className={`p-2 rounded-full mr-3 ${
+                  tier.status === "verified"
+                    ? "bg-green-100 text-green-600"
+                    : tier.status === "pending"
+                    ? "bg-yellow-100 text-yellow-600"
+                    : tier.status === "rejected"
+                    ? "bg-red-100 text-red-600"
+                    : "bg-gray-100 text-gray-400"
+                }`}
+              >
                 {tier.icon}
               </div>
               <div>
                 <p className="font-medium text-gray-800">
                   {tier.name}
-                  {!tier.required && <span className="text-gray-500 text-sm ml-1">(Optional)</span>}
+                  {!tier.required && (
+                    <span className="text-gray-500 text-sm ml-1">
+                      (Optional)
+                    </span>
+                  )}
                 </p>
                 <p className="text-sm text-gray-600">{tier.description}</p>
               </div>
@@ -233,10 +251,9 @@ export default function KycStatusCard() {
         ) : (
           <div className="text-center">
             <p className="text-sm text-gray-600 mb-3">
-              {user?.role === "apartment_owner" 
-                ? "Complete KYC verification to list your properties"
-                : "Complete KYC verification to book properties"
-              }
+              {user?.role === "owner"
+                ? "Complete KYC verification to add properties and start earning"
+                : "Complete KYC verification to rent apartments and book shortlets"}
             </p>
             <Link
               to={`/${user.role}/settings/kyc`}

@@ -357,7 +357,7 @@ export default function AddApartment() {
       {!kycVerified && (
         <div className="mb-6">
           <KycVerificationStatus
-            requiredTier="tier2"
+            requiredTier="tier1"
             actionText="Continue to Add Apartment"
             onVerified={() => setKycVerified(true)}
           />

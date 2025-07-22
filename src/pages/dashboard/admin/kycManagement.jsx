@@ -157,6 +157,36 @@ export default function AdminKycManagement() {
         </div>
       </div>
 
+      {/* Notice about Tier 1 only policy */}
+      <div className="mb-6 bg-blue-50 border border-blue-200 rounded-lg p-4">
+        <div className="flex items-start">
+          <div className="flex-shrink-0">
+            <svg
+              className="w-5 h-5 text-blue-500 mt-0.5"
+              fill="currentColor"
+              viewBox="0 0 20 20"
+            >
+              <path
+                fillRule="evenodd"
+                d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z"
+                clipRule="evenodd"
+              />
+            </svg>
+          </div>
+          <div className="ml-3">
+            <h3 className="text-sm font-medium text-blue-800">
+              Current KYC Policy
+            </h3>
+            <p className="text-sm text-blue-700 mt-1">
+              The platform now only requires{" "}
+              <strong>Tier 1 verification</strong> (Phone + NIN) for all users
+              and property owners. Tier 2 and Tier 3 data shown here is for
+              historical reference only.
+            </p>
+          </div>
+        </div>
+      </div>
+
       {/* Filters */}
       {showFilters && (
         <div className="bg-white rounded-lg shadow-sm p-4 mb-6">
@@ -190,9 +220,9 @@ export default function AdminKycManagement() {
                 className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-blue-500 focus:border-blue-500"
               >
                 <option value="">All Tiers</option>
-                <option value="1">Tier 1</option>
-                <option value="2">Tier 2</option>
-                <option value="3">Tier 3</option>
+                <option value="1">Tier 1 (Active)</option>
+                <option value="2">Tier 2 (Legacy)</option>
+                <option value="3">Tier 3 (Legacy)</option>
               </select>
             </div>
             <div>

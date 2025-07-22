@@ -6,9 +6,27 @@ import { useAuth } from "../hooks/useAuth";
 // ----------------------------------------------------------------------
 
 export default function GuestGuard({ children }) {
-  const { isAuthenticated } = useAuth();
+  const { isAuthenticated, user } = useAuth();
 
-  if (isAuthenticated) {
+  if (isAuthenticated && user) {
+    // For owners, check if they need to complete payment first
+    if (
+      user.role === "owner" &&
+      user.registration_payment_status === "pending"
+    ) {
+      return <Navigate to="/auth/registration-payment" />;
+    }
+
+    // Redirect to appropriate dashboard based on role
+    if (user.role === "owner") {
+      return <Navigate to="/owner/dashboard" />;
+    } else if (user.role === "admin") {
+      return <Navigate to="/admin/dashboard" />;
+    } else if (user.role === "user") {
+      return <Navigate to="/user/dashboard" />;
+    }
+
+    // Fallback to home if role is not recognized
     return <Navigate to="/" />;
   }
 

@@ -21,14 +21,16 @@ export default function RegistrationPayment() {
   const navigate = useNavigate();
 
   useEffect(() => {
-    // If user is already active or doesn't require payment, redirect to home
+    // If user is already active or doesn't require payment, redirect to owner dashboard
     if (user?.is_active || user?.registration_payment_status === "paid") {
-      navigate("/");
+      navigate("/owner/dashboard");
     }
 
-    // If user is not an owner, redirect to home
-    if (user?.role !== "owner") {
-      navigate("/");
+    // If user is not an owner, redirect to appropriate dashboard
+    if (user?.role === "user") {
+      navigate("/user/dashboard");
+    } else if (user?.role === "admin") {
+      navigate("/admin/dashboard");
     }
   }, [user, navigate]);
 

@@ -2,7 +2,11 @@ import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../hooks/useAuth";
 import useKycStore from "../store/kycStore";
-import { HiShieldCheck, HiShieldExclamation, HiExclamationCircle } from "react-icons/hi";
+import {
+  HiShieldCheck,
+  HiShieldExclamation,
+  HiExclamationCircle,
+} from "react-icons/hi";
 import InteractiveButton from "./InteractiveButton";
 
 /**
@@ -14,12 +18,12 @@ import InteractiveButton from "./InteractiveButton";
  * @param {boolean} props.showButton - Whether to show the action button (default: true)
  * @param {string} props.className - Additional CSS classes
  */
-export default function KycVerificationStatus({ 
-  requiredTier = "tier1", 
-  actionText = "Continue", 
-  onVerified, 
+export default function KycVerificationStatus({
+  requiredTier = "tier1",
+  actionText = "Continue",
+  onVerified,
   showButton = true,
-  className = ""
+  className = "",
 }) {
   const { user } = useAuth();
   const { kycStatus, getKycStatus, isLoading } = useKycStore();
@@ -43,7 +47,7 @@ export default function KycVerificationStatus({
       // Check if the required tier is verified
       const tierVerified = kycStatus[requiredTier]?.status === "verified";
       setIsVerified(tierVerified);
-      
+
       // Call onVerified callback if KYC is verified
       if (tierVerified && onVerified) {
         onVerified();
@@ -73,18 +77,19 @@ export default function KycVerificationStatus({
   // If KYC is verified, show success message
   if (isVerified) {
     return (
-      <div className={`bg-green-50 p-4 rounded-lg flex items-start ${className}`}>
+      <div
+        className={`bg-green-50 p-4 rounded-lg flex items-start ${className}`}
+      >
         <HiShieldCheck className="text-green-500 w-6 h-6 mr-3 mt-0.5" />
         <div>
-          <h3 className="font-medium text-green-800">KYC Verification Complete</h3>
+          <h3 className="font-medium text-green-800">
+            KYC Verification Complete
+          </h3>
           <p className="text-sm text-green-600 mt-1">
             Your KYC verification has been successfully completed.
           </p>
           {showButton && onVerified && (
-            <InteractiveButton
-              onClick={onVerified}
-              className="mt-3"
-            >
+            <InteractiveButton onClick={onVerified} className="mt-3">
               {actionText}
             </InteractiveButton>
           )}
@@ -96,12 +101,17 @@ export default function KycVerificationStatus({
   // If KYC is pending, show pending message
   if (kycStatus && kycStatus[requiredTier]?.status === "pending") {
     return (
-      <div className={`bg-yellow-50 p-4 rounded-lg flex items-start ${className}`}>
+      <div
+        className={`bg-yellow-50 p-4 rounded-lg flex items-start ${className}`}
+      >
         <HiShieldExclamation className="text-yellow-500 w-6 h-6 mr-3 mt-0.5" />
         <div>
-          <h3 className="font-medium text-yellow-800">KYC Verification Pending</h3>
+          <h3 className="font-medium text-yellow-800">
+            KYC Verification Pending
+          </h3>
           <p className="text-sm text-yellow-600 mt-1">
-            Your KYC verification is currently being processed. This may take 24-48 hours.
+            Your KYC verification is currently being processed. This may take
+            24-48 hours.
           </p>
           <InteractiveButton
             onClick={handleCompleteKyc}
@@ -122,14 +132,14 @@ export default function KycVerificationStatus({
       <div>
         <h3 className="font-medium text-red-800">KYC Verification Required</h3>
         <p className="text-sm text-red-600 mt-1">
-          {requiredTier === "tier1" && "Basic verification (email and phone) is required to proceed."}
-          {requiredTier === "tier2" && "Identity verification (address and NIN) is required to proceed."}
-          {requiredTier === "tier3" && "Financial verification (employment and bank statement) is required to proceed."}
+          {requiredTier === "tier1" &&
+            "Basic verification (phone number and NIN) is required to proceed."}
+          {requiredTier === "tier2" &&
+            "Identity verification (address and NIN) is required to proceed."}
+          {requiredTier === "tier3" &&
+            "Financial verification (employment and bank statement) is required to proceed."}
         </p>
-        <InteractiveButton
-          onClick={handleCompleteKyc}
-          className="mt-3"
-        >
+        <InteractiveButton onClick={handleCompleteKyc} className="mt-3">
           Complete Verification
         </InteractiveButton>
       </div>

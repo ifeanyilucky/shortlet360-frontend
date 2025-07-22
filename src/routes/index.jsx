@@ -22,6 +22,7 @@ import {
   PrivacyPolicy,
   TermsConditions,
 } from "../pages";
+import HomeRedirect from "../components/HomeRedirect";
 import Login from "../pages/auth/login";
 import Register from "../pages/auth/register";
 import ForgotPassword from "../pages/auth/ForgotPassword";
@@ -86,7 +87,7 @@ export default function Router() {
       path: "",
       element: <NavLayout />,
       children: [
-        { path: "", element: <LandingPage /> },
+        { path: "", element: <HomeRedirect /> },
         { path: "about", element: <About /> },
         { path: "book-now", element: <BookNow /> },
         { path: "faq", element: <FAQ /> },
@@ -211,7 +212,6 @@ export default function Router() {
             { path: "settings", element: <AdminSettings /> },
           ],
         },
-        { path: "", element: <Navigate to="/dashboard/user" replace /> },
       ],
     },
     {

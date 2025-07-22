@@ -33,6 +33,7 @@ import toast from "react-hot-toast";
 import { paystackConfig } from "../config/paystack";
 import KycVerificationStatus from "../components/KycVerificationStatus";
 import useKycStore from "../store/kycStore";
+import RNPLWaitlistForm from "../components/RNPLWaitlistForm";
 
 // Custom CSS for the calendar and gallery
 const customStyles = `
@@ -193,15 +194,10 @@ export default function PropertyDetail() {
   const [monthlyPaymentOption, setMonthlyPaymentOption] = useState("6months");
   const [kycVerified, setKycVerified] = useState(false);
   const { getKycStatus } = useKycStore();
+  const [showRNPLWaitlistForm, setShowRNPLWaitlistForm] = useState(false);
 
-  // Function to get required KYC tiers based on property type and payment period
+  // Function to get required KYC tiers - now only Tier 1 for all cases
   const getRequiredKycTiers = () => {
-    if (
-      property?.property_category === "rent" &&
-      (paymentPeriod === "6months" || paymentPeriod === "12months")
-    ) {
-      return ["tier2", "tier3"];
-    }
     return ["tier1"];
   };
 
@@ -352,51 +348,19 @@ export default function PropertyDetail() {
       return;
     }
 
-    // Check KYC verification status
+    // Check KYC verification status - only Tier 1 required for all bookings
     try {
       const kycResponse = await getKycStatus();
 
-      // For rental properties with monthly payments, require Tier 2 AND Tier 3 verification
+      // Only require Tier 1 verification for all property bookings
       if (
-        property?.property_category === "rent" &&
-        (paymentPeriod === "6months" || paymentPeriod === "12months")
+        !kycResponse.kyc.tier1 ||
+        kycResponse.kyc.tier1.status !== "verified"
       ) {
-        // Check Tier 2 verification
-        if (
-          !kycResponse.kyc.tier2 ||
-          kycResponse.kyc.tier2.status !== "verified"
-        ) {
-          setKycVerified(false);
-          toast.error(
-            "Tier 2 KYC verification required for monthly rent payments"
-          );
-          navigate("/user/settings/kyc");
-          return;
-        }
-
-        // Check Tier 3 verification
-        if (
-          !kycResponse.kyc.tier3 ||
-          kycResponse.kyc.tier3.status !== "verified"
-        ) {
-          setKycVerified(false);
-          toast.error(
-            "Tier 3 KYC verification required for monthly rent payments"
-          );
-          navigate("/user/settings/kyc");
-          return;
-        }
-      } else {
-        // For shortlet properties or yearly rent payments, only require Tier 1 verification
-        if (
-          !kycResponse.kyc.tier1 ||
-          kycResponse.kyc.tier1.status !== "verified"
-        ) {
-          setKycVerified(false);
-          toast.error("KYC verification required for booking");
-          navigate("/user/settings/kyc");
-          return;
-        }
+        setKycVerified(false);
+        toast.error("KYC verification required for booking");
+        navigate("/user/settings/kyc");
+        return;
       }
 
       setKycVerified(true);
@@ -945,47 +909,18 @@ export default function PropertyDetail() {
       return;
     }
 
-    // Check KYC verification status based on payment period
+    // Check KYC verification status - only Tier 1 required for all rentals
     try {
       const kycResponse = await getKycStatus();
 
-      // For monthly payments (6months or 12months), require Tier 2 AND Tier 3 verification
-      if (paymentPeriod === "6months" || paymentPeriod === "12months") {
-        // Check Tier 2 verification
-        if (
-          !kycResponse.kyc.tier2 ||
-          kycResponse.kyc.tier2.status !== "verified"
-        ) {
-          toast.error(
-            "Tier 2 KYC verification required for monthly rent payments"
-          );
-          navigate("/user/settings/kyc");
-          return;
-        }
-
-        // Check Tier 3 verification
-        if (
-          !kycResponse.kyc.tier3 ||
-          kycResponse.kyc.tier3.status !== "verified"
-        ) {
-          toast.error(
-            "Tier 3 KYC verification required for monthly rent payments"
-          );
-          navigate("/user/settings/kyc");
-          return;
-        }
-      } else {
-        // For yearly payments, only require Tier 1 verification
-        if (
-          !kycResponse.kyc.tier1 ||
-          kycResponse.kyc.tier1.status !== "verified"
-        ) {
-          toast.error(
-            "Tier 1 KYC verification required for renting properties"
-          );
-          navigate("/user/settings/kyc");
-          return;
-        }
+      // Only require Tier 1 verification for all rental payments
+      if (
+        !kycResponse.kyc.tier1 ||
+        kycResponse.kyc.tier1.status !== "verified"
+      ) {
+        toast.error("KYC verification required for renting properties");
+        navigate("/user/settings/kyc");
+        return;
       }
     } catch (error) {
       console.error("Error checking KYC status:", error);
@@ -2347,51 +2282,11 @@ export default function PropertyDetail() {
                     user?._id !== property?.owner._id &&
                     !kycVerified && (
                       <div className="mt-4 mb-2">
-                        {paymentPeriod === "6months" ||
-                        paymentPeriod === "12months" ? (
-                          <div className="space-y-3">
-                            <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-4">
-                              <div className="flex items-start gap-3">
-                                <div className="flex-shrink-0">
-                                  <svg
-                                    className="w-5 h-5 text-yellow-600 mt-0.5"
-                                    fill="currentColor"
-                                    viewBox="0 0 20 20"
-                                  >
-                                    <path
-                                      fillRule="evenodd"
-                                      d="M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.213 2.98-1.742 2.98H4.42c-1.53 0-2.493-1.646-1.743-2.98l5.58-9.92zM11 13a1 1 0 11-2 0 1 1 0 012 0zm-1-8a1 1 0 00-1 1v3a1 1 0 002 0V6a1 1 0 00-1-1z"
-                                      clipRule="evenodd"
-                                    />
-                                  </svg>
-                                </div>
-                                <div className="flex-1">
-                                  <h4 className="text-sm font-medium text-yellow-800">
-                                    KYC Verification Required
-                                  </h4>
-                                  <p className="text-sm text-yellow-700 mt-1">
-                                    Monthly rent payments require both Tier 2
-                                    and Tier 3 KYC verification to be completed.
-                                  </p>
-                                  <button
-                                    onClick={() =>
-                                      navigate("/user/settings/kyc")
-                                    }
-                                    className="mt-2 text-sm bg-yellow-600 text-white px-3 py-1 rounded hover:bg-yellow-700 transition-colors"
-                                  >
-                                    Complete KYC Verification
-                                  </button>
-                                </div>
-                              </div>
-                            </div>
-                          </div>
-                        ) : (
-                          <KycVerificationStatus
-                            requiredTier="tier1"
-                            actionText="Continue to Payment"
-                            onVerified={() => setKycVerified(true)}
-                          />
-                        )}
+                        <KycVerificationStatus
+                          requiredTier="tier1"
+                          actionText="Continue to Payment"
+                          onVerified={() => setKycVerified(true)}
+                        />
                       </div>
                     )}
                   {/* Book Now Button */}
@@ -2421,7 +2316,7 @@ export default function PropertyDetail() {
 
                       {/* Pay Monthly Button */}
                       <button
-                        onClick={() => navigate("/rent-now-pay-later")}
+                        onClick={() => setShowRNPLWaitlistForm(true)}
                         className="w-full bg-primary-900 text-white py-3 rounded-xl font-medium hover:bg-primary-800 mt-3 flex items-center justify-center gap-2"
                       >
                         <FiCreditCard className="w-4 h-4" />
@@ -2582,6 +2477,12 @@ export default function PropertyDetail() {
           </div>
         </div>
       )}
+
+      {/* RNPL Waitlist Form Modal */}
+      <RNPLWaitlistForm
+        isOpen={showRNPLWaitlistForm}
+        onClose={() => setShowRNPLWaitlistForm(false)}
+      />
     </div>
   );
 }

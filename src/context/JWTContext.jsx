@@ -141,7 +141,14 @@ export function AuthProvider({ children }) {
     if (requiresPayment) {
       navigate("/auth/registration-payment");
     } else {
-      navigate("/");
+      // Redirect to appropriate dashboard based on role
+      if (user.role === "owner") {
+        navigate("/owner/dashboard");
+      } else if (user.role === "admin") {
+        navigate("/admin/dashboard");
+      } else {
+        navigate("/user/dashboard");
+      }
     }
 
     // Return the response data so the login page can access it
@@ -164,6 +171,15 @@ export function AuthProvider({ children }) {
     // If user requires payment, redirect to payment page
     if (requiresPayment) {
       navigate("/auth/registration-payment");
+    } else {
+      // Redirect to appropriate dashboard based on role
+      if (user.role === "owner") {
+        navigate("/owner/dashboard");
+      } else if (user.role === "admin") {
+        navigate("/admin/dashboard");
+      } else {
+        navigate("/user/dashboard");
+      }
     }
 
     return response;

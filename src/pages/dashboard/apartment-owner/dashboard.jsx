@@ -10,8 +10,8 @@ import { useAuth } from "../../../hooks/useAuth";
 import { propertyService } from "../../../services/api";
 import { fCurrency } from "../../../utils/formatNumber";
 import { getGreeting } from "../../../utils/helpers";
-import KycProgressIndicator from "../../../components/KycProgressIndicator";
 import KycStatusCard from "../../../components/KycStatusCard";
+import { useKycStore } from "../../../store/kycStore";
 import toast from "react-hot-toast";
 
 export default function ApartmentOwnerDashboard() {
@@ -21,6 +21,7 @@ export default function ApartmentOwnerDashboard() {
   const [ownerStatistics, setOwnerStatistics] = useState(null);
   const [timeframe, setTimeframe] = useState("30");
   const { user } = useAuth();
+  const { kycStatus, getKycStatus } = useKycStore();
 
   async function getOwnerStatistics() {
     try {
@@ -44,12 +45,30 @@ export default function ApartmentOwnerDashboard() {
   }, [timeframe]);
 
   useEffect(() => {
+    getKycStatus();
+  }, [getKycStatus]);
+
+  useEffect(() => {
     const intervalId = setInterval(() => {
       setGreeting(getGreeting());
     }, 60000);
 
     return () => clearInterval(intervalId);
   }, []);
+
+  // Helper function to determine if KYC is complete
+  const getRequiredTiers = () => {
+    // For apartment owners, only tier1 is required (NIN and phone verification)
+    return ["tier1"];
+  };
+
+  const isKycComplete = () => {
+    if (!kycStatus) return false;
+    const requiredTiers = getRequiredTiers();
+    return requiredTiers.every(
+      (tier) => kycStatus[tier]?.status === "verified"
+    );
+  };
 
   if (loading) {
     return <div className="p-6">Loading...</div>;
@@ -114,18 +133,15 @@ export default function ApartmentOwnerDashboard() {
         </div>
       )}
 
-      {/* KYC Status Section */}
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-6 md:mb-8">
-        {/* KYC Status Card */}
-        <div className="lg:col-span-1">
-          <KycStatusCard />
+      {/* KYC Status Section - Only show if KYC is not complete */}
+      {!isKycComplete() && (
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-6 md:mb-8">
+          {/* KYC Status Card */}
+          <div className="lg:col-span-1">
+            <KycStatusCard />
+          </div>
         </div>
-
-        {/* KYC Progress Indicator (Compact) */}
-        <div className="lg:col-span-2">
-          <KycProgressIndicator />
-        </div>
-      </div>
+      )}
 
       {/* Main Stats Grid */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6 mb-6 md:mb-8">

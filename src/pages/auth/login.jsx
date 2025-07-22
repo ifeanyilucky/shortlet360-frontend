@@ -38,7 +38,7 @@ export default function Login() {
       // The login function in JWTContext will handle redirection based on requiresPayment
       // We just need to show an appropriate message
       if (response?.requiresPayment) {
-        toast.success(
+        toast.error(
           "Please complete your registration payment to activate your account"
         );
       } else {
@@ -50,7 +50,7 @@ export default function Login() {
       } else if (error.code === "ERR_NETWORK") {
         toast.error("Network error - Please check your internet connection");
       } else {
-        toast.error("Something went wrong");
+        toast.error("Something went wrong, please try again");
       }
     } finally {
       setSubmitLoading(false);
