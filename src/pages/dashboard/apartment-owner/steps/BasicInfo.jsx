@@ -18,7 +18,7 @@ export default function BasicInfo() {
           Property Category
         </label>
         <div className="flex gap-4">
-          <label className="flex items-center">
+          {/* <label className="flex items-center">
             <input
               type="radio"
               value="shortlet"
@@ -26,7 +26,7 @@ export default function BasicInfo() {
               className="h-4 w-4 text-primary-900 focus:ring-primary-900 border-gray-300"
             />
             <span className="ml-2 text-sm text-gray-700">Shortlet</span>
-          </label>
+          </label> */}
           <label className="flex items-center">
             <input
               type="radio"

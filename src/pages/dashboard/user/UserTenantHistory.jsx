@@ -1,7 +1,7 @@
 import DataTable from "../../../components/DataTable";
 import { useEffect, useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
-import { bookingStore } from "@store/bookingStore";
+import useTenantStore from "@store/tenantStore";
 import { FaEye, FaFilter } from "react-icons/fa";
 import { IoMdClose } from "react-icons/io";
 import LoadingOverlay from "../../../components/LoadingOverlay";
@@ -10,20 +10,13 @@ import Pagination from "../../../components/Pagination";
 import { format } from "date-fns";
 import { fCurrency } from "@utils/formatNumber";
 import RightSidebarModal from "../../../components/RightSidebarModal";
-import BookingDetails from "../../../components/BookingDetails";
+import TenantDetails from "../../../components/TenantDetails";
 import { FiEye } from "react-icons/fi";
 import { MdOutlineCancel } from "react-icons/md";
 
-export default function UserBookingHistory() {
-  const {
-    bookings,
-    booking,
-    pagination,
-    getBookings,
-    getBooking,
-    isLoading,
-    cancelBooking,
-  } = bookingStore();
+export default function UserTenantHistory() {
+  const { tenants, tenant, pagination, getTenants, getTenant, isLoading } =
+    useTenantStore();
   const [currentPage, setCurrentPage] = useState(1);
   const [searchTerm, setSearchTerm] = useState("");
   const [isViewModalOpen, setIsViewModalOpen] = useState(false);
@@ -31,19 +24,17 @@ export default function UserBookingHistory() {
   const { user } = useAuth();
   const [filters, setFilters] = useState({
     property_name: "",
-    guest_name: "",
-    booking_status: "",
+    lease_status: "",
     payment_status: "",
   });
   const navigate = useNavigate();
-  const [showCancelModal, setShowCancelModal] = useState(false);
-  const [selectedBooking, setSelectedBooking] = useState(null);
 
   const handleSearch = (e) => {
     e.preventDefault();
-    getBookings({
+    getTenants({
       search: searchTerm,
       page: 1,
+      tenant: user?._id,
       ...filters,
     });
     setCurrentPage(1);
@@ -51,16 +42,16 @@ export default function UserBookingHistory() {
 
   const handlePageChange = (page) => {
     setCurrentPage(page);
-    getBookings({
+    getTenants({
       search: searchTerm,
       page,
-      guest: user?._id,
+      tenant: user?._id,
       ...filters,
     });
   };
 
-  const handleViewBooking = async (id) => {
-    await getBooking(id);
+  const handleViewTenant = async (id) => {
+    await getTenant(id);
     setIsViewModalOpen(true);
   };
 
@@ -73,10 +64,10 @@ export default function UserBookingHistory() {
   };
 
   const handleApplyFilters = () => {
-    getBookings({
+    getTenants({
       search: searchTerm,
       page: 1,
-      guest: user?._id,
+      tenant: user?._id,
       ...filters,
     });
     setCurrentPage(1);
@@ -85,33 +76,47 @@ export default function UserBookingHistory() {
   const handleResetFilters = () => {
     setFilters({
       property_name: "",
-      guest_name: "",
-      booking_status: "",
+      lease_status: "",
       payment_status: "",
     });
-    getBookings({
+    getTenants({
       search: searchTerm,
       page: 1,
-      guest: user?._id,
+      tenant: user?._id,
     });
-  };
-
-  const handleCancelClick = (booking) => {
-    setSelectedBooking(booking);
-    setShowCancelModal(true);
-  };
-
-  const handleConfirmCancel = async () => {
-    if (selectedBooking) {
-      await cancelBooking(selectedBooking._id);
-      setShowCancelModal(false);
-      setSelectedBooking(null);
-    }
   };
 
   useEffect(() => {
-    getBookings({ page: currentPage, guest: user?._id });
+    getTenants({ page: currentPage, tenant: user?._id });
   }, []);
+
+  const getStatusColor = (status) => {
+    switch (status) {
+      case "active":
+        return "bg-green-100 text-green-800";
+      case "pending":
+        return "bg-yellow-100 text-yellow-800";
+      case "expired":
+        return "bg-red-100 text-red-800";
+      case "terminated":
+        return "bg-gray-100 text-gray-800";
+      default:
+        return "bg-gray-100 text-gray-800";
+    }
+  };
+
+  const getPaymentStatusColor = (status) => {
+    switch (status) {
+      case "paid":
+        return "bg-green-100 text-green-800";
+      case "pending":
+        return "bg-yellow-100 text-yellow-800";
+      case "overdue":
+        return "bg-red-100 text-red-800";
+      default:
+        return "bg-gray-100 text-gray-800";
+    }
+  };
 
   const columns = [
     {
@@ -127,49 +132,39 @@ export default function UserBookingHistory() {
       ),
     },
     {
-      header: "Guest",
-      key: "guest",
-      render: (_, row) => (
-        <div>
-          <p className="font-medium">{row.payment.customer.name}</p>
-          <p className="text-sm text-gray-600">{row.payment.customer.email}</p>
-          <p className="text-sm text-gray-600">
-            {row.payment.customer.phone_number}
-          </p>
-        </div>
-      ),
-    },
-    {
-      header: "Check In/Out",
-      key: "dates",
+      header: "Lease Period",
+      key: "lease",
       render: (_, row) => (
         <div>
           <div className="mb-1">
-            <span className="text-sm font-medium">Check In: </span>
+            <span className="text-sm font-medium">Start: </span>
             <span className="text-sm">
-              {format(new Date(row.check_in_date), "MMM dd, yyyy")}
+              {format(new Date(row.lease_start_date), "MMM dd, yyyy")}
             </span>
           </div>
           <div>
-            <span className="text-sm font-medium">Check Out: </span>
+            <span className="text-sm font-medium">End: </span>
             <span className="text-sm">
-              {format(new Date(row.check_out_date), "MMM dd, yyyy")}
+              {format(new Date(row.lease_end_date), "MMM dd, yyyy")}
             </span>
           </div>
           <div className="mt-1 text-sm text-gray-600">
-            Arrival: {row.estimated_arrival}
+            {row.tenant_count} {row.tenant_count === 1 ? "person" : "people"}
           </div>
         </div>
       ),
     },
     {
-      header: "Amount",
-      key: "amount",
+      header: "Rent",
+      key: "rent",
       render: (_, row) => (
         <div>
-          <p className="font-medium">{fCurrency(row.total_price)}</p>
+          <p className="font-medium">{fCurrency(row.monthly_rent)}/month</p>
           <p className="text-sm text-gray-600">
-            {row.guest_count} {row.guest_count === 1 ? "guest" : "guests"}
+            {fCurrency(row.annual_rent)}/year
+          </p>
+          <p className="text-sm text-gray-600">
+            Deposit: {fCurrency(row.security_deposit)}
           </p>
         </div>
       ),
@@ -180,28 +175,18 @@ export default function UserBookingHistory() {
       render: (_, row) => (
         <div className="space-y-1">
           <span
-            className={`px-2 py-1 rounded-full text-sm ${
-              row.booking_status === "confirmed"
-                ? "bg-green-100 text-green-800"
-                : row.booking_status === "pending"
-                ? "bg-yellow-100 text-yellow-800"
-                : row.booking_status === "cancelled"
-                ? "bg-red-100 text-red-800"
-                : "bg-blue-100 text-blue-800"
-            }`}
+            className={`px-2 py-1 rounded-full text-sm ${getStatusColor(
+              row.lease_status
+            )}`}
           >
-            {row.booking_status.charAt(0).toUpperCase() +
-              row.booking_status.slice(1)}
+            {row.lease_status.charAt(0).toUpperCase() +
+              row.lease_status.slice(1)}
           </span>
           <div>
             <span
-              className={`px-2 py-1 rounded-full text-sm ${
-                row.payment_status === "paid"
-                  ? "bg-green-100 text-green-800"
-                  : row.payment_status === "pending"
-                  ? "bg-yellow-100 text-yellow-800"
-                  : "bg-red-100 text-red-800"
-              }`}
+              className={`px-2 py-1 rounded-full text-sm ${getPaymentStatusColor(
+                row.payment_status
+              )}`}
             >
               {row.payment_status.charAt(0).toUpperCase() +
                 row.payment_status.slice(1)}
@@ -216,32 +201,22 @@ export default function UserBookingHistory() {
       render: (_, row) => (
         <div className="flex gap-2">
           <button
-            onClick={() => handleViewBooking(row._id)}
+            onClick={() => handleViewTenant(row._id)}
             className="p-2 text-blue-600 hover:bg-blue-50 rounded-full"
             title="View Details"
           >
             View
           </button>
-          {row.booking_status === "confirmed" && (
-            <button
-              onClick={() => handleCancelClick(row)}
-              className="p-2 text-red-600 hover:bg-red-50 rounded-full"
-              title="Cancel Booking"
-            >
-              Cancel
-            </button>
-          )}
         </div>
       ),
     },
   ];
+
   return (
     <div className="p-6">
       {isLoading && <LoadingOverlay />}
       <div className="flex justify-between items-center mb-6">
-        <h2 className="text-2xl font-semibold text-gray-800">
-          Booking History
-        </h2>
+        <h2 className="text-2xl font-semibold text-gray-800">Rental History</h2>
       </div>
 
       <div className="flex flex-col gap-4 mb-6">
@@ -253,27 +228,11 @@ export default function UserBookingHistory() {
             <FaFilter className="text-gray-500" />
             {showFilters ? "Hide Filters" : "Show Filters"}
           </button>
-
-          {/* <form onSubmit={handleSearch} className="flex gap-2">
-            <input
-              type="text"
-              placeholder="Search bookings..."
-              value={searchTerm}
-              onChange={(e) => setSearchTerm(e.target.value)}
-              className="px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-            />
-            <button
-              type="submit"
-              className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
-            >
-              Search
-            </button>
-          </form> */}
         </div>
 
         {showFilters && (
           <div className="bg-white p-4 rounded-lg shadow">
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-1">
                   Property Name
@@ -289,31 +248,19 @@ export default function UserBookingHistory() {
               </div>
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-1">
-                  Guest Name
-                </label>
-                <input
-                  type="text"
-                  name="guest_name"
-                  value={filters.guest_name}
-                  onChange={handleFilterChange}
-                  className="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-                  placeholder="Filter by guest name"
-                />
-              </div>
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">
-                  Booking Status
+                  Lease Status
                 </label>
                 <select
-                  name="booking_status"
-                  value={filters.booking_status}
+                  name="lease_status"
+                  value={filters.lease_status}
                   onChange={handleFilterChange}
                   className="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
                 >
                   <option value="">All</option>
-                  <option value="confirmed">Confirmed</option>
+                  <option value="active">Active</option>
                   <option value="pending">Pending</option>
-                  <option value="cancelled">Cancelled</option>
+                  <option value="expired">Expired</option>
+                  <option value="terminated">Terminated</option>
                 </select>
               </div>
               <div>
@@ -329,6 +276,7 @@ export default function UserBookingHistory() {
                   <option value="">All</option>
                   <option value="paid">Paid</option>
                   <option value="pending">Pending</option>
+                  <option value="overdue">Overdue</option>
                 </select>
               </div>
             </div>
@@ -350,9 +298,35 @@ export default function UserBookingHistory() {
         )}
       </div>
 
-      <div className="bg-white rounded-lg shadow overflow-hidden">
-        <DataTable columns={columns} data={bookings || []} />
-      </div>
+      {!tenants || tenants.length === 0 ? (
+        <div className="bg-white rounded-lg shadow p-8">
+          <div className="text-center">
+            <div className="w-16 h-16 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-4">
+              <FaEye className="w-8 h-8 text-gray-400" />
+            </div>
+            <p className="text-gray-500 text-lg font-medium mb-2">
+              No rental history yet
+            </p>
+            <p className="text-gray-400 text-sm mb-4">
+              You haven't rented any properties yet. Start exploring to find
+              your perfect home.
+            </p>
+            <button
+              onClick={() => navigate("/")}
+              className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
+            >
+              Browse Properties
+            </button>
+          </div>
+        </div>
+      ) : (
+        <div className="bg-white rounded-lg shadow overflow-hidden">
+          <DataTable
+            columns={columns}
+            data={Array.isArray(tenants) ? tenants : []}
+          />
+        </div>
+      )}
 
       {pagination && (
         <div className="mt-6">
@@ -367,48 +341,10 @@ export default function UserBookingHistory() {
       <RightSidebarModal
         isOpen={isViewModalOpen}
         onClose={() => setIsViewModalOpen(false)}
-        title="Booking Details"
+        title="Rental Details"
       >
-        <BookingDetails booking={booking} />
+        <TenantDetails tenant={tenant} />
       </RightSidebarModal>
-
-      {/* Cancel Confirmation Modal */}
-      {showCancelModal && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
-          <div className="bg-white rounded-lg p-6 max-w-md w-full">
-            <h2 className="text-xl font-bold mb-4">Cancel Booking</h2>
-            <p className="text-gray-600 mb-6">
-              Are you sure you want to cancel your booking for{" "}
-              <span className="font-semibold">
-                {selectedBooking?.property_id.property_name}
-              </span>
-              ? This action cannot be undone.
-            </p>
-            <h3 className="text-lg font-semibold mb-2">Cancellation Policy:</h3>
-            <p className="text-gray-600 mb-4">
-              {" "}
-              You can cancel your booking up to 24 hours before the check-in
-              date for a full refund. Cancellations made less than 24 hours
-              before check-in will incur a charge of one night's stay. Please
-              note that any service fees are non-refundable.
-            </p>
-            <div className="flex justify-end space-x-4">
-              <button
-                onClick={() => setShowCancelModal(false)}
-                className="px-4 py-2 text-gray-600 hover:bg-gray-100 rounded-lg"
-              >
-                No, Keep Booking
-              </button>
-              <button
-                onClick={handleConfirmCancel}
-                className="px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700"
-              >
-                Yes, Cancel Booking
-              </button>
-            </div>
-          </div>
-        </div>
-      )}
     </div>
   );
 }

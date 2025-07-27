@@ -164,10 +164,12 @@ export default function ArtisanApplications() {
 
     return (
       <span
-        className={`inline-flex items-center px-2 py-1 rounded-full text-xs font-medium ${config.color} ${config.bg}`}
+        className={`inline-flex items-center px-1.5 sm:px-2 py-0.5 sm:py-1 rounded-full text-xs font-medium ${config.color} ${config.bg}`}
       >
-        <Icon size={12} className="mr-1" />
-        {status.replace("_", " ").toUpperCase()}
+        <Icon size={10} className="mr-1 hidden sm:inline" />
+        <span className="text-xs sm:text-xs">
+          {status.replace("_", " ").toUpperCase()}
+        </span>
       </span>
     );
   };
@@ -185,12 +187,12 @@ export default function ArtisanApplications() {
 
     return (
       <span
-        className={`inline-flex items-center px-2 py-1 rounded-full text-xs font-medium ${config.color} ${config.bg}`}
+        className={`inline-flex items-center px-1.5 sm:px-2 py-0.5 sm:py-1 rounded-full text-xs font-medium ${config.color} ${config.bg}`}
       >
         {priority === "urgent" && (
-          <FiAlertTriangle size={12} className="mr-1" />
+          <FiAlertTriangle size={10} className="mr-1 hidden sm:inline" />
         )}
-        {priority.toUpperCase()}
+        <span className="text-xs sm:text-xs">{priority.toUpperCase()}</span>
       </span>
     );
   };
@@ -215,105 +217,114 @@ export default function ArtisanApplications() {
   }
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-4 sm:space-y-6">
       {/* Header */}
-      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3 sm:gap-4">
         <div>
-          <h1 className="text-2xl font-bold text-gray-900">
+          <h1 className="text-xl sm:text-2xl font-bold text-gray-900">
             Artisan Applications
           </h1>
-          <p className="text-gray-600">
+          <p className="text-sm sm:text-base text-gray-600">
             Manage artisan applications from users
           </p>
         </div>
         <button
           onClick={fetchSubmissions}
-          className="w-full sm:w-auto bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg flex items-center justify-center gap-2 transition-colors"
+          className="w-full sm:w-auto bg-blue-600 hover:bg-blue-700 text-white px-3 sm:px-4 py-2 rounded-lg flex items-center justify-center gap-2 transition-colors text-sm"
         >
-          <FiRefreshCw size={20} />
-          <span className="whitespace-nowrap">Refresh Data</span>
+          <FiRefreshCw size={18} />
+          <span className="whitespace-nowrap">Refresh</span>
         </button>
       </div>
 
       {/* Stats Cards */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-        <div className="bg-white p-4 rounded-lg shadow-sm border">
+      <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
+        <div className="bg-white p-3 sm:p-4 rounded-lg shadow-sm border">
           <div className="flex items-center justify-between">
             <div>
-              <p className="text-sm font-medium text-gray-600">
+              <p className="text-xs sm:text-sm font-medium text-gray-600">
                 Total Applications
               </p>
-              <p className="text-2xl font-bold text-gray-900">
+              <p className="text-lg sm:text-2xl font-bold text-gray-900">
                 {stats.total || 0}
               </p>
             </div>
-            <div className="p-2 bg-blue-100 rounded-lg">
-              <FiTool className="text-blue-600" size={20} />
+            <div className="p-1.5 sm:p-2 bg-blue-100 rounded-lg">
+              <FiTool className="text-blue-600" size={16} />
             </div>
           </div>
         </div>
 
-        <div className="bg-white p-4 rounded-lg shadow-sm border">
+        <div className="bg-white p-3 sm:p-4 rounded-lg shadow-sm border">
           <div className="flex items-center justify-between">
             <div>
-              <p className="text-sm font-medium text-gray-600">Pending</p>
-              <p className="text-2xl font-bold text-yellow-600">
+              <p className="text-xs sm:text-sm font-medium text-gray-600">
+                Pending
+              </p>
+              <p className="text-lg sm:text-2xl font-bold text-yellow-600">
                 {stats.pending || 0}
               </p>
             </div>
-            <div className="p-2 bg-yellow-100 rounded-lg">
-              <FiClock className="text-yellow-600" size={20} />
+            <div className="p-1.5 sm:p-2 bg-yellow-100 rounded-lg">
+              <FiClock className="text-yellow-600" size={16} />
             </div>
           </div>
         </div>
 
-        <div className="bg-white p-4 rounded-lg shadow-sm border">
+        <div className="bg-white p-3 sm:p-4 rounded-lg shadow-sm border">
           <div className="flex items-center justify-between">
             <div>
-              <p className="text-sm font-medium text-gray-600">In Progress</p>
-              <p className="text-2xl font-bold text-blue-600">
+              <p className="text-xs sm:text-sm font-medium text-gray-600">
+                In Progress
+              </p>
+              <p className="text-lg sm:text-2xl font-bold text-blue-600">
                 {stats.in_progress || 0}
               </p>
             </div>
-            <div className="p-2 bg-blue-100 rounded-lg">
-              <FiRefreshCw className="text-blue-600" size={20} />
+            <div className="p-1.5 sm:p-2 bg-blue-100 rounded-lg">
+              <FiRefreshCw className="text-blue-600" size={16} />
             </div>
           </div>
         </div>
 
-        <div className="bg-white p-4 rounded-lg shadow-sm border">
+        <div className="bg-white p-3 sm:p-4 rounded-lg shadow-sm border">
           <div className="flex items-center justify-between">
             <div>
-              <p className="text-sm font-medium text-gray-600">Approved</p>
-              <p className="text-2xl font-bold text-green-600">
+              <p className="text-xs sm:text-sm font-medium text-gray-600">
+                Approved
+              </p>
+              <p className="text-lg sm:text-2xl font-bold text-green-600">
                 {stats.resolved || 0}
               </p>
             </div>
-            <div className="p-2 bg-green-100 rounded-lg">
-              <FiCheckCircle className="text-green-600" size={20} />
+            <div className="p-1.5 sm:p-2 bg-green-100 rounded-lg">
+              <FiCheckCircle className="text-green-600" size={16} />
             </div>
           </div>
         </div>
       </div>
 
       {/* Filters */}
-      <div className="bg-white p-4 sm:p-6 rounded-lg shadow-sm border">
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4">
+      <div className="bg-white p-3 sm:p-4 lg:p-6 rounded-lg shadow-sm border">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-3 sm:gap-4">
           <div className="relative sm:col-span-2 lg:col-span-1">
-            <FiSearch className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" />
+            <FiSearch
+              className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400"
+              size={16}
+            />
             <input
               type="text"
               placeholder="Search applications..."
               value={filters.search}
               onChange={(e) => handleFilterChange("search", e.target.value)}
-              className="pl-10 pr-4 py-2 w-full border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+              className="pl-8 sm:pl-10 pr-3 sm:pr-4 py-2 w-full border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-sm"
             />
           </div>
 
           <select
             value={filters.status}
             onChange={(e) => handleFilterChange("status", e.target.value)}
-            className="px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+            className="px-3 sm:px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-sm"
           >
             {statusOptions.map((status) => (
               <option key={status.value} value={status.value}>
@@ -325,7 +336,7 @@ export default function ArtisanApplications() {
           <select
             value={filters.priority}
             onChange={(e) => handleFilterChange("priority", e.target.value)}
-            className="px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+            className="px-3 sm:px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-sm"
           >
             {priorityOptions.map((priority) => (
               <option key={priority.value} value={priority.value}>
@@ -338,7 +349,7 @@ export default function ArtisanApplications() {
             type="date"
             value={filters.start_date}
             onChange={(e) => handleFilterChange("start_date", e.target.value)}
-            className="px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+            className="px-3 sm:px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-sm"
             placeholder="Start Date"
           />
 
@@ -353,9 +364,9 @@ export default function ArtisanApplications() {
               });
               setPagination((prev) => ({ ...prev, page: 1 }));
             }}
-            className="px-4 py-2 bg-gray-100 hover:bg-gray-200 text-gray-700 rounded-lg flex items-center justify-center gap-2 transition-colors"
+            className="px-3 sm:px-4 py-2 bg-gray-100 hover:bg-gray-200 text-gray-700 rounded-lg flex items-center justify-center gap-2 transition-colors text-sm"
           >
-            <FiRefreshCw size={16} />
+            <FiRefreshCw size={14} />
             Reset
           </button>
         </div>
@@ -367,28 +378,28 @@ export default function ArtisanApplications() {
           <table className="min-w-full divide-y divide-gray-200">
             <thead className="bg-gray-50">
               <tr>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                <th className="px-3 sm:px-6 py-2 sm:py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                   Application Details
                 </th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                <th className="px-3 sm:px-6 py-2 sm:py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                   Artisan Info
                 </th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                <th className="px-3 sm:px-6 py-2 sm:py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                   Skills & Experience
                 </th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                <th className="px-3 sm:px-6 py-2 sm:py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                   Location
                 </th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                <th className="px-3 sm:px-6 py-2 sm:py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                   Status
                 </th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                <th className="px-3 sm:px-6 py-2 sm:py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                   Priority
                 </th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                <th className="px-3 sm:px-6 py-2 sm:py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                   Date
                 </th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                <th className="px-3 sm:px-6 py-2 sm:py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                   Actions
                 </th>
               </tr>
@@ -396,72 +407,74 @@ export default function ArtisanApplications() {
             <tbody className="bg-white divide-y divide-gray-200">
               {submissions.map((submission) => (
                 <tr key={submission._id} className="hover:bg-gray-50">
-                  <td className="px-6 py-4 whitespace-nowrap">
+                  <td className="px-3 sm:px-6 py-3 sm:py-4 whitespace-nowrap">
                     <div>
-                      <div className="text-sm font-medium text-gray-900">
+                      <div className="text-xs sm:text-sm font-medium text-gray-900">
                         {submission.submission_id}
                       </div>
-                      <div className="text-sm text-gray-500">
-                        Application #{submission._id?.slice(-6)}
+                      <div className="text-xs text-gray-500">
+                        #{submission._id?.slice(-6)}
                       </div>
                     </div>
                   </td>
-                  <td className="px-6 py-4 whitespace-nowrap">
+                  <td className="px-3 sm:px-6 py-3 sm:py-4 whitespace-nowrap">
                     <div>
-                      <div className="text-sm font-medium text-gray-900">
+                      <div className="text-xs sm:text-sm font-medium text-gray-900">
                         {submission.full_name}
                       </div>
-                      <div className="text-sm text-gray-500">
+                      <div className="text-xs text-gray-500">
                         {submission.email}
                       </div>
-                      <div className="text-sm text-gray-500">
+                      <div className="text-xs text-gray-500">
                         {submission.phone}
                       </div>
                     </div>
                   </td>
-                  <td className="px-6 py-4 whitespace-nowrap">
+                  <td className="px-3 sm:px-6 py-3 sm:py-4 whitespace-nowrap">
                     <div>
-                      <div className="text-sm font-medium text-gray-900">
+                      <div className="text-xs sm:text-sm font-medium text-gray-900">
                         {submission.skills?.join(", ") || "N/A"}
                       </div>
-                      <div className="text-sm text-gray-500">
+                      <div className="text-xs text-gray-500">
                         {submission.years_of_experience} years exp.
                       </div>
                     </div>
                   </td>
-                  <td className="px-6 py-4 whitespace-nowrap">
-                    <div className="text-sm text-gray-900">
+                  <td className="px-3 sm:px-6 py-3 sm:py-4 whitespace-nowrap">
+                    <div className="text-xs sm:text-sm text-gray-900">
                       <div className="flex items-center">
-                        <FiMapPin size={12} className="mr-1 text-gray-400" />
-                        {submission.location?.area},{" "}
-                        {submission.location?.state}
+                        <FiMapPin size={10} className="mr-1 text-gray-400" />
+                        <span className="truncate">
+                          {submission.location?.area},{" "}
+                          {submission.location?.state}
+                        </span>
                       </div>
                     </div>
                   </td>
-                  <td className="px-6 py-4 whitespace-nowrap">
+                  <td className="px-3 sm:px-6 py-3 sm:py-4 whitespace-nowrap">
                     {getStatusDisplay(submission.status)}
                   </td>
-                  <td className="px-6 py-4 whitespace-nowrap">
+                  <td className="px-3 sm:px-6 py-3 sm:py-4 whitespace-nowrap">
                     {getPriorityDisplay(submission.priority)}
                   </td>
-                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                  <td className="px-3 sm:px-6 py-3 sm:py-4 whitespace-nowrap text-xs sm:text-sm text-gray-500">
                     {formatDate(submission.createdAt)}
                   </td>
-                  <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
-                    <div className="flex space-x-2">
+                  <td className="px-3 sm:px-6 py-3 sm:py-4 whitespace-nowrap text-xs sm:text-sm font-medium">
+                    <div className="flex space-x-1 sm:space-x-2">
                       <button
                         onClick={() => handleViewSubmission(submission)}
                         className="text-blue-600 hover:text-blue-900 p-1 rounded"
                         title="View Details"
                       >
-                        <FiEye size={16} />
+                        <FiEye size={14} />
                       </button>
                       <button
                         onClick={() => handleEditSubmission(submission)}
                         className="text-green-600 hover:text-green-900 p-1 rounded"
                         title="Edit Status"
                       >
-                        <FiEdit size={16} />
+                        <FiEdit size={14} />
                       </button>
                     </div>
                   </td>
@@ -473,7 +486,7 @@ export default function ArtisanApplications() {
 
         {/* Pagination */}
         {pagination.total_pages > 1 && (
-          <div className="bg-white px-4 py-3 flex items-center justify-between border-t border-gray-200 sm:px-6">
+          <div className="bg-white px-3 sm:px-4 py-3 flex items-center justify-between border-t border-gray-200 sm:px-6">
             <div className="flex-1 flex justify-between sm:hidden">
               <button
                 onClick={() =>
@@ -483,7 +496,7 @@ export default function ArtisanApplications() {
                   }))
                 }
                 disabled={pagination.current_page === 1}
-                className="relative inline-flex items-center px-4 py-2 border border-gray-300 text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed"
+                className="relative inline-flex items-center px-3 py-2 border border-gray-300 text-xs font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed"
               >
                 Previous
               </button>
@@ -495,14 +508,14 @@ export default function ArtisanApplications() {
                   }))
                 }
                 disabled={pagination.current_page === pagination.total_pages}
-                className="ml-3 relative inline-flex items-center px-4 py-2 border border-gray-300 text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed"
+                className="ml-3 relative inline-flex items-center px-3 py-2 border border-gray-300 text-xs font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed"
               >
                 Next
               </button>
             </div>
             <div className="hidden sm:flex-1 sm:flex sm:items-center sm:justify-between">
               <div>
-                <p className="text-sm text-gray-700">
+                <p className="text-xs sm:text-sm text-gray-700">
                   Showing{" "}
                   <span className="font-medium">
                     {(pagination.current_page - 1) * pagination.items_per_page +
@@ -530,7 +543,7 @@ export default function ArtisanApplications() {
                       }))
                     }
                     disabled={pagination.current_page === 1}
-                    className="relative inline-flex items-center px-2 py-2 rounded-l-md border border-gray-300 bg-white text-sm font-medium text-gray-500 hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed"
+                    className="relative inline-flex items-center px-2 py-2 rounded-l-md border border-gray-300 bg-white text-xs sm:text-sm font-medium text-gray-500 hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed"
                   >
                     Previous
                   </button>
@@ -543,7 +556,7 @@ export default function ArtisanApplications() {
                           onClick={() =>
                             setPagination((prev) => ({ ...prev, page }))
                           }
-                          className={`relative inline-flex items-center px-4 py-2 border text-sm font-medium ${
+                          className={`relative inline-flex items-center px-3 sm:px-4 py-2 border text-xs sm:text-sm font-medium ${
                             page === pagination.current_page
                               ? "z-10 bg-blue-50 border-blue-500 text-blue-600"
                               : "bg-white border-gray-300 text-gray-500 hover:bg-gray-50"
@@ -564,7 +577,7 @@ export default function ArtisanApplications() {
                     disabled={
                       pagination.current_page === pagination.total_pages
                     }
-                    className="relative inline-flex items-center px-2 py-2 rounded-r-md border border-gray-300 bg-white text-sm font-medium text-gray-500 hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed"
+                    className="relative inline-flex items-center px-2 py-2 rounded-r-md border border-gray-300 bg-white text-xs sm:text-sm font-medium text-gray-500 hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed"
                   >
                     Next
                   </button>
@@ -582,78 +595,78 @@ export default function ArtisanApplications() {
         title="Artisan Application Details"
       >
         {selectedSubmission && (
-          <div className="space-y-6">
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div className="space-y-4 sm:space-y-6">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-3 sm:gap-4">
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">
+                <label className="block text-xs sm:text-sm font-medium text-gray-700 mb-1">
                   Application ID
                 </label>
-                <p className="text-sm text-gray-900 font-mono bg-gray-50 p-2 rounded">
+                <p className="text-xs sm:text-sm text-gray-900 font-mono bg-gray-50 p-2 rounded">
                   {selectedSubmission.submission_id}
                 </p>
               </div>
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">
+                <label className="block text-xs sm:text-sm font-medium text-gray-700 mb-1">
                   Status
                 </label>
                 <div>{getStatusDisplay(selectedSubmission.status)}</div>
               </div>
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">
+                <label className="block text-xs sm:text-sm font-medium text-gray-700 mb-1">
                   Priority
                 </label>
                 <div>{getPriorityDisplay(selectedSubmission.priority)}</div>
               </div>
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">
+                <label className="block text-xs sm:text-sm font-medium text-gray-700 mb-1">
                   Submitted
                 </label>
-                <p className="text-sm text-gray-900">
+                <p className="text-xs sm:text-sm text-gray-900">
                   {formatDate(selectedSubmission.createdAt)}
                 </p>
               </div>
             </div>
 
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-3 sm:gap-4">
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">
+                <label className="block text-xs sm:text-sm font-medium text-gray-700 mb-1">
                   Full Name
                 </label>
-                <p className="text-sm text-gray-900">
+                <p className="text-xs sm:text-sm text-gray-900">
                   {selectedSubmission.full_name}
                 </p>
               </div>
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">
+                <label className="block text-xs sm:text-sm font-medium text-gray-700 mb-1">
                   Email
                 </label>
-                <p className="text-sm text-gray-900">
+                <p className="text-xs sm:text-sm text-gray-900">
                   {selectedSubmission.email}
                 </p>
               </div>
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">
+                <label className="block text-xs sm:text-sm font-medium text-gray-700 mb-1">
                   Phone
                 </label>
-                <p className="text-sm text-gray-900">
+                <p className="text-xs sm:text-sm text-gray-900">
                   {selectedSubmission.phone}
                 </p>
               </div>
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">
+                <label className="block text-xs sm:text-sm font-medium text-gray-700 mb-1">
                   Years of Experience
                 </label>
-                <p className="text-sm text-gray-900">
+                <p className="text-xs sm:text-sm text-gray-900">
                   {selectedSubmission.years_of_experience} years
                 </p>
               </div>
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
+              <label className="block text-xs sm:text-sm font-medium text-gray-700 mb-1">
                 Skills
               </label>
-              <div className="flex flex-wrap gap-2">
+              <div className="flex flex-wrap gap-1 sm:gap-2">
                 {selectedSubmission.skills?.map((skill, index) => (
                   <span
                     key={index}
@@ -662,7 +675,7 @@ export default function ArtisanApplications() {
                     {skill}
                   </span>
                 )) || (
-                  <span className="text-sm text-gray-500">
+                  <span className="text-xs sm:text-sm text-gray-500">
                     No skills listed
                   </span>
                 )}
@@ -670,10 +683,10 @@ export default function ArtisanApplications() {
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
+              <label className="block text-xs sm:text-sm font-medium text-gray-700 mb-1">
                 Location
               </label>
-              <div className="text-sm text-gray-900 bg-gray-50 p-3 rounded">
+              <div className="text-xs sm:text-sm text-gray-900 bg-gray-50 p-3 rounded">
                 <p>{selectedSubmission.location?.street}</p>
                 <p>
                   {selectedSubmission.location?.area},{" "}
@@ -685,14 +698,14 @@ export default function ArtisanApplications() {
 
             {selectedSubmission.portfolio_url && (
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">
+                <label className="block text-xs sm:text-sm font-medium text-gray-700 mb-1">
                   Portfolio URL
                 </label>
                 <a
                   href={selectedSubmission.portfolio_url}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="text-sm text-blue-600 hover:text-blue-800 underline"
+                  className="text-xs sm:text-sm text-blue-600 hover:text-blue-800 underline break-all"
                 >
                   {selectedSubmission.portfolio_url}
                 </a>
@@ -701,10 +714,10 @@ export default function ArtisanApplications() {
 
             {selectedSubmission.bio && (
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">
+                <label className="block text-xs sm:text-sm font-medium text-gray-700 mb-1">
                   Bio
                 </label>
-                <p className="text-sm text-gray-900 bg-gray-50 p-3 rounded whitespace-pre-wrap">
+                <p className="text-xs sm:text-sm text-gray-900 bg-gray-50 p-3 rounded whitespace-pre-wrap">
                   {selectedSubmission.bio}
                 </p>
               </div>
@@ -712,10 +725,10 @@ export default function ArtisanApplications() {
 
             {selectedSubmission.admin_notes && (
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">
+                <label className="block text-xs sm:text-sm font-medium text-gray-700 mb-1">
                   Admin Notes
                 </label>
-                <p className="text-sm text-gray-900 bg-yellow-50 p-3 rounded whitespace-pre-wrap">
+                <p className="text-xs sm:text-sm text-gray-900 bg-yellow-50 p-3 rounded whitespace-pre-wrap">
                   {selectedSubmission.admin_notes}
                 </p>
               </div>
@@ -731,10 +744,13 @@ export default function ArtisanApplications() {
         title="Update Artisan Application"
       >
         {selectedSubmission && (
-          <form onSubmit={handleUpdateSubmission} className="space-y-6">
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <form
+            onSubmit={handleUpdateSubmission}
+            className="space-y-4 sm:space-y-6"
+          >
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-3 sm:gap-4">
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">
+                <label className="block text-xs sm:text-sm font-medium text-gray-700 mb-1">
                   Status <span className="text-red-500">*</span>
                 </label>
                 <select
@@ -745,7 +761,7 @@ export default function ArtisanApplications() {
                       status: e.target.value,
                     }))
                   }
-                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                  className="w-full px-3 sm:px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-sm"
                   required
                 >
                   {statusOptions.slice(1).map((status) => (
@@ -757,7 +773,7 @@ export default function ArtisanApplications() {
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">
+                <label className="block text-xs sm:text-sm font-medium text-gray-700 mb-1">
                   Priority <span className="text-red-500">*</span>
                 </label>
                 <select
@@ -768,7 +784,7 @@ export default function ArtisanApplications() {
                       priority: e.target.value,
                     }))
                   }
-                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                  className="w-full px-3 sm:px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-sm"
                   required
                 >
                   {priorityOptions.slice(1).map((priority) => (
@@ -781,7 +797,7 @@ export default function ArtisanApplications() {
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
+              <label className="block text-xs sm:text-sm font-medium text-gray-700 mb-1">
                 Admin Notes
               </label>
               <textarea
@@ -793,7 +809,7 @@ export default function ArtisanApplications() {
                   }))
                 }
                 rows={4}
-                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                className="w-full px-3 sm:px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-sm"
                 placeholder="Add notes about this artisan application..."
               />
             </div>
@@ -802,14 +818,14 @@ export default function ArtisanApplications() {
               <button
                 type="button"
                 onClick={() => setShowEditModal(false)}
-                className="w-full sm:w-auto px-4 py-2 border border-gray-300 rounded-lg text-gray-700 hover:bg-gray-50 transition-colors"
+                className="w-full sm:w-auto px-3 sm:px-4 py-2 border border-gray-300 rounded-lg text-gray-700 hover:bg-gray-50 transition-colors text-sm"
               >
                 Cancel
               </button>
               <button
                 type="submit"
                 disabled={isSubmitting}
-                className="w-full sm:w-auto px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                className="w-full sm:w-auto px-3 sm:px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed text-sm"
               >
                 {isSubmitting ? "Updating..." : "Update Application"}
               </button>

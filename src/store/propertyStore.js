@@ -24,6 +24,22 @@ export const propertyStore = create((set) => ({
     }
   },
 
+  getOwnerProperties: async (params = {}) => {
+    try {
+      set({ isLoading: true });
+      const response = await propertyService.getOwnerProperties(params);
+      set({
+        properties: response.data,
+        pagination: response.pagination,
+        error: null,
+      });
+    } catch (error) {
+      set({ error: error.message });
+    } finally {
+      set({ isLoading: false });
+    }
+  },
+
   addProperty: async (data) => {
     set({ isLoading: true });
     const response = await propertyService.addProperty(data);

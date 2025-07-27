@@ -8,7 +8,7 @@ import {
   FiDollarSign,
   FiGift,
 } from "react-icons/fi";
-import { MdOutlineAddHome } from "react-icons/md";
+import { MdOutlineAddHome, MdOutlineAssignment } from "react-icons/md";
 import { HiOutlineUsers } from "react-icons/hi";
 import { getGreeting } from "../../../utils/helpers";
 import adminService from "../../../services/adminService";
@@ -74,6 +74,8 @@ export default function AdminDashboard() {
     bookingCount: 0,
     pendingKycCount: 0,
     revenue: 0,
+    tenantCount: 0,
+    activeTenantCount: 0,
   };
 
   const recentUsers = dashboardStats?.recentUsers || [];
@@ -181,6 +183,36 @@ export default function AdminDashboard() {
               >
                 View Details →
               </Link>
+            </div>
+          </div>
+        </div>
+
+        <div className="bg-white rounded-lg shadow-sm p-6">
+          <div className="flex items-center">
+            <div className="p-3 rounded-full bg-indigo-100 text-indigo-600 mr-4">
+              <MdOutlineAssignment size={24} />
+            </div>
+            <div>
+              <p className="text-sm text-gray-500">Active Tenants</p>
+              <h3 className="text-2xl font-bold">{stats.activeTenantCount}</h3>
+              <Link
+                to="/admin/tenants"
+                className="text-xs text-indigo-600 hover:underline"
+              >
+                View Details →
+              </Link>
+            </div>
+          </div>
+        </div>
+
+        <div className="bg-white rounded-lg shadow-sm p-6">
+          <div className="flex items-center">
+            <div className="p-3 rounded-full bg-yellow-100 text-yellow-600 mr-4">
+              <FiUsers size={24} />
+            </div>
+            <div>
+              <p className="text-sm text-gray-500">Total Tenants</p>
+              <h3 className="text-2xl font-bold">{stats.tenantCount}</h3>
             </div>
           </div>
         </div>

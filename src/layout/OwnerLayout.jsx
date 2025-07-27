@@ -51,9 +51,9 @@ const OwnerLayout = () => {
       label: "Add Apartments",
     },
     {
-      path: "/owner/bookings",
+      path: "/owner/tenants",
       icon: <BsClockHistory size={20} />,
-      label: "Booking History",
+      label: "Tenant Management",
     },
     {
       path: "/owner/service-request",

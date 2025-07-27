@@ -161,7 +161,7 @@ export default function Settings() {
     }
     setLoading(true);
     try {
-      await axios.put("/api/users/change-password", {
+      await changePassword({
         currentPassword: data.current_password,
         newPassword: data.new_password,
       });

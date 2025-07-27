@@ -29,12 +29,19 @@ export default function Favorite() {
 
       {favorites.length === 0 ? (
         <div className="text-center py-12">
-          <p className="text-gray-500">
-            You haven't added any properties to your favorites yet.
+          <div className="w-16 h-16 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-4">
+            <AiFillHeart className="w-8 h-8 text-gray-400" />
+          </div>
+          <p className="text-gray-500 text-lg font-medium mb-2">
+            No favorites yet
+          </p>
+          <p className="text-gray-400 text-sm mb-4">
+            You haven't added any properties to your favorites yet. Start
+            exploring to find properties you love.
           </p>
           <Link
-            to="/book-now"
-            className="text-blue-600 hover:underline mt-2 inline-block"
+            to="/"
+            className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors inline-block"
           >
             Browse Properties
           </Link>

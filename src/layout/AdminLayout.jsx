@@ -16,7 +16,7 @@ import {
   FiMail,
   FiPercent,
 } from "react-icons/fi";
-import { MdOutlineAddHome } from "react-icons/md";
+import { MdOutlineAddHome, MdOutlineAssignment } from "react-icons/md";
 import { RiAdminLine } from "react-icons/ri";
 
 export default function AdminLayout() {
@@ -117,6 +117,11 @@ export default function AdminLayout() {
       path: "/admin/bookings",
       icon: <FiCalendar size={20} />,
       label: "Bookings",
+    },
+    {
+      path: "/admin/tenants",
+      icon: <MdOutlineAssignment size={20} />,
+      label: "Tenant Management",
     },
     {
       path: "/admin/kyc-management",

@@ -45,9 +45,9 @@ const UserLayout = () => {
       label: "Dashboard",
     },
     {
-      path: "/user/bookings",
+      path: "/user/rentals",
       icon: <BsClockHistory size={20} />,
-      label: "Bookings",
+      label: "Rentals",
     },
     {
       path: "/user/favorites",

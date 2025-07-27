@@ -28,12 +28,14 @@ import "swiper/css";
 import "swiper/css/navigation";
 import "swiper/css/pagination";
 import { usePaystackPayment } from "react-paystack";
-import { bookingService, formService } from "../services/api";
+import { bookingService, formService, tenantService } from "../services/api";
 import toast from "react-hot-toast";
 import { paystackConfig } from "../config/paystack";
 import KycVerificationStatus from "../components/KycVerificationStatus";
 import useKycStore from "../store/kycStore";
 import RNPLWaitlistForm from "../components/RNPLWaitlistForm";
+import TenantAgreementModal from "../components/TenantAgreementModal";
+import { BsCheckCircle } from "react-icons/bs";
 
 // Custom CSS for the calendar and gallery
 const customStyles = `
@@ -195,6 +197,8 @@ export default function PropertyDetail() {
   const [kycVerified, setKycVerified] = useState(false);
   const { getKycStatus } = useKycStore();
   const [showRNPLWaitlistForm, setShowRNPLWaitlistForm] = useState(false);
+  const [hasUserPaid, setHasUserPaid] = useState(false);
+  const [showTenantAgreement, setShowTenantAgreement] = useState(false);
 
   // Function to get required KYC tiers - now only Tier 1 for all cases
   const getRequiredKycTiers = () => {
@@ -277,6 +281,26 @@ export default function PropertyDetail() {
       checkKycVerification();
     }
   }, [paymentPeriod, user, property?.property_category]);
+
+  // Check if user has already paid for this property
+  useEffect(() => {
+    const checkUserPaymentStatus = async () => {
+      if (
+        user &&
+        (property?.property_category === "rent" ||
+          property?.property_category === "shortlet")
+      ) {
+        try {
+          const response = await tenantService.checkUserPaymentStatus(id);
+          setHasUserPaid(response.hasPaid);
+        } catch (error) {
+          console.error("Error checking payment status:", error);
+        }
+      }
+    };
+
+    checkUserPaymentStatus();
+  }, [user, property?.property_category, id]);
 
   // Handle inspection form input changes
   const handleInspectionFormChange = (e) => {
@@ -448,30 +472,117 @@ export default function PropertyDetail() {
 
   const handlePaymentSuccess = async (reference) => {
     try {
-      // Create booking data with pricing information
-      const bookingData = {
-        check_in_date: startDate,
-        check_out_date: endDate,
-        estimated_arrival: estimatedArrival,
-        property_id: id,
-        guest_count: guestCount,
-        payment: reference,
-        pricing_option:
-          property.property_category === "shortlet"
-            ? selectedPricingOption
-            : null,
-        total_price:
-          property.property_category === "shortlet"
-            ? calculateShortletPrice()
-            : calculateInitialPayment(),
-      };
+      if (property.property_category === "rent") {
+        // For rental properties, set default lease dates based on payment period
+        const now = new Date();
+        let leaseStartDate, leaseEndDate;
 
-      const response = await bookingService.createBooking(bookingData);
-      toast.success("Booking created successfully");
-      navigate(`/${id}/receipt/${response?.data?._id}`);
+        // Set lease start date to next month (typical for rentals)
+        leaseStartDate = new Date(now.getFullYear(), now.getMonth() + 1, 1);
+
+        // Set lease end date based on payment period
+        if (paymentPeriod === "yearly") {
+          leaseEndDate = new Date(
+            leaseStartDate.getFullYear() + 1,
+            leaseStartDate.getMonth(),
+            leaseStartDate.getDate()
+          );
+        } else if (paymentPeriod === "6months") {
+          leaseEndDate = new Date(
+            leaseStartDate.getFullYear(),
+            leaseStartDate.getMonth() + 6,
+            leaseStartDate.getDate()
+          );
+        } else if (paymentPeriod === "12months") {
+          leaseEndDate = new Date(
+            leaseStartDate.getFullYear() + 1,
+            leaseStartDate.getMonth(),
+            leaseStartDate.getDate()
+          );
+        } else {
+          // Default to 1 year
+          leaseEndDate = new Date(
+            leaseStartDate.getFullYear() + 1,
+            leaseStartDate.getMonth(),
+            leaseStartDate.getDate()
+          );
+        }
+
+        // Validate payment reference
+        if (!reference || !reference.reference) {
+          console.error("Invalid payment reference:", reference);
+          throw new Error("Invalid payment reference received");
+        }
+
+        // Create tenant data for rental properties
+        const tenantData = {
+          property_id: id,
+          lease_start_date: leaseStartDate,
+          lease_end_date: leaseEndDate,
+          tenant_count: guestCount,
+          payment: reference, // This should be the payment object
+          payment_method: "paystack",
+          payment_reference: reference.reference,
+          emergency_contact: {
+            name: user?.first_name + " " + user?.last_name,
+            phone: user?.phone,
+            relationship: "Self",
+          },
+        };
+
+        console.log("Sending tenant data:", tenantData); // Debug log
+
+        // Validate all required fields are present
+        if (
+          !tenantData.property_id ||
+          !tenantData.lease_start_date ||
+          !tenantData.lease_end_date ||
+          !tenantData.tenant_count ||
+          !tenantData.payment
+        ) {
+          console.error("Missing required fields:", {
+            property_id: !!tenantData.property_id,
+            lease_start_date: !!tenantData.lease_start_date,
+            lease_end_date: !!tenantData.lease_end_date,
+            tenant_count: !!tenantData.tenant_count,
+            payment: !!tenantData.payment,
+          });
+          throw new Error("Missing required tenant information");
+        }
+
+        const response = await tenantService.createTenant(tenantData);
+        toast.success("Rental agreement created successfully");
+        navigate(`/${id}/receipt/${response?.data?._id}`);
+      } else {
+        // Create booking data for shortlet properties
+        const bookingData = {
+          check_in_date: startDate,
+          check_out_date: endDate,
+          estimated_arrival: estimatedArrival,
+          property_id: id,
+          guest_count: guestCount,
+          payment: reference,
+          pricing_option: selectedPricingOption,
+          total_price: calculateShortletPrice(),
+        };
+
+        const response = await bookingService.createBooking(bookingData);
+        toast.success("Booking created successfully");
+        navigate(`/${id}/receipt/${response?.data?._id}`);
+      }
     } catch (error) {
-      console.log(error);
-      toast.error("An error occurred while creating the booking");
+      console.error("Payment success error:", error);
+
+      // Provide more specific error messages
+      if (error.message === "Invalid payment reference received") {
+        toast.error("Payment verification failed. Please contact support.");
+      } else if (error.message === "Missing required tenant information") {
+        toast.error("Unable to process rental agreement. Please try again.");
+      } else if (error.response?.data?.message) {
+        toast.error(error.response.data.message);
+      } else {
+        toast.error("An error occurred while processing your request");
+      }
     }
   };
 
@@ -928,65 +1039,15 @@ export default function PropertyDetail() {
       return;
     }
 
-    // Update payment amount based on selected options
-    const paymentAmount = calculateInitialPayment();
+    // Show tenant agreement modal
+    setShowTenantAgreement(true);
+  };
 
-    // Create a new config for this specific payment
-    const paymentConfig = {
-      ...paystackConfig({
-        ...user,
-        amount: paymentAmount,
-      }),
-      metadata: {
-        custom_fields: [
-          {
-            display_name: "Customer Name",
-            variable_name: "customer_name",
-            value: user?.first_name + " " + user?.last_name,
-          },
-          {
-            display_name: "Customer ID",
-            variable_name: "customer_id",
-            value: user?._id,
-          },
-          {
-            display_name: "Property",
-            variable_name: "property_name",
-            value: property?.property_name || "",
-          },
-          {
-            display_name: "Booking Type",
-            variable_name: "booking_type",
-            value: "rent",
-          },
-          {
-            display_name: "Payment Period",
-            variable_name: "payment_period",
-            value: paymentPeriod,
-          },
-          {
-            display_name: "Payment Option",
-            variable_name: "payment_option",
-            value: paymentPeriod === "yearly" ? "yearly" : monthlyPaymentOption,
-          },
-        ],
-      },
-    };
-
-    // Initialize Paystack payment
-    const onSuccess = (response) => {
-      console.log("Payment response:", response);
-      handlePaymentSuccess(response);
-    };
-
-    const onClose = () => {
-      toast.error("Payment was not completed");
-    };
-
-    initializePayment({
-      onSuccess,
-      onClose,
-      config: paymentConfig,
+  const handleAgreeToTerms = () => {
+    setShowTenantAgreement(false);
+    // Navigate to tenant application page with property data
+    navigate(`/property/${id}/tenant-application`, {
+      state: { property },
     });
   };
 
@@ -1470,254 +1531,277 @@ export default function PropertyDetail() {
           <div className="lg:w-[35%]  sticky top-8">
             {property?.property_category === "shortlet" && (
               <div className="bg-white rounded-3xl p-6 shadow-lg">
-                <div className="flex justify-between items-start mb-6">
-                  {getActivePricing() ? (
-                    <div className="space-y-4 w-full">
-                      <div className="flex justify-between items-center w-full">
-                        <h3 className="text-lg font-semibold text-gray-800">
-                          Pricing Options
-                        </h3>
-                        {/* <div className="flex items-center gap-1 bg-gray-100 px-2 py-1 rounded-full">
-                          <span className="text-sm font-semibold">4.5</span>
-                          <span className="text-xs text-yellow-500">★</span>
-                        </div> */}
-                      </div>
+                {hasUserPaid ? (
+                  <div className="text-center py-8">
+                    <div className="bg-green-100 text-green-800 rounded-full p-3 w-16 h-16 mx-auto mb-4 flex items-center justify-center">
+                      <BsCheckCircle className="w-8 h-8" />
+                    </div>
+                    <h3 className="text-xl font-semibold text-gray-800 mb-2">
+                      You have already booked this property
+                    </h3>
+                    <p className="text-gray-600 mb-6">
+                      Your booking has been confirmed and payment has been
+                      processed.
+                    </p>
+                    <button
+                      onClick={() => navigate("/user/dashboard")}
+                      className="bg-blue-600 text-white px-6 py-2 rounded-lg hover:bg-blue-700 transition-colors"
+                    >
+                      View My Bookings
+                    </button>
+                  </div>
+                ) : (
+                  <div className="flex justify-between items-start mb-6">
+                    {getActivePricing() ? (
+                      <div className="space-y-4 w-full">
+                        <div className="flex justify-between items-center w-full">
+                          <h3 className="text-lg font-semibold text-gray-800">
+                            Pricing Options
+                          </h3>
+                          {/* <div className="flex items-center gap-1 bg-gray-100 px-2 py-1 rounded-full">
+                            <span className="text-sm font-semibold">4.5</span>
+                            <span className="text-xs text-yellow-500">★</span>
+                          </div> */}
+                        </div>
 
-                      {getActivePricing().type === "shortlet" ? (
-                        <div className="space-y-3 w-full">
-                          <div className="mb-4">
-                            <h4 className="text-sm font-medium text-gray-700 mb-2">
-                              Select pricing option:
-                            </h4>
-                            <div className="grid grid-cols-1 gap-2">
-                              {getActivePricing().options.day && (
-                                <button
-                                  type="button"
-                                  onClick={() =>
-                                    setSelectedPricingOption("day")
-                                  }
-                                  className={`flex flex-col p-4 rounded-lg border-2 transition-all ${
-                                    selectedPricingOption === "day"
-                                      ? "border-blue-500 bg-blue-50"
-                                      : "border-gray-200 bg-gray-50 hover:border-blue-300"
-                                  }`}
-                                >
-                                  <div className="flex justify-between items-center w-full mb-2">
-                                    <div>
-                                      <p className="font-bold text-gray-900">
-                                        {fCurrency(
-                                          getActivePricing().options.day
-                                            .base_price
-                                        )}
-                                      </p>
-                                      <p className="text-xs text-gray-500">
-                                        per day
-                                      </p>
+                        {getActivePricing().type === "shortlet" ? (
+                          <div className="space-y-3 w-full">
+                            <div className="mb-4">
+                              <h4 className="text-sm font-medium text-gray-700 mb-2">
+                                Select pricing option:
+                              </h4>
+                              <div className="grid grid-cols-1 gap-2">
+                                {getActivePricing().options.day && (
+                                  <button
+                                    type="button"
+                                    onClick={() =>
+                                      setSelectedPricingOption("day")
+                                    }
+                                    className={`flex flex-col p-4 rounded-lg border-2 transition-all ${
+                                      selectedPricingOption === "day"
+                                        ? "border-blue-500 bg-blue-50"
+                                        : "border-gray-200 bg-gray-50 hover:border-blue-300"
+                                    }`}
+                                  >
+                                    <div className="flex justify-between items-center w-full mb-2">
+                                      <div>
+                                        <p className="font-bold text-gray-900">
+                                          {fCurrency(
+                                            getActivePricing().options.day
+                                              .base_price
+                                          )}
+                                        </p>
+                                        <p className="text-xs text-gray-500">
+                                          per day
+                                        </p>
+                                      </div>
+                                      <div className="bg-blue-100 text-blue-800 text-xs font-medium px-2.5 py-0.5 rounded">
+                                        Daily Rate
+                                      </div>
                                     </div>
-                                    <div className="bg-blue-100 text-blue-800 text-xs font-medium px-2.5 py-0.5 rounded">
-                                      Daily Rate
-                                    </div>
-                                  </div>
 
-                                  <div className="border-t border-gray-200 pt-2 w-full">
-                                    <div className="flex justify-between text-xs text-gray-600">
-                                      <span>Base price:</span>
-                                      <span>
-                                        {fCurrency(
-                                          getActivePricing().options.day
-                                            .base_price
-                                        )}
-                                      </span>
+                                    <div className="border-t border-gray-200 pt-2 w-full">
+                                      <div className="flex justify-between text-xs text-gray-600">
+                                        <span>Base price:</span>
+                                        <span>
+                                          {fCurrency(
+                                            getActivePricing().options.day
+                                              .base_price
+                                          )}
+                                        </span>
+                                      </div>
+                                      <div className="flex justify-between text-xs text-gray-600">
+                                        <span>Cleaning fee:</span>
+                                        <span>
+                                          {fCurrency(
+                                            getActivePricing().options.day
+                                              .cleaning_fee
+                                          )}
+                                        </span>
+                                      </div>
+                                      <div className="flex justify-between text-xs text-gray-600">
+                                        <span>Security deposit:</span>
+                                        <span>
+                                          {fCurrency(
+                                            getActivePricing().options.day
+                                              .security_deposit
+                                          )}
+                                        </span>
+                                      </div>
+                                      <div className="flex justify-between text-xs font-semibold text-gray-800 mt-1 pt-1 border-t border-gray-200">
+                                        <span>Total per day:</span>
+                                        <span>
+                                          {fCurrency(
+                                            getActivePricing().options.day.total
+                                          )}
+                                        </span>
+                                      </div>
                                     </div>
-                                    <div className="flex justify-between text-xs text-gray-600">
-                                      <span>Cleaning fee:</span>
-                                      <span>
-                                        {fCurrency(
-                                          getActivePricing().options.day
-                                            .cleaning_fee
-                                        )}
-                                      </span>
-                                    </div>
-                                    <div className="flex justify-between text-xs text-gray-600">
-                                      <span>Security deposit:</span>
-                                      <span>
-                                        {fCurrency(
-                                          getActivePricing().options.day
-                                            .security_deposit
-                                        )}
-                                      </span>
-                                    </div>
-                                    <div className="flex justify-between text-xs font-semibold text-gray-800 mt-1 pt-1 border-t border-gray-200">
-                                      <span>Total per day:</span>
-                                      <span>
-                                        {fCurrency(
-                                          getActivePricing().options.day.total
-                                        )}
-                                      </span>
-                                    </div>
-                                  </div>
-                                </button>
-                              )}
+                                  </button>
+                                )}
 
-                              {getActivePricing().options.week && (
-                                <button
-                                  type="button"
-                                  onClick={() =>
-                                    setSelectedPricingOption("week")
-                                  }
-                                  className={`flex flex-col p-4 rounded-lg border-2 transition-all ${
-                                    selectedPricingOption === "week"
-                                      ? "border-blue-500 bg-blue-50"
-                                      : "border-gray-200 bg-gray-50 hover:border-blue-300"
-                                  }`}
-                                >
-                                  <div className="flex justify-between items-center w-full mb-2">
-                                    <div>
-                                      <p className="font-bold text-gray-900">
-                                        {fCurrency(
-                                          getActivePricing().options.week
-                                            .base_price
-                                        )}
-                                      </p>
-                                      <p className="text-xs text-gray-500">
-                                        per week
-                                      </p>
+                                {getActivePricing().options.week && (
+                                  <button
+                                    type="button"
+                                    onClick={() =>
+                                      setSelectedPricingOption("week")
+                                    }
+                                    className={`flex flex-col p-4 rounded-lg border-2 transition-all ${
+                                      selectedPricingOption === "week"
+                                        ? "border-blue-500 bg-blue-50"
+                                        : "border-gray-200 bg-gray-50 hover:border-blue-300"
+                                    }`}
+                                  >
+                                    <div className="flex justify-between items-center w-full mb-2">
+                                      <div>
+                                        <p className="font-bold text-gray-900">
+                                          {fCurrency(
+                                            getActivePricing().options.week
+                                              .base_price
+                                          )}
+                                        </p>
+                                        <p className="text-xs text-gray-500">
+                                          per week
+                                        </p>
+                                      </div>
+                                      <div className="bg-green-100 text-green-800 text-xs font-medium px-2.5 py-0.5 rounded">
+                                        Weekly Rate
+                                      </div>
                                     </div>
-                                    <div className="bg-green-100 text-green-800 text-xs font-medium px-2.5 py-0.5 rounded">
-                                      Weekly Rate
-                                    </div>
-                                  </div>
 
-                                  <div className="border-t border-gray-200 pt-2 w-full">
-                                    <div className="flex justify-between text-xs text-gray-600">
-                                      <span>Base price:</span>
-                                      <span>
-                                        {fCurrency(
-                                          getActivePricing().options.week
-                                            .base_price
-                                        )}
-                                      </span>
+                                    <div className="border-t border-gray-200 pt-2 w-full">
+                                      <div className="flex justify-between text-xs text-gray-600">
+                                        <span>Base price:</span>
+                                        <span>
+                                          {fCurrency(
+                                            getActivePricing().options.week
+                                              .base_price
+                                          )}
+                                        </span>
+                                      </div>
+                                      <div className="flex justify-between text-xs text-gray-600">
+                                        <span>Cleaning fee:</span>
+                                        <span>
+                                          {fCurrency(
+                                            getActivePricing().options.week
+                                              .cleaning_fee
+                                          )}
+                                        </span>
+                                      </div>
+                                      <div className="flex justify-between text-xs text-gray-600">
+                                        <span>Security deposit:</span>
+                                        <span>
+                                          {fCurrency(
+                                            getActivePricing().options.week
+                                              .security_deposit
+                                          )}
+                                        </span>
+                                      </div>
+                                      <div className="flex justify-between text-xs font-semibold text-gray-800 mt-1 pt-1 border-t border-gray-200">
+                                        <span>Total per week:</span>
+                                        <span>
+                                          {fCurrency(
+                                            getActivePricing().options.week
+                                              .total
+                                          )}
+                                        </span>
+                                      </div>
                                     </div>
-                                    <div className="flex justify-between text-xs text-gray-600">
-                                      <span>Cleaning fee:</span>
-                                      <span>
-                                        {fCurrency(
-                                          getActivePricing().options.week
-                                            .cleaning_fee
-                                        )}
-                                      </span>
-                                    </div>
-                                    <div className="flex justify-between text-xs text-gray-600">
-                                      <span>Security deposit:</span>
-                                      <span>
-                                        {fCurrency(
-                                          getActivePricing().options.week
-                                            .security_deposit
-                                        )}
-                                      </span>
-                                    </div>
-                                    <div className="flex justify-between text-xs font-semibold text-gray-800 mt-1 pt-1 border-t border-gray-200">
-                                      <span>Total per week:</span>
-                                      <span>
-                                        {fCurrency(
-                                          getActivePricing().options.week.total
-                                        )}
-                                      </span>
-                                    </div>
-                                  </div>
-                                </button>
-                              )}
+                                  </button>
+                                )}
 
-                              {getActivePricing().options.month && (
-                                <button
-                                  type="button"
-                                  onClick={() =>
-                                    setSelectedPricingOption("month")
-                                  }
-                                  className={`flex flex-col p-4 rounded-lg border-2 transition-all ${
-                                    selectedPricingOption === "month"
-                                      ? "border-blue-500 bg-blue-50"
-                                      : "border-gray-200 bg-gray-50 hover:border-blue-300"
-                                  }`}
-                                >
-                                  <div className="flex justify-between items-center w-full mb-2">
-                                    <div>
-                                      <p className="font-bold text-gray-900">
-                                        {fCurrency(
-                                          getActivePricing().options.month
-                                            .base_price
-                                        )}
-                                      </p>
-                                      <p className="text-xs text-gray-500">
-                                        per month
-                                      </p>
+                                {getActivePricing().options.month && (
+                                  <button
+                                    type="button"
+                                    onClick={() =>
+                                      setSelectedPricingOption("month")
+                                    }
+                                    className={`flex flex-col p-4 rounded-lg border-2 transition-all ${
+                                      selectedPricingOption === "month"
+                                        ? "border-blue-500 bg-blue-50"
+                                        : "border-gray-200 bg-gray-50 hover:border-blue-300"
+                                    }`}
+                                  >
+                                    <div className="flex justify-between items-center w-full mb-2">
+                                      <div>
+                                        <p className="font-bold text-gray-900">
+                                          {fCurrency(
+                                            getActivePricing().options.month
+                                              .base_price
+                                          )}
+                                        </p>
+                                        <p className="text-xs text-gray-500">
+                                          per month
+                                        </p>
+                                      </div>
+                                      <div className="bg-purple-100 text-purple-800 text-xs font-medium px-2.5 py-0.5 rounded">
+                                        Monthly Rate
+                                      </div>
                                     </div>
-                                    <div className="bg-purple-100 text-purple-800 text-xs font-medium px-2.5 py-0.5 rounded">
-                                      Monthly Rate
-                                    </div>
-                                  </div>
 
-                                  <div className="border-t border-gray-200 pt-2 w-full">
-                                    <div className="flex justify-between text-xs text-gray-600">
-                                      <span>Base price:</span>
-                                      <span>
-                                        {fCurrency(
-                                          getActivePricing().options.month
-                                            .base_price
-                                        )}
-                                      </span>
+                                    <div className="border-t border-gray-200 pt-2 w-full">
+                                      <div className="flex justify-between text-xs text-gray-600">
+                                        <span>Base price:</span>
+                                        <span>
+                                          {fCurrency(
+                                            getActivePricing().options.month
+                                              .base_price
+                                          )}
+                                        </span>
+                                      </div>
+                                      <div className="flex justify-between text-xs text-gray-600">
+                                        <span>Cleaning fee:</span>
+                                        <span>
+                                          {fCurrency(
+                                            getActivePricing().options.month
+                                              .cleaning_fee
+                                          )}
+                                        </span>
+                                      </div>
+                                      <div className="flex justify-between text-xs text-gray-600">
+                                        <span>Security deposit:</span>
+                                        <span>
+                                          {fCurrency(
+                                            getActivePricing().options.month
+                                              .security_deposit
+                                          )}
+                                        </span>
+                                      </div>
+                                      <div className="flex justify-between text-xs font-semibold text-gray-800 mt-1 pt-1 border-t border-gray-200">
+                                        <span>Total per month:</span>
+                                        <span>
+                                          {fCurrency(
+                                            getActivePricing().options.month
+                                              .total
+                                          )}
+                                        </span>
+                                      </div>
                                     </div>
-                                    <div className="flex justify-between text-xs text-gray-600">
-                                      <span>Cleaning fee:</span>
-                                      <span>
-                                        {fCurrency(
-                                          getActivePricing().options.month
-                                            .cleaning_fee
-                                        )}
-                                      </span>
-                                    </div>
-                                    <div className="flex justify-between text-xs text-gray-600">
-                                      <span>Security deposit:</span>
-                                      <span>
-                                        {fCurrency(
-                                          getActivePricing().options.month
-                                            .security_deposit
-                                        )}
-                                      </span>
-                                    </div>
-                                    <div className="flex justify-between text-xs font-semibold text-gray-800 mt-1 pt-1 border-t border-gray-200">
-                                      <span>Total per month:</span>
-                                      <span>
-                                        {fCurrency(
-                                          getActivePricing().options.month.total
-                                        )}
-                                      </span>
-                                    </div>
-                                  </div>
-                                </button>
-                              )}
+                                  </button>
+                                )}
+                              </div>
                             </div>
                           </div>
-                        </div>
-                      ) : (
-                        <div>
-                          <p className="text-2xl font-bold mb-1">
-                            {fCurrency(getActivePricing().price)}
-                          </p>
-                          <p className="text-gray-600">
-                            per {getActivePricing().period}
-                          </p>
-                        </div>
-                      )}
-                    </div>
-                  ) : (
-                    <div>
-                      <p className="text-xl text-gray-600">
-                        Contact for pricing
-                      </p>
-                    </div>
-                  )}
-                </div>
+                        ) : (
+                          <div>
+                            <p className="text-2xl font-bold mb-1">
+                              {fCurrency(getActivePricing().price)}
+                            </p>
+                            <p className="text-gray-600">
+                              per {getActivePricing().period}
+                            </p>
+                          </div>
+                        )}
+                      </div>
+                    ) : (
+                      <div>
+                        <p className="text-xl text-gray-600">
+                          Contact for pricing
+                        </p>
+                      </div>
+                    )}
+                  </div>
+                )}
 
                 <div className="border rounded-xl p-4 mb-4">
                   <div className="mb-4">
@@ -2086,254 +2170,273 @@ export default function PropertyDetail() {
 
             {property?.property_category === "rent" && (
               <div className="bg-white rounded-3xl p-6 shadow-lg">
-                <div className="flex flex-col gap-4">
-                  {/* Payment Breakdown */}
-                  <div className="bg-gray-50 rounded-2xl p-4 mb-4">
-                    <h4 className="font-semibold text-gray-800 mb-3">
-                      Payment Breakdown
-                    </h4>
-                    <div className="space-y-2 text-sm">
-                      <div className="flex justify-between">
-                        <span>Yearly rent:</span>
-                        <span>
-                          {fCurrency(
-                            property?.pricing?.rent_per_year?.annual_rent || 0
-                          )}
-                        </span>
-                      </div>
-                      {property?.pricing?.rent_per_year
-                        ?.is_agency_fee_active && (
-                        <div className="flex justify-between">
-                          <span>Agency fee:</span>
-                          <span>
-                            {fCurrency(
-                              property?.pricing?.rent_per_year?.agency_fee || 0
-                            )}
-                          </span>
-                        </div>
-                      )}
-                      {property?.pricing?.rent_per_year
-                        ?.is_commission_fee_active && (
-                        <div className="flex justify-between">
-                          <span>Agreement fee:</span>
-                          <span>
-                            {fCurrency(
-                              property?.pricing?.rent_per_year
-                                ?.commission_fee || 0
-                            )}
-                          </span>
-                        </div>
-                      )}
-                      {property?.pricing?.rent_per_year
-                        ?.is_caution_fee_active && (
-                        <div className="flex justify-between">
-                          <span>Caution fee:</span>
-                          <span>
-                            {fCurrency(
-                              property?.pricing?.rent_per_year?.caution_fee || 0
-                            )}
-                          </span>
-                        </div>
-                      )}
-                      {property?.pricing?.rent_per_year
-                        ?.is_legal_fee_active && (
-                        <div className="flex justify-between">
-                          <span>Legal fee:</span>
-                          <span>
-                            {fCurrency(
-                              property?.pricing?.rent_per_year?.legal_fee || 0
-                            )}
-                          </span>
-                        </div>
-                      )}
+                {hasUserPaid ? (
+                  <div className="text-center py-8">
+                    <div className="bg-green-100 text-green-800 rounded-full p-3 w-16 h-16 mx-auto mb-4 flex items-center justify-center">
+                      <BsCheckCircle className="w-8 h-8" />
                     </div>
-                  </div>
-
-                  {/* Payment Options */}
-                  <div className="space-y-3">
-                    <h4 className="font-semibold text-gray-800">
-                      Choose Payment Option
-                    </h4>
-
-                    {/* One Year Payment Option */}
-                    <div
-                      className={`border-2 rounded-2xl p-4 cursor-pointer transition-all ${
-                        paymentPeriod === "yearly"
-                          ? "border-blue-500 bg-blue-50"
-                          : "border-gray-200 hover:border-blue-300"
-                      }`}
-                      onClick={() => setPaymentPeriod("yearly")}
-                    >
-                      <div className="flex items-center justify-between">
-                        <div className="flex items-center gap-3">
-                          <div
-                            className={`w-5 h-5 rounded-full border-2 flex items-center justify-center ${
-                              paymentPeriod === "yearly"
-                                ? "border-blue-500 bg-blue-500"
-                                : "border-gray-300"
-                            }`}
-                          >
-                            {paymentPeriod === "yearly" && (
-                              <div className="w-2 h-2 bg-white rounded-full"></div>
-                            )}
-                          </div>
-                          <div>
-                            <p className="font-bold text-lg">One year</p>
-                            <p className="text-sm text-gray-600">0% interest</p>
-                          </div>
-                        </div>
-                        <div className="text-right">
-                          <p className="font-bold text-lg text-blue-600">
-                            {fCurrency(calculateStaticYearlyTotal())}
-                          </p>
-                          <p className="text-sm text-gray-500">Total amount</p>
-                        </div>
-                      </div>
-                    </div>
-
-                    {/* Six Months Payment Option */}
-                    <div
-                      className={`border-2 rounded-2xl p-4 cursor-pointer transition-all ${
-                        paymentPeriod === "6months"
-                          ? "border-blue-500 bg-blue-50"
-                          : "border-gray-200 hover:border-blue-300"
-                      }`}
-                      onClick={() => {
-                        setPaymentPeriod("6months");
-                        setMonthlyPaymentOption("6months");
-                      }}
-                    >
-                      <div className="flex items-center justify-between">
-                        <div className="flex items-center gap-3">
-                          <div
-                            className={`w-5 h-5 rounded-full border-2 flex items-center justify-center ${
-                              paymentPeriod === "6months"
-                                ? "border-blue-500 bg-blue-500"
-                                : "border-gray-300"
-                            }`}
-                          >
-                            {paymentPeriod === "6months" && (
-                              <div className="w-2 h-2 bg-white rounded-full"></div>
-                            )}
-                          </div>
-                          <div>
-                            <p className="font-bold text-lg">Six months</p>
-                            <p className="text-sm text-gray-600">
-                              1.5% monthly interest
-                            </p>
-                          </div>
-                        </div>
-                        <div className="text-right">
-                          <p className="font-bold text-lg text-blue-600">
-                            {fCurrency(calculate6MonthsPayment() * 6)}
-                          </p>
-                          <p className="text-sm text-gray-500">
-                            {fCurrency(calculate6MonthsPayment())}/month
-                          </p>
-                        </div>
-                      </div>
-                    </div>
-
-                    {/* 12 Months Payment Option */}
-                    <div
-                      className={`border-2 rounded-2xl p-4 cursor-pointer transition-all ${
-                        paymentPeriod === "12months"
-                          ? "border-blue-500 bg-blue-50"
-                          : "border-gray-200 hover:border-blue-300"
-                      }`}
-                      onClick={() => {
-                        setPaymentPeriod("12months");
-                        setMonthlyPaymentOption("12months");
-                      }}
-                    >
-                      <div className="flex items-center justify-between">
-                        <div className="flex items-center gap-3">
-                          <div
-                            className={`w-5 h-5 rounded-full border-2 flex items-center justify-center ${
-                              paymentPeriod === "12months"
-                                ? "border-blue-500 bg-blue-500"
-                                : "border-gray-300"
-                            }`}
-                          >
-                            {paymentPeriod === "12months" && (
-                              <div className="w-2 h-2 bg-white rounded-full"></div>
-                            )}
-                          </div>
-                          <div>
-                            <p className="font-bold text-lg">12 months</p>
-                            <p className="text-sm text-gray-600">
-                              2% monthly interest
-                            </p>
-                          </div>
-                        </div>
-                        <div className="text-right">
-                          <p className="font-bold text-lg text-blue-600">
-                            {fCurrency(calculate12MonthsPayment() * 12)}
-                          </p>
-                          <p className="text-sm text-gray-500">
-                            {fCurrency(calculate12MonthsPayment())}/month
-                          </p>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-
-                  {user &&
-                    user?._id !== property?.owner._id &&
-                    !kycVerified && (
-                      <div className="mt-4 mb-2">
-                        <KycVerificationStatus
-                          requiredTier="tier1"
-                          actionText="Continue to Payment"
-                          onVerified={() => setKycVerified(true)}
-                        />
-                      </div>
-                    )}
-                  {/* Book Now Button */}
-                  {user?._id === property?.owner._id ? (
+                    <h3 className="text-xl font-semibold text-gray-800 mb-2">
+                      You have already paid for this property
+                    </h3>
+                    <p className="text-gray-600 mb-6">
+                      Your rental application has been submitted and payment has
+                      been processed.
+                    </p>
                     <button
-                      onClick={handleEdit}
-                      className="w-full bg-blue-600 text-white py-3 rounded-xl font-medium hover:bg-blue-700 mt-4"
+                      onClick={() => navigate("/user/rentals")}
+                      className="bg-blue-600 text-white px-6 py-2 rounded-lg hover:bg-blue-700 transition-colors"
                     >
-                      Edit
+                      View My Rentals
                     </button>
-                  ) : (
-                    <>
+                  </div>
+                ) : (
+                  <div className="flex flex-col gap-4">
+                    {/* Payment Breakdown */}
+                    <div className="bg-gray-50 rounded-2xl p-4 mb-4">
+                      <h4 className="font-semibold text-gray-800 mb-3">
+                        Payment Breakdown
+                      </h4>
+                      <div className="space-y-2 text-sm">
+                        <div className="flex justify-between">
+                          <span>Yearly rent:</span>
+                          <span>
+                            {fCurrency(
+                              property?.pricing?.rent_per_year?.annual_rent || 0
+                            )}
+                          </span>
+                        </div>
+                        {property?.pricing?.rent_per_year
+                          ?.is_agency_fee_active && (
+                          <div className="flex justify-between">
+                            <span>Agency fee:</span>
+                            <span>
+                              {fCurrency(
+                                property?.pricing?.rent_per_year?.agency_fee ||
+                                  0
+                              )}
+                            </span>
+                          </div>
+                        )}
+                        {property?.pricing?.rent_per_year
+                          ?.is_commission_fee_active && (
+                          <div className="flex justify-between">
+                            <span>Agreement fee:</span>
+                            <span>
+                              {fCurrency(
+                                property?.pricing?.rent_per_year
+                                  ?.commission_fee || 0
+                              )}
+                            </span>
+                          </div>
+                        )}
+                        {property?.pricing?.rent_per_year
+                          ?.is_caution_fee_active && (
+                          <div className="flex justify-between">
+                            <span>Caution fee:</span>
+                            <span>
+                              {fCurrency(
+                                property?.pricing?.rent_per_year?.caution_fee ||
+                                  0
+                              )}
+                            </span>
+                          </div>
+                        )}
+                        {property?.pricing?.rent_per_year
+                          ?.is_legal_fee_active && (
+                          <div className="flex justify-between">
+                            <span>Legal fee:</span>
+                            <span>
+                              {fCurrency(
+                                property?.pricing?.rent_per_year?.legal_fee || 0
+                              )}
+                            </span>
+                          </div>
+                        )}
+                      </div>
+                    </div>
+
+                    {/* Payment Options */}
+                    <div className="space-y-3">
+                      <h4 className="font-semibold text-gray-800">
+                        Choose Payment Option
+                      </h4>
+
+                      {/* One Year Payment Option */}
+                      <div
+                        className={`border-2 rounded-2xl p-4 cursor-pointer transition-all ${
+                          paymentPeriod === "yearly"
+                            ? "border-blue-500 bg-blue-50"
+                            : "border-gray-200 hover:border-blue-300"
+                        }`}
+                        onClick={() => setPaymentPeriod("yearly")}
+                      >
+                        <div className="flex items-center justify-between">
+                          <div className="flex items-center gap-3">
+                            <div
+                              className={`w-5 h-5 rounded-full border-2 flex items-center justify-center ${
+                                paymentPeriod === "yearly"
+                                  ? "border-blue-500 bg-blue-500"
+                                  : "border-gray-300"
+                              }`}
+                            >
+                              {paymentPeriod === "yearly" && (
+                                <div className="w-2 h-2 bg-white rounded-full"></div>
+                              )}
+                            </div>
+                            <div>
+                              <p className="font-bold text-lg">One year</p>
+                              <p className="text-sm text-gray-600">
+                                0% interest
+                              </p>
+                            </div>
+                          </div>
+                          <div className="text-right">
+                            <p className="font-bold text-lg text-blue-600">
+                              {fCurrency(calculateStaticYearlyTotal())}
+                            </p>
+                            <p className="text-sm text-gray-500">
+                              Total amount
+                            </p>
+                          </div>
+                        </div>
+                      </div>
+
+                      {/* Six Months Payment Option */}
+                      <div
+                        className={`border-2 rounded-2xl p-4 cursor-pointer transition-all ${
+                          paymentPeriod === "6months"
+                            ? "border-blue-500 bg-blue-50"
+                            : "border-gray-200 hover:border-blue-300"
+                        }`}
+                        onClick={() => {
+                          setPaymentPeriod("6months");
+                          setMonthlyPaymentOption("6months");
+                        }}
+                      >
+                        <div className="flex items-center justify-between">
+                          <div className="flex items-center gap-3">
+                            <div
+                              className={`w-5 h-5 rounded-full border-2 flex items-center justify-center ${
+                                paymentPeriod === "6months"
+                                  ? "border-blue-500 bg-blue-500"
+                                  : "border-gray-300"
+                              }`}
+                            >
+                              {paymentPeriod === "6months" && (
+                                <div className="w-2 h-2 bg-white rounded-full"></div>
+                              )}
+                            </div>
+                            <div>
+                              <p className="font-bold text-lg">Six months</p>
+                              <p className="text-sm text-gray-600">
+                                1.5% monthly interest
+                              </p>
+                            </div>
+                          </div>
+                          <div className="text-right">
+                            <p className="font-bold text-lg text-blue-600">
+                              {fCurrency(calculate6MonthsPayment() * 6)}
+                            </p>
+                            <p className="text-sm text-gray-500">
+                              {fCurrency(calculate6MonthsPayment())}/month
+                            </p>
+                          </div>
+                        </div>
+                      </div>
+
+                      {/* 12 Months Payment Option */}
+                      <div
+                        className={`border-2 rounded-2xl p-4 cursor-pointer transition-all ${
+                          paymentPeriod === "12months"
+                            ? "border-blue-500 bg-blue-50"
+                            : "border-gray-200 hover:border-blue-300"
+                        }`}
+                        onClick={() => {
+                          setPaymentPeriod("12months");
+                          setMonthlyPaymentOption("12months");
+                        }}
+                      >
+                        <div className="flex items-center justify-between">
+                          <div className="flex items-center gap-3">
+                            <div
+                              className={`w-5 h-5 rounded-full border-2 flex items-center justify-center ${
+                                paymentPeriod === "12months"
+                                  ? "border-blue-500 bg-blue-500"
+                                  : "border-gray-300"
+                              }`}
+                            >
+                              {paymentPeriod === "12months" && (
+                                <div className="w-2 h-2 bg-white rounded-full"></div>
+                              )}
+                            </div>
+                            <div>
+                              <p className="font-bold text-lg">12 months</p>
+                              <p className="text-sm text-gray-600">
+                                2% monthly interest
+                              </p>
+                            </div>
+                          </div>
+                          <div className="text-right">
+                            <p className="font-bold text-lg text-blue-600">
+                              {fCurrency(calculate12MonthsPayment() * 12)}
+                            </p>
+                            <p className="text-sm text-gray-500">
+                              {fCurrency(calculate12MonthsPayment())}/month
+                            </p>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+
+                    {user &&
+                      user?._id !== property?.owner._id &&
+                      !kycVerified && (
+                        <div className="mt-4 mb-2">
+                          <KycVerificationStatus
+                            requiredTier="tier1"
+                            actionText="Continue to Payment"
+                            onVerified={() => setKycVerified(true)}
+                          />
+                        </div>
+                      )}
+                    {/* Book Now Button */}
+                    {user?._id === property?.owner._id ? (
                       <button
-                        onClick={handleRentNow}
+                        onClick={handleEdit}
                         className="w-full bg-blue-600 text-white py-3 rounded-xl font-medium hover:bg-blue-700 mt-4"
                       >
-                        {paymentPeriod === "yearly"
-                          ? `Pay ${fCurrency(calculateTotalRent())}`
-                          : paymentPeriod === "6months"
-                          ? `Pay ${fCurrency(
-                              calculate6MonthsPayment()
-                            )} (First Month)`
-                          : `Pay ${fCurrency(
-                              calculate12MonthsPayment()
-                            )} (First Month)`}
+                        Edit
                       </button>
+                    ) : (
+                      <>
+                        <button
+                          onClick={handleRentNow}
+                          className="w-full bg-blue-600 text-white py-3 rounded-xl font-medium hover:bg-blue-700 mt-4"
+                        >
+                          Start Rental Application
+                        </button>
 
-                      {/* Pay Monthly Button */}
-                      <button
-                        onClick={() => setShowRNPLWaitlistForm(true)}
-                        className="w-full bg-primary-900 text-white py-3 rounded-xl font-medium hover:bg-primary-800 mt-3 flex items-center justify-center gap-2"
-                      >
-                        <FiCreditCard className="w-4 h-4" />
-                        Pay Monthly
-                      </button>
+                        {/* Pay Monthly Button */}
+                        <button
+                          onClick={() => setShowRNPLWaitlistForm(true)}
+                          className="w-full bg-primary-900 text-white py-3 rounded-xl font-medium hover:bg-primary-800 mt-3 flex items-center justify-center gap-2"
+                        >
+                          <FiCreditCard className="w-4 h-4" />
+                          Pay Monthly
+                        </button>
 
-                      {/* Inspection Request Button */}
-                      <button
-                        onClick={() => setShowInspectionForm(true)}
-                        className="w-full bg-gray-100 text-gray-700 py-3 rounded-xl font-medium hover:bg-gray-200 mt-3 flex items-center justify-center gap-2"
-                      >
-                        <BsCalendar className="w-4 h-4" />
-                        Request Inspection
-                      </button>
-                    </>
-                  )}
-                </div>
+                        {/* Inspection Request Button */}
+                        <button
+                          onClick={() => setShowInspectionForm(true)}
+                          className="w-full bg-gray-100 text-gray-700 py-3 rounded-xl font-medium hover:bg-gray-200 mt-3 flex items-center justify-center gap-2"
+                        >
+                          <BsCalendar className="w-4 h-4" />
+                          Request Inspection
+                        </button>
+                      </>
+                    )}
+                  </div>
+                )}
               </div>
             )}
           </div>
@@ -2482,6 +2585,14 @@ export default function PropertyDetail() {
       <RNPLWaitlistForm
         isOpen={showRNPLWaitlistForm}
         onClose={() => setShowRNPLWaitlistForm(false)}
+      />
+
+      {/* Tenant Agreement Modal */}
+      <TenantAgreementModal
+        isOpen={showTenantAgreement}
+        onClose={() => setShowTenantAgreement(false)}
+        onAgree={handleAgreeToTerms}
+        propertyName={property?.property_name}
       />
     </div>
   );

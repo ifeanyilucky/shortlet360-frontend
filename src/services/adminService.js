@@ -125,6 +125,41 @@ const adminService = {
   updateTier3Verification: (userId, data) => {
     return api.patch(`/admin/kyc/${userId}/tier3`, data);
   },
+
+  // Tenant Management
+  getAllTenants: (params) => {
+    return api.get(`/admin/tenants`, { params }).then((res) => res.data);
+  },
+
+  getTenantById: (id) => {
+    return api.get(`/admin/tenants/${id}`);
+  },
+
+  updateTenantStatus: (id, status) => {
+    return api.patch(`/admin/tenants/${id}/status`, { lease_status: status });
+  },
+
+  updateTenantPaymentStatus: (id, status) => {
+    return api.patch(`/admin/tenants/${id}/payment-status`, {
+      payment_status: status,
+    });
+  },
+
+  deleteTenant: (id) => {
+    return api.delete(`/admin/tenants/${id}`);
+  },
+
+  getTenantStatistics: () => {
+    return api.get(`/admin/tenants/statistics`);
+  },
+
+  addRentPayment: (id, data) => {
+    return api.post(`/admin/tenants/${id}/rent-payment`, data);
+  },
+
+  updateMaintenanceRequest: (id, requestId, data) => {
+    return api.patch(`/admin/tenants/${id}/maintenance/${requestId}`, data);
+  },
 };
 
 export default adminService;

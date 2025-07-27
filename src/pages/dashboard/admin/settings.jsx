@@ -33,8 +33,12 @@ export default function AdminSettings() {
 
   const handleProfileSubmit = async (e) => {
     e.preventDefault();
-    
-    if (!profileData.first_name || !profileData.last_name || !profileData.email) {
+
+    if (
+      !profileData.first_name ||
+      !profileData.last_name ||
+      !profileData.email
+    ) {
       toast.error("Please fill in all required fields");
       return;
     }
@@ -53,8 +57,12 @@ export default function AdminSettings() {
 
   const handlePasswordSubmit = async (e) => {
     e.preventDefault();
-    
-    if (!passwordData.current_password || !passwordData.new_password || !passwordData.confirm_password) {
+
+    if (
+      !passwordData.current_password ||
+      !passwordData.new_password ||
+      !passwordData.confirm_password
+    ) {
       toast.error("Please fill in all password fields");
       return;
     }
@@ -72,8 +80,8 @@ export default function AdminSettings() {
     try {
       setLoading((prev) => ({ ...prev, password: true }));
       await changePassword({
-        old_password: passwordData.current_password,
-        new_password: passwordData.new_password,
+        currentPassword: passwordData.current_password,
+        newPassword: passwordData.new_password,
       });
       toast.success("Password changed successfully");
       setPasswordData({
@@ -158,9 +166,25 @@ export default function AdminSettings() {
                 >
                   {loading.profile ? (
                     <span className="flex items-center">
-                      <svg className="animate-spin -ml-1 mr-2 h-4 w-4 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-                        <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
-                        <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                      <svg
+                        className="animate-spin -ml-1 mr-2 h-4 w-4 text-white"
+                        xmlns="http://www.w3.org/2000/svg"
+                        fill="none"
+                        viewBox="0 0 24 24"
+                      >
+                        <circle
+                          className="opacity-25"
+                          cx="12"
+                          cy="12"
+                          r="10"
+                          stroke="currentColor"
+                          strokeWidth="4"
+                        ></circle>
+                        <path
+                          className="opacity-75"
+                          fill="currentColor"
+                          d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+                        ></path>
                       </svg>
                       Saving...
                     </span>
@@ -232,9 +256,25 @@ export default function AdminSettings() {
                 >
                   {loading.password ? (
                     <span className="flex items-center">
-                      <svg className="animate-spin -ml-1 mr-2 h-4 w-4 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-                        <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
-                        <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                      <svg
+                        className="animate-spin -ml-1 mr-2 h-4 w-4 text-white"
+                        xmlns="http://www.w3.org/2000/svg"
+                        fill="none"
+                        viewBox="0 0 24 24"
+                      >
+                        <circle
+                          className="opacity-25"
+                          cx="12"
+                          cy="12"
+                          r="10"
+                          stroke="currentColor"
+                          strokeWidth="4"
+                        ></circle>
+                        <path
+                          className="opacity-75"
+                          fill="currentColor"
+                          d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+                        ></path>
                       </svg>
                       Changing...
                     </span>
@@ -265,11 +305,17 @@ export default function AdminSettings() {
           </div>
           <div>
             <p className="text-sm font-medium text-gray-500">Account Status</p>
-            <p className="text-base font-medium">{user?.is_active ? "Active" : "Inactive"}</p>
+            <p className="text-base font-medium">
+              {user?.is_active ? "Active" : "Inactive"}
+            </p>
           </div>
           <div>
-            <p className="text-sm font-medium text-gray-500">Email Verification</p>
-            <p className="text-base font-medium">{user?.is_verified ? "Verified" : "Unverified"}</p>
+            <p className="text-sm font-medium text-gray-500">
+              Email Verification
+            </p>
+            <p className="text-base font-medium">
+              {user?.is_verified ? "Verified" : "Unverified"}
+            </p>
           </div>
         </div>
       </div>

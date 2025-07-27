@@ -158,7 +158,7 @@ export default function About() {
               <img
                 src="/images/what-set-aplets-apart.jpeg"
                 alt="What sets Aplet360 apart from the rest"
-                className="w-full max-w-4xl mx-auto rounded-2xl shadow-lg"
+                className="w-full max-w-xl mx-auto rounded-2xl shadow-lg"
               />
             </div>
 
@@ -331,7 +331,7 @@ export default function About() {
             <img
               src="/images/statistics.jpeg"
               alt="Aplet360 Statistics"
-              className="w-full max-w-4xl mx-auto rounded-2xl shadow-lg"
+              className="w-full max-w-xl mx-auto rounded-2xl shadow-lg"
             />
           </div>
 

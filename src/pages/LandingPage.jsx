@@ -392,7 +392,7 @@ export default function LandingPage() {
             <img
               src="/images/rent-apartment-4-simple-steps.jpeg"
               alt="Rent your perfect apartment in 4 simple steps"
-              className="w-full max-w-4xl mx-auto rounded-2xl shadow-lg"
+              className="w-full max-w-xl mx-auto rounded-2xl shadow-lg"
             />
           </div>
 
@@ -484,7 +484,7 @@ export default function LandingPage() {
             <img
               src="/images/rnpl.jpeg"
               alt="Rent Now Pay Later (RNPL)"
-              className="w-full max-w-3xl mx-auto rounded-2xl shadow-lg"
+              className="w-full max-w-md mx-auto rounded-2xl shadow-lg"
             />
           </div>
 
@@ -819,7 +819,7 @@ export default function LandingPage() {
             <img
               src="/images/apletfix-home.jpeg"
               alt="ApletFix - Complete home services at your fingertips"
-              className="w-full max-w-4xl mx-auto rounded-2xl shadow-lg"
+              className="w-full max-w-xl mx-auto rounded-2xl shadow-lg"
             />
           </div>
 

@@ -1,5 +1,5 @@
 import { create } from "zustand";
-import { bookingService } from "../services/api";
+import { tenantService } from "../services/api";
 
 export const userStore = create((set) => ({
   statistics: null,
@@ -9,8 +9,8 @@ export const userStore = create((set) => ({
   getUserStatistics: async (timeframe) => {
     try {
       set({ isLoading: true, error: null });
-      const response = await bookingService.getUserStatistics(timeframe);
-      set({ statistics: response.data.data, isLoading: false });
+      const response = await tenantService.getUserTenants({ timeframe });
+      set({ statistics: response.data, isLoading: false });
     } catch (error) {
       set({
         error:

@@ -93,6 +93,34 @@ export const propertyService = {
       throw error;
     }
   },
+  getOwnerProperties: async (params = {}) => {
+    console.log("Owner properties params", params);
+    try {
+      // Convert params object to URL query string
+      const queryParams = new URLSearchParams();
+
+      // Handle all params including filter params
+      Object.entries(params).forEach(([key, value]) => {
+        // Skip null, undefined, empty strings, and "All Types"
+        if (
+          value !== undefined &&
+          value !== null &&
+          value !== "" &&
+          value !== "All Types"
+        ) {
+          queryParams.append(key, value);
+        }
+      });
+
+      const response = await api.get(
+        `/property/owner?${queryParams.toString()}`
+      );
+      return response.data;
+    } catch (error) {
+      console.error("Error fetching owner properties:", error);
+      throw error;
+    }
+  },
   getProperty: async (id) => {
     const response = await api.get(`/property/${id}`);
     return response.data;
@@ -156,6 +184,62 @@ export const bookingService = {
   },
   updatePropertyUnavailableDates: async (propertyId, data) => {
     return await api.put(`/property/${propertyId}/unavailable-dates`, data);
+  },
+};
+
+export const tenantService = {
+  createTenant: async (data) => {
+    console.log("Tenant service - sending data:", data); // Debug log
+    const response = await api.post("/tenant", data);
+    console.log("Tenant service - response:", response.data); // Debug log
+    return response.data;
+  },
+  getAllTenants: async (params = {}) => {
+    const queryParams = new URLSearchParams();
+
+    Object.entries(params).forEach(([key, value]) => {
+      if (value !== undefined && value !== null && value !== "") {
+        queryParams.append(key, value);
+      }
+    });
+
+    const response = await api.get(`/tenant?${queryParams.toString()}`);
+
+    return response.data;
+  },
+  getTenant: async (id) => {
+    return (await api.get(`/tenant/${id}`)).data;
+  },
+  checkUserPaymentStatus: async (propertyId) => {
+    return (await api.get(`/tenant/check-payment/${propertyId}`)).data;
+  },
+  updateTenantStatus: async (id, status) => {
+    return await api.patch(`/tenant/${id}/status`, status);
+  },
+  addRentPayment: async (id, data) => {
+    return await api.post(`/tenant/${id}/rent-payment`, data);
+  },
+  addMaintenanceRequest: async (id, data) => {
+    return await api.post(`/tenant/${id}/maintenance`, data);
+  },
+  updateMaintenanceRequest: async (id, requestId, data) => {
+    return await api.patch(`/tenant/${id}/maintenance/${requestId}`, data);
+  },
+  getTenantStatistics: (timeframe) => {
+    return api.get(
+      `/tenant/statistics${timeframe ? `?timeframe=${timeframe}` : ""}`
+    );
+  },
+  getUserTenants: async (params = {}) => {
+    const queryParams = new URLSearchParams();
+
+    Object.entries(params).forEach(([key, value]) => {
+      if (value !== undefined && value !== null && value !== "") {
+        queryParams.append(key, value);
+      }
+    });
+
+    return await api.get(`/tenant/user?${queryParams.toString()}`);
   },
 };
 

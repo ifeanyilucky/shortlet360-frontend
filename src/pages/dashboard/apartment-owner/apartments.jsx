@@ -11,7 +11,8 @@ import AvailabilityCalendar from "../../../components/AvailabilityCalendar";
 import PropertyDetailsModal from "../../../components/PropertyDetailsModal";
 
 export default function Apartments() {
-  const { properties, pagination, getProperties, isLoading } = propertyStore();
+  const { properties, pagination, getOwnerProperties, isLoading } =
+    propertyStore();
   const [currentPage, setCurrentPage] = useState(1);
   const [showFilters, setShowFilters] = useState(false);
   const [selectedPropertyId, setSelectedPropertyId] = useState(null);
@@ -22,6 +23,7 @@ export default function Apartments() {
     city: "",
     property_type: "",
     is_active: "",
+    publication_status: "",
     minPrice: "",
     maxPrice: "",
     short_id: "",
@@ -117,7 +119,7 @@ export default function Apartments() {
       ),
     },
     {
-      header: "Status",
+      header: "Active Status",
       key: "is_active",
       render: (isActive) => (
         <span
@@ -130,37 +132,90 @@ export default function Apartments() {
       ),
     },
     {
+      header: "Publication Status",
+      key: "publication_status",
+      render: (status) => {
+        const statusConfig = {
+          pending: {
+            className: "bg-yellow-100 text-yellow-800",
+            text: "Pending Review",
+          },
+          published: {
+            className: "bg-green-100 text-green-800",
+            text: "Published",
+          },
+          rejected: {
+            className: "bg-red-100 text-red-800",
+            text: "Rejected",
+          },
+        };
+
+        const config = statusConfig[status] || {
+          className: "bg-gray-100 text-gray-800",
+          text: status || "Unknown",
+        };
+
+        return (
+          <span
+            className={`px-2 py-1 rounded-full text-sm ${config.className}`}
+          >
+            {config.text}
+          </span>
+        );
+      },
+    },
+    {
       header: "Actions",
       key: "actions",
       sortable: false,
       render: (_, row) => (
-        <div className="flex gap-2">
+        <div className="flex flex-wrap gap-2">
           <button
-            className="p-2 text-blue-600 hover:bg-blue-50 rounded-full"
+            className="p-2 text-blue-600 hover:bg-blue-50 rounded-full transition-colors duration-200"
             onClick={() => handleEdit(row._id)}
+            title="Edit Property"
           >
             <FaEdit />
           </button>
           <button
-            className="p-2 text-red-600 hover:bg-red-50 rounded-full"
+            className="p-2 text-red-600 hover:bg-red-50 rounded-full transition-colors duration-200"
             onClick={() => handleDelete(row._id)}
+            title="Delete Property"
           >
             <FaTrash />
           </button>
 
           <button
-            className="py-2 bg-primary-900 text-xs px-3 text-white hover:bg-primary-900 rounded-full"
+            className="py-2 bg-primary-900 text-xs px-3 text-white hover:bg-primary-800 rounded-full transition-colors duration-200"
             onClick={() => handleView(row._id)}
+            title="Check Availability"
           >
             Check availability
           </button>
 
           <button
-            className="py-2 bg-gray-500 text-xs px-3 text-white hover:bg-gray-600 rounded-full"
+            className="py-2 bg-gray-500 text-xs px-3 text-white hover:bg-gray-600 rounded-full transition-colors duration-200"
             onClick={() => handleViewDetails(row._id)}
+            title="View Details"
           >
             View details
           </button>
+
+          {/* Show status-specific actions */}
+          {row.publication_status === "pending" && (
+            <div className="w-full mt-2">
+              <span className="text-xs text-yellow-600 bg-yellow-50 px-2 py-1 rounded-full">
+                ⏳ Awaiting admin review
+              </span>
+            </div>
+          )}
+          {row.publication_status === "rejected" && (
+            <div className="w-full mt-2">
+              <span className="text-xs text-red-600 bg-red-50 px-2 py-1 rounded-full">
+                ❌ Review rejected - contact support
+              </span>
+            </div>
+          )}
         </div>
       ),
     },
@@ -176,7 +231,6 @@ export default function Apartments() {
 
   const handleApplyFilters = () => {
     const filterParams = {
-      owner: user._id,
       ...filters,
     };
 
@@ -197,47 +251,93 @@ export default function Apartments() {
       city: "",
       property_type: "",
       is_active: "",
+      publication_status: "",
       minPrice: "",
       maxPrice: "",
       short_id: "",
     });
-    getData({ owner: user._id }, 1);
+    getData({}, 1);
   };
 
   const getData = useCallback(
     async (filter = {}, page = 1) => {
       if (!user?._id) return;
 
-      // Instead of nesting filter inside an object, spread it directly
+      // Use the new owner properties endpoint - no need to pass owner ID
       const params = {
         ...filter, // Spread filter params directly
-        owner: user._id,
         page,
         limit: 10,
       };
-      await getProperties(params);
+      await getOwnerProperties(params);
     },
-    [user, getProperties]
+    [user, getOwnerProperties]
   );
 
   useEffect(() => {
     if (user?._id) {
-      getData({ owner: user._id }, currentPage);
+      getData({}, currentPage);
     }
   }, [user, currentPage, getData]);
 
   return (
-    <div className="p-6">
+    <div className="">
       {isLoading && <LoadingOverlay />}
       <div className="flex justify-between items-center mb-6">
-        <h2 className="text-2xl font-semibold text-gray-800">Apartments</h2>
+        <div>
+          <h2 className="text-2xl font-semibold text-gray-800">Apartments</h2>
+          <p className="text-sm text-gray-600 mt-1">
+            Manage your properties and track their approval status
+          </p>
+        </div>
         <button
           onClick={() => navigate("/owner/add-apartment")}
-          className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700"
+          className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors duration-200"
         >
           Add New Apartment
         </button>
       </div>
+
+      {/* Status Summary */}
+      {properties && properties.length > 0 && (
+        <div className="bg-white p-4 rounded-lg shadow-sm border border-gray-200 mb-6">
+          <h3 className="text-sm font-medium text-gray-700 mb-3">
+            Property Status Summary
+          </h3>
+          <div className="flex flex-wrap gap-4">
+            <div className="flex items-center gap-2">
+              <div className="w-3 h-3 bg-yellow-400 rounded-full"></div>
+              <span className="text-sm text-gray-600">
+                Pending Review:{" "}
+                {
+                  properties.filter((p) => p.publication_status === "pending")
+                    .length
+                }
+              </span>
+            </div>
+            <div className="flex items-center gap-2">
+              <div className="w-3 h-3 bg-green-400 rounded-full"></div>
+              <span className="text-sm text-gray-600">
+                Published:{" "}
+                {
+                  properties.filter((p) => p.publication_status === "published")
+                    .length
+                }
+              </span>
+            </div>
+            <div className="flex items-center gap-2">
+              <div className="w-3 h-3 bg-red-400 rounded-full"></div>
+              <span className="text-sm text-gray-600">
+                Rejected:{" "}
+                {
+                  properties.filter((p) => p.publication_status === "rejected")
+                    .length
+                }
+              </span>
+            </div>
+          </div>
+        </div>
+      )}
 
       <div className="flex flex-col gap-4 mb-6">
         <div className="flex justify-between items-center">
@@ -298,7 +398,7 @@ export default function Apartments() {
               </div>
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-1">
-                  Status
+                  Active Status
                 </label>
                 <select
                   name="is_active"
@@ -309,6 +409,22 @@ export default function Apartments() {
                   <option value="">All Status</option>
                   <option value="true">Active</option>
                   <option value="false">Inactive</option>
+                </select>
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  Publication Status
+                </label>
+                <select
+                  name="publication_status"
+                  value={filters.publication_status}
+                  onChange={handleFilterChange}
+                  className="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                >
+                  <option value="">All Publication Status</option>
+                  <option value="pending">Pending Review</option>
+                  <option value="published">Published</option>
+                  <option value="rejected">Rejected</option>
                 </select>
               </div>
               <div>
@@ -369,18 +485,39 @@ export default function Apartments() {
         )}
       </div>
 
-      <div className="bg-white rounded-lg shadow">
-        <DataTable columns={columns} data={properties || []} />
-      </div>
+      {!properties || properties.length === 0 ? (
+        <div className="bg-white rounded-lg shadow p-8">
+          <div className="text-center">
+            <div className="w-16 h-16 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-4">
+              <FaEdit className="w-8 h-8 text-gray-400" />
+            </div>
+            <p className="text-gray-500 text-lg font-medium mb-2">
+              No properties yet
+            </p>
+            <p className="text-gray-400 text-sm mb-4">
+              You haven't added any properties yet. Start by adding your first
+              apartment to begin renting.
+            </p>
+            <button
+              onClick={() => navigate("/owner/add-apartment")}
+              className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
+            >
+              Add Your First Property
+            </button>
+          </div>
+        </div>
+      ) : (
+        <div className="bg-white rounded-lg shadow">
+          <DataTable columns={columns} data={properties || []} />
+        </div>
+      )}
 
       {pagination && (
         <div className="mt-6">
           <Pagination
             currentPage={pagination.current_page}
             totalPages={pagination.total_pages}
-            onPageChange={(page) =>
-              getData({ ...filters, owner: user._id }, page)
-            }
+            onPageChange={(page) => getData({ ...filters }, page)}
           />
         </div>
       )}

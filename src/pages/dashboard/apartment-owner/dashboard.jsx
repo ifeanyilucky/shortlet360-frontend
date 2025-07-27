@@ -7,7 +7,7 @@ import { HiOutlineClipboardCopy, HiOutlineTicket } from "react-icons/hi";
 import { useNavigate } from "react-router-dom";
 import { useState, useEffect } from "react";
 import { useAuth } from "../../../hooks/useAuth";
-import { propertyService } from "../../../services/api";
+import { propertyService, tenantService } from "../../../services/api";
 import { fCurrency } from "../../../utils/formatNumber";
 import { getGreeting } from "../../../utils/helpers";
 import KycStatusCard from "../../../components/KycStatusCard";
@@ -26,8 +26,14 @@ export default function ApartmentOwnerDashboard() {
   async function getOwnerStatistics() {
     try {
       setLoading(true);
-      const res = await propertyService.getOwnerStatistics(timeframe);
-      setOwnerStatistics(res.data);
+      const [propertyRes, tenantRes] = await Promise.all([
+        propertyService.getOwnerStatistics(timeframe),
+        tenantService.getTenantStatistics(timeframe),
+      ]);
+      setOwnerStatistics({
+        ...propertyRes.data,
+        tenantStats: tenantRes.data,
+      });
     } catch (error) {
       console.log(error);
     } finally {
@@ -160,15 +166,14 @@ export default function ApartmentOwnerDashboard() {
 
         <div className="bg-white p-4 md:p-6 rounded-lg shadow-sm">
           <div className="flex justify-between items-center mb-4">
-            <span className="text-gray-600">Total Bookings</span>
-            <BsCalendarCheck className="text-green-600 text-xl" />
+            <span className="text-gray-600">Total Tenants</span>
+            <FaHouseUser className="text-green-600 text-xl" />
           </div>
           <p className="text-2xl md:text-3xl font-bold">
-            {ownerStatistics?.total_bookings || 0}
+            {ownerStatistics?.tenantStats?.total_tenants || 0}
           </p>
           <p className="text-sm text-gray-500 mt-2">
-            {ownerStatistics?.booking_status_breakdown?.confirmed || 0}{" "}
-            Confirmed
+            {ownerStatistics?.tenantStats?.active_tenants || 0} Active
           </p>
         </div>
 
@@ -181,8 +186,9 @@ export default function ApartmentOwnerDashboard() {
             {fCurrency(ownerStatistics?.total_revenue || 0)}
           </p>
           <p className="text-sm text-gray-500 mt-2">
-            Avg. {fCurrency(ownerStatistics?.average_booking_value || 0)}
-            /booking
+            Avg.{" "}
+            {fCurrency(ownerStatistics?.tenantStats?.average_monthly_rent || 0)}
+            /month
           </p>
         </div>
 
@@ -197,7 +203,7 @@ export default function ApartmentOwnerDashboard() {
         </div>
       </div>
 
-      {/* Booking Status Breakdown */}
+      {/* Tenant Status Breakdown */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6 mb-6 md:mb-8">
         <div className="bg-white p-4 md:p-6 rounded-lg shadow-sm">
           <div className="flex justify-between items-center mb-4">
@@ -205,37 +211,37 @@ export default function ApartmentOwnerDashboard() {
             <MdPendingActions className="text-yellow-500 text-xl" />
           </div>
           <p className="text-2xl md:text-3xl font-bold">
-            {ownerStatistics?.booking_status_breakdown?.pending || 0}
+            {ownerStatistics?.tenantStats?.pending_tenants || 0}
           </p>
         </div>
 
         <div className="bg-white p-4 md:p-6 rounded-lg shadow-sm">
           <div className="flex justify-between items-center mb-4">
-            <span className="text-gray-600">Confirmed</span>
+            <span className="text-gray-600">Active</span>
             <BsCalendarCheck className="text-green-500 text-xl" />
           </div>
           <p className="text-2xl md:text-3xl font-bold">
-            {ownerStatistics?.booking_status_breakdown?.confirmed || 0}
+            {ownerStatistics?.tenantStats?.active_tenants || 0}
           </p>
         </div>
 
         <div className="bg-white p-4 md:p-6 rounded-lg shadow-sm">
           <div className="flex justify-between items-center mb-4">
-            <span className="text-gray-600">Completed</span>
+            <span className="text-gray-600">Expired</span>
             <FaKey className="text-blue-500 text-xl" />
           </div>
           <p className="text-2xl md:text-3xl font-bold">
-            {ownerStatistics?.booking_status_breakdown?.completed || 0}
+            {ownerStatistics?.tenantStats?.expired_tenants || 0}
           </p>
         </div>
 
         <div className="bg-white p-4 md:p-6 rounded-lg shadow-sm">
           <div className="flex justify-between items-center mb-4">
-            <span className="text-gray-600">Cancelled</span>
+            <span className="text-gray-600">Terminated</span>
             <MdCancel className="text-red-500 text-xl" />
           </div>
           <p className="text-2xl md:text-3xl font-bold">
-            {ownerStatistics?.booking_status_breakdown?.cancelled || 0}
+            {ownerStatistics?.tenantStats?.terminated_tenants || 0}
           </p>
         </div>
       </div>
@@ -251,7 +257,7 @@ export default function ApartmentOwnerDashboard() {
                 <thead>
                   <tr className="text-left text-gray-600">
                     <th className="pb-4">Property</th>
-                    <th className="pb-4">Bookings</th>
+                    <th className="pb-4">Tenants</th>
                     <th className="pb-4">Revenue</th>
                     <th className="pb-4">Rating</th>
                     <th className="pb-4">Occupancy</th>
@@ -263,7 +269,7 @@ export default function ApartmentOwnerDashboard() {
                       <td className="py-4 max-w-[200px] truncate">
                         {property?.property_name}
                       </td>
-                      <td className="py-4">{property?.total_bookings}</td>
+                      <td className="py-4">{property?.total_tenants || 0}</td>
                       <td className="py-4">{fCurrency(property?.revenue)}</td>
                       <td className="py-4">
                         <div className="flex items-center">
@@ -304,30 +310,30 @@ export default function ApartmentOwnerDashboard() {
                         </p>
                         <p className="text-sm text-gray-500">
                           {new Date(
-                            activity?.check_in_date
+                            activity?.lease_start_date
                           ).toLocaleDateString()}{" "}
                           -{" "}
                           {new Date(
-                            activity?.check_out_date
+                            activity?.lease_end_date
                           ).toLocaleDateString()}
                         </p>
                         <span
                           className={`inline-block px-2 py-1 rounded-full text-xs mt-2 ${
-                            activity?.booking_status === "confirmed"
+                            activity?.lease_status === "active"
                               ? "bg-green-100 text-green-600"
-                              : activity?.booking_status === "pending"
+                              : activity?.lease_status === "pending"
                               ? "bg-yellow-100 text-yellow-600"
-                              : activity?.booking_status === "cancelled"
+                              : activity?.lease_status === "expired"
                               ? "bg-red-100 text-red-600"
                               : "bg-blue-100 text-blue-600"
                           }`}
                         >
-                          {activity?.booking_status?.charAt(0).toUpperCase() +
-                            activity?.booking_status?.slice(1)}
+                          {activity?.lease_status?.charAt(0).toUpperCase() +
+                            activity?.lease_status?.slice(1)}
                         </span>
                       </div>
                       <p className="font-semibold">
-                        {fCurrency(activity?.total_price)}
+                        {fCurrency(activity?.monthly_rent)}
                       </p>
                     </div>
                   </div>

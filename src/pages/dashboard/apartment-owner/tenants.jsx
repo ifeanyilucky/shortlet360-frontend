@@ -1,7 +1,7 @@
 import DataTable from "../../../components/DataTable";
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { bookingStore } from "@store/bookingStore";
+import useTenantStore from "@store/tenantStore";
 import { propertyStore } from "@store/propertyStore";
 import { FaEye, FaFilter } from "react-icons/fa";
 import { IoMdClose } from "react-icons/io";
@@ -11,11 +11,11 @@ import Pagination from "../../../components/Pagination";
 import { format } from "date-fns";
 import { fCurrency } from "@utils/formatNumber";
 import RightSidebarModal from "../../../components/RightSidebarModal";
-import BookingDetails from "../../../components/BookingDetails";
+import TenantDetails from "../../../components/TenantDetails";
 
-export default function BookingHistory() {
-  const { bookings, booking, pagination, getBookings, getBooking, isLoading } =
-    bookingStore();
+export default function TenantManagement() {
+  const { tenants, tenant, pagination, getTenants, getTenant, isLoading } =
+    useTenantStore();
   const { getProperties } = propertyStore();
   const [currentPage, setCurrentPage] = useState(1);
   const [searchTerm, setSearchTerm] = useState("");
@@ -24,8 +24,8 @@ export default function BookingHistory() {
   const [userProperties, setUserProperties] = useState([]);
   const [filters, setFilters] = useState({
     property_name: "",
-    guest_name: "",
-    booking_status: "",
+    tenant_name: "",
+    lease_status: "",
     payment_status: "",
   });
   const { user } = useAuth();
@@ -36,9 +36,9 @@ export default function BookingHistory() {
       const response = await getProperties({ owner: user?._id });
       if (response?.data) {
         setUserProperties(response.data);
-        // Get bookings for all user properties
+        // Get tenants for all user properties
         const propertyIds = response.data.map((prop) => prop._id);
-        getBookings({
+        getTenants({
           page: currentPage,
           property_id: propertyIds.join(","),
         });
@@ -51,7 +51,7 @@ export default function BookingHistory() {
   const handleSearch = (e) => {
     e.preventDefault();
     const propertyIds = userProperties.map((prop) => prop._id);
-    getBookings({
+    getTenants({
       search: searchTerm,
       page: 1,
       property_id: propertyIds.join(","),
@@ -63,7 +63,7 @@ export default function BookingHistory() {
   const handlePageChange = (page) => {
     setCurrentPage(page);
     const propertyIds = userProperties.map((prop) => prop._id);
-    getBookings({
+    getTenants({
       search: searchTerm,
       page,
       property_id: propertyIds.join(","),
@@ -71,8 +71,8 @@ export default function BookingHistory() {
     });
   };
 
-  const handleViewBooking = async (id) => {
-    await getBooking(id);
+  const handleViewTenant = async (id) => {
+    await getTenant(id);
     setIsViewModalOpen(true);
   };
 
@@ -86,7 +86,7 @@ export default function BookingHistory() {
 
   const handleApplyFilters = () => {
     const propertyIds = userProperties.map((prop) => prop._id);
-    getBookings({
+    getTenants({
       search: searchTerm,
       page: 1,
       property_id: propertyIds.join(","),
@@ -98,16 +98,44 @@ export default function BookingHistory() {
   const handleResetFilters = () => {
     setFilters({
       property_name: "",
-      guest_name: "",
-      booking_status: "",
+      tenant_name: "",
+      lease_status: "",
       payment_status: "",
     });
     const propertyIds = userProperties.map((prop) => prop._id);
-    getBookings({
+    getTenants({
       search: searchTerm,
       page: 1,
       property_id: propertyIds.join(","),
     });
+  };
+
+  const getStatusColor = (status) => {
+    switch (status) {
+      case "active":
+        return "bg-green-100 text-green-800";
+      case "pending":
+        return "bg-yellow-100 text-yellow-800";
+      case "expired":
+        return "bg-red-100 text-red-800";
+      case "terminated":
+        return "bg-gray-100 text-gray-800";
+      default:
+        return "bg-gray-100 text-gray-800";
+    }
+  };
+
+  const getPaymentStatusColor = (status) => {
+    switch (status) {
+      case "paid":
+        return "bg-green-100 text-green-800";
+      case "pending":
+        return "bg-yellow-100 text-yellow-800";
+      case "overdue":
+        return "bg-red-100 text-red-800";
+      default:
+        return "bg-gray-100 text-gray-800";
+    }
   };
 
   const columns = [
@@ -124,49 +152,52 @@ export default function BookingHistory() {
       ),
     },
     {
-      header: "Guest",
-      key: "guest",
+      header: "Tenant",
+      key: "tenant",
       render: (_, row) => (
         <div>
-          <p className="font-medium">{row.payment.customer.name}</p>
-          <p className="text-sm text-gray-600">{row.payment.customer.email}</p>
-          <p className="text-sm text-gray-600">
-            {row.payment.customer.phone_number}
+          <p className="font-medium">
+            {row.tenant.first_name} {row.tenant.last_name}
           </p>
+          <p className="text-sm text-gray-600">{row.tenant.email}</p>
+          <p className="text-sm text-gray-600">{row.tenant.phone}</p>
         </div>
       ),
     },
     {
-      header: "Check In/Out",
-      key: "dates",
+      header: "Lease Period",
+      key: "lease",
       render: (_, row) => (
         <div>
           <div className="mb-1">
-            <span className="text-sm font-medium">Check In: </span>
+            <span className="text-sm font-medium">Start: </span>
             <span className="text-sm">
-              {format(new Date(row.check_in_date), "MMM dd, yyyy")}
+              {format(new Date(row.lease_start_date), "MMM dd, yyyy")}
             </span>
           </div>
           <div>
-            <span className="text-sm font-medium">Check Out: </span>
+            <span className="text-sm font-medium">End: </span>
             <span className="text-sm">
-              {format(new Date(row.check_out_date), "MMM dd, yyyy")}
+              {format(new Date(row.lease_end_date), "MMM dd, yyyy")}
             </span>
           </div>
           <div className="mt-1 text-sm text-gray-600">
-            Arrival: {row.estimated_arrival}
+            {row.tenant_count} {row.tenant_count === 1 ? "person" : "people"}
           </div>
         </div>
       ),
     },
     {
-      header: "Amount",
-      key: "amount",
+      header: "Rent",
+      key: "rent",
       render: (_, row) => (
         <div>
-          <p className="font-medium">{fCurrency(row.total_price)}</p>
+          <p className="font-medium">{fCurrency(row.monthly_rent)}/month</p>
           <p className="text-sm text-gray-600">
-            {row.guest_count} {row.guest_count === 1 ? "guest" : "guests"}
+            {fCurrency(row.annual_rent)}/year
+          </p>
+          <p className="text-sm text-gray-600">
+            Deposit: {fCurrency(row.security_deposit)}
           </p>
         </div>
       ),
@@ -177,28 +208,18 @@ export default function BookingHistory() {
       render: (_, row) => (
         <div className="space-y-1">
           <span
-            className={`px-2 py-1 rounded-full text-sm ${
-              row.booking_status === "confirmed"
-                ? "bg-green-100 text-green-800"
-                : row.booking_status === "pending"
-                ? "bg-yellow-100 text-yellow-800"
-                : row.booking_status === "cancelled"
-                ? "bg-red-100 text-red-800"
-                : "bg-blue-100 text-blue-800"
-            }`}
+            className={`px-2 py-1 rounded-full text-sm ${getStatusColor(
+              row.lease_status
+            )}`}
           >
-            {row.booking_status.charAt(0).toUpperCase() +
-              row.booking_status.slice(1)}
+            {row.lease_status.charAt(0).toUpperCase() +
+              row.lease_status.slice(1)}
           </span>
           <div>
             <span
-              className={`px-2 py-1 rounded-full text-sm ${
-                row.payment_status === "paid"
-                  ? "bg-green-100 text-green-800"
-                  : row.payment_status === "pending"
-                  ? "bg-yellow-100 text-yellow-800"
-                  : "bg-red-100 text-red-800"
-              }`}
+              className={`px-2 py-1 rounded-full text-sm ${getPaymentStatusColor(
+                row.payment_status
+              )}`}
             >
               {row.payment_status.charAt(0).toUpperCase() +
                 row.payment_status.slice(1)}
@@ -213,22 +234,23 @@ export default function BookingHistory() {
       render: (_, row) => (
         <div className="flex gap-2">
           <button
-            onClick={() => handleViewBooking(row._id)}
+            onClick={() => handleViewTenant(row._id)}
             className="p-2 text-blue-600 hover:bg-blue-50 rounded-full"
             title="View Details"
           >
-            View
+            <FaEye className="w-4 h-4" />
           </button>
         </div>
       ),
     },
   ];
+
   return (
     <div className="p-6">
       {isLoading && <LoadingOverlay />}
       <div className="flex justify-between items-center mb-6">
         <h2 className="text-2xl font-semibold text-gray-800">
-          Booking History
+          Tenant Management
         </h2>
       </div>
 
@@ -241,22 +263,6 @@ export default function BookingHistory() {
             <FaFilter className="text-gray-500" />
             {showFilters ? "Hide Filters" : "Show Filters"}
           </button>
-
-          {/* <form onSubmit={handleSearch} className="flex gap-2">
-            <input
-              type="text"
-              placeholder="Search bookings..."
-              value={searchTerm}
-              onChange={(e) => setSearchTerm(e.target.value)}
-              className="px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-            />
-            <button
-              type="submit"
-              className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
-            >
-              Search
-            </button>
-          </form> */}
         </div>
 
         {showFilters && (
@@ -277,31 +283,32 @@ export default function BookingHistory() {
               </div>
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-1">
-                  Guest Name
+                  Tenant Name
                 </label>
                 <input
                   type="text"
-                  name="guest_name"
-                  value={filters.guest_name}
+                  name="tenant_name"
+                  value={filters.tenant_name}
                   onChange={handleFilterChange}
                   className="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-                  placeholder="Filter by guest name"
+                  placeholder="Filter by tenant name"
                 />
               </div>
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-1">
-                  Booking Status
+                  Lease Status
                 </label>
                 <select
-                  name="booking_status"
-                  value={filters.booking_status}
+                  name="lease_status"
+                  value={filters.lease_status}
                   onChange={handleFilterChange}
                   className="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
                 >
                   <option value="">All</option>
-                  <option value="confirmed">Confirmed</option>
+                  <option value="active">Active</option>
                   <option value="pending">Pending</option>
-                  <option value="cancelled">Cancelled</option>
+                  <option value="expired">Expired</option>
+                  <option value="terminated">Terminated</option>
                 </select>
               </div>
               <div>
@@ -317,6 +324,7 @@ export default function BookingHistory() {
                   <option value="">All</option>
                   <option value="paid">Paid</option>
                   <option value="pending">Pending</option>
+                  <option value="overdue">Overdue</option>
                 </select>
               </div>
             </div>
@@ -339,7 +347,7 @@ export default function BookingHistory() {
       </div>
 
       <div className="bg-white rounded-lg shadow overflow-hidden">
-        <DataTable columns={columns} data={bookings || []} />
+        <DataTable columns={columns} data={tenants || []} />
       </div>
 
       {pagination && (
@@ -355,9 +363,9 @@ export default function BookingHistory() {
       <RightSidebarModal
         isOpen={isViewModalOpen}
         onClose={() => setIsViewModalOpen(false)}
-        title="Booking Details"
+        title="Tenant Details"
       >
-        <BookingDetails booking={booking} />
+        <TenantDetails tenant={tenant} />
       </RightSidebarModal>
     </div>
   );

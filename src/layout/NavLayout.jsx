@@ -427,27 +427,6 @@ export default function NavLayout() {
         <Outlet />
       </main>
 
-      {/* Commercial/Corporate CTA Section */}
-      <section className="bg-primary-900 py-16">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center">
-            <h2 className="text-3xl font-bold text-white mb-4">
-              Commercial or Corporate Use?
-            </h2>
-            <p className="text-lg text-primary-100 mb-8 max-w-3xl mx-auto">
-              Contact us for a tailored service request and agreements to suit
-              your needs and maintenance schedules/plan.
-            </p>
-            <Link
-              to="/aplet-fix"
-              className="inline-flex items-center px-8 py-3 border border-transparent text-base font-medium rounded-md text-primary-900 bg-white hover:bg-primary-50 transition-colors duration-200"
-            >
-              Request Now
-            </Link>
-          </div>
-        </div>
-      </section>
-
       {/* Footer */}
       <footer className="bg-tertiary-50">
         <div className="max-w-7xl mx-auto py-12 px-4 sm:px-6 lg:px-8">

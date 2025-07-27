@@ -44,19 +44,28 @@ const tier1Schema = yup.object().shape({
       "is-valid-nigerian-number",
       "Please enter a valid Nigerian phone number",
       (value) => {
+        if (!value) return false;
+
+        // Clean the value
+        const cleanValue = String(value).replace(/\s+/g, "");
+
         // Check if it's a valid Nigerian number format
         return (
-          value &&
-          (value.startsWith("+234") ||
-            value.startsWith("234") ||
-            (value.startsWith("0") && value.length === 11))
+          cleanValue.startsWith("+234") ||
+          cleanValue.startsWith("234") ||
+          (cleanValue.startsWith("0") && cleanValue.length === 11) ||
+          (cleanValue.length === 10 && /^[789][01]\d{8}$/.test(cleanValue))
         );
       }
     ),
   nin: yup
     .string()
     .required("NIN is required")
-    .matches(/^\d{11}$/, "NIN must be 11 digits"),
+    .test("is-valid-nin", "NIN must be exactly 11 digits", (value) => {
+      if (!value) return false;
+      const cleanValue = String(value).replace(/\D/g, "");
+      return cleanValue.length === 11;
+    }),
 });
 
 export default function Tier1Verification({ kycStatus }) {
@@ -90,10 +99,21 @@ export default function Tier1Verification({ kycStatus }) {
 
   const onSubmit = async (data) => {
     try {
+      // Ensure phone_number is a string and clean it
+      const phoneNumber = data.phone_number
+        ? String(data.phone_number).trim()
+        : "";
+      const nin = data.nin ? String(data.nin).trim() : "";
+
+      console.log("Submitting Tier 1 verification with data:", {
+        phone_number: phoneNumber,
+        nin: nin,
+      });
+
       await submitTier1Verification(
         {
-          phone_number: data.phone_number,
-          nin: data.nin,
+          phone_number: phoneNumber,
+          nin: nin,
         },
         setUser
       );
@@ -163,7 +183,12 @@ export default function Tier1Verification({ kycStatus }) {
                           ? "border-green-500 bg-green-50"
                           : "border-gray-300"
                       }`}
-                      {...field}
+                      value={field.value || ""}
+                      onChange={(value) => {
+                        // Ensure we always pass a string value
+                        const stringValue = value ? String(value) : "";
+                        field.onChange(stringValue);
+                      }}
                     />
                   )}
                 />

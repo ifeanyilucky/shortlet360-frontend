@@ -36,12 +36,14 @@ import AddApartment from "../pages/dashboard/apartment-owner/add-apartment";
 import EditApartment from "../pages/dashboard/apartment-owner/edit-apartment";
 import Availability from "../pages/dashboard/apartment-owner/availability";
 import Apartments from "../pages/dashboard/apartment-owner/apartments";
-import Bookings from "../pages/dashboard/apartment-owner/bookings";
+import Tenants from "../pages/dashboard/apartment-owner/tenants";
 import Settings from "../pages/dashboard/apartment-owner/settings";
 import PropertyDetail from "../pages/PropertyDetail";
+import TenantApplication from "../pages/TenantApplication";
 import UserLayout from "../layout/UserLayout";
 import Receipt from "../components/Receipt";
-import UserBookingHistory from "../pages/dashboard/user/UserBookingHistory";
+import TenantReceipt from "../components/TenantReceipt";
+import UserTenantHistory from "../pages/dashboard/user/UserTenantHistory";
 import Favorite from "../pages/dashboard/user/favorite";
 import UserServiceRequest from "../pages/dashboard/user/ServiceRequest";
 import UserDisputeResolution from "../pages/dashboard/user/DisputeResolution";
@@ -58,6 +60,7 @@ import AdminRegularUsers from "../pages/dashboard/admin/regularUsers";
 import AdminOwners from "../pages/dashboard/admin/owners";
 import AdminProperties from "../pages/dashboard/admin/properties";
 import AdminBookings from "../pages/dashboard/admin/bookings";
+import AdminTenants from "../pages/dashboard/admin/tenants";
 import AdminKycManagement from "../pages/dashboard/admin/kycManagement";
 import AdminSettings from "../pages/dashboard/admin/settings";
 import UserProfile from "../pages/dashboard/admin/userProfile";
@@ -107,11 +110,19 @@ export default function Router() {
         { path: "privacy-policy", element: <PrivacyPolicy /> },
         { path: "terms-conditions", element: <TermsConditions /> },
         { path: "property/:id", element: <PropertyDetail /> },
+        {
+          path: "property/:id/tenant-application",
+          element: <TenantApplication />,
+        },
         { path: "verify-email/:token", element: <VerifyEmail /> },
         { path: "newsletter/unsubscribe", element: <NewsletterUnsubscribe /> },
       ],
     },
     { path: "/:property_id/receipt/:booking_id", element: <Receipt /> },
+    {
+      path: "/:property_id/tenant-receipt/:tenant_id",
+      element: <TenantReceipt />,
+    },
     {
       path: "",
       element: (
@@ -133,7 +144,7 @@ export default function Router() {
             { path: "", element: <Navigate to="dashboard" replace /> },
             { path: "dashboard", element: <UserDashboard /> },
             { path: "apartments", element: <Apartments /> },
-            { path: "bookings", element: <UserBookingHistory /> },
+            { path: "rentals", element: <UserTenantHistory /> },
             { path: "favorites", element: <Favorite /> },
             { path: "service-request", element: <UserServiceRequest /> },
             { path: "dispute-resolution", element: <UserDisputeResolution /> },
@@ -157,7 +168,7 @@ export default function Router() {
             { path: "add-apartment", element: <AddApartment /> },
             { path: "edit-apartment/:id", element: <EditApartment /> },
             { path: "availability", element: <Availability /> },
-            { path: "bookings", element: <Bookings /> },
+            { path: "tenants", element: <Tenants /> },
             { path: "service-request", element: <OwnerServiceRequest /> },
             { path: "dispute-resolution", element: <OwnerDisputeResolution /> },
             { path: "settings", element: <Settings /> },
@@ -183,6 +194,7 @@ export default function Router() {
             { path: "properties/:id", element: <EditProperty /> },
             { path: "bookings", element: <AdminBookings /> },
             { path: "bookings/:id", element: <EditBooking /> },
+            { path: "tenants", element: <AdminTenants /> },
             { path: "kyc-management", element: <AdminKycManagement /> },
             { path: "referrals", element: <AdminReferrals /> },
             { path: "discount-codes", element: <AdminDiscountCodes /> },

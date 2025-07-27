@@ -3,6 +3,7 @@ import { FiSend } from "react-icons/fi";
 import toast from "react-hot-toast";
 import { formService } from "../services/api";
 import { lagosLocationData } from "../utils/locations";
+import { Link } from "react-router-dom";
 
 export default function HomeServices() {
   const [formData, setFormData] = useState({
@@ -459,7 +460,7 @@ export default function HomeServices() {
             <img
               src="/images/home-services-apletfix.jpeg"
               alt="Our Home Services"
-              className="w-full max-w-4xl mx-auto rounded-2xl shadow-lg"
+              className="w-full max-w-xl mx-auto rounded-2xl shadow-lg"
             />
           </div>
 
@@ -480,6 +481,27 @@ export default function HomeServices() {
                 </p>
               </div>
             ))}
+          </div>
+        </div>
+      </section>
+
+      {/* Commercial/Corporate CTA Section */}
+      <section className="bg-primary-900 py-16">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="text-center">
+            <h2 className="text-3xl font-bold text-white mb-4">
+              Commercial or Corporate Use?
+            </h2>
+            <p className="text-lg text-primary-100 mb-8 max-w-3xl mx-auto">
+              Contact us for a tailored service request and agreements to suit
+              your needs and maintenance schedules/plan.
+            </p>
+            <Link
+              to="/aplet-fix"
+              className="inline-flex items-center px-8 py-3 border border-transparent text-base font-medium rounded-md text-primary-900 bg-white hover:bg-primary-50 transition-colors duration-200"
+            >
+              Request Now
+            </Link>
           </div>
         </div>
       </section>

@@ -427,7 +427,7 @@ export default function PropertyDetailsModal({ propertyId }) {
             <BsX className="w-8 h-8" />
           </button>
           <div className="w-full h-full flex items-center justify-center">
-            <div className="w-full h-full max-w-[1000px] mx-auto px-4 relative">
+            <div className="w-full h-full max-w-[1000px] mx-auto px-4 relative !mt-0">
               {/* Custom navigation buttons */}
               <button className="swiper-button-prev absolute left-2 sm:left-6 top-1/2 -translate-y-1/2 z-[55] bg-white/10 hover:bg-white/20 transition-colors p-2 sm:p-3 rounded-full">
                 <BsChevronLeft className="w-5 h-5 sm:w-6 sm:h-6 text-white" />

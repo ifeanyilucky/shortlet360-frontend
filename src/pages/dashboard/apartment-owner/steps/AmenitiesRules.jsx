@@ -78,7 +78,7 @@ export default function AmenitiesRules() {
               type="button"
               key={amenity}
               onClick={() => handleCommonAmenityClick(amenity)}
-              className={`p-2 text-sm rounded-md text-left ${
+              className={`p-2 text-sm border border-gray-300 rounded-md text-left ${
                 amenities.includes(amenity)
                   ? "bg-primary-100 text-primary-800"
                   : "bg-gray-50 hover:bg-gray-100"

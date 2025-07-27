@@ -19,7 +19,6 @@ import { useAuth } from "../../../hooks/useAuth";
 export default function AddApartment() {
   const [current, setCurrent] = useState(0);
   const [submitLoading, setSubmitLoading] = useState(false);
-  const [kycVerified, setKycVerified] = useState(false);
   const { user } = useAuth();
 
   const validationSchema = yup.object().shape({
@@ -323,149 +322,239 @@ export default function AddApartment() {
   };
   console.log(methods.formState.errors);
   return (
-    <div className="max-w-5xl p-5">
-      <h1 className="text-2xl font-semibold mb-6">Add New Apartment</h1>
+    <div className="min-h-screen bg-white">
+      <div className="max-w-5xl mx-auto py-4 sm:py-6 lg:py-8">
+        <h1 className="text-xl sm:text-2xl lg:text-3xl font-semibold mb-4 sm:mb-6 text-gray-900">
+          Add New Apartment
+        </h1>
 
-      {/* Admin Review Notice */}
-      <div className="bg-blue-50 border-l-4 border-blue-500 p-4 mb-6">
-        <div className="flex items-start">
-          <div className="flex-shrink-0">
-            <svg
-              className="h-5 w-5 text-blue-500"
-              xmlns="http://www.w3.org/2000/svg"
-              viewBox="0 0 20 20"
-              fill="currentColor"
-            >
-              <path
-                fillRule="evenodd"
-                d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z"
-                clipRule="evenodd"
-              />
-            </svg>
-          </div>
-          <div className="ml-3">
-            <p className="text-sm text-blue-700">
-              <strong>Important:</strong> All new properties require admin
-              approval before being published on the platform. Our team will
-              review your listing within 24-48 hours.
-            </p>
-          </div>
-        </div>
-      </div>
-
-      {/* KYC Verification Check */}
-      {!kycVerified && (
-        <div className="mb-6">
-          <KycVerificationStatus
-            requiredTier="tier1"
-            actionText="Continue to Add Apartment"
-            onVerified={() => setKycVerified(true)}
-          />
-        </div>
-      )}
-
-      {kycVerified && (
-        <FormProvider {...methods}>
-          <form
-            onSubmit={methods.handleSubmit(onSubmit)}
-            className="bg-white rounded-lg"
-          >
-            {/* Steps indicator */}
-            <div className="relative flex justify-between mb-12">
-              {/* Progress Line */}
-              <div className="absolute top-1/2 left-0 w-full h-[2px] bg-gray-200 -translate-y-1/2">
-                <div
-                  className="h-full bg-primary-900 transition-all duration-300"
-                  style={{ width: `${(current / (steps.length - 1)) * 100}%` }}
+        {/* Admin Review Notice */}
+        <div className="bg-blue-50 border-l-4 border-blue-500 p-3 sm:p-4 mb-4 sm:mb-6 rounded-r-lg">
+          <div className="flex items-start">
+            <div className="flex-shrink-0 mt-0.5">
+              <svg
+                className="h-4 w-4 sm:h-5 sm:w-5 text-blue-500"
+                xmlns="http://www.w3.org/2000/svg"
+                viewBox="0 0 20 20"
+                fill="currentColor"
+              >
+                <path
+                  fillRule="evenodd"
+                  d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z"
+                  clipRule="evenodd"
                 />
+              </svg>
+            </div>
+            <div className="ml-2 sm:ml-3 flex-1">
+              <p className="text-xs sm:text-sm text-blue-700 leading-relaxed">
+                <strong>Important:</strong> All new properties require admin
+                approval before being published on the platform. Our team will
+                review your listing within 24-48 hours.
+              </p>
+            </div>
+          </div>
+        </div>
+
+        {/* KYC Verification Check - Only show if user is not Tier 1 verified */}
+        {user?.kyc?.tier1?.status !== "verified" && (
+          <div className="mb-4 sm:mb-6">
+            <KycVerificationStatus
+              requiredTier="tier1"
+              actionText="Continue to Add Apartment"
+              onVerified={() => {
+                // Refresh the page to update user data
+                window.location.reload();
+              }}
+            />
+          </div>
+        )}
+
+        {user?.kyc?.tier1?.status === "verified" && (
+          <FormProvider {...methods}>
+            <form
+              onSubmit={methods.handleSubmit(onSubmit)}
+              className="bg-white rounded-lg shadow-sm "
+            >
+              {/* Steps indicator - Responsive Design */}
+              <div className="relative mb-8 sm:mb-12">
+                {/* Mobile Step Indicator */}
+                <div className="sm:hidden mb-4">
+                  <div className="flex items-center justify-between bg-white p-3 rounded-lg border border-gray-200 shadow-sm">
+                    <div className="flex items-center">
+                      <span className="text-sm font-medium text-gray-600">
+                        Step
+                      </span>
+                      <span className="ml-2 text-lg font-bold text-primary-900">
+                        {current + 1}
+                      </span>
+                      <span className="mx-2 text-gray-400">of</span>
+                      <span className="text-lg font-bold text-gray-900">
+                        {steps.length}
+                      </span>
+                    </div>
+                    <div className="text-sm font-medium text-primary-900">
+                      {steps[current].title}
+                    </div>
+                  </div>
+                </div>
+
+                {/* Progress Line */}
+                <div className="absolute top-1/2 left-0 w-full h-[2px] bg-gray-200 -translate-y-1/2 z-0 md:hidden">
+                  <div
+                    className="h-full bg-primary-900 transition-all duration-300 ease-in-out"
+                    style={{
+                      width: `${(current / (steps.length - 1)) * 100}%`,
+                    }}
+                  />
+                </div>
+
+                {/* Steps Container */}
+                <div className="relative flex justify-between items-start">
+                  {steps.map((step, index) => (
+                    <div
+                      key={index}
+                      className="relative flex flex-col items-center flex-1 min-w-0"
+                    >
+                      {/* Step Circle */}
+                      <div
+                        className={`w-8 h-8 sm:w-10 sm:h-10 rounded-full flex items-center justify-center z-10 transition-all duration-200
+                        ${
+                          index < current
+                            ? "bg-primary-900 text-white border-2 border-primary-900 shadow-lg"
+                            : index === current
+                            ? "bg-white text-primary-900 border-2 border-primary-900 shadow-md"
+                            : "bg-white text-gray-500 border-2 border-gray-200"
+                        }`}
+                      >
+                        {index < current ? (
+                          <svg
+                            className="w-4 h-4 sm:w-5 sm:h-5"
+                            fill="none"
+                            stroke="currentColor"
+                            viewBox="0 0 24 24"
+                          >
+                            <path
+                              strokeLinecap="round"
+                              strokeLinejoin="round"
+                              strokeWidth={2}
+                              d="M5 13l4 4L19 7"
+                            />
+                          </svg>
+                        ) : (
+                          <span className="text-xs sm:text-sm font-medium">
+                            {index + 1}
+                          </span>
+                        )}
+                      </div>
+
+                      {/* Step Label */}
+                      <div className="mt-2 sm:mt-3 text-center min-w-0 flex-1">
+                        <span
+                          className={`block text-xs sm:text-sm font-medium leading-tight px-1
+                          ${
+                            index <= current
+                              ? "text-primary-900"
+                              : "text-gray-500"
+                          }
+                          ${index === current ? "font-semibold" : ""}
+                        `}
+                          title={step.title}
+                        >
+                          {/* Mobile: Show abbreviated text */}
+                          <span className="hidden sm:block">{step.title}</span>
+                          {/* Desktop: Show full text */}
+                          <span className="sm:hidden">
+                            {step.title === "Basic Info" && "Basic"}
+                            {step.title === "Amenities & Rules" && "Rules"}
+                            {step.title === "Pricing" && "Pricing"}
+                            {step.title === "Media" && "Media"}
+                            {step.title === "Review" && "Review"}
+                          </span>
+                        </span>
+                      </div>
+                    </div>
+                  ))}
+                </div>
               </div>
 
-              {/* Steps */}
-              {steps.map((step, index) => (
-                <div
-                  key={index}
-                  className="relative flex flex-col items-center"
-                >
-                  <div
-                    className={`w-10 h-10 rounded-full flex items-center justify-center z-10
-                                    ${
-                                      index < current
-                                        ? "bg-primary-900 text-white border-2 border-primary-900"
-                                        : index === current
-                                        ? "bg-white text-primary-900 border-2 border-primary-900"
-                                        : "bg-white text-gray-500 border-2 border-gray-200"
-                                    }`}
+              {/* Content */}
+              <div className="min-h-[300px] sm:min-h-[400px] lg:min-h-[500px] p-3 sm:p-4 lg:p-6 bg-gray-50 rounded-lg">
+                {steps[current].content}
+              </div>
+
+              {/* Navigation */}
+              <div className="flex flex-col sm:flex-row justify-between gap-3 sm:gap-0 mt-6 sm:mt-8 p-2">
+                {current > 0 && (
+                  <button
+                    type="button"
+                    onClick={prev}
+                    className="flex items-center justify-center px-4 py-3 sm:py-2 bg-gray-100 text-gray-700 rounded-lg sm:rounded-md hover:bg-gray-200 transition-colors duration-200 font-medium text-sm sm:text-base"
                   >
-                    {index < current ? (
-                      <svg
-                        className="w-6 h-6"
-                        fill="none"
-                        stroke="currentColor"
-                        viewBox="0 0 24 24"
-                      >
-                        <path
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                          strokeWidth={2}
-                          d="M5 13l4 4L19 7"
-                        />
-                      </svg>
+                    <FiChevronLeft className="mr-2 w-4 h-4 sm:w-5 sm:h-5" />
+                    <span className="hidden sm:inline">Previous</span>
+                    <span className="sm:hidden">Back</span>
+                  </button>
+                )}
+
+                <div className="flex-1 sm:hidden"></div>
+
+                {current < steps.length - 1 ? (
+                  <button
+                    type="button"
+                    onClick={next}
+                    className="flex items-center justify-center px-6 py-3 sm:py-2 bg-primary-900 text-white rounded-lg sm:rounded-md hover:bg-primary-800 transition-colors duration-200 font-medium text-sm sm:text-base shadow-sm"
+                  >
+                    <span className="hidden sm:inline">Next</span>
+                    <span className="sm:hidden">Continue</span>
+                    <FiChevronRight className="ml-2 w-4 h-4 sm:w-5 sm:h-5" />
+                  </button>
+                ) : (
+                  <InteractiveButton
+                    type="submit"
+                    disabled={submitLoading}
+                    isLoading={submitLoading}
+                    className="flex items-center justify-center px-6 py-3 sm:py-2 bg-primary-900 text-white rounded-lg sm:rounded-md hover:bg-primary-800 transition-colors duration-200 font-medium text-sm sm:text-base shadow-sm disabled:opacity-50 disabled:cursor-not-allowed w-full sm:w-auto"
+                  >
+                    {submitLoading ? (
+                      <>
+                        <svg
+                          className="animate-spin -ml-1 mr-2 h-4 w-4 sm:h-5 sm:w-5 text-white"
+                          xmlns="http://www.w3.org/2000/svg"
+                          fill="none"
+                          viewBox="0 0 24 24"
+                        >
+                          <circle
+                            className="opacity-25"
+                            cx="12"
+                            cy="12"
+                            r="10"
+                            stroke="currentColor"
+                            strokeWidth="4"
+                          ></circle>
+                          <path
+                            className="opacity-75"
+                            fill="currentColor"
+                            d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+                          ></path>
+                        </svg>
+                        <span className="hidden sm:inline">Submitting...</span>
+                        <span className="sm:hidden">Processing...</span>
+                      </>
                     ) : (
-                      <span>{index + 1}</span>
+                      <>
+                        <span className="hidden sm:inline">
+                          Submit Property
+                        </span>
+                        <span className="sm:hidden">Submit</span>
+                      </>
                     )}
-                  </div>
-                  <span
-                    className={`absolute -bottom-6 text-sm whitespace-nowrap
-                                ${
-                                  index <= current
-                                    ? "text-primary-900 font-medium"
-                                    : "text-gray-500"
-                                }`}
-                  >
-                    {step.title}
-                  </span>
-                </div>
-              ))}
-            </div>
-
-            {/* Content */}
-            <div className="min-h-[400px] p-4">{steps[current].content}</div>
-
-            {/* Navigation */}
-            <div className="flex justify-between mt-8">
-              {current > 0 && (
-                <button
-                  type="button"
-                  onClick={prev}
-                  className="flex items-center px-4 py-2 bg-gray-100 text-gray-700 rounded-md hover:bg-gray-200"
-                >
-                  <FiChevronLeft className="mr-2" />
-                  Previous
-                </button>
-              )}
-              {current < steps.length - 1 ? (
-                <button
-                  type="button"
-                  onClick={next}
-                  className="flex items-center px-4 py-2 bg-primary-900 text-white rounded-md hover:bg-primary-900 ml-auto"
-                >
-                  Next
-                  <FiChevronRight className="ml-2" />
-                </button>
-              ) : (
-                <InteractiveButton
-                  type="submit"
-                  disabled={submitLoading}
-                  isLoading={submitLoading}
-                  className="flex items-center px-4 py-2 text-white rounded-md ml-auto disabled:opacity-50 disabled:cursor-not-allowed"
-                >
-                  {submitLoading ? "Submitting..." : "Submit"}
-                </InteractiveButton>
-              )}
-            </div>
-          </form>
-        </FormProvider>
-      )}
+                  </InteractiveButton>
+                )}
+              </div>
+            </form>
+          </FormProvider>
+        )}
+      </div>
     </div>
   );
 }
