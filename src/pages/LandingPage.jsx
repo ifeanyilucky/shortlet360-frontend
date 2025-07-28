@@ -1021,32 +1021,26 @@ export default function LandingPage() {
       <section className="py-16 bg-white">
         <div className="max-w-6xl mx-auto px-4">
           {/* Image before the section */}
-          <div className="mb-12 text-center">
-            <img
-              src="/images/property-management.jpg"
-              alt="Property Management Solutions"
-              className="w-full max-w-4xl mx-auto rounded-2xl shadow-lg"
-            />
-          </div>
+          <div className="mb-12 text-center"></div>
 
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 items-center">
             <div>
-              <div className="w-full h-96">
+              <div className="w-full ">
                 <img
-                  src="/images/living-room2.jpeg"
-                  alt="Bedroom"
-                  className="w-full h-full object-cover rounded-lg shadow-md"
+                  src="/images/property-management.jpg"
+                  alt="Property Management Solutions"
+                  className="w-full max-w-5xl mx-auto rounded-2xl shadow-lg"
                 />
               </div>
             </div>
 
             <div className="lg:pl-12">
-              <p className="text-gray-500 uppercase font-medium mb-2">
+              <p className="text-accent-600 uppercase font-medium mb-2">
                 Property Management Solutions
               </p>
-              <h2 className="text-2xl md:text-3xl  text-primary-900 mb-6">
+              <h2 className="text-3xl md:text-4xl font-bold mb-6">
                 Join other happy landlords who enjoys seamless property
-                management plan at Aplet360 thar guarantees their peace of mind
+                management plan at Aplet360 that guarantees their peace of mind
                 and all year round rental income.
               </h2>
 

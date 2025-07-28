@@ -473,12 +473,7 @@ export default function NavLayout() {
                 >
                   Rental Apartments
                 </Link>
-                <Link
-                  to="/book-now?category=shortlet"
-                  className="text-base text-tertiary-500 hover:text-tertiary-900 block"
-                >
-                  Shortlet Apartments
-                </Link>
+
                 <Link
                   to="/aplet-fix"
                   className="text-base text-tertiary-500 hover:text-tertiary-900 block"

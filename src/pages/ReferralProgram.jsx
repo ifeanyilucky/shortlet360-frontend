@@ -84,7 +84,7 @@ export default function ReferralProgram() {
       icon: <FiUsers className="h-8 w-8 text-primary-900" />,
       title: "Invite Friends",
       description:
-        "Share your unique referral link with landlords, property managers, and potential tenants looking for rental or shortlet apartments.",
+        "Share your unique referral link with landlords and potential tenants looking for rental.",
     },
     {
       icon: <FiGift className="h-8 w-8 text-primary-900" />,
@@ -101,7 +101,7 @@ export default function ReferralProgram() {
   ];
 
   const rewards = [
-    "Get 1 FREE Home Fix service for every 5 landlords/property managers you refer who sign up for our property management solutions",
+    "Get 1 FREE Home Fix service for every 5 landlords you refer who sign up for our property management solutions",
     "Get 1 FREE Home Fix service for every 20 tenants/users you refer who verify their accounts",
     "Free Home Fix services include plumbing, electrical work, painting, carpentry, and general repairs",
     "No cash rewards - we reward you with the valuable services you actually need for your home",
