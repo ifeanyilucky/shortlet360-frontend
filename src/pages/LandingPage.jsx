@@ -30,8 +30,8 @@ export default function LandingPage() {
   const [showRNPLForm, setShowRNPLForm] = useState(false);
 
   // Price range constants
-  const MIN_PRICE = 200; // 200 currency units
-  const MAX_PRICE = 30000000; // 10m
+  const MIN_PRICE = 500000; // 500k currency units
+  const MAX_PRICE = 50000000; // 50m
 
   const [searchParams, setSearchParams] = useState({
     location: "",
@@ -492,17 +492,16 @@ export default function LandingPage() {
             Rent Now Pay Later (RNPL).
           </h2>
           <p className="max-w-3xl mx-auto mb-6 text-primary-100">
-            Pre-qualify for our RNPL solution while you wait for the service
-            launch so you can use it whenever you need to pay your rent.
+            We understand how challenging it can be sometimes to pay a 1 year
+            rent upfront. Aplet360 gat you covered. Pre-qualify for our RNPL
+            solution so you can use it whenever you need to pay your rent.
           </p>
-
-          {/* RNPL Benefits Image */}
-          <div className="mb-8">
-            <img
-              src="/images/rnpl-benefits.png"
-              alt="Rent Now Pay Later benefits: Flexible payment options, No yearly rent required, Monthly payment plans, Financial freedom for tenants"
-              className="w-full max-w-2xl mx-auto rounded-2xl"
-            />
+          <div className="mb-5">
+            <p className="w-full max-w-2xl mx-auto rounded-2xl">
+              Rent Now Pay Later benefits: Flexible payment options, No yearly
+              rent required, Monthly payment plans, Financial freedom for
+              tenants
+            </p>
           </div>
 
           <button
@@ -570,7 +569,7 @@ export default function LandingPage() {
                   </div>
                   <p className="text-tertiary-600 text-sm">
                     <span className="font-medium text-tertiary-900">
-                      Rental Income Guarantee
+                      Rental Income Guarantee (Property Management)
                     </span>{" "}
                     - Secure your income with our guarantee system
                   </p>
@@ -676,7 +675,8 @@ export default function LandingPage() {
 
                 <div className="mt-4 p-3 bg-primary-50 rounded-lg">
                   <p className="text-sm text-primary-900 font-medium">
-                    Service Fee: 5% to 10% of annual rent
+                    Service Fee: 5% (Property Listing) and 10% (Property
+                    Management) of annual rent.
                   </p>
                 </div>
               </div>
