@@ -90,7 +90,7 @@ export default function ReferralProgram() {
       icon: <FiGift className="h-8 w-8 text-primary-900" />,
       title: "They Sign Up & Verify",
       description:
-        "When they register using your referral link and complete their account verification, you both qualify for Home Fix service rewards.",
+        "When landlords sign up for property management solutions or tenants complete their account verification using your referral link, you both qualify for Home Fix service rewards.",
     },
     {
       icon: <FiTool className="h-8 w-8 text-primary-900" />,
@@ -101,7 +101,7 @@ export default function ReferralProgram() {
   ];
 
   const rewards = [
-    "Get 1 FREE Home Fix service for every 5 landlords/property managers you refer who verify their accounts",
+    "Get 1 FREE Home Fix service for every 5 landlords/property managers you refer who sign up for our property management solutions",
     "Get 1 FREE Home Fix service for every 20 tenants/users you refer who verify their accounts",
     "Free Home Fix services include plumbing, electrical work, painting, carpentry, and general repairs",
     "No cash rewards - we reward you with the valuable services you actually need for your home",
@@ -220,7 +220,8 @@ export default function ReferralProgram() {
                       {referralStats.rewardBreakdown.ownerRewards} rewards
                     </p>
                     <p className="text-xs text-gray-500">
-                      1 reward per 5 owner referrals
+                      1 reward per 5 owner referrals who sign up for property
+                      management solutions
                     </p>
                   </div>
                   <div className="bg-white p-4 rounded-lg">
@@ -330,8 +331,8 @@ export default function ReferralProgram() {
               <>
                 <p className="text-tertiary-600 mb-8 text-center">
                   Share this link with landlords and tenants to earn FREE Home
-                  Fix services when they sign up and verify their accounts on
-                  Aplet360.
+                  Fix services when landlords sign up for property management
+                  solutions or tenants verify their accounts on Aplet360.
                 </p>
                 <div className="flex items-center mb-8">
                   <input
