@@ -15,6 +15,7 @@ import {
   FiEdit3,
   FiMail,
   FiPercent,
+  FiBriefcase,
 } from "react-icons/fi";
 import { MdOutlineAddHome, MdOutlineAssignment } from "react-icons/md";
 import { RiAdminLine } from "react-icons/ri";
@@ -183,6 +184,11 @@ export default function AdminLayout() {
       path: "/admin/newsletter",
       icon: <FiMail size={20} />,
       label: "Newsletter",
+    },
+    {
+      path: "/admin/jobs",
+      icon: <FiBriefcase size={20} />,
+      label: "Job Management",
     },
     // {
     //   path: "/admin/reports",

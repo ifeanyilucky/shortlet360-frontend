@@ -278,33 +278,25 @@ export default function UserPaymentHistory() {
       header: "Actions",
       key: "actions",
       render: (_, row) => (
-        <div className="flex gap-2">
+        <div className="flex flex-col gap-2">
           <button
             onClick={() => handleViewTenant(row._id)}
-            className="p-2 text-blue-600 hover:bg-blue-50 rounded-full"
-            title="View Details"
+            className="px-3 py-1 text-blue-600 hover:bg-blue-50 rounded text-sm font-medium"
           >
-            <FaEye className="w-4 h-4" />
+            View Details
           </button>
           {(isRentDue(row) || isRentOverdue(row)) && (
             <button
               onClick={() => handleRenewRent(row)}
               disabled={renewingRent}
-              className={`p-2 rounded-full flex items-center gap-1 ${
+              className={`px-3 py-1 rounded text-sm font-medium flex items-center gap-1 ${
                 isRentOverdue(row)
                   ? "text-red-600 hover:bg-red-50"
                   : "text-orange-600 hover:bg-orange-50"
               }`}
-              title={
-                isRentOverdue(row)
-                  ? "Renew Overdue Rent"
-                  : "Renew Rent Due Soon"
-              }
             >
-              <FiRefreshCw
-                className={`w-4 h-4 ${renewingRent ? "animate-spin" : ""}`}
-              />
-              Renew
+              {renewingRent && <FiRefreshCw className="w-3 h-3 animate-spin" />}
+              {isRentOverdue(row) ? "Renew Overdue" : "Renew Rent"}
             </button>
           )}
         </div>

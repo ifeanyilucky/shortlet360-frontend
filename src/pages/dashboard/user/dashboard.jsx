@@ -105,7 +105,7 @@ export default function UserDashboard() {
       {/* Statistics Cards */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6">
         <StatCard
-          title="Total Rentals"
+          title="Total Payments"
           value={statistics?.total_tenants || 0}
           icon={<HiOutlineTicket className="w-6 h-6" />}
           color="blue"
@@ -123,7 +123,7 @@ export default function UserDashboard() {
           color="purple"
         />
         <StatCard
-          title="Active Rentals"
+          title="Active Payments"
           value={statistics?.active_tenants || 0}
           icon={<HiOutlineLocationMarker className="w-6 h-6" />}
           color="orange"
@@ -169,11 +169,11 @@ export default function UserDashboard() {
         </div>
       </div>
 
-      {/* Recent and Active Rentals */}
+      {/* Recent and Active Payments */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 md:gap-6">
-        {/* Recent Rentals */}
+        {/* Recent Payments */}
         <div className="bg-white rounded-xl shadow p-4 md:p-6">
-          <h2 className="text-lg font-semibold mb-4">Recent Rentals</h2>
+          <h2 className="text-lg font-semibold mb-4">Recent Payments</h2>
           <div className="space-y-4">
             {!statistics?.tenants || statistics?.tenants?.length === 0 ? (
               <div className="text-center py-8">
@@ -181,7 +181,7 @@ export default function UserDashboard() {
                   <HiOutlineTicket className="w-8 h-8 text-gray-400" />
                 </div>
                 <p className="text-gray-500 text-lg font-medium mb-2">
-                  No rentals yet
+                  No payments yet
                 </p>
                 <p className="text-gray-400 text-sm mb-4">
                   Start exploring properties to find your perfect rental
@@ -211,9 +211,9 @@ export default function UserDashboard() {
           </div>
         </div>
 
-        {/* Active Rentals */}
+        {/* Active Payments */}
         <div className="bg-white rounded-xl shadow p-4 md:p-6">
-          <h2 className="text-lg font-semibold mb-4">Active Rentals</h2>
+          <h2 className="text-lg font-semibold mb-4">Active Payments</h2>
           <div className="space-y-4">
             {!statistics?.tenants ||
             statistics?.tenants?.filter((t) => t.lease_status === "active")
@@ -223,10 +223,10 @@ export default function UserDashboard() {
                   <HiOutlineCalendar className="w-8 h-8 text-gray-400" />
                 </div>
                 <p className="text-gray-500 text-lg font-medium mb-2">
-                  No active rentals
+                  No active payments
                 </p>
                 <p className="text-gray-400 text-sm mb-4">
-                  You don't have any active rental agreements at the moment
+                  You don't have any active payment agreements at the moment
                 </p>
                 <button
                   onClick={() => navigate("/")}

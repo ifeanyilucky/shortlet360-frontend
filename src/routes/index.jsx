@@ -43,7 +43,7 @@ import TenantApplication from "../pages/TenantApplication";
 import UserLayout from "../layout/UserLayout";
 import Receipt from "../components/Receipt";
 import TenantReceipt from "../components/TenantReceipt";
-import UserTenantHistory from "../pages/dashboard/user/UserTenantHistory";
+import UserPaymentHistory from "../pages/dashboard/user/UserPaymentHistory";
 import Favorite from "../pages/dashboard/user/favorite";
 import UserServiceRequest from "../pages/dashboard/user/ServiceRequest";
 import UserDisputeResolution from "../pages/dashboard/user/DisputeResolution";
@@ -84,6 +84,11 @@ import PropertyManagement from "../pages/admin/forms/PropertyManagement";
 import RentNowPayLater from "../pages/RentNowPayLater";
 import AdminNewsletter from "../pages/dashboard/admin/Newsletter";
 import NewsletterUnsubscribe from "../pages/NewsletterUnsubscribe";
+// Job Management
+import AdminJobs from "../pages/dashboard/admin/jobs";
+import CreateJob from "../pages/dashboard/admin/CreateJob";
+import EditJob from "../pages/dashboard/admin/EditJob";
+import JobDetail from "../pages/dashboard/admin/JobDetail";
 export default function Router() {
   const routes = useRoutes([
     {
@@ -144,7 +149,7 @@ export default function Router() {
             { path: "", element: <Navigate to="dashboard" replace /> },
             { path: "dashboard", element: <UserDashboard /> },
             { path: "apartments", element: <Apartments /> },
-            { path: "rentals", element: <UserTenantHistory /> },
+            { path: "rentals", element: <UserPaymentHistory /> },
             { path: "favorites", element: <Favorite /> },
             { path: "service-request", element: <UserServiceRequest /> },
             { path: "dispute-resolution", element: <UserDisputeResolution /> },
@@ -221,6 +226,10 @@ export default function Router() {
             { path: "blogs/create", element: <CreateBlog /> },
             { path: "blogs/edit/:id", element: <EditBlog /> },
             { path: "newsletter", element: <AdminNewsletter /> },
+            { path: "jobs", element: <AdminJobs /> },
+            { path: "jobs/create", element: <CreateJob /> },
+            { path: "jobs/:id", element: <JobDetail /> },
+            { path: "jobs/:id/edit", element: <EditJob /> },
             { path: "settings", element: <AdminSettings /> },
           ],
         },

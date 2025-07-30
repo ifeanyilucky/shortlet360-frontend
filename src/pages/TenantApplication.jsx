@@ -54,6 +54,11 @@ const TenantApplication = () => {
     }
   }, [location.state]);
 
+  // Handle renewal state
+  const isRenewal = location.state?.isRenewal;
+  const currentTenant = location.state?.currentTenant;
+  const renewalType = location.state?.renewalType;
+
   // Calculate static yearly total
   const calculateStaticYearlyTotal = () => {
     if (!property?.pricing?.rent_per_year) return 0;
@@ -209,7 +214,11 @@ const TenantApplication = () => {
       };
 
       const response = await tenantService.createTenant(tenantData);
-      toast.success("Rental agreement created successfully");
+      toast.success(
+        isRenewal
+          ? "Rent renewal completed successfully"
+          : "Rental agreement created successfully"
+      );
       navigate(`/${id}/tenant-receipt/${response?.data?._id}`);
     } catch (error) {
       console.error("Payment success error:", error);
@@ -262,7 +271,7 @@ const TenantApplication = () => {
           {
             display_name: "Application Type",
             variable_name: "application_type",
-            value: "rental",
+            value: isRenewal ? "rental_renewal" : "rental",
           },
           {
             display_name: "Payment Period",
@@ -310,11 +319,32 @@ const TenantApplication = () => {
             Back to Property
           </button>
           <h1 className="text-3xl font-bold text-gray-900 mb-2">
-            Tenant Application
+            {isRenewal ? "Rent Renewal Application" : "Tenant Application"}
           </h1>
           <p className="text-gray-600">
-            Complete your rental application for {property.property_name}
+            {isRenewal
+              ? `Renew your rental agreement for ${property.property_name}`
+              : `Complete your rental application for ${property.property_name}`}
           </p>
+          {isRenewal && (
+            <div
+              className={`mt-3 p-3 rounded-lg ${
+                renewalType === "overdue"
+                  ? "bg-red-50 border border-red-200"
+                  : "bg-orange-50 border border-orange-200"
+              }`}
+            >
+              <p
+                className={`text-sm font-medium ${
+                  renewalType === "overdue" ? "text-red-800" : "text-orange-800"
+                }`}
+              >
+                {renewalType === "overdue"
+                  ? "⚠️ Your rent is overdue. Please complete the renewal process."
+                  : "⏰ Your rent is due for renewal. Please proceed with payment."}
+              </p>
+            </div>
+          )}
         </div>
 
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">

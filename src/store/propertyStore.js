@@ -28,11 +28,13 @@ export const propertyStore = create((set) => ({
     try {
       set({ isLoading: true });
       const response = await propertyService.getOwnerProperties(params);
+      console.log("response", response);
       set({
         properties: response.data,
         pagination: response.pagination,
         error: null,
       });
+      return response;
     } catch (error) {
       set({ error: error.message });
     } finally {

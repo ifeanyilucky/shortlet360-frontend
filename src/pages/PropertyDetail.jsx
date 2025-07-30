@@ -200,6 +200,11 @@ export default function PropertyDetail() {
   const [hasUserPaid, setHasUserPaid] = useState(false);
   const [showTenantAgreement, setShowTenantAgreement] = useState(false);
 
+  // Renewal state
+  const [isRenewal, setIsRenewal] = useState(false);
+  const [currentTenant, setCurrentTenant] = useState(null);
+  const [renewalType, setRenewalType] = useState(null);
+
   // Function to get required KYC tiers - now only Tier 1 for all cases
   const getRequiredKycTiers = () => {
     return ["tier1"];
@@ -274,6 +279,33 @@ export default function PropertyDetail() {
 
     fetchData();
   }, [id, getProperty]);
+
+  // Handle renewal state from navigation
+  useEffect(() => {
+    const location = window.location;
+    const urlParams = new URLSearchParams(location.search);
+    const state = location.state;
+
+    if (state?.isRenewal) {
+      setIsRenewal(true);
+      setCurrentTenant(state.currentTenant);
+      setRenewalType(state.renewalType);
+
+      // Show a toast notification for renewal
+      if (state.renewalType === "overdue") {
+        toast.error("Your rent is overdue! Please renew your lease.", {
+          duration: 5000,
+        });
+      } else if (state.renewalType === "due") {
+        toast.success(
+          "Your rent is due for renewal. Please proceed with payment.",
+          {
+            duration: 5000,
+          }
+        );
+      }
+    }
+  }, []);
 
   // Check KYC verification when payment period changes
   useEffect(() => {
@@ -1039,6 +1071,11 @@ export default function PropertyDetail() {
       return;
     }
 
+    // If this is a renewal, show a different message
+    if (isRenewal) {
+      toast.success("Proceeding with rent renewal...");
+    }
+
     // Show tenant agreement modal
     setShowTenantAgreement(true);
   };
@@ -1047,7 +1084,12 @@ export default function PropertyDetail() {
     setShowTenantAgreement(false);
     // Navigate to tenant application page with property data
     navigate(`/property/${id}/tenant-application`, {
-      state: { property },
+      state: {
+        property,
+        isRenewal,
+        currentTenant,
+        renewalType,
+      },
     });
   };
 
@@ -2411,9 +2453,19 @@ export default function PropertyDetail() {
                       <>
                         <button
                           onClick={handleRentNow}
-                          className="w-full bg-blue-600 text-white py-3 rounded-xl font-medium hover:bg-blue-700 mt-4"
+                          className={`w-full py-3 rounded-xl font-medium mt-4 ${
+                            isRenewal
+                              ? renewalType === "overdue"
+                                ? "bg-red-600 hover:bg-red-700 text-white"
+                                : "bg-orange-600 hover:bg-orange-700 text-white"
+                              : "bg-blue-600 hover:bg-blue-700 text-white"
+                          }`}
                         >
-                          Start Rental Application
+                          {isRenewal
+                            ? renewalType === "overdue"
+                              ? "⚠️ Renew Overdue Rent"
+                              : "⏰ Renew Rent Due Soon"
+                            : "Start Rental Application"}
                         </button>
 
                         {/* Pay Monthly Button */}

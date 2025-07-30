@@ -47,11 +47,14 @@ export default function About() {
                 We believe everyone deserves a place to call home.
               </h2>
               <p className="text-tertiary-600 mb-6 text-lg">
-                Aplet360 is Africa's trusted proptech solutions platform that
-                provides property management, apartment rental, rent financing,
-                and Seamless home maintenance access that makes life easier,
-                while bridging the trust issues that exists within the Africa
-                apartment rental value chain of tge real estate industry.
+                Aplet360 is a revolutionary proptech solutions company on a
+                mission to redefine Africa's property rental experience. We
+                provide a streamlined, digital-first approach to property
+                management and rentals, bridging the gap between landlords and
+                tenants with transparency, efficiency, and trust. Our end-to-end
+                platform empowers landlords to manage their properties
+                seamlessly while offering home seekers a stress-free property
+                search and inspection process.
               </p>
             </div>
             <div className="md:w-1/2">
@@ -150,7 +153,7 @@ export default function About() {
               property solutions with comprehensive home management services,
               giving residents and guests the ultimate peace of mind. Whether
               it&apos;s finding the perfect rental property, or managing your
-              home services — Aplet360 is your trusted partner for living
+              home services, Aplet360 is your trusted partner for living
               smarter, better, and safer.
             </p>
             {/* Image before the section */}
@@ -242,7 +245,7 @@ export default function About() {
                 <FiUsers className="w-6 h-6 text-accent-600" />
               </div>
               <h3 className="font-semibold text-xl mb-3 text-tertiary-900">
-                AI-Enhanced Customer Experience
+                Enhanced Customer Experience
               </h3>
               <p className="text-tertiary-600">
                 Personalized recommendations, smart service bookings, and
@@ -418,12 +421,13 @@ export default function About() {
             Ready for Stress Free Renting?
           </h2>
           <p className="text-tertiary-600 max-w-3xl mx-auto mb-8 text-lg">
-            Explore quality apartments with payment plans made just for you.
+            Search quality and verified apartments that suit your budget and
+            style
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
             <Link to="/book-now">
               <InteractiveButton variant="accent">
-                Find your space
+                Find Your Next Home
               </InteractiveButton>
             </Link>
             <Link to="/contact">

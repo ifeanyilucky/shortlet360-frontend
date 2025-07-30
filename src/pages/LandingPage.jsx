@@ -156,10 +156,10 @@ export default function LandingPage() {
           </h1>
 
           <p className="text-white max-w-3xl mx-auto mb-12 text-base md:text-lg px-4 animate-slide-up">
-            Aplet360 is more than just a platform. We make it easier to find
-            apartments that suits your lifestyle, budget and comfort with peace
-            of mind. Aplet360 is built for home seekers, tenants, landlords,
-            agents and artisans, all in one place
+            Aplet360 is a revolutionary proptech solutions company on a mission
+            to redefine Africa's property rental experience. Aplet360 is built
+            for home seekers, tenants, landlords, agents and artisans, all in
+            one place
           </p>
 
           {/* Search Section */}

@@ -47,7 +47,7 @@ const UserLayout = () => {
     {
       path: "/user/rentals",
       icon: <BsClockHistory size={20} />,
-      label: "Rentals",
+      label: "Payment History",
     },
     {
       path: "/user/favorites",
